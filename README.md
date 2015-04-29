@@ -1,18 +1,6 @@
-# React / Flux &nbsp;Starter Kit
+# OnRack Web UI
 
-[![Build Status](http://img.shields.io/travis/kriasoft/react-starter-kit/master.svg?style=flat)](http://travis-ci.org/kriasoft/react-starter-kit)
-[![Dependency Status](https://david-dm.org/kriasoft/react-starter-kit.svg?style=flat)](https://david-dm.org/kriasoft/react-starter-kit)
-[![devDependency Status](https://david-dm.org/kriasoft/react-starter-kit/dev-status.svg?style=flat)](https://david-dm.org/kriasoft/react-starter-kit#info=devDependencies)
-[![Tips](http://img.shields.io/gratipay/koistya.svg?style=flat)](https://gratipay.com/koistya)
-[![Gitter](http://img.shields.io/badge/chat-online-brightgreen.svg?style=flat)](https://gitter.im/kriasoft/react-starter-kit)
-
-> This project template is a skeleton for an [isomorphic](http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/)
-> web application (SPA) based on Facebook's [React](https://facebook.github.io/react/)
-> library and [Flux](http://facebook.github.io/flux/) architecture. You can use
-> it to quickly bootstrap your web application projects. All the parts of this
-> project template are easily replaceable.
-
-**Demo**: http://reactjs.kriasoft.com
+Based on this github project: https://github.com/kriasoft/react-starter-kit
 
 ### Documentation
 
@@ -39,19 +27,18 @@
 │   └── /server.js              # Server-side startup script
 │── gulpfile.js                 # Configuration file for automated builds
 │── package.json                # The list of 3rd party libraries and utilities
-│── preprocessor.js             # ES6 transpiler settings for Jest 
+│── preprocessor.js             # ES6 transpiler settings for Jest
 └── webpack.config.js           # Webpack configuration for bundling and optimization
 ```
 
 ### Getting Started
 
-Just [clone](github-windows://openRepo/https://github.com/kriasoft/react-starter-kit) or [fork](https://github.com/kriasoft/react-starter-kit/fork) the repo and start hacking:
-
 ```shell
-$ git clone -o react-starter-kit https://github.com/kriasoft/react-starter-kit.git MyApp
-$ cd MyApp
+$ git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
+$ cd on-web-ui
 $ npm install -g gulp           # Install Gulp task runner globally
 $ npm install                   # Install Node.js components listed in ./package.json
+$ gulp                          # Run gulp to build and start browser-sync
 ```
 
 ### How to Build
@@ -81,18 +68,6 @@ $ gulp deploy                   # or, `gulp deploy --production`
 
 For more information see `deploy` task in `gulpfile.js`.
 
-### How to Update
-
-You can always fetch and merge the recent changes from this repo back into
-your own project:
-
-```shell
-$ git checkout master
-$ git fetch react-starter-kit
-$ git merge react-starter-kit/master
-$ npm install
-```
-
 ### How to Test
 
 Run unit tests powered by [Jest](https://facebook.github.io/jest/) with the following
@@ -117,14 +92,3 @@ the file is. Name the test by appending `-test.js` to the js file.
  * [Flow - A static type checker for JavaScript](http://flowtype.org/)
  * [The Future of React](https://github.com/reactjs/react-future)
  * [Learn ES6](https://babeljs.io/docs/learn-es6/), [ES6 Features](https://github.com/lukehoban/es6features#readme)
-
-### Support
-
-Have feedback, feature request or need help? Contact me on [codementor.io/koistya](https://www.codementor.io/koistya).
-
-### Copyright
-
-Source code is licensed under the MIT License (MIT). See [LICENSE.txt](./LICENSE.txt)
-file in the project root. Documentation to the project is licensed under the
-[CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) license. React logo
-image is a trademark of Facebook, Inc.
