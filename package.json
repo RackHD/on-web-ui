@@ -1,0 +1,81 @@
+{
+  "name": "react-starter-kit",
+  "private": true,
+  "version": "0.0.0",
+  "description": "React / Flux  Starter Kit",
+  "repository": "https://github.com/kriasoft/react-starter-kit",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.10",
+    "npm": ">= 2.1"
+  },
+  "dependencies": {
+    "babel": "5.1.13",
+    "bootstrap": "3.3.4",
+    "eventemitter3": "1.0.1",
+    "express": "4.12.3",
+    "fastclick": "1.0.6",
+    "flux": "2.0.3",
+    "front-matter": "1.0.0",
+    "jade": "1.9.2",
+    "lodash": "3.7.0",
+    "react": "0.13.2",
+    "superagent": "1.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer-loader": "^1.2.0",
+    "babel-core": "^5.1.13",
+    "babel-eslint": "^3.0.1",
+    "babel-loader": "^5.0.0",
+    "browser-sync": "^2.6.5",
+    "css-loader": "^0.12.0",
+    "del": "^1.1.1",
+    "eslint": "^0.20.0",
+    "eslint-loader": "^0.11.1",
+    "eslint-plugin-react": "^2.2.0",
+    "git-push": "^0.1.1",
+    "gulp": "^3.8.11",
+    "gulp-autoprefixer": "^2.2.0",
+    "gulp-cache": "^0.2.9",
+    "gulp-changed": "^1.2.1",
+    "gulp-csscomb": "^3.0.3",
+    "gulp-htmlmin": "^1.1.1",
+    "gulp-if": "^1.2.5",
+    "gulp-imagemin": "^2.2.1",
+    "gulp-jsbeautifier": "^0.0.8",
+    "gulp-less": "^3.0.3",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-minify-css": "^1.1.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-render": "^0.2.2",
+    "gulp-replace": "^0.5.3",
+    "gulp-size": "^1.2.1",
+    "gulp-util": "^3.0.4",
+    "jest-cli": "^0.4.0",
+    "less": "^2.5.0",
+    "less-loader": "^2.2.0",
+    "minimist": "^1.1.1",
+    "protractor": "^2.0.0",
+    "psi": "^1.0.6",
+    "react-tools": "^0.13.2",
+    "run-sequence": "^1.1.0",
+    "style-loader": "^0.12.1",
+    "url-loader": "^0.5.5",
+    "webpack": "^1.8.10",
+    "webpack-dev-server": "^1.8.2"
+  },
+  "jest": {
+    "rootDir": "./src",
+    "scriptPreprocessor": "../preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "react"
+    ]
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "eslint src gulpfile.js webpack.config.js && jest",
+    "preupdate-webdriver": "npm install",
+    "update-webdriver": "webdriver-manager update"
+  }
+}
