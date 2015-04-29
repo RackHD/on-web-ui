@@ -1,6 +1,6 @@
 # OnRack Web UI
 
-Based on this github project: https://github.com/kriasoft/react-starter-kit
+Based on this github project: https://github.com/kriasoft/react-starter-kit from commit: [e382c282f5a4871f012023402bd214a1b9a19a90](https://github.com/kriasoft/react-starter-kit/commit/e382c282f5a4871f012023402bd214a1b9a19a90)
 
 ### Documentation
 
