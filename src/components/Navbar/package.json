@@ -1,6 +1,2 @@
-{
-  "name": "Navbar",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./Navbar.js"
-}
+{ "name": "Navbar",    "version": "0.0.0",
+  "main": "Navbar.js", "private": true }

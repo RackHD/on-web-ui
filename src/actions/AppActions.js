@@ -1,21 +1,14 @@
-/*
- * React.js Starter Kit
- * Copyright (c) 2014 Konstantin Tarkus (@koistya), KriaSoft LLC.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+'use strict';
 
-import Dispatcher from '../core/Dispatcher';
 import ActionTypes from '../constants/ActionTypes';
-import ExecutionEnvironment from 'react/lib/ExecutionEnvironment';
-import http from 'superagent';
+import Dispatcher from '../core/Dispatcher';
+import { canUseDOM } from 'react/lib/ExecutionEnvironment';
 
 export default {
 
-  navigateTo(path, options) {
-    if (ExecutionEnvironment.canUseDOM) {
-      if (options && options.replace) {
+  navigateTo(path, replaceState) {
+    if (canUseDOM) {
+      if (replaceState) {
         window.history.replaceState({}, document.title, path);
       } else {
         window.history.pushState({}, document.title, path);
@@ -28,25 +21,11 @@ export default {
     });
   },
 
-  loadPage(path, cb) {
-    Dispatcher.handleViewAction({
-      actionType: ActionTypes.LOAD_PAGE,
-      path
+  loadPage() {
+    return new Promise(function (resolve) {
+      // TODO:
+      resolve();
     });
-
-    http.get('/api/page' + path)
-      .accept('application/json')
-      .end((err, res) => {
-        Dispatcher.handleServerAction({
-          actionType: ActionTypes.LOAD_PAGE,
-          path,
-          err,
-          page: res.body
-        });
-        if (cb) {
-          cb();
-        }
-      });
   }
 
 };
