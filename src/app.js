@@ -2,10 +2,13 @@
 
 import 'babel/polyfill';
 
-import App from './components/App';
+import AppComponent from './components/App';
 import AppActions from './actions/AppActions';
 import FastClick from 'fastclick';
-import React from 'react/addons';
+import ReactAddons from 'react/addons';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+injectTapEventPlugin();
 
 // let path = decodeURI(window.location.pathname);
 
@@ -27,6 +30,6 @@ Promise.all([
 
 function run() {
   // Render the top-level React component
-  let element = React.createElement(App, {});
-  React.render(element, document.body);
+  let element = ReactAddons.createElement(AppComponent, {});
+  ReactAddons.render(element, document.body);
 }

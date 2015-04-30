@@ -59,7 +59,8 @@ gulp.task('assets', function() {
 // CSS style sheets
 gulp.task('styles', function() {
   src.styles = 'src/styles/**/*.{css,less}';
-  return gulp.src('src/styles/bootstrap.less')
+  // TODO: replace with material-ui
+  return gulp.src('src/styles/material-ui.less')
     .pipe($.plumber())
     .pipe($.less({
       sourceMap: !RELEASE,
