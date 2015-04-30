@@ -1,8 +1,3 @@
-/*!
- * Facebook React Starter Kit | https://github.com/kriasoft/react-starter-kit
- * Copyright (c) KriaSoft, LLC. All rights reserved. See LICENSE.txt
- */
-
 'use strict';
 
 var _ = require('lodash');
