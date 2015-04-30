@@ -1,0 +1,12 @@
+#!/bin/bash
+
+git clone . packagebuild
+pushd packagebuild
+
+rm -rf node_modules
+npm install
+# TODO: npm run apidoc
+npm prune --production
+
+./node_modules/.bin/gulp build
+# TODO: ./node_modules/.bin/gulp delpy
