@@ -10,6 +10,7 @@ import Dispatcher from '../../core/Dispatcher';
 import Footer from '../Footer';
 import Navbar from '../Navbar';
 import Nodes from '../Nodes';
+import Workflows from '../Workflows';
 
 class App extends Component {
   state = {
@@ -54,6 +55,7 @@ class App extends Component {
       <div className="App">
         <Navbar />
         <Nodes />
+        <Workflows />
         <Footer>
           <span>{'Viewport: ' + viewport.width + 'x' + viewport.height}</span>
         </Footer>
