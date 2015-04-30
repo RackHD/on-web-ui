@@ -68,14 +68,12 @@
   "jest": {
     "rootDir": "./src",
     "scriptPreprocessor": "../preprocessor.js",
-    "unmockedModulePathPatterns": [
-      "react"
-    ]
+    "unmockedModulePathPatterns": ["react"]
   },
   "scripts": {
-    "start": "node server.js",
-    "test": "eslint src gulpfile.js webpack.config.js && jest",
+    "start": "./node_modules/.bin/gulp",
+    "test": "./node_modules/.bin/eslint src gulpfile.js webpack.config.js && ./node_modules/.bin/jest",
     "preupdate-webdriver": "npm install",
-    "update-webdriver": "webdriver-manager update"
+    "update-webdriver": "./node_modules/.bin/webdriver-manager update"
   }
 }
