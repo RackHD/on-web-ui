@@ -1,5 +1,8 @@
 'use strict';
 
+// NOTE: The eventemitter3 npm module is required for browserSync for function.
+process.on('uncaughtException', console.error.bind(console));
+
 // Include Gulp and other build automation tools and utilities
 // See: https://github.com/gulpjs/gulp/blob/master/docs/API.md
 var gulp = require('gulp');
@@ -36,18 +39,11 @@ gulp.task('clean', del.bind(
   null, ['.tmp', 'build/*', '!build/.git'], {dot: true}
 ));
 
-// 3rd party libraries
-gulp.task('vendor', function() {
-  return gulp.src('node_modules/bootstrap/dist/fonts/**')
-    .pipe(gulp.dest('build/fonts'));
-});
-
 // Static files
 gulp.task('assets', function() {
   src.assets = [
     'package.json',
     'src/assets/**',
-    'src/content*/**/*.*',
     'src/templates*/**/*.*'
   ];
   return gulp.src(src.assets)
@@ -104,7 +100,7 @@ gulp.task('bundle', function(cb) {
 
 // Build the app from source code
 gulp.task('build', ['clean'], function(cb) {
-  runSequence(['vendor', 'assets', 'styles', 'bundle'], cb);
+  runSequence(['assets', 'styles', 'bundle'], cb);
 });
 
 // Build and start watching for modifications
@@ -121,7 +117,6 @@ gulp.task('build:watch', function(cb) {
 gulp.task('serve', ['build:watch'], function(cb) {
   src.server = [
     'build/server.js',
-    'build/content/**/*',
     'build/templates/**/*'
   ];
 
@@ -133,6 +128,7 @@ gulp.task('serve', ['build:watch'], function(cb) {
     var child = cp.fork('build/server.js', {
       env: assign({NODE_ENV: 'development'}, process.env)
     });
+    child.on('error', console.error.bind(console));
     child.once('message', function(message) {
       if (message.match(/^online$/)) {
         if (browserSync) {
@@ -162,7 +158,7 @@ gulp.task('sync', ['serve'], function(cb) {
   browserSync = require('browser-sync');
 
   browserSync({
-    logPrefix: 'RSK',
+    logPrefix: '',
     notify: false,
     // Run as an https by setting 'https: true'
     // Note: this uses an unsigned certificate which on first access
@@ -191,16 +187,4 @@ gulp.task('deploy', function(cb) {
     'https://github.com/{user}/{repo}.git' :
     'https://github.com/{user}/{repo}-test.git';
   push('./build', remote, cb);
-});
-
-// Run PageSpeed Insights
-gulp.task('pagespeed', function(cb) {
-  var pagespeed = require('psi');
-  // Update the below URL to the public URL of your site
-  pagespeed.output('example.com', {
-    strategy: 'mobile'
-    // By default we use the PageSpeed Insights free (no API key) tier.
-    // Use a Google Developer API key if you have one: http://goo.gl/RkN0vE
-    // key: 'YOUR_API_KEY'
-  }, cb);
 });
