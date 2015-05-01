@@ -11,7 +11,7 @@ describe('App', function() {
     var App = require('../App');
     var Component = TestUtils.renderIntoDocument(React.createElement(App));
 
-    var element = TestUtils.findRenderedDOMComponentWithClass(Component, 'navbar-top');
+    var element = TestUtils.findRenderedDOMComponentWithClass(Component, 'App');
     expect(element).toBeDefined();
   });
 
