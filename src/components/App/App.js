@@ -1,7 +1,7 @@
 'use strict';
 
-import './App.less';
 import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+import { RouteHandler } from 'react-router';
 import { canUseDOM } from 'react/lib/ExecutionEnvironment';
 
 import { AppCanvas, AppBar } from 'material-ui';
@@ -9,8 +9,11 @@ import { AppCanvas, AppBar } from 'material-ui';
 import ActionTypes from '../../constants/ActionTypes';
 import Dispatcher from '../../core/Dispatcher';
 
+// import LeftNav from './LeftNav';
 import Nodes from '../Nodes';
 import Workflows from '../Workflows';
+
+import './App.less';
 
 class App extends Component {
   state = {
@@ -29,7 +32,11 @@ class App extends Component {
 
   componentDidMount() {
     this.updateViewport();
-    this.handleResize = this.updateViewport.bind(this);
+    var resizeTimer = null;
+    this.handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(this.updateViewport.bind(this), 300);
+    };
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleResize);
 
@@ -49,6 +56,10 @@ class App extends Component {
     Dispatcher.unregister(this.pageDispatcher);
   }
 
+  onLeftIconButtonTouchTap() {
+    this.refs.leftNav.toggle();
+  }
+
   render() {
     var viewport = this.state && this.state.viewport || {},
         title = 'OnRack Web UI';
@@ -64,13 +75,17 @@ class App extends Component {
         <AppCanvas predefinedLayout={1}>
 
           <AppBar className="mui-dark-theme"
-                  // onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
+                  onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap}
                   title={title}
                   zDepth={0}
                   iconElementRight={rightElement}
                   />
 
-          <br/><br/><br/>
+          <br/><br/><br/><br/>
+
+          {/*<LeftNav ref="leftNav" />*/}
+
+          {/*<RouteHandler />*/}
 
           <Nodes />
           <Workflows />

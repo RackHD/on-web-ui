@@ -19,6 +19,7 @@
     "material-ui": "^0.7.5",
     "moment": "^2.10.2",
     "react": "0.13.2",
+    "react-router": "^0.13.3",
     "react-tap-event-plugin": "^0.1.6",
     "superagent": "1.2.0",
     "underscore": "^1.8.3"
