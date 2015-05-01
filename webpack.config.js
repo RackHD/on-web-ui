@@ -17,7 +17,7 @@ var GLOBALS = {
 
 //
 // Common configuration chunk to be used for both
-// client-side (app.js) and server-side (server.js) bundles
+// client-side (client.js) and server-side (server.js) bundles
 // -----------------------------------------------------------------------------
 
 var config = {
@@ -89,13 +89,13 @@ var config = {
 };
 
 //
-// Configuration for the client-side bundle (app.js)
+// Configuration for the client-side bundle (client.js)
 // -----------------------------------------------------------------------------
 
 var appConfig = _.merge({}, config, {
-  entry: './src/app.js',
+  entry: './src/client.js',
   output: {
-    filename: 'app.js'
+    filename: 'client.js'
   },
   plugins: config.plugins.concat([
       new webpack.DefinePlugin(_.merge(GLOBALS, {'__SERVER__': false}))

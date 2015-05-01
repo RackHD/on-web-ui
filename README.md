@@ -23,7 +23,7 @@ Based on this github project: https://github.com/kriasoft/react-starter-kit from
 │   ├── /stores/                # Stores contain the application state and logic
 │   ├── /styles/                # CSS styles (deprecated, put CSS into components' folders)
 │   ├── /templates/             # HTML templates for server-side rendering, emails etc.
-│   ├── /app.js                 # Client-side startup script
+│   ├── /client.js                 # Client-side startup script
 │   └── /server.js              # Server-side startup script
 │── gulpfile.js                 # Configuration file for automated builds
 │── package.json                # The list of 3rd party libraries and utilities
