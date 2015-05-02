@@ -1,6 +1,6 @@
 'use strict';
 
-// NOTE: The eventemitter3 npm module is required for browserSync for function.
+// NOTE: The eventemitter3 npm module is required for browserSync to function.
 process.on('uncaughtException', console.error.bind(console));
 
 // Include Gulp and other build automation tools and utilities
@@ -14,8 +14,8 @@ var webpack = require('webpack');
 var argv = require('minimist')(process.argv.slice(2));
 
 // Settings
-var RELEASE = !!argv.release;                 // Minimize and optimize during a build?
-var AUTOPREFIXER_BROWSERS = [                 // https://github.com/ai/autoprefixer
+var RELEASE = !!argv.release; // Minimize and optimize during a build?
+var AUTOPREFIXER_BROWSERS = [ // https://github.com/ai/autoprefixer
   'ie >= 10',
   'ie_mob >= 10',
   'ff >= 30',

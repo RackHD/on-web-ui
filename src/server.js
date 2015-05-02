@@ -14,18 +14,20 @@ server.use(express.static(path.join(__dirname)));
 // Server-side rendering
 // -----------------------------------------------------------------------------
 
-// The top-level React component
-var AppComponent = React.createFactory(require('./components/App'));
-
 // Main HTML template
 var templateFile = path.join(__dirname, 'templates/index.html'),
-    template = _.template(fs.readFileSync(templateFile, 'utf8'));
+    template = _.template(fs.readFileSync(templateFile, 'utf8')),
+    preload = false; // TODO: fix server side rendering, not sure if this even matters.
 
 server.get('*', function(req, res) {
-  var app = new AppComponent();
+  if (preload) {
+    // The top-level React component
+    var AppComponent = React.createFactory(require('./components/App')),
+        app = new AppComponent();
+  }
 
   var html = template({
-    body: React.renderToString(app),
+    body: app && React.renderToString(app) || '',
     description: '',
     title: 'OnRack Web UI'
   });

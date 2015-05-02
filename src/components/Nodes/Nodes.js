@@ -13,6 +13,8 @@ import {
 import NodeActions from '../../actions/NodeActions';
 import './Nodes.less';
 
+const ellipsis = '\u2026';
+
 class Nodes extends Component {
 
   static propTypes = {
@@ -33,7 +35,10 @@ class Nodes extends Component {
     var nodes = <p>No nodes</p>;
     if (this.state.nodes) {
       nodes = this.state.nodes.map(node => ({
-        id: node.id,
+        id:
+          node.id.substring(0, 2) +
+          ellipsis +
+          node.id.substring(node.id.length - 4, node.id.length),
         Name: node.name,
         Created: moment(node.createdAt).fromNow(),
         Updated: moment(node.updatedAt).fromNow(),
