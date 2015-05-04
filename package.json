@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "babel": "5.1.13",
+    "co": "^4.5.4",
     "express": "4.12.3",
     "fastclick": "1.0.6",
     "flux": "2.0.3",
@@ -22,6 +23,7 @@
     "react-router": "^0.13.3",
     "react-tap-event-plugin": "^0.1.6",
     "superagent": "1.2.0",
+    "thunkify": "^2.1.2",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
