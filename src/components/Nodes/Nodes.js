@@ -38,14 +38,23 @@ class Nodes extends Component {
         Created: this.fromNow(node.createdAt),
         Updated: this.fromNow(node.updatedAt),
         Actions: (<div>
-          <IconButton iconClassName="fa fa-edit" tooltip="Edit Worfklow" touch={true}/>
+          <a href={'#/nodes/' + node.id}>
+            <IconButton iconClassName="fa fa-edit" tooltip="Edit Worfklow" touch={true}/>
+          </a>
           <IconButton iconClassName="fa fa-remove" tooltip="Remove Workflow" touch={true}/>
         </div>)
       }));
       nodes = <Griddle results={nodes} resultsPerPage={15} />;
     }
+    var breadcrumbs = this.props.params ? (
+      <div className="breadcrumbs">
+        <a href="#/dash">Dashboard</a>
+        &nbsp;/&nbsp;Nodes
+      </div>
+    ) : null;
     return (
       <div className="Nodes">
+        {breadcrumbs}
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <h3>

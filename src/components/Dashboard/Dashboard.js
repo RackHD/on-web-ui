@@ -11,13 +11,16 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div className="Dashboard container">
-        <div className="row">
-          <div className="one-half column">
-            <Nodes />
-          </div>
-          <div className="one-half column">
-            <Workflows />
+      <div className="Dashboard">
+        <div className="breadcrumbs">Dashboard</div>
+        <div className="container">
+          <div className="row">
+            <div className="one-half column">
+              <Nodes />
+            </div>
+            <div className="one-half column">
+              <Workflows />
+            </div>
           </div>
         </div>
       </div>

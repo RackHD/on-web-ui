@@ -27,6 +27,12 @@ class Node extends Component {
   render() {
     return (
       <div className="Node">
+        <div className="breadcrumbs">
+          <a href="#/dash">Dashboard</a>
+          &nbsp;/&nbsp;
+          <a href="#/nodes">Nodes</a>
+          {this.state.node ? ' / ' + this.state.node.id : ''}
+        </div>
         <NodeForm nodeRef={this.state.node} />
       </div>
     );

@@ -16,6 +16,7 @@
 */
 
 /* NOTE: We only use skeleton.css for its grid system, everything else is removed. */
+/* NOTE: There are some minor modifications as well to this file. Keep that in mind. */
 
 
 /* Grid
@@ -23,10 +24,10 @@
 .container {
   position: relative;
   width: 100%;
-  max-width: 960px;
   margin: 0 auto;
   padding: 0 20px;
   box-sizing: border-box; }
+
 .column,
 .columns {
   width: 100%;
@@ -35,21 +36,18 @@
 
 /* For devices larger than 400px */
 @media (min-width: 400px) {
-  .container {
-    width: 85%;
-    padding: 0; }
+  .container { width: 100%; padding: 0; }
 }
 
 /* For devices larger than 550px */
 @media (min-width: 550px) {
-  .container {
-    width: 80%; }
+  .container { width: 100%; }
+
   .column,
-  .columns {
-    margin-left: 4%; }
+  .columns { margin-left: 4%; }
+
   .column:first-child,
-  .columns:first-child {
-    margin-left: 0; }
+  .columns:first-child { margin-left: 0; }
 
   .one.column,
   .one.columns                    { width: 4.66666666667%; }
@@ -107,16 +105,8 @@
 
 /* Utilities
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-.u-full-width {
-  width: 100%;
-  box-sizing: border-box; }
-.u-max-full-width {
-  max-width: 100%;
-  box-sizing: border-box; }
-.u-pull-right {
-  float: right; }
-.u-pull-left {
-  float: left; }
+.u-right { float: right; }
+.u-left { float: left; }
 
 
 /* Clearing

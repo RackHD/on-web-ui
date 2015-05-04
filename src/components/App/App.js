@@ -57,7 +57,7 @@ class App extends Component {
 
     var rightElement = (
       <img src={require('./logo-small.png')}
-           style={{float: 'right'}}
+           className="right-icon"
            width="38"
            height="38"
            alt="React" />
@@ -66,18 +66,18 @@ class App extends Component {
     return (
       <AppCanvas className="App" predefinedLayout={1}>
 
-        <AppBar className="mui-dark-theme"
+        <AppBar className="header mui-dark-theme"
                 onMenuIconButtonTouchTap={this._onMenuIconButtonTouchTap}
                 title={title}
                 zDepth={0}
                 iconElementRight={rightElement}
                 />
 
-        <br/><br/><br/><br/>{/* TODO: fix this style hack*/}
-
         <AppMenuNav ref="menuNav" />
 
-        <RouteHandler />
+        <div className="content">
+          <RouteHandler />
+        </div>
 
         <div className="footer full-width-section mui-dark-theme">
           <div>

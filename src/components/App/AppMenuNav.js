@@ -34,12 +34,13 @@ class AppMenuNav extends Component {
 
   render() {
     var header = (
-      <div className="logo"
+      <div className="nav-logo"
            onClick={this.onHeaderClick}>OnRack Web UI</div>
     );
 
     return (
       <LeftNav
+        className="AppMenuNav"
         ref="leftNav"
         docked={false}
         isInitiallyOpen={false}
