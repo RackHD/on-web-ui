@@ -1,7 +1,8 @@
 'use strict';
 
-import moment from 'moment';
 import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+import mixin from 'react-mixin'; // eslint-disable-line no-unused-vars
+
 import Griddle from 'griddle-react';
 import {
     IconButton,
@@ -10,9 +11,11 @@ import {
     RaisedButton
   } from 'material-ui';
 
+import FormatHelpers from '../mixins/FormatHelpers'; // eslint-disable-line no-unused-vars
 import WorkflowActions from '../../actions/WorkflowActions';
 import './Workflows.less';
 
+@mixin.decorate(FormatHelpers)
 class Workflows extends Component {
 
   state = {
@@ -29,11 +32,9 @@ class Workflows extends Component {
     var workflows = <p>No workflows</p>;
     if (this.state.workflows) {
       workflows = this.state.workflows.map(workflow => ({
-        // node: workflow.node,
+        ID: this.shortId(workflow.id),
         Name: workflow.definition.friendlyName,
-        // Status: workflow._status, // eslint-disable-line no-underscore-dangle
-        // Cancelled: workflow.cancelled,
-        Created: moment(workflow.createdAt).fromNow(),
+        Created: this.fromNow(workflow.createdAt),
         Actions: (<div>
           <IconButton iconClassName="fa fa-edit" tooltip="Edit Worfklow" touch={true}/>
           <IconButton iconClassName="fa fa-remove" tooltip="Remove Workflow" touch={true}/>

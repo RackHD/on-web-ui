@@ -1,7 +1,8 @@
 'use strict';
 
-import moment from 'moment';
 import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+import mixin from 'react-mixin'; // eslint-disable-line no-unused-vars
+
 import Griddle from 'griddle-react';
 import {
     IconButton,
@@ -10,20 +11,20 @@ import {
     RaisedButton
   } from 'material-ui';
 
+import FormatHelpers from '../mixins/FormatHelpers'; // eslint-disable-line no-unused-vars
 import NodeActions from '../../actions/NodeActions';
 import './Nodes.less';
 
-const ellipsis = '\u2026';
-
+@mixin.decorate(FormatHelpers)
 class Nodes extends Component {
 
-  static propTypes = {
-    // body: PropTypes.string.isRequired
-  }
+  // static propTypes = {
+  //   body: PropTypes.string.isRequired
+  // };
 
   state = {
     nodes: null
-  }
+  };
 
   componentDidMount() {
     NodeActions.requestNodes()
@@ -35,13 +36,10 @@ class Nodes extends Component {
     var nodes = <p>No nodes</p>;
     if (this.state.nodes) {
       nodes = this.state.nodes.map(node => ({
-        id:
-          node.id.substring(0, 2) +
-          ellipsis +
-          node.id.substring(node.id.length - 4, node.id.length),
+        ID: this.shortId(node.id),
         Name: node.name,
-        Created: moment(node.createdAt).fromNow(),
-        Updated: moment(node.updatedAt).fromNow(),
+        Created: this.fromNow(node.createdAt),
+        Updated: this.fromNow(node.updatedAt),
         Actions: (<div>
           <IconButton iconClassName="fa fa-edit" tooltip="Edit Worfklow" touch={true}/>
           <IconButton iconClassName="fa fa-remove" tooltip="Remove Workflow" touch={true}/>

@@ -17,7 +17,7 @@ import Dashboard from '../Dashboard';
   * The react router will search for a route named 'paper' and will recursively render its
   * handler and its parent handler like so: Paper > Components > Master
   */
-let appRoutes = (
+const appRoutes = (
   <Route name="root" path="/" handler={App}>
     <Route name="dash" handler={Dashboard} />
     <Route name="workflows" handler={Workflows} />

@@ -5,7 +5,7 @@ import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-u
 import { //MenuItem,
   LeftNav } from 'material-ui';
 
-var menuItems = [
+const menuItems = [
   { route: 'dash',
     text: 'Dashboard' },
   { route: 'nodes',
