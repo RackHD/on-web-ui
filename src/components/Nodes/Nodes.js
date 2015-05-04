@@ -12,22 +12,19 @@ import {
   } from 'material-ui';
 
 import FormatHelpers from '../mixins/FormatHelpers'; // eslint-disable-line no-unused-vars
-import NodeActions from '../../actions/NodeActions';
+import NodesActions from '../../actions/NodesActions';
+// import NodeActions from '../../actions/NodeActions';
 import './Nodes.less';
 
 @mixin.decorate(FormatHelpers)
 class Nodes extends Component {
-
-  // static propTypes = {
-  //   body: PropTypes.string.isRequired
-  // };
 
   state = {
     nodes: null
   };
 
   componentDidMount() {
-    NodeActions.requestNodes()
+    NodesActions.getNodes()
       .then(nodes => this.setState({nodes: nodes}))
       .catch(err => console.error(err));
   }
@@ -36,7 +33,7 @@ class Nodes extends Component {
     var nodes = <p>No nodes</p>;
     if (this.state.nodes) {
       nodes = this.state.nodes.map(node => ({
-        ID: this.shortId(node.id),
+        ID: <a href={'#/nodes/' + node.id}>{this.shortId(node.id)}</a>,
         Name: node.name,
         Created: this.fromNow(node.createdAt),
         Updated: this.fromNow(node.updatedAt),

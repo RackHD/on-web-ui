@@ -30,6 +30,6 @@ new Promise((resolve) => {
       routes: appRoutes,
       scrollBehavior: Router.ScrollToTopBehavior
     }).
-    run(Handler => React.render(<Handler/>, document.body));
+    run(Handler => React.render(<Handler />, document.body));
 
 }).catch(err => console.error(err));

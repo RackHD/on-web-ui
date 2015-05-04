@@ -1,13 +1,14 @@
 'use strict';
 
 import React from 'react'; // eslint-disable-line no-unused-vars
-import { Route, // Redirect,
-         DefaultRoute } from 'react-router';
+import { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
 
 import App from './App';
+import Node from '../Node';
 import Nodes from '../Nodes';
 import Workflows from '../Workflows';
 import Dashboard from '../Dashboard';
+import NotFound from '../NotFound';
 
 /** Routes: https://github.com/rackt/react-router/blob/master/docs/api/components/Route.md
   *
@@ -19,23 +20,14 @@ import Dashboard from '../Dashboard';
   */
 const appRoutes = (
   <Route name="root" path="/" handler={App}>
+    <DefaultRoute handler={Dashboard}/>
     <Route name="dash" handler={Dashboard} />
     <Route name="workflows" handler={Workflows} />
     <Route name="nodes" handler={Nodes} />
-    <DefaultRoute handler={Dashboard}/>
+    <Route name="node" path="/nodes/:nodeId" handler={Node} />
+    <NotFoundRoute handler={NotFound}/>
+    <Redirect from="dashboard" to="dash" />
   </Route>
 );
-
-// <Route name="customization" handler={Customization}>
-//   <Route name="colors" handler={Colors} />
-//   <Route name="themes" handler={Themes} />
-//   <Route name="inline-styles" handler={InlineStyles} />
-//   <Redirect from="/customization" to="themes" />
-// </Route>
-//
-// <Route name="components" handler={Components}>
-//   <Route name="appbar" handler={AppBar} />
-//   <Route name="buttons" handler={Buttons} />
-// </Route>
 
 export default appRoutes;
