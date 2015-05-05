@@ -16,3 +16,18 @@ a:hover { text-decoration: none; }
 .disabled textarea {
   background: #ccc;
 }
+
+// NOTE: griddle sets the background color for td elements to white inline.
+.griddle tbody tr.standard-row:nth-child(odd) td {
+  background: #eee !important;
+}
+
+.griddle tbody tr.standard-row {
+  border-top: 1px solid #ccc !important;
+  border-bottom: 1px solid #ccc !important;
+}
+
+.griddle tbody tr.standard-row td {
+  border-left: 1px solid #ccc !important;
+  border-right: 1px solid #ccc !important;
+}
