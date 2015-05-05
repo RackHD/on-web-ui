@@ -4,15 +4,16 @@ import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 
 import Nodes from '../Nodes';
 import Workflows from '../Workflows';
+import Breadcrumbs from '../Breadcrumbs';
 
 import './Dashboard.less';
 
-class Dashboard extends Component {
+export default class Dashboard extends Component {
 
   render() {
     return (
       <div className="Dashboard">
-        <div className="breadcrumbs">Dashboard</div>
+        <Breadcrumbs>Dashboard</Breadcrumbs>
         <div className="container">
           <div className="row">
             <div className="one-half column">
@@ -28,5 +29,3 @@ class Dashboard extends Component {
   }
 
 }
-
-export default Dashboard;

@@ -8,36 +8,36 @@ import mixin from 'react-mixin'; // eslint-disable-line no-unused-vars
 
 import Breadcrumbs from '../Breadcrumbs';
 import FormatHelpers from '../mixins/FormatHelpers'; // eslint-disable-line no-unused-vars
-import NodeActions from '../../actions/NodeActions';
-import EditNode from './EditNode';
-import CreateNode from './CreateNode';
-import './Node.less';
+import WorkflowActions from '../../actions/WorkflowActions';
+import EditWorkflow from './EditWorkflow';
+import CreateWorkflow from './CreateWorkflow';
+import './Workflow.less';
 
-export { CreateNode, EditNode };
+export { CreateWorkflow, EditWorkflow };
 
 @mixin.decorate(FormatHelpers)
-export default class Node extends Component {
+export default class Workflow extends Component {
 
   state = {
-    node: null
+    workflow: null
   };
 
   componentDidMount() {
-    NodeActions.getNode(this.props.params.nodeId)
-      .then(node => this.setState({node: node}))
+    WorkflowActions.getWorkflow(this.props.params.workflowId)
+      .then(workflow => this.setState({workflow: workflow}))
       .catch(err => console.error(err));
   }
 
   render() {
     return (
-      <div className="Node">
+      <div className="Workflow">
         <Breadcrumbs>
           <a href="#/dash">Dashboard</a>
           &nbsp;/&nbsp;
-          <a href="#/nodes">Nodes</a>
-          {this.state.node ? ' / ' + this.state.node.id : ''}
+          <a href="#/workflows">Workflows</a>
+          {this.state.workflow ? ' / ' + this.state.workflow.id : ''}
         </Breadcrumbs>
-        <EditNode nodeRef={this.state.node} />
+        <EditWorkflow workflowRef={this.state.workflow} />
       </div>
     );
   }

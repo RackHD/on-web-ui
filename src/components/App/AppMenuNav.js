@@ -22,7 +22,7 @@ const menuItems = [
   //   payload: 'https://www.google.com/design/spec/material-design/introduction.html', text: 'Material Design' }
 ];
 
-class AppMenuNav extends Component {
+export default class AppMenuNav extends Component {
 
   constructor() {
     super();
@@ -78,5 +78,3 @@ class AppMenuNav extends Component {
 AppMenuNav.contextTypes = {
   router: PropTypes.func
 };
-
-export default AppMenuNav;
