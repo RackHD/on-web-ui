@@ -4,7 +4,7 @@ import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 
 import './NotFound.less';
 
-class NotFound extends Component {
+export default class NotFound extends Component {
 
   render() {
     return (
@@ -15,5 +15,3 @@ class NotFound extends Component {
   }
 
 }
-
-export default NotFound;
