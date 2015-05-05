@@ -1,6 +1,6 @@
 'use strict';
 
-import API from '../core/API';
+import { API } from '../config';
 import http from 'superagent';
 
 export default {
