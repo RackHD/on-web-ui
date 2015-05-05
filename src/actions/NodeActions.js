@@ -31,7 +31,7 @@ export default {
 
   deleteNode(id) {
     return new Promise(function (resolve, reject) {
-      http.delete(API + 'nodes/' + id)
+      http.del(API + 'nodes/' + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

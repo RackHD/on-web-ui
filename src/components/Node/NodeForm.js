@@ -36,7 +36,11 @@ class Node extends Component {
   }
 
   deleteNode() {
-    NodeActions.deleteNode(this.props.node.id)
+    if (!window.confirm('Are you sure want to delete node: ' + this.state.node.id)) { // eslint-disable-line no-alert
+      return;
+    }
+    this.disable();
+    NodeActions.deleteNode(this.state.node.id)
       .then(out => {
         console.log(out);
         window.location = '/#/nodes';

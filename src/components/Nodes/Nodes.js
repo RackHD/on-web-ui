@@ -13,7 +13,7 @@ import {
 
 import FormatHelpers from '../mixins/FormatHelpers'; // eslint-disable-line no-unused-vars
 import NodesActions from '../../actions/NodesActions';
-// import NodeActions from '../../actions/NodeActions';
+import NodeActions from '../../actions/NodeActions';
 import './Nodes.less';
 
 @mixin.decorate(FormatHelpers)
@@ -24,8 +24,24 @@ class Nodes extends Component {
   };
 
   componentDidMount() {
+    this.getNodes();
+  }
+
+  getNodes() {
     NodesActions.getNodes()
       .then(nodes => this.setState({nodes: nodes}))
+      .catch(err => console.error(err));
+  }
+
+  deleteNode(id) {
+    if (!window.confirm('Are you sure want to delete node: ' + id)) { // eslint-disable-line no-alert
+      return;
+    }
+    NodeActions.deleteNode(id)
+      .then(out => {
+        console.log(out);
+        this.getNodes();
+      })
       .catch(err => console.error(err));
   }
 
@@ -41,7 +57,7 @@ class Nodes extends Component {
           <a href={'#/nodes/' + node.id}>
             <IconButton iconClassName="fa fa-edit" tooltip="Edit Worfklow" touch={true}/>
           </a>
-          <IconButton iconClassName="fa fa-remove" tooltip="Remove Workflow" touch={true}/>
+          <IconButton iconClassName="fa fa-remove" tooltip="Remove Workflow" touch={true} onClick={this.deleteNode.bind(this, node.id)}/>
         </div>)
       }));
       nodes = <Griddle results={nodes} resultsPerPage={15} />;
