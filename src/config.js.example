@@ -1,0 +1,3 @@
+'use strict';
+
+export API 'http://localhost/api/1.1/';

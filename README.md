@@ -38,8 +38,15 @@ $ git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
 $ cd on-web-ui
 $ npm install -g gulp           # Install Gulp task runner globally
 $ npm install                   # Install Node.js components listed in ./package.json
+$ cp src/config.js.example src/config.js
 $ gulp                          # Run gulp to build and start browser-sync
 ```
+
+#### Configuration
+
+By default the application makes api calls to: `http://localhost/api/1.1`
+This can be configured in `src/config.js` after it is created from the example
+config.
 
 ### How to Build
 
