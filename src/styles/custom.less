@@ -2,10 +2,6 @@ body {
   background: #444;
 }
 
-.breadcrumbs {
-  margin: 10px 20px;
-}
-
 a { color: #46f; }
 a:hover { text-decoration: none; }
 
@@ -13,6 +9,23 @@ a:hover { text-decoration: none; }
   .button { margin-left: 0.5em; margin-right: 0.5em; }
 }
 
+// a, a *, button, button * { cursor: pointer !important; }
+
 .disabled textarea {
   background: #ccc;
+}
+
+// NOTE: griddle sets the background color for td elements to white inline.
+.griddle tbody tr.standard-row:nth-child(odd) td {
+  background: #eee !important;
+}
+
+.griddle tbody tr.standard-row {
+  border-top: 1px solid #ccc !important;
+  border-bottom: 1px solid #ccc !important;
+}
+
+.griddle tbody tr.standard-row td {
+  border-left: 1px solid #ccc !important;
+  border-right: 1px solid #ccc !important;
 }

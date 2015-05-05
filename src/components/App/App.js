@@ -10,7 +10,7 @@ import AppMenuNav from './AppMenuNav';
 
 import './App.less';
 
-class App extends Component {
+export default class App extends Component {
   state = {
     // Default size for server-side rendering
     viewport: {width: 1366, height: 768}
@@ -91,5 +91,3 @@ class App extends Component {
   }
 
 }
-
-export default App;

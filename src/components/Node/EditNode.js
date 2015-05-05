@@ -14,7 +14,7 @@ import NodeActions from '../../actions/NodeActions';
 import JsonEditor from '../JsonEditor';
 
 @mixin.decorate(FormatHelpers)
-class Node extends Component {
+export default class EditNode extends Component {
 
   state = {
     node: null,
@@ -36,14 +36,14 @@ class Node extends Component {
   }
 
   deleteNode() {
-    if (!window.confirm('Are you sure want to delete node: ' + this.state.node.id)) { // eslint-disable-line no-alert
+    if (!window.confirm('Are you sure want to delete: ' + this.state.node.id)) { // eslint-disable-line no-alert
       return;
     }
     this.disable();
     NodeActions.deleteNode(this.state.node.id)
       .then(out => {
         console.log(out);
-        window.location = '/#/nodes';
+        this.back();
       })
       .catch(err => console.error(err));
   }
@@ -56,6 +56,12 @@ class Node extends Component {
         this.enable();
       })
       .catch(err => console.error(err));
+  }
+
+  cloneNode() {}// TODO
+
+  back() {
+    window.history.back();
   }
 
   // TODO: make mixin for this
@@ -85,12 +91,12 @@ class Node extends Component {
 
   render() {
     if (!this.state.node) {
-      this.state.node = this.props.isNew ? {} : this.props.nodeRef || null;
+      this.state.node = this.props.nodeRef || null;
     }
     var nameLink = this.linkState('node', 'name'),
         profileLink = this.linkState('node', 'profile');
     return (
-      <div className="NodeForm container">
+      <div className="EditNode container">
         <div className="row">
           <div className="one-half column">
             <TextField valueLink={nameLink} hintText="Name" floatingLabelText="Name" disabled={this.state.disabled} />
@@ -106,7 +112,9 @@ class Node extends Component {
                     ref="jsonEditor" />
         <div className="buttons container">
           <FlatButton className="button" label="Delete" onClick={this.deleteNode.bind(this)} disabled={this.state.disabled} />
+          <FlatButton className="button" label="Clone" onClick={this.cloneNode.bind(this)} disabled={this.state.disabled} />
           <div className="u-right">
+            <FlatButton className="button" label="Cancel" onClick={this.back} disabled={this.state.disabled} />
             <RaisedButton className="button" label="Reset" onClick={this.resetNode.bind(this)} disabled={this.state.disabled} />
             <RaisedButton className="button" label="Save" primary={true} onClick={this.saveNode.bind(this)} disabled={this.state.disabled} />
           </div>
@@ -116,5 +124,3 @@ class Node extends Component {
   }
 
 }
-
-export default Node;

@@ -4,8 +4,9 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
 
 import App from './App';
-import Node from '../Node';
+import Node, { CreateNode } from '../Node';
 import Nodes from '../Nodes';
+import Workflow, { CreateWorkflow } from '../Workflow';
 import Workflows from '../Workflows';
 import Dashboard from '../Dashboard';
 import NotFound from '../NotFound';
@@ -23,7 +24,10 @@ const appRoutes = (
     <DefaultRoute handler={Dashboard}/>
     <Route name="dash" handler={Dashboard} />
     <Route name="workflows" handler={Workflows} />
+    <Route name="newWorkflow" path="/workflows/new" handler={CreateWorkflow} />
+    <Route name="workflow" path="/workflows/:workflowId" handler={Workflow} />
     <Route name="nodes" handler={Nodes} />
+    <Route name="newNode" path="/nodes/new" handler={CreateNode} />
     <Route name="node" path="/nodes/:nodeId" handler={Node} />
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dashboard" to="dash" />
