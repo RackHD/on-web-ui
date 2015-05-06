@@ -14,9 +14,7 @@ export default class Breadcrumbs extends Component {
     this.path = [];
     this.props.path.forEach(route => {
       if (typeof route === 'string') { route = {label: route}; }
-      var prefix = route.prefix || '#/',
-          label = route.label,
-          href = route.href;
+      var { prefix = '#/', label, href } = route;
       if (href) {
         href = prefix + href;
         route = <a href={href}>{label}</a>;
