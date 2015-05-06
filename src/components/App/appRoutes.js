@@ -19,7 +19,7 @@ import NotFound from '../NotFound';
   * The react router will search for a route named 'paper' and will recursively render its
   * handler and its parent handler like so: Paper > Components > Master
   */
-const appRoutes = (
+export default (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={Dashboard}/>
     <Route name="dash" handler={Dashboard} />
@@ -33,5 +33,3 @@ const appRoutes = (
     <Redirect from="dashboard" to="dash" />
   </Route>
 );
-
-export default appRoutes;

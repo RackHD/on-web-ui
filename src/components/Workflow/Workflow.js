@@ -1,21 +1,20 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
-import mixin from 'react-mixin'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import mixin from 'react-mixin';
+import PageHelpers from '../mixins/PageHelpers';
+/* eslint-enable no-unused-vars */
 
-// import {
-//   } from 'material-ui';
-
-import Breadcrumbs from '../Breadcrumbs';
-import FormatHelpers from '../mixins/FormatHelpers'; // eslint-disable-line no-unused-vars
-import WorkflowActions from '../../actions/WorkflowActions';
 import EditWorkflow from './EditWorkflow';
 import CreateWorkflow from './CreateWorkflow';
-import './Workflow.less';
-
 export { CreateWorkflow, EditWorkflow };
 
-@mixin.decorate(FormatHelpers)
+import {} from 'material-ui';
+import WorkflowActions from '../../actions/WorkflowActions';
+import './Workflow.less';
+
+@mixin.decorate(PageHelpers)
 export default class Workflow extends Component {
 
   state = {
@@ -23,20 +22,19 @@ export default class Workflow extends Component {
   };
 
   componentDidMount() {
-    WorkflowActions.getWorkflow(this.props.params.workflowId)
-      .then(workflow => this.setState({workflow: workflow}))
+    WorkflowActions.getWorkflowTemplate(this.props.params.workflowId)
+      .then(workflows => this.setState({workflow: workflows[0]}))
       .catch(err => console.error(err));
   }
 
   render() {
     return (
       <div className="Workflow">
-        <Breadcrumbs>
-          <a href="#/dash">Dashboard</a>
-          &nbsp;/&nbsp;
-          <a href="#/workflows">Workflows</a>
-          {this.state.workflow ? ' / ' + this.state.workflow.id : ''}
-        </Breadcrumbs>
+        {this.renderBreadcrumbs(
+          {href: 'dash', label: 'Dashboard'},
+          {href: 'workflows', label: 'Workflows'},
+          this.props.params.workflowId
+        )}
         <EditWorkflow workflowRef={this.state.workflow} />
       </div>
     );

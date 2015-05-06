@@ -3,23 +3,19 @@
 import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 import { RouteHandler } from 'react-router';
 import { canUseDOM } from 'react/lib/ExecutionEnvironment';
-
 import { AppCanvas, AppBar } from 'material-ui';
 
 import AppMenuNav from './AppMenuNav';
-
 import './App.less';
 
 export default class App extends Component {
+
   state = {
-    // Default size for server-side rendering
+    // NOTE: Default size for server-side rendering
     viewport: {width: 1366, height: 768}
   }
 
-  constructor() {
-    super();
-    this._onMenuIconButtonTouchTap = this.onMenuIconButtonTouchTap.bind(this);
-  }
+  _onMenuIconButtonTouchTap = this.onMenuIconButtonTouchTap.bind(this);
 
   updateViewport() {
     if (!canUseDOM) { return; }
@@ -65,14 +61,12 @@ export default class App extends Component {
 
     return (
       <AppCanvas className="App" predefinedLayout={1}>
-
         <AppBar className="header mui-dark-theme"
                 onMenuIconButtonTouchTap={this._onMenuIconButtonTouchTap}
                 title={title}
                 zDepth={0}
                 iconElementRight={rightElement}
                 />
-
         <AppMenuNav ref="menuNav" />
 
         <div className="content">
@@ -85,7 +79,6 @@ export default class App extends Component {
             <span style={{float: 'right'}}>{'Viewport: ' + viewport.width + 'x' + viewport.height}</span>
           </div>
         </div>
-
      </AppCanvas>
     );
   }

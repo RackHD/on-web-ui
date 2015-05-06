@@ -55,8 +55,7 @@ gulp.task('assets', function() {
 // CSS style sheets
 gulp.task('styles', function() {
   src.styles = 'src/styles/**/*.{css,less}';
-  // TODO: replace with material-ui
-  return gulp.src('src/styles/material-ui.less')
+  return gulp.src('src/styles/main.less')
     .pipe($.plumber())
     .pipe($.less({
       sourceMap: !RELEASE,
@@ -161,7 +160,7 @@ gulp.task('sync', ['serve'], function(cb) {
     logPrefix: '',
     notify: false,
     // Run as an https by setting 'https: true'
-    // Note: this uses an unsigned certificate which on first access
+    // NOTE: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     https: false,
     // Informs browser-sync to proxy our Express app which would run

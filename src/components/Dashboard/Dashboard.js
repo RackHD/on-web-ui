@@ -1,19 +1,22 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import mixin from 'react-mixin';
+import PageHelpers from '../mixins/PageHelpers';
+/* eslint-enable no-unused-vars */
 
 import Nodes from '../Nodes';
 import Workflows from '../Workflows';
-import Breadcrumbs from '../Breadcrumbs';
-
 import './Dashboard.less';
 
+@mixin.decorate(PageHelpers)
 export default class Dashboard extends Component {
 
   render() {
     return (
       <div className="Dashboard">
-        <Breadcrumbs>Dashboard</Breadcrumbs>
+        {this.renderBreadcrumbs(['Dashboard'])}
         <div className="container">
           <div className="row">
             <div className="one-half column">

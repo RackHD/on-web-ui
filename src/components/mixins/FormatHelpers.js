@@ -10,9 +10,12 @@ export default {
     return moment(time).fromNow();
   },
 
-  shortId: (id) => {
-    return id.substring(0, 3) + ellipsis +
-           id.substring(id.length - 3, id.length);
+  shortId: (id) => id.substring(id.length - 6, id.length),
+
+  truncate: (val, size) => {
+    size = size / 2;
+    return val.substring(0, size) + ellipsis +
+           val.substring(val.length - size, val.length);
   }
 
 };

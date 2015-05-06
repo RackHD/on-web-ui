@@ -16,6 +16,17 @@ export default {
     });
   },
 
+  getWorkflowsLibrary() {
+    return new Promise(function (resolve, reject) {
+      http.get(API + 'workflows/library')
+        .accept('json')
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body || res.text);
+        });
+    });
+  },
+
   postWorkflows(body) {
     return new Promise(function (resolve, reject) {
       http.post(API + 'workflows')
