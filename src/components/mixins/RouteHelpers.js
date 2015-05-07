@@ -5,9 +5,7 @@ const delay = 100;
 
 export default {
 
-  routePath: function (...path) {
-    return '#/' + path.join('/');
-  },
+  routePath: (...path) => '#/' + path.join('/'),
 
   routeTo: function (...path) {
     setTimeout(() => window.location = this.routePath(...path), delay);

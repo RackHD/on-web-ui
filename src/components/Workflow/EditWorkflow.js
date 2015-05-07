@@ -104,8 +104,8 @@ export default class EditWorkflow extends Component {
   resetWorkflow() {
     this.disable();
     WorkflowActions.getWorkflowTemplate(this.state.workflow.friendlyName)
-      .then(workflows => {
-        this.setState({workflow: workflows[0]});
+      .then(workflow => {
+        this.setState({workflow: workflow});
         this.enable();
       })
       .catch(err => console.error(err));

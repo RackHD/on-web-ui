@@ -11,7 +11,7 @@ export default {
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          resolve(res && res.body);
         });
     });
   },
@@ -24,7 +24,7 @@ export default {
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          resolve(res && res.body);
         });
     });
   }

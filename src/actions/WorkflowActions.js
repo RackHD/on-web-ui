@@ -11,7 +11,7 @@ export default {
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          resolve(res && res.body);
         });
     });
   },
@@ -22,7 +22,8 @@ export default {
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          // TODO: merge together similar templates.
+          resolve(res && res.body && res.body[0]);
         });
     });
   },
@@ -35,7 +36,7 @@ export default {
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          resolve(res && res.body);
         });
     });
   },
@@ -46,7 +47,7 @@ export default {
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          resolve(res && res.body);
         });
     });
   }

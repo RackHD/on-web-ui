@@ -23,7 +23,7 @@ export default class Workflow extends Component {
 
   componentDidMount() {
     WorkflowActions.getWorkflowTemplate(this.props.params.workflowId)
-      .then(workflows => this.setState({workflow: workflows[0]}))
+      .then(workflow => this.setState({workflow: workflow}))
       .catch(err => console.error(err));
   }
 

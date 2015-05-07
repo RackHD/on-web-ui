@@ -11,7 +11,7 @@ export default {
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          resolve(res && res.body);
         });
     });
   },
@@ -22,7 +22,17 @@ export default {
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          var ids = new Set(),
+              body = res && res.body,
+              list = [];
+          if (body) {
+            for (var item of body) {
+              if (ids.has(item.injectableName)) { continue; }
+              ids.add(item.injectableName);
+              list.push(item);
+            }
+          }
+          resolve(list);
         });
     });
   },
@@ -35,7 +45,7 @@ export default {
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body || res.text);
+          resolve(res && res.body);
         });
     });
   }

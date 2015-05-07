@@ -16,7 +16,7 @@ export default class Dashboard extends Component {
   render() {
     return (
       <div className="Dashboard">
-        {this.renderBreadcrumbs(['Dashboard'])}
+        {this.renderBreadcrumbs('Dashboard')}
         <div className="container">
           <div className="row">
             <div className="one-half column">

@@ -40,9 +40,7 @@ export default {
 
   renderGrid: function (props, mapper, empty='No results.') {
     if (!props || !props.results || !props.results.length) {
-      return (
-        <div className="empty center">{empty}</div>
-      );
+      return <div className="empty center">{empty}</div>;
     }
     if (mapper) {
       props.results = props.results.map(mapper);
