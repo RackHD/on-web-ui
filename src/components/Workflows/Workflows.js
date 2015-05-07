@@ -36,7 +36,7 @@ export default class Workflows extends Component {
       <div className="Workflows">
         {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Workflows')}
         {this.renderGridToolbar({
-          label: <a href="#/workflow">Workflows Library</a>,
+          label: <a href="#/workflows">Workflows Library</a>,
           count: this.state.workflows && this.state.workflows.length || 0,
           createButton:
             <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />

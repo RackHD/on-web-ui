@@ -20,32 +20,34 @@
   padding: 0 0;
   box-sizing: border-box; }
 
+@import "utils.less";
+
 /* For devices larger than 550px */
 @media (min-width: 550px) {
   .column,
-  .columns { margin-left: 0.5%; }
+  .columns { margin-left: @default-gap; }
 
   .column:first-child,
   .columns:first-child { margin-left: 0; }
 
   .one.column,
-  .one.columns                    { width: (100% - (0.5% * 11))   / (12 / 1); }
-  .two.columns                    { width: (100% - (0.5% * 5))    / (12 / 2); }
-  .three.columns                  { width: (100% - (0.5% * 3))    / (12 / 3); }
+  .one.columns                    { .column-width(); }
+  .two.columns                    { .column-width(2); }
+  .three.columns                  { .column-width(3); }
 
   .one-third.column,
-  .four.columns                   { width: (100% - (0.5% * 2))    / (12 / 4); }
-  .five.columns                   { width: (100% - (0.5% * 1.4))  / (12 / 5); }
+  .four.columns                   { .column-width(4); }
+  .five.columns                   { .column-width(5); }
 
   .one-half.column,
-  .six.columns                    { width: (100% - (0.5% * 1))    / (12 / 6); }
-  .seven.columns                  { width: (100% - (0.5% * 0.71)) / (12 / 7); }
+  .six.columns                    { .column-width(6); }
+  .seven.columns                  { .column-width(7); }
 
   .two-thirds.column,
-  .eight.columns                  { width: (100% - (0.5% * 0.5))    / (12 / 8); }
-  .nine.columns                   { width: (100% - (0.5% * 0.3333)) / (12 / 9); }
-  .ten.columns                    { width: (100% - (0.5% * 0.2))    / (12 / 10); }
-  .eleven.columns                 { width: (100% - (0.5% * 0.0909)) / (12 / 11); }
+  .eight.columns                  { .column-width(8); }
+  .nine.columns                   { .column-width(9); }
+  .ten.columns                    { .column-width(10); }
+  .eleven.columns                 { .column-width(11); }
 
   .twelve.columns                 { }
 }

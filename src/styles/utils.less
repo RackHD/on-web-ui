@@ -1,0 +1,12 @@
+@default-width: 100%;
+@default-cols: 12;
+@default-gap: 1%;
+
+.column-width(@size: 1,
+              @gap: @default-gap,
+              @cols: @default-cols,
+              @width: @default-width) {
+  @widthRatio: (@cols / @size);
+  @gapScale: @widthRatio - 1;
+  width: ((@width - (@gap * @gapScale)) / @widthRatio)
+}
