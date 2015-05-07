@@ -3,7 +3,6 @@
 import 'babel/polyfill';
 
 import appRoutes from './components/App/appRoutes';
-import FastClick from 'fastclick';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import React from 'react';
 import Router from 'react-router';
@@ -22,8 +21,6 @@ new Promise((resolve) => {
   else { window.attachEvent('onload', resolve); }
 
 }).then(() => {
-
-  FastClick.attach(document.body);
 
   Router.
     create({
