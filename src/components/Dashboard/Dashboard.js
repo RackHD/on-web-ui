@@ -19,6 +19,26 @@ export default class Dashboard extends Component {
         {this.renderBreadcrumbs('Dashboard')}
         <div className="container">
           <div className="row">
+            <div className="two columns" style={{background: '#ccc'}}>
+              A
+            </div>
+            <div className="two columns" style={{background: '#ccc'}}>
+              B
+            </div>
+            <div className="two columns" style={{background: '#ccc'}}>
+              C
+            </div>
+            <div className="two columns" style={{background: '#ccc'}}>
+              D
+            </div>
+            <div className="two columns" style={{background: '#ccc'}}>
+              E
+            </div>
+            <div className="two columns" style={{background: '#ccc'}}>
+              F
+            </div>
+          </div>
+          <div className="row">
             <div className="three columns" style={{background: '#ccc'}}>
               A
             </div>

@@ -51,29 +51,31 @@ export default class App extends Component {
     var viewport = this.state && this.state.viewport || {},
         title = 'OnRack Web UI';
 
-    var rightElement = (
-      <img src={require('./logo-small.png')}
-           className="right-icon"
-           width="38"
-           height="38"
-           alt="React" />
+    var emcTab = (
+      <a className="emc-tab right"
+         href="http://emc.com">
+        <img className="emc-logo"
+             src="WhiteLogoLarge.png"
+             alt="EMC" />
+      </a>
     );
 
     return (
       <AppCanvas className="App" predefinedLayout={1}>
-        <AppBar className="header mui-dark-theme"
+        <AppBar className="header"
                 onMenuIconButtonTouchTap={this._onMenuIconButtonTouchTap}
                 title={title}
                 zDepth={0}
-                iconElementRight={rightElement}
+                iconElementRight={emcTab}
                 />
+
         <AppMenuNav ref="menuNav" />
 
         <div className="content">
           <RouteHandler />
         </div>
 
-        <div className="footer full-width-section mui-dark-theme">
+        <div className="footer">
           <div>
             <span>© EMC</span>
             <span style={{float: 'right'}}>{'Viewport: ' + viewport.width + 'x' + viewport.height}</span>

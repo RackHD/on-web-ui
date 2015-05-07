@@ -1,28 +1,33 @@
+@import "../../styles/colors.less";
+
 .App {
   .mui-app-bar {
-    background: rgb(37, 128, 212);
+    background: @emc-grey-dark;
+    color: @emc-off-white;
   }
 
-  .header {
-    .right-icon {
-      float: right;
-      margin-top: 15px;
-    }
-  }
+  .header {}
 
   .content {
+    color: black;
     background: white;
     padding: 74px 10px 10px 10px;
   }
 
   .footer {
-    background: #444;
+    background: @emc-grey-foot;
     padding: 10px;
-    color: white;
+    color: @emc-off-white;
   }
 }
 
 .AppMenuNav {
+  color: @emc-off-white;
+
+  .mui-menu, .mui-left-nav-menu {
+    background-color: black !important;
+  }
+
   .nav-logo {
     padding: 10px 0;
     font-weight: bold;
