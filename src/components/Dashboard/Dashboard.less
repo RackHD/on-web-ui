@@ -1,5 +1,9 @@
 .Dashboard .container {
   max-width: 100%;
+
+  .row:not(:first-child) {
+    margin-top: 10px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -7,6 +11,8 @@
     .one-half.column {
       width: 100%;
       margin-left: 0;
+    }
+    .one-half.column:not(:first-child) {
       margin-top: 5px;
     }
   }

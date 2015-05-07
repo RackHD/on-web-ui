@@ -1,12 +1,13 @@
 @default-width: 100%;
-@default-cols: 12;
-@default-gap: 1%;
+@default-columns: 12;
+@default-gutter: 1%;
 
 .column-width(@size: 1,
-              @gap: @default-gap,
-              @cols: @default-cols,
+              @gutter: @default-gutter,
+              @columns: @default-columns,
               @width: @default-width) {
-  @widthRatio: (@cols / @size);
-  @gapScale: @widthRatio - 1;
-  width: ((@width - (@gap * @gapScale)) / @widthRatio)
+  @widthRatio: @columns / @size;
+  @gutterScale: (1 / (@size / @columns)) - 1;
+  @availableWidth: @width - (@gutter * @gutterScale);
+  width: (@availableWidth / @widthRatio)
 }
