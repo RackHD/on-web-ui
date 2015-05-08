@@ -15,7 +15,7 @@ import {
     FlatButton,
     RaisedButton
   } from 'material-ui';
-import WorkflowActions from '../../actions/WorkflowActions';
+import WorkflowAPI from '../../api/WorkflowAPI';
 import JsonEditor from '../JsonEditor';
 
 @mixin.decorate(DialogHelpers)
@@ -103,7 +103,7 @@ export default class EditWorkflow extends Component {
 
   resetWorkflow() {
     this.disable();
-    WorkflowActions.getWorkflowTemplate(this.state.workflow.friendlyName)
+    WorkflowAPI.getWorkflow(this.state.workflow.id)
       .then(workflow => {
         this.setState({workflow: workflow});
         this.enable();

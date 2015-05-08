@@ -2,24 +2,27 @@
 
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 
-import { //MenuItem,
-  LeftNav } from 'material-ui';
+import { MenuItem, LeftNav } from 'material-ui';
 
 const menuItems = [
+  { route: '/',
+    text: 'Home' },
   { route: 'dash',
     text: 'Dashboard' },
+  { type: MenuItem.Types.SUBHEADER,
+    text: 'Objects' },
   { route: 'nodes',
     text: 'Nodes' },
   { route: 'workflows',
-    text: 'Workflows' }//,
-  // { type: MenuItem.Types.SUBHEADER,
-  //   text: 'Resources' },
-  // { type: MenuItem.Types.LINK,
-  //   payload: 'https://github.com/callemall/material-ui', text: 'GitHub' },
-  // { type: MenuItem.Types.LINK,
-  //   payload: 'http://facebook.github.io/react', text: 'React' },
-  // { type: MenuItem.Types.LINK,
-  //   payload: 'https://www.google.com/design/spec/material-design/introduction.html', text: 'Material Design' }
+    text: 'Workflows' },
+  { type: MenuItem.Types.SUBHEADER,
+    text: 'Tools' },
+  { route: 'editor',
+    text: 'Workflow Editor' },
+  { type: MenuItem.Types.SUBHEADER,
+    text: 'Other' },
+  { type: MenuItem.Types.LINK,
+    payload: 'http://emc.com', text: 'EMC' }
 ];
 
 export default class AppMenuNav extends Component {

@@ -48,6 +48,12 @@ By default the application makes api calls to: `http://localhost/api/1.1`
 This can be configured in `src/config.js` after it is created from the example
 config.
 
+#### Mock API
+
+```shell
+$ sudo node ./mock_api.js       # Runs mock api on port 80
+```
+
 ### How to Build
 
 ```shell

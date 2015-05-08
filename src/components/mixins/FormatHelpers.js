@@ -10,7 +10,10 @@ export default {
     return moment(time).fromNow();
   },
 
-  shortId: (id) => id.substring(id.length - 6, id.length),
+  shortId: (id) =>
+    typeof id === 'string' ?
+      id.substring(id.length - 6, id.length) :
+      id,
 
   truncate: (val, size) => {
     size = size / 2;

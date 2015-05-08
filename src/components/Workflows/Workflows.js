@@ -14,8 +14,7 @@ import {
     IconButton,
     RaisedButton
   } from 'material-ui';
-import WorkflowsActions from '../../actions/WorkflowsActions';
-import WorkflowActions from '../../actions/WorkflowActions';
+import WorkflowAPI from '../../api/WorkflowAPI';
 import './Workflows.less';
 
 @mixin.decorate(DialogHelpers)
@@ -29,14 +28,14 @@ export default class Workflows extends Component {
     workflows: null
   }
 
-  componentDidMount() { this.getWorkflowsLibrary(); }
+  componentDidMount() { this.getWorkflows(); }
 
   render() {
     return (
       <div className="Workflows">
         {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Workflows')}
         {this.renderGridToolbar({
-          label: <a href="#/workflows">Workflows Library</a>,
+          label: <a href="#/workflows">Workflows</a>,
           count: this.state.workflows && this.state.workflows.length || 0,
           createButton:
             <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
@@ -48,9 +47,8 @@ export default class Workflows extends Component {
             resultsPerPage: 10
           }, workflow => (
             {
-              'Friendly Name':
-                <a href={this.routePath('workflows', workflow.injectableName)}>{workflow.friendlyName}</a>,
-              'Injectable Name': workflow.injectableName,
+              ID: <a href={this.routePath('workflows', workflow.id)}>{workflow.id}</a>,
+              Name: workflow.name,
               Actions: [
                 <IconButton iconClassName="fa fa-edit"
                             tooltip="Edit Workflow"
@@ -69,8 +67,8 @@ export default class Workflows extends Component {
     );
   }
 
-  getWorkflowsLibrary() {
-    WorkflowsActions.getWorkflowsLibrary()
+  getWorkflows() {
+    WorkflowAPI.getWorkflows()
       .then(workflows => this.setState({workflows: workflows}))
       .catch(err => console.error(err));
   }
@@ -83,8 +81,8 @@ export default class Workflows extends Component {
     this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
       if (!confirmed) { return; }
 
-      WorkflowActions.deleteWorkflow(id)
-        .then(() => this.getWorkflowsLibrary())
+      WorkflowAPI.deleteWorkflow(id)
+        .then(() => this.getWorkflows())
         .catch(err => console.error(err));
     });
   }

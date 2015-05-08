@@ -11,7 +11,7 @@ import CreateNode from './CreateNode';
 export { CreateNode, EditNode };
 
 import {} from 'material-ui';
-import NodeActions from '../../actions/NodeActions';
+import NodeAPI from '../../api/NodeAPI';
 import './Node.less';
 
 @mixin.decorate(PageHelpers)
@@ -22,7 +22,7 @@ export default class Node extends Component {
   };
 
   componentDidMount() {
-    NodeActions.getNode(this.props.params.nodeId)
+    NodeAPI.getNode(this.props.params.nodeId)
       .then(node => this.setState({node: node}))
       .catch(err => console.error(err));
   }

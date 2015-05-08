@@ -11,7 +11,7 @@ import CreateWorkflow from './CreateWorkflow';
 export { CreateWorkflow, EditWorkflow };
 
 import {} from 'material-ui';
-import WorkflowActions from '../../actions/WorkflowActions';
+import WorkflowAPI from '../../api/WorkflowAPI';
 import './Workflow.less';
 
 @mixin.decorate(PageHelpers)
@@ -22,7 +22,7 @@ export default class Workflow extends Component {
   };
 
   componentDidMount() {
-    WorkflowActions.getWorkflowTemplate(this.props.params.workflowId)
+    WorkflowAPI.getWorkflow(this.props.params.workflowId)
       .then(workflow => this.setState({workflow: workflow}))
       .catch(err => console.error(err));
   }

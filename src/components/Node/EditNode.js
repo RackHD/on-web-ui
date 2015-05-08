@@ -15,7 +15,7 @@ import {
     FlatButton,
     RaisedButton
   } from 'material-ui';
-import NodeActions from '../../actions/NodeActions';
+import NodeAPI from '../../api/NodeAPI';
 import JsonEditor from '../JsonEditor';
 
 @mixin.decorate(DialogHelpers)
@@ -93,7 +93,7 @@ export default class EditNode extends Component {
 
   saveNode() {
     this.disable();
-    NodeActions.patchNode(this.state.node.id, this.state.node)
+    NodeAPI.patchNode(this.state.node.id, this.state.node)
       .then(out => {
         console.log(out);
         this.resetNode();
@@ -106,7 +106,7 @@ export default class EditNode extends Component {
     this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
       if (!confirmed) { return; }
 
-      NodeActions.deleteNode(id)
+      NodeAPI.deleteNode(id)
         .then(() => this.routeBack())
         .catch(err => console.error(err));
     });
@@ -114,7 +114,7 @@ export default class EditNode extends Component {
 
   resetNode() {
     this.disable();
-    NodeActions.getNode(this.state.node.id)
+    NodeAPI.getNode(this.state.node.id)
       .then(node => {
         this.setState({node: node});
         this.enable();

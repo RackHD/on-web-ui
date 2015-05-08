@@ -9,7 +9,7 @@ export default class CreateNode extends Component {
   render() {
     return (
       <div className="CreateNode container">
-        Hello World
+        CreateNode, Hello World
       </div>
     );
   }

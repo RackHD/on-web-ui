@@ -9,7 +9,7 @@ export default class CreateWorkflow extends Component {
   render() {
     return (
       <div className="CreateWorkflow container">
-        Hello World
+        CreateWorkflow, Hello World
       </div>
     );
   }

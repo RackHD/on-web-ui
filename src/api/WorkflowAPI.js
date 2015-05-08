@@ -16,33 +16,47 @@ export default {
     });
   },
 
-  getWorkflowsLibrary() {
-    return new Promise(function (resolve, reject) {
-      http.get(API + 'workflows/library')
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          var ids = new Set(),
-              body = res && res.body,
-              list = [];
-          if (body) {
-            for (var item of body) {
-              if (ids.has(item.injectableName)) { continue; }
-              ids.add(item.injectableName);
-              list.push(item);
-            }
-          }
-          resolve(list);
-        });
-    });
-  },
-
   postWorkflows(body) {
     return new Promise(function (resolve, reject) {
       http.post(API + 'workflows')
         .accept('json')
         .type('json')
         .send(body)
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  },
+
+  getWorkflow(id) {
+    return new Promise(function (resolve, reject) {
+      http.get(API + 'workflows/' + id)
+        .accept('json')
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  },
+
+  patchWorkflow(id, body) {
+    return new Promise(function (resolve, reject) {
+      http.patch(API + 'workflows/' + id)
+        .accept('json')
+        .type('json')
+        .send(body)
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  },
+
+  deleteWorkflow(id) {
+    return new Promise(function (resolve, reject) {
+      http.del(API + 'workflows/' + id)
+        .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);

@@ -77,8 +77,8 @@ export default class App extends Component {
 
         <div className="footer">
           <div>
-            <span>© EMC</span>
-            <span style={{float: 'right'}}>{'Viewport: ' + viewport.width + 'x' + viewport.height}</span>
+            <span>© 2015 EMC<sup>2</sup></span>
+            <span className="right">{'Viewport: ' + viewport.width + 'x' + viewport.height}</span>
           </div>
         </div>
      </AppCanvas>

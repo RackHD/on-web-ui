@@ -8,6 +8,9 @@ import PageHelpers from '../mixins/PageHelpers';
 
 import Nodes from '../Nodes';
 import Workflows from '../Workflows';
+import Tasks from '../Tasks';
+import Activities from '../Activities';
+import Chart from './Chart';
 import './Dashboard.less';
 
 @mixin.decorate(PageHelpers)
@@ -19,46 +22,18 @@ export default class Dashboard extends Component {
         {this.renderBreadcrumbs('Dashboard')}
         <div className="container">
           <div className="row">
-            <div className="two columns" style={{background: '#ccc'}}>
-              A
-            </div>
-            <div className="two columns" style={{background: '#ccc'}}>
-              B
-            </div>
-            <div className="two columns" style={{background: '#ccc'}}>
-              C
-            </div>
-            <div className="two columns" style={{background: '#ccc'}}>
-              D
-            </div>
-            <div className="two columns" style={{background: '#ccc'}}>
-              E
-            </div>
-            <div className="two columns" style={{background: '#ccc'}}>
-              F
-            </div>
+            <div className="three columns chart"><Chart /></div>
+            <div className="three columns chart"><Chart /></div>
+            <div className="three columns chart"><Chart /></div>
+            <div className="three columns chart"><Chart /></div>
           </div>
           <div className="row">
-            <div className="three columns" style={{background: '#ccc'}}>
-              A
-            </div>
-            <div className="three columns" style={{background: '#ccc'}}>
-              B
-            </div>
-            <div className="three columns" style={{background: '#ccc'}}>
-              C
-            </div>
-            <div className="three columns" style={{background: '#ccc'}}>
-              D
-            </div>
+            <div className="one-half column"><Nodes /></div>
+            <div className="one-half column"><Workflows /></div>
           </div>
           <div className="row">
-            <div className="one-half column">
-              <Nodes />
-            </div>
-            <div className="one-half column">
-              <Workflows />
-            </div>
+            <div className="one-half column"><Activities /></div>
+            <div className="one-half column"><Tasks /></div>
           </div>
         </div>
       </div>
