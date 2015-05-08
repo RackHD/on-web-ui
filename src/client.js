@@ -10,6 +10,9 @@ import Router from 'react-router';
 // Needed for React Developer Tools
 window.React = React;
 
+// for react-chartist
+console.err = function () {};
+
 injectTapEventPlugin();
 
 // Run the application when both DOM is ready and page content is loaded

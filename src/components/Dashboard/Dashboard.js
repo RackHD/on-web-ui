@@ -6,10 +6,10 @@ import mixin from 'react-mixin';
 import PageHelpers from '../mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
-import Nodes from '../Nodes';
-import Workflows from '../Workflows';
-import Tasks from '../Tasks';
-import Activities from '../Activities';
+import NodesGrid from '../Nodes/NodesGrid';
+import WorkflowsGrid from '../Workflows/WorkflowsGrid';
+import TasksGrid from '../Tasks/TasksGrid';
+import ActivitiesGrid from '../Activities/ActivitiesGrid';
 import Chart from './Chart';
 import './Dashboard.less';
 
@@ -28,12 +28,12 @@ export default class Dashboard extends Component {
             <div className="three columns chart"><Chart /></div>
           </div>
           <div className="row">
-            <div className="one-half column"><Nodes /></div>
-            <div className="one-half column"><Workflows /></div>
+            <div className="one-half column"><NodesGrid /></div>
+            <div className="one-half column"><WorkflowsGrid /></div>
           </div>
           <div className="row">
-            <div className="one-half column"><Activities /></div>
-            <div className="one-half column"><Tasks /></div>
+            <div className="one-half column"><ActivitiesGrid /></div>
+            <div className="one-half column"><TasksGrid /></div>
           </div>
         </div>
       </div>

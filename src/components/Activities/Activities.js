@@ -3,87 +3,23 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
-import DialogHelpers from '../mixins/DialogHelpers';
-import FormatHelpers from '../mixins/FormatHelpers';
-import RouteHelpers from '../mixins/RouteHelpers';
 import PageHelpers from '../mixins/PageHelpers';
-import GridHelpers from '../mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
-import {
-    IconButton,
-    RaisedButton
-  } from 'material-ui';
-import ActivityAPI from '../../api/ActivityAPI';
+import {} from 'material-ui';
+import ActivitiesGrid from './ActivitiesGrid';
 import './Activities.less';
 
-@mixin.decorate(DialogHelpers)
-@mixin.decorate(FormatHelpers)
-@mixin.decorate(RouteHelpers)
 @mixin.decorate(PageHelpers)
-@mixin.decorate(GridHelpers)
 export default class Activities extends Component {
-
-  state = {
-    activities: null
-  };
-
-  componentDidMount() { this.getActivities(); }
 
   render() {
     return (
       <div className="Activities">
         {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Activities')}
-        {this.renderGridToolbar({
-          label: <a href="#/activities">Activities</a>,
-          count: this.state.activities && this.state.activities.length || 0,
-          createButton:
-            <RaisedButton label="Create Activity" primary={true} onClick={this.createActivity.bind(this)} />
-        })}
-        <div className="clearfix"></div>
-        {
-          this.renderGrid({
-            results: this.state.activities,
-            resultsPerPage: 10
-          }, activity => (
-            {
-              ID: <a href={this.routePath('activities', activity.id)}>{this.shortId(activity.id)}</a>,
-              Status: activity.status,
-              Actions: [
-                <IconButton iconClassName="fa fa-edit"
-                            tooltip="Edit Activity"
-                            touch={true}
-                            onClick={this.editActivity.bind(this, activity.id)} />,
-                <IconButton iconClassName="fa fa-remove"
-                            tooltip="Remove Activity"
-                            touch={true}
-                            onClick={this.deleteActivity.bind(this, activity.id)} />
-              ]
-            }
-          ), 'No activities.')
-        }
+        <ActivitiesGrid />
       </div>
     );
-  }
-
-  getActivities() {
-    ActivityAPI.getActivities()
-      .then(activities => this.setState({activities: activities}))
-      .catch(err => console.error(err));
-  }
-
-  editActivity(id) { this.routeTo('activities', id); }
-
-  createActivity() { this.routeTo('activities', 'new'); }
-
-  deleteActivity(id) {
-    this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
-      if (!confirmed) { return; }
-
-      ActivityAPI.deleteActivity(id)
-        .then(() => this.getActivities())
-        .catch(err => console.error(err));
-    });
   }
 
 }
