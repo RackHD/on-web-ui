@@ -1,9 +1,30 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component, PropTypes } from 'react';
+import decorateComponent from '../lib/decorateComponent';
+/* eslint-enable no-unused-vars */
 
 import './Breadcrumbs.less';
 
+@decorateComponent({
+  propTypes: {
+    path: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+          label: PropTypes.string.isRequired,
+          prefix: PropTypes.string,
+          href: PropTypes.string
+        })
+      ]))
+    ])
+  },
+  defaultProps: {
+    path: []
+  }
+})
 export default class Breadcrumbs extends Component {
 
   renderPath() {
@@ -12,18 +33,18 @@ export default class Breadcrumbs extends Component {
       return 'Unable to render breadcrumbs path.';
     }
     this.path = [];
-    this.props.path.forEach(route => {
+    this.props.path.forEach((route, index) => {
       if (typeof route === 'string') { route = {label: route}; }
       var { prefix = '#/', label, href } = route;
       if (href) {
         href = prefix + href;
-        route = <a href={href}>{label}</a>;
+        route = <a href={href} key={'item-' + index}>{label}</a>;
       }
       else {
-        route = <b>{label}</b>;
+        route = <b key={'item-' + index}>{label}</b>;
       }
       this.path.push(route);
-      this.path.push(<span>&nbsp;/&nbsp;</span>);
+      this.path.push(<span key={'divider-' + index}>&nbsp;/&nbsp;</span>);
     });
     this.path.pop();
     return this.path;

@@ -1,21 +1,39 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component, PropTypes } from 'react';
+import decorateComponent from '../lib/decorateComponent';
+/* eslint-enable no-unused-vars */
+
 import { RouteHandler } from 'react-router';
 import { canUseDOM } from 'react/lib/ExecutionEnvironment';
-import { AppCanvas, AppBar } from 'material-ui';
+import { AppCanvas } from 'material-ui';
 
-import AppMenuNav from './AppMenuNav';
+import AppHeader from './AppHeader';
 import './App.less';
 
+@decorateComponent({
+  propTypes: {
+    headerOverride: PropTypes.any,
+    currentView: PropTypes.any,
+    initialViewport: PropTypes.shape({
+      width: PropTypes.number,
+      height: PropTypes.number
+    })
+  },
+  defaultProps: {
+    headerOverride: null,
+    // NOTE: Current view for server-side rendering, or you can use props.children.
+    currentView: null,
+    // NOTE: Default size for server-side rendering
+    initialViewport: {width: 1024, height: 768}
+  }
+})
 export default class App extends Component {
 
   state = {
-    // NOTE: Default size for server-side rendering
-    viewport: {width: 1366, height: 768}
+    viewport: this.props.initialViewport
   }
-
-  _onMenuIconButtonTouchTap = this.onMenuIconButtonTouchTap.bind(this);
 
   updateViewport() {
     if (!canUseDOM) { return; }
@@ -43,36 +61,15 @@ export default class App extends Component {
     this.handleResize = null;
   }
 
-  onMenuIconButtonTouchTap() {
-    this.refs.menuNav.toggle();
-  }
-
   render() {
-    var viewport = this.state && this.state.viewport || {},
-        title = 'OnRack Web UI';
-
-    var emcTab = (
-      <a className="emc-tab right"
-         href="http://emc.com">
-        <img className="emc-logo"
-             src="WhiteLogoLarge.png"
-             alt="EMC" />
-      </a>
-    );
+    var viewport = this.state && this.state.viewport || {};
 
     return (
       <AppCanvas className="App" predefinedLayout={1}>
-        <AppBar className="header"
-                onMenuIconButtonTouchTap={this._onMenuIconButtonTouchTap}
-                title={title}
-                zDepth={0}
-                iconElementRight={emcTab}
-                />
-
-        <AppMenuNav ref="menuNav" />
+        {this.props.headerOverride || <AppHeader />}
 
         <div className="content">
-          <RouteHandler />
+          {this.props.currentView || this.props.children || <RouteHandler />}
         </div>
 
         <div className="footer">

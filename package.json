@@ -10,10 +10,10 @@
     "npm": ">= 2.1"
   },
   "dependencies": {
-    "babel": "^5.1.13",
+    "babel": "^5.2.17",
     "express": "^4.12.3",
-    "griddle-react": "^0.2.12",
-    "lodash": "^3.7.0",
+    "griddle-react": "^0.2.13",
+    "lodash": "^3.8.0",
     "material-ui": "^0.7.5",
     "moment": "^2.10.2",
     "react": "^0.13.2",
@@ -27,16 +27,16 @@
   },
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",
-    "babel-core": "^5.1.13",
-    "babel-eslint": "^3.0.1",
+    "babel-core": "^5.2.17",
+    "babel-eslint": "^3.1.1",
     "babel-loader": "^5.0.0",
-    "browser-sync": "^2.6.5",
+    "browser-sync": "^2.7.1",
     "css-loader": "^0.12.0",
     "del": "^1.1.1",
     "eslint": "^0.20.0",
     "eslint-loader": "^0.11.1",
     "eslint-plugin-react": "^2.2.0",
-    "eventemitter3": "^1.0.1",
+    "eventemitter3": "^1.0.2",
     "git-push": "^0.1.1",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.2.0",
@@ -49,21 +49,21 @@
     "gulp-jsbeautifier": "^0.0.8",
     "gulp-less": "^3.0.3",
     "gulp-load-plugins": "^0.10.0",
-    "gulp-minify-css": "^1.1.0",
+    "gulp-minify-css": "^1.1.1",
     "gulp-plumber": "^1.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-render": "^0.2.2",
     "gulp-replace": "^0.5.3",
     "gulp-size": "^1.2.1",
     "gulp-util": "^3.0.4",
-    "jest-cli": "^0.4.0",
+    "jest-cli": "^0.4.1",
     "json-server": "^0.7.4",
     "less": "^2.5.0",
     "less-loader": "^2.2.0",
     "minimist": "^1.1.1",
     "react-tools": "^0.13.2",
     "run-sequence": "^1.1.0",
-    "style-loader": "^0.12.1",
+    "style-loader": "^0.12.2",
     "url-loader": "^0.5.5",
     "webpack": "^1.8.10",
     "webpack-dev-server": "^1.8.2"
@@ -71,9 +71,7 @@
   "jest": {
     "rootDir": "./src",
     "scriptPreprocessor": "../preprocessor.js",
-    "unmockedModulePathPatterns": [
-      "react"
-    ]
+    "unmockedModulePathPatterns": ["react"]
   },
   "scripts": {
     "start": "./node_modules/.bin/gulp",

@@ -1,35 +1,37 @@
 'use strict';
-/* global describe, it, expect */
+/* global jest, describe, it, expect */
 
-// jest.dontMock('../');
+import React from 'react/addons';
+var { TestUtils } = React.addons;
 
-// var App = require('../');
+// TODO: auto mocking is not working properly.
+//       jest is not correctly mocking react components.
+jest.autoMockOff();
+// jest.mock('../AppHeader');
+
+var App = require('../App');
 
 describe('App', function() {
 
-  it('exists', function() {
-    // TODO: this is not working because of an error:
-    //   TypeError:
-    //     /on-web-ui/src/components/App/__tests__/App-test.js:
-    //     /on-web-ui/src/components/App/App.js:
-    //     /on-web-ui/src/components/Nodes/Nodes.js:
-    //     /on-web-ui/src/actions/NodeActions.js:
-    //     /on-web-ui/node_modules/superagent/lib/node/index.js:
-    //     /on-web-ui/node_modules/superagent/node_modules/form-data/lib/form_data.js:
-    //     /on-web-ui/node_modules/superagent/node_modules/form-data/node_modules/combined-stream/lib/combined_stream.js:
-    //       Cannot read property 'readable' of undefined
-    //  This seems to be a problem with making a HTTP request to the API in the test.
-    //  Honestly it should do that at all for these tests, just need to add dependency injection so that
-    //  the NodeActions.js can be stubbed to respond with mock data.
+  it('can be rendered into a viewport with a header, content, and footer.', function() {
+    var appComponent = TestUtils.renderIntoDocument(
+      React.createElement(App, {
+        headerOverride: <div className="header">No header.</div>,
+        currentView: 'No content.'
+      })
+    );
 
-    // var React = require('react/addons');
-    // var TestUtils = React.addons.TestUtils;
+    var appElement = TestUtils.findRenderedDOMComponentWithClass(appComponent, 'App'),
+        headerElement = TestUtils.findRenderedDOMComponentWithClass(appComponent, 'header'),
+        contentElement = TestUtils.findRenderedDOMComponentWithClass(appComponent, 'content'),
+        footerElement = TestUtils.findRenderedDOMComponentWithClass(appComponent, 'footer');
 
-    // var Component = TestUtils.renderIntoDocument(React.createElement(App));
+    expect(appElement).toBeDefined();
+    expect(headerElement).toBeDefined();
+    expect(contentElement).toBeDefined();
+    expect(footerElement).toBeDefined();
 
-    // var element = TestUtils.findRenderedDOMComponentWithClass(Component, 'App');
-    // expect(element).toBeDefined();
-    expect(true).toBeDefined();
+    expect(appComponent.state.viewport).toEqual(appComponent.props.initialViewport);
   });
 
 });

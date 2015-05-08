@@ -29,8 +29,6 @@ export default class Chart extends Component {
       ]
     };
 
-    console.log(data.series[0]);
-
     var options = {
       high: 10,
       low: -10,

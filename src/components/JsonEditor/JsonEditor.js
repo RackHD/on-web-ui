@@ -1,11 +1,28 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component, PropTypes } from 'react';
+import decorateComponent from '../lib/decorateComponent';
+/* eslint-enable no-unused-vars */
 
 // Based on http://www.mbates.com/play/ReactJsonEditor/
 
 import './JsonEditor.less';
 
+@decorateComponent({
+  propTypes: {
+    rows: PropTypes.number,
+    cols: PropTypes.number,
+    disabled: PropTypes.bool,
+    initialValue: PropTypes.any,
+    updateParentState: PropTypes.func
+  },
+  defaultProps: {
+    rows: 12,
+    cols: 120,
+    disabled: false
+  }
+})
 export default class JsonEditor extends Component {
 
   state = {
@@ -45,8 +62,8 @@ export default class JsonEditor extends Component {
           <div className="error">{JSON.stringify(this.state.error.message)}</div>
         ) : null}
         <textarea valueLink={this.linkState()}
-                  rows={this.props.rows || 12}
-                  cols={this.props.cols || 120}
+                  rows={this.props.rows}
+                  cols={this.props.cols}
                   disabled={this.props.disabled} />
       </div>
     );

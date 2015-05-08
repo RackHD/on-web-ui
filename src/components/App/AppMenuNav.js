@@ -1,6 +1,10 @@
 'use strict';
 
-import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component, PropTypes } from 'react';
+import decorateComponent from '../lib/decorateComponent';
+/* eslint-enable no-unused-vars */
+
 
 import { MenuItem, LeftNav } from 'material-ui';
 
@@ -25,15 +29,17 @@ const menuItems = [
     payload: 'http://emc.com', text: 'EMC' }
 ];
 
+@decorateComponent({
+  contextTypes: {
+    router: PropTypes.func
+  }
+})
 export default class AppMenuNav extends Component {
 
-  constructor() {
-    super();
-    this.toggle = this.toggle.bind(this);
-    this.getSelectedIndex = this.getSelectedIndex.bind(this);
-    this.onLeftNavChange = this.onLeftNavChange.bind(this);
-    this.onHeaderClick = this.onHeaderClick.bind(this);
-  }
+  toggle = this.toggle.bind(this);
+  getSelectedIndex = this.getSelectedIndex.bind(this);
+  onLeftNavChange = this.onLeftNavChange.bind(this);
+  onHeaderClick = this.onHeaderClick.bind(this);
 
   render() {
     var header = (
@@ -54,6 +60,11 @@ export default class AppMenuNav extends Component {
     );
   }
 
+  isActive(item) {
+    var router = this.context.router;
+    return item.route && router && router.isActive(item.route);
+  }
+
   toggle() {
     this.refs.leftNav.toggle();
   }
@@ -63,21 +74,21 @@ export default class AppMenuNav extends Component {
 
     for (var i = menuItems.length - 1; i >= 0; i--) {
       currentItem = menuItems[i];
-      if (currentItem.route && this.context.router.isActive(currentItem.route)) { return i; }
+      if (this.isActive(currentItem)) { return i; }
     }
   }
 
   onLeftNavChange(e, key, payload) {
-    this.context.router.transitionTo(payload.route);
+    if (this.context.router) {
+      this.context.router.transitionTo(payload.route);
+    }
   }
 
   onHeaderClick() {
-    this.context.router.transitionTo('root');
-    this.refs.leftNav.close();
+    if (this.context.router) {
+      this.context.router.transitionTo('root');
+      this.refs.leftNav.close();
+    }
   }
 
 }
-
-AppMenuNav.contextTypes = {
-  router: PropTypes.func
-};
