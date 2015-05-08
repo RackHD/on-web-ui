@@ -21,7 +21,6 @@
     "react-mixin": "^1.2.2",
     "react-router": "^0.13.3",
     "react-tap-event-plugin": "^0.1.6",
-    "reflux": "^0.2.7",
     "superagent": "^1.2.0",
     "underscore": "^1.8.3"
   },

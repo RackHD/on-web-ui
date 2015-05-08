@@ -13,7 +13,7 @@ import {
     IconButton,
     RaisedButton
   } from 'material-ui';
-import ActivityAPI from '../../api/ActivityAPI';
+import ActivityActions, { activities } from '../../actions/ActivityActions';
 
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
@@ -25,7 +25,15 @@ export default class ActivitiesGrid extends Component {
     activities: null
   };
 
-  componentDidMount() { this.getActivities(); }
+  componentDidMount() {
+    activities.on('change', () => this.setState({
+      activities: activities.all()
+    }));
+
+    ActivityActions.add5();
+
+    this.getActivities();
+  }
 
   render() {
     return (
@@ -63,9 +71,7 @@ export default class ActivitiesGrid extends Component {
   }
 
   getActivities() {
-    ActivityAPI.getActivities()
-      .then(activities => this.setState({activities: activities}))
-      .catch(err => console.error(err));
+    activities.list();
   }
 
   editActivity(id) { this.routeTo('activities', id); }
@@ -76,9 +82,7 @@ export default class ActivitiesGrid extends Component {
     this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
       if (!confirmed) { return; }
 
-      ActivityAPI.deleteActivity(id)
-        .then(() => this.getActivities())
-        .catch(err => console.error(err));
+      activities.destroy(id);
     });
   }
 
