@@ -35,15 +35,6 @@ export default class App extends Component {
     viewport: this.props.initialViewport
   }
 
-  updateViewport() {
-    if (!canUseDOM) { return; }
-    let viewport = {width: window.innerWidth, height: window.innerHeight};
-    if (this.state.viewport.width !== viewport.width ||
-      this.state.viewport.height !== viewport.height) {
-      this.setState({viewport: viewport});
-    }
-  }
-
   componentDidMount() {
     this.updateViewport();
     var resizeTimer = null;
@@ -80,6 +71,15 @@ export default class App extends Component {
         </div>
      </AppCanvas>
     );
+  }
+
+  updateViewport() {
+    if (!canUseDOM) { return; }
+    let viewport = {width: window.innerWidth, height: window.innerHeight};
+    if (this.state.viewport.width !== viewport.width ||
+      this.state.viewport.height !== viewport.height) {
+      this.setState({viewport: viewport});
+    }
   }
 
 }

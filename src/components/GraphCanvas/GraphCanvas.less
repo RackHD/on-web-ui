@@ -1,0 +1,45 @@
+.GraphCanvas {
+  width: 1000px;
+  height: 1000px;
+  border: 1px solid #000;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  .node, .link,
+  .GraphCanvasNode, .GraphCanvasLink {
+    display: block;
+    position: absolute;
+    border-radius: 10px;
+  }
+
+  .GraphCanvasNode:hover,
+  .GraphCanvasLink:hover {
+    z-index: 1;
+  }
+
+  .node {background: red;}
+  .link {background: green;}
+
+  .GraphCanvasNode {background: blue;}
+  .GraphCanvasLink.b-tr {
+    border-top: 10px dotted #000;
+    border-right: 10px dotted #000;
+  }
+  .GraphCanvasLink.b-tl {
+    border-top: 10px dotted #000;
+    border-left: 10px dotted #000;
+  }
+  .GraphCanvasLink.b-br {
+    border-bottom: 10px dotted #000;
+    border-right: 10px dotted #000;
+  }
+  .GraphCanvasLink.b-bl {
+    border-bottom: 10px dotted #000;
+    border-left: 10px dotted #000;
+  }
+}
