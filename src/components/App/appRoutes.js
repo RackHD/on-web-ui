@@ -25,7 +25,6 @@ import NotFound from '../NotFound';
 export default (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={Dashboard}/>
-    <Route name="dash" handler={Dashboard} />
     <Route name="workflows" handler={Workflows} />
     <Route name="newWorkflow" path="/workflows/new" handler={CreateWorkflow} />
     <Route name="workflow" path="/workflows/:workflowId" handler={Workflow} />
@@ -36,6 +35,6 @@ export default (
     <Route name="tasks" handler={Tasks} />
     <Route name="editor" handler={WorkflowEditor} />
     <NotFoundRoute handler={NotFound}/>
-    <Redirect from="dashboard" to="dash" />
+    <Redirect from="dash" to="/" />
   </Route>
 );
