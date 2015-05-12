@@ -4,9 +4,9 @@ import Breadcrumbs from '../Breadcrumbs';
 
 export default {
 
-  isRouteHandler: function () { return !!this.props.params; },
+  isRouteHandler() { return !!this.props.params; },
 
-  renderBreadcrumbs: function (...path) {
+  renderBreadcrumbs(...path) {
     return this.isRouteHandler() ? <Breadcrumbs path={path} /> : null;
   }
 

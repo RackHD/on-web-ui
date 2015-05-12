@@ -41,27 +41,56 @@ export default class GraphCanvasLink extends Component {
       width: this.props.width,
       height: this.props.height
     };
-    var bclass = 'b-';
-    if (this.props.dirX === 1 && this.props.dirY === 1) { bclass += 'br'; }
-    else if (this.props.dirX === 1 && this.props.dirY === -1) { bclass += 'bl'; }
-    else if (this.props.dirX === -1 && this.props.dirY === 1) { bclass += 'tr'; }
-    else if (this.props.dirX === -1 && this.props.dirY === -1) { bclass += 'tl'; }
+    var border = '',
+        align,
+        path;
+    if (this.props.dirX === 1 && this.props.dirY === 1) {
+      align = 'br';
+      path = 'M 0 100 L 100 0 z';
+    }
+    else if (this.props.dirX === 1 && this.props.dirY === -1) {
+      align = 'bl';
+      path = 'M 0 0 L 100 100 z';
+    }
+    else if (this.props.dirX === -1 && this.props.dirY === 1) {
+      align = 'tr';
+      path = 'M 0 0 L 100 100 z';
+    }
+    else if (this.props.dirX === -1 && this.props.dirY === -1) {
+      align = 'tl';
+      path = 'M 0 100 L 100 0 z';
+    }
+    var riseOverRun = this.props.height / this.props.width;
+    if (riseOverRun > 2) {
+      border = 'border ';
+      path = 'M 50 0 L 50 100 z';
+    }
+    else if (riseOverRun < 0.2) {
+      border = 'border ';
+      path = 'M 0 50 L 100 50 z';
+    }
+    // styles.width += 100;
+    // styles.height += 100;
+    // styles.left -= 50;
+    // styles.top -= 50;
     return (
-      <div className={'GraphCanvasLink ' + bclass}
+      <div className={'GraphCanvasLink ' + border + align}
            style={styles}
            data-canvasref={this.props.canvasRef}
            onDoubleClick={this.removeLink}>
         <svg width="100%"
              height="100%"
-             style={{display: 'none'}}
-             viewBox="0 0 400 400"
+             viewBox="0 0 100 100"
+             preserveAspectRatio="none"
              xmlns="http://www.w3.org/2000/svg">
 
-          <path d="M 100 100 L 300 100 L 200 300 z"
-                fill="orange"
+          <path d={path}
                 stroke="black"
-                strokeWidth="3" />
+                strokeWidth="2" />
         </svg>
+        X: &nbsp; {this.props.dirX}&nbsp; | &nbsp;
+        Y: &nbsp; {this.props.dirY}&nbsp; | &nbsp;
+        R: &nbsp; {riseOverRun}
       </div>
     );
   }

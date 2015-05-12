@@ -1,11 +1,16 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import mixin from 'react-mixin';
+import DragEventHelpers from './mixins/DragEventHelpers';
+/* eslint-enable no-unused-vars */
 
 import GraphCanvasLink from './GraphCanvasLink';
 import GraphCanvasNode from './GraphCanvasNode';
 import './GraphCanvas.less';
 
+@mixin.decorate(DragEventHelpers)
 export default class GraphCanvas extends Component {
 
   state = {
@@ -14,60 +19,24 @@ export default class GraphCanvas extends Component {
     nodes: [],
     links: []
   };
-
-  nodes = [];
-  links = [];
-
-  nodeX = null;
-  nodeY = null;
-  linkX = null;
-  linkY = null;
-  linkFromNode = null;
-
-  drawContinue = this.drawContinue.bind(this);
-  drawFinish = this.drawFinish.bind(this);
-
-  drawNodeStart = this.drawNodeStart.bind(this);
-  drawNodeContinue = this.drawNodeContinue.bind(this);
-  drawNodeFinish = this.drawNodeFinish.bind(this);
-
-  drawLinkStart = this.drawLinkStart.bind(this);
-  drawLinkContinue = this.drawLinkContinue.bind(this);
-  drawLinkFinish = this.drawLinkFinish.bind(this);
-
-  // Window events
-
-  componentDidMount() {
-    // window.addEventListener('mousemove', this.drawContinue);
-    // window.addEventListener('mouseup', this.drawFinish);
-  }
-
-  componentWillUnmount() {
-    // window.removeEventListener('movemove', this.drawContinue);
-    // window.removeEventListener('moveup', this.drawFinish);
-  }
-
-  // RENDER
+  rawNodes = [];
+  rawLinks = [];
 
   render() {
     var active = null;
     if (this.state.node) {
       active = <div className="node"
-                    style={{...this.state.node}}
-                    onMouseMove={this.drawNodeContinue}>{Date.now()}</div>;
+                    style={{...this.state.node}}>{Date.now()}</div>;
     }
     if (this.state.link) {
       active = <div className="link"
-                    style={{...this.state.link}}
-                    onMouseMove={this.drawLinkContinue}>{Date.now()}</div>;
+                    style={{...this.state.link}}>{Date.now()}</div>;
     }
     var links = this.state.links.map(link => <GraphCanvasLink {...link} />),
         nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
     return (
       <div className="GraphCanvas container"
-           onMouseDown={this.drawNodeStart}
-           onMouseMove={this.drawContinue}
-           onMouseUp={this.drawFinish}>
+           onMouseDown={this.drawNode()}>
         {links}
         {nodes}
         {active}
@@ -75,169 +44,108 @@ export default class GraphCanvas extends Component {
     );
   }
 
-  // DOM helpers
-
-  getDOMNode() {
-    return React.findDOMNode(this);
-  }
-
-  offsetXY(element) {
-    var x = 0, y = 0;
-    do {
-      x += element.offsetLeft;
-      y += element.offsetTop;
-      element = element.offsetParent;
-    } while(element);
-    return { x, y };
-  }
-
-  delegatesTo(element, className) {
-    if (!element) { return false; }
-    if (element.classList && element.classList.contains(className)) { return element; }
-    return this.delegatesTo(element.parentNode, className);
-  }
-
-  // Combo events
-
-  drawContinue(event) {
-    if (this.state.link) { this.drawLinkContinue(event); }
-    else { this.drawNodeContinue(event); }
-  }
-
-  drawFinish(event) {
-    if (this.state.link && this.linkFromNode) {
-      this.drawLinkFinish(event);
-    }
-    if (this.nodeX || this.nodeY) {
-      this.drawNodeFinish(event);
-    }
-  }
-
   // Node events
 
-  drawNodeStart(event) {
-    this.isDrawing = true;
-    var e = event.nativeEvent || event,
-        o = this.offsetXY(this.getDOMNode()),
-        x = e.pageX || e.clientX,
-        y = e.pageY || e.clientY;
-    x -= o.x;
-    y -= o.y;
-    e.stopPropagation();
-    this.nodeX = x;
-    this.nodeY = y;
-  }
-
-  drawNodeContinue(event) {
-    if (!this.isDrawing || this.state.link) { return; }
-    var e = event.nativeEvent || event,
-        o = this.offsetXY(this.getDOMNode()),
-        x = e.pageX || e.clientX,
-        y = e.pageY || e.clientY,
-        node = {};
-    e.stopPropagation();
-    x -= o.x;
-    y -= o.y;
-    if (x < this.nodeX) {
-      node.left = x;
-      node.width = this.nodeX - x;
-    } else {
-      node.left = this.nodeX;
-      node.width = x - this.nodeX;
-    }
-    if (y < this.nodeY) {
-      node.top = y;
-      node.height = this.nodeY - y;
-    }
-    else {
-      node.top = this.nodeY;
-      node.height = y - this.nodeY;
-    }
-    if (node.width * node.width < 500) {
-      this.setState({node: null});
-    }
-    else {
-      this.setState({node: node});
-    }
-  }
-
-  drawNodeFinish(event) {
-    var e = event.nativeEvent || event;
-    e.stopPropagation();
-    this.isDrawing = false;
-    this.nodeX = null;
-    this.nodeY = null;
-    if (this.state.node && this.state.node.width) {
-      this.addNode(this.state.node);
-      this.setState({node: null});
-    }
+  drawNode() {
+    return this.setupClickDrag({
+      down: (event) => event.stopPropagation(),
+      move: (event, dragState) => {
+        if (this.state.link) { return; }
+        event.stopPropagation();
+        var node = {
+          startX: dragState.downEvent.relX,
+          startY: dragState.downEvent.relY,
+          endX: event.relX,
+          endY: event.relY
+        };
+        this.calculateNodeBox(node);
+        this.setState({
+          node: (node.height * node.width < 500) ? null : node
+        });
+      },
+      up: (event) => {
+        event.stopPropagation();
+        if (this.state.node && this.state.node.width) {
+          this.addNode(this.state.node);
+          this.setState({node: null});
+        }
+      }
+    });
   }
 
   // Link events
 
-  drawLinkStart(event) {
-    this.isDrawing = true;
-    var e = event.nativeEvent || event,
-        o = this.offsetXY(this.getDOMNode()),
-        x = e.pageX || e.clientX,
-        y = e.pageY || e.clientY;
-    x -= o.x;
-    y -= o.y;
-    e.stopPropagation();
-    this.linkX = x;
-    this.linkY = y;
-    this.linkFromNode = this.delegatesTo(e.target, 'GraphCanvasNode');
+  drawLinkStart(event, dragState, e) {
+    event.stopPropagation();
+    dragState.fromNode = this.delegatesTo(e.target, 'GraphCanvasNode');
   }
 
-  drawLinkContinue(event) {
-    if (!this.isDrawing || this.state.node) { return; }
-    var e = event.nativeEvent || event,
-        o = this.offsetXY(this.getDOMNode()),
-        x = e.pageX || e.clientX,
-        y = e.pageY || e.clientY,
-        link = {
-          startX: this.linkX,
-          startY: this.linkY,
-          endX: x,
-          endY: y,
-          dirX: 1,
-          dirY: 1
-        };
-    e.stopPropagation();
-    x -= o.x;
-    y -= o.y;
-    if (x < this.linkX) {
-      link.left = x;
-      link.width = this.linkX - x;
-      link.dirX = -1;
-    } else {
-      link.left = this.linkX;
-      link.width = x - this.linkX;
-    }
-    if (y < this.linkY) {
-      link.top = y;
-      link.height = this.linkY - y;
-    }
-    else {
-      link.top = this.linkY;
-      link.height = y - this.linkY;
-      link.dirY = -1;
-    }
-    this.setState({link: link});
+  drawLinkContinue(event, dragState) {
+    if (this.state.node) { return; }
+    event.stopPropagation();
+    dragState.link = {
+      startX: dragState.downEvent.relX,
+      startY: dragState.downEvent.relY,
+      endX: event.relX,
+      endY: event.relY,
+      dirX: 1,
+      dirY: 1
+    };
+    this.calculateLinkBox(dragState.link);
+    this.setState({link: dragState.link});
   }
 
-  drawLinkFinish(event) {
-    var e = event.nativeEvent || event;
-    e.stopPropagation();
-    this.isDrawing = false;
-    this.linkX = null;
-    this.linkY = null;
+  drawLinkFinish(event, dragState, e) {
+    event.stopPropagation();
     var isTargetNode = this.delegatesTo(e.target, 'GraphCanvasNode');
-    if (this.state.link && this.state.link.width && isTargetNode && isTargetNode !== this.linkFromNode) {
-      this.addLink(this.state.link, this.linkFromNode, isTargetNode);
+    if (dragState.link && dragState.link.width && isTargetNode && isTargetNode !== dragState.fromNode) {
+      this.addLink(dragState.link, dragState.fromNode, isTargetNode);
     }
     this.linkFromNode = null;
     this.setState({link: null});
+  }
+
+  // Box calculations
+
+  calculateNodeBox(node) {
+    if (node.endX < node.startX) {
+      node.left = node.endX;
+      node.width = node.startX - node.endX;
+    } else {
+      node.left = node.startX;
+      node.width = node.endX - node.startX;
+    }
+    if (node.endY < node.startY) {
+      node.top = node.endY;
+      node.height = node.startY - node.endY;
+    }
+    else {
+      node.top = node.startY;
+      node.height = node.endY - node.startY;
+    }
+  }
+
+  calculateLinkBox(link) {
+    if (link.endX < link.startX) {
+      link.left = link.endX;
+      link.width = link.startX - link.endX;
+      link.dirX = -1;
+    }
+    else {
+      link.left = link.startX;
+      link.width = link.endX - link.startX;
+      link.dirX = 1;
+    }
+    if (link.endY < link.startY) {
+      link.top = link.endY;
+      link.height = link.startY - link.endY;
+      link.dirY = 1;
+    }
+    else {
+      link.top = link.startY;
+      link.height = link.endY - link.startY;
+      link.dirY = -1;
+    }
   }
 
   // List management
@@ -255,13 +163,40 @@ export default class GraphCanvas extends Component {
       canvasRef: key,
       ...node
     };
-    this.nodes.push(node);
-    this.setState({nodes: this.nodes.slice(0)});
+    this.rawNodes.push(node);
+    this.setState({nodes: this.rawNodes.slice(0)});
   }
 
   removeNode(node) {
-    this.nodes = this.nodes.filter(n => n.canvasRef !== node.props.canvasRef);
-    this.setState({nodes: this.nodes});
+    this.rawNodes = this.rawNodes.filter(n => n.canvasRef !== node.props.canvasRef);
+    this.setState({nodes: this.rawNodes});
+  }
+
+  moveNode(nodeRef, displaceX, displaceY) {
+    var node = this.rawNodes.filter(n => n.canvasRef === nodeRef)[0],
+        links = this.rawLinks.filter(l => l.from === nodeRef || l.to === nodeRef);
+    node.left -= displaceX;
+    node.top -= displaceY;
+    links.forEach(l => {
+      if (l.from === nodeRef) {
+        l.startX -= displaceX;
+        l.startY -= displaceY;
+      }
+      else {
+        l.endX -= displaceX;
+        l.endY -= displaceY;
+      }
+      this.calculateLinkBox(l);
+    });
+    this.setState({
+      nodes: this.rawNodes.slice(0),
+      links: this.rawLinks.slice(0)
+    });
+  }
+
+  displaceNode(nodeRef, displacement) {
+    // TODO:
+    this.moveNode(nodeRef, displacement.x, displacement.y);
   }
 
   addLink(link, nodeElemA, nodeElemB) {
@@ -277,13 +212,13 @@ export default class GraphCanvas extends Component {
       canvasRef: key,
       ...link
     };
-    this.links.push(link);
-    this.setState({links: this.links.slice(0)});
+    this.rawLinks.push(link);
+    this.setState({links: this.rawLinks.slice(0)});
   }
 
   removeLink(link) {
-    this.links = this.links.filter(l => l.canvasRef !== link.props.canvasRef);
-    this.setState({links: this.links});
+    this.rawLinks = this.rawLinks.filter(l => l.canvasRef !== link.props.canvasRef);
+    this.setState({links: this.rawLinks});
   }
 
 }

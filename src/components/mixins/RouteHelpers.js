@@ -7,7 +7,7 @@ export default {
 
   routePath: (...path) => '#/' + path.join('/'),
 
-  routeTo: function (...path) {
+  routeTo(...path) {
     setTimeout(() => window.location = this.routePath(...path), delay);
   },
 

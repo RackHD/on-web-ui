@@ -2,13 +2,13 @@
 
 export default {
 
-  disable: function () { this.setState({disabled: true}); },
+  disable() { this.setState({disabled: true}); },
 
-  enable: function () {
+  enable() {
     setTimeout(() => this.setState({disabled: false}), 500);
   },
 
-  linkObjectState: function (stateKey, key) {
+  linkObjectState(stateKey, key) {
     var obj = this.state[stateKey];
     return {
       value: obj && obj[key] || null,

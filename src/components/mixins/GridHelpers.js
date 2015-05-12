@@ -9,7 +9,7 @@ import Griddle from 'griddle-react';
 
 export default {
 
-  renderGridToolbar: function (params) {
+  renderGridToolbar(params) {
     if (!params || !params.label) {
       return 'Unabled to render grid toolbar.';
     }
@@ -38,7 +38,7 @@ export default {
     );
   },
 
-  renderGrid: function (props, mapper, empty='No results.') {
+  renderGrid(props, mapper, empty='No results.') {
     if (!props || !props.results || !props.results.length) {
       return <div className="empty center">{empty}</div>;
     }
