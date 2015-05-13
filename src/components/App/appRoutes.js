@@ -11,6 +11,7 @@ import Workflows from '../Workflows';
 import WorkflowEditor from '../WorkflowEditor';
 import Activities from '../Activities';
 import Tasks from '../Tasks';
+import Jobs from '../Jobs';
 import Dashboard from '../Dashboard';
 import UserLogin from '../UserLogin';
 import NotFound from '../NotFound';
@@ -34,6 +35,7 @@ export default (
     <Route name="node" path="/nodes/:nodeId" handler={Node} />
     <Route name="activities" handler={Activities} />
     <Route name="tasks" handler={Tasks} />
+    <Route name="jobs" handler={Jobs} />
     <Route name="editor" handler={WorkflowEditor} />
     <Route name="login" handler={UserLogin} />
     <NotFoundRoute handler={NotFound}/>

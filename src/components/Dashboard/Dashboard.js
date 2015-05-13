@@ -9,6 +9,7 @@ import PageHelpers from '../mixins/PageHelpers';
 import NodesGrid from '../Nodes/NodesGrid';
 import WorkflowsGrid from '../Workflows/WorkflowsGrid';
 import TasksGrid from '../Tasks/TasksGrid';
+import JobsGrid from '../Jobs/JobsGrid';
 import ActivitiesGrid from '../Activities/ActivitiesGrid';
 import Chart from './Chart';
 import './Dashboard.less';
@@ -28,12 +29,15 @@ export default class Dashboard extends Component {
             <div className="three columns chart"><Chart /></div>
           </div>
           <div className="row">
-            <div className="one-half column"><NodesGrid /></div>
-            <div className="one-half column"><WorkflowsGrid /></div>
-          </div>
-          <div className="row">
-            <div className="one-half column"><ActivitiesGrid /></div>
-            <div className="one-half column"><TasksGrid /></div>
+            <div className="one-half column">
+              <NodesGrid />
+              <ActivitiesGrid />
+            </div>
+            <div className="one-half column">
+              <WorkflowsGrid />
+              <TasksGrid />
+              <JobsGrid />
+            </div>
           </div>
         </div>
       </div>

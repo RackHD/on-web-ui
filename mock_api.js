@@ -53,6 +53,12 @@ server.use(jsonServer.router({
       status: 'Done',
       workflowId: 1
     }
+  ],
+  jobs: [
+    {
+      id: 1,
+      name: 'Lala Foofoo'
+    }
   ]
 }));
 
