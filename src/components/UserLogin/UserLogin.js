@@ -24,6 +24,7 @@ export default class UserLogin extends Component {
         <div className="row">
           <div className="one-third column">&nbsp;</div>
           <div className="one-third column">
+            <h3>Login</h3>
             <form action="/login" method="post">
               <TextField name="user"
                          hintText="Ralph"
