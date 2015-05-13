@@ -6,6 +6,12 @@ export default class Store extends EventEmitter {
 
   collection = {};
 
+     list() { throw new Error('Store: Unimplemented list method.'); }
+     read() { throw new Error('Store: Unimplemented read method.'); }
+   create() { throw new Error('Store: Unimplemented create method.'); }
+   update() { throw new Error('Store: Unimplemented update method.'); }
+  destroy() { throw new Error('Store: Unimplemented destroy method.'); }
+
   all() {
     return Object.keys(this.collection)
       .map(id => this.collection[id])
@@ -17,6 +23,7 @@ export default class Store extends EventEmitter {
   }
 
   error(id, error) {
+    console.error('Store:', id, error.stack || error);
     this.emit(this.event(id, 'error'), error);
   }
 
@@ -24,6 +31,13 @@ export default class Store extends EventEmitter {
     this.empty();
     this.removeAllListeners('change');
     this.removeAllListeners('error');
+  }
+
+  isEmpty() {
+    for (var p in this.collection) {
+      if (this.collection.hasOwnProperty(p)) { return false; }
+    }
+    return true;
   }
 
   empty() {
@@ -57,21 +71,45 @@ export default class Store extends EventEmitter {
     this.removeAllListeners(this.event(id, 'error'));
   }
 
+  watchOne(id, prop, component, onError) {
+    var listener = () => component.setState({[prop]: this.get(id)});
+    this.subscribe(id, listener, onError);
+    return this.unsubscribe.bind(this, id, listener, onError);
+  }
+
+  watchAll(prop, component, onError) {
+    var listener = () => component.setState({[prop]: this.all()});
+    this.subscribe(null, listener, onError);
+    return this.unsubscribe.bind(this, null, listener, onError);
+  }
+
   event(id, event='change') { return id ? event + ':' + id : event; }
 
   subscribeOnce(id, success, failure) {
     this.once(this.event(id), success);
-    this.once(this.event(id, 'error'), failure);
+    if (failure) {
+      this.once(this.event(id, 'error'), failure);
+    }
+    else {
+      console.warn(new Error('Store subscribed once to change without error handler.').stack);
+    }
   }
 
   subscribe(id, success, failure) {
     this.on(this.event(id), success);
-    this.on(this.event(id, 'error'), failure);
+    if (failure) {
+      this.on(this.event(id, 'error'), failure);
+    }
+    else {
+      console.warn(new Error('Store subscribed to change without error handler.').stack);
+    }
   }
 
   unsubscribe(id, success, failure) {
     this.removeListener(this.event(id), success);
-    this.removeListener(this.event(id, 'error'), failure);
+    if (failure) {
+      this.removeListener(this.event(id, 'error'), failure);
+    }
   }
 
 }

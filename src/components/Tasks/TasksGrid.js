@@ -13,7 +13,7 @@ import {
     IconButton,
     RaisedButton
   } from 'material-ui';
-import TaskAPI from '../../api/TaskAPI';
+import { tasks } from '../../actions/TaskActions';
 
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
@@ -21,11 +21,14 @@ import TaskAPI from '../../api/TaskAPI';
 @mixin.decorate(GridHelpers)
 export default class TasksGrid extends Component {
 
-  state = {
-    tasks: null
-  };
+  state = {tasks: null};
 
-  componentDidMount() { this.getTasks(); }
+  componentDidMount() {
+    this.unwatchTasks = tasks.watchAll('tasks', this);
+    this.listTasks();
+  }
+
+  componentWillUnmount() { this.unwatchTasks(); }
 
   render() {
     return (
@@ -62,24 +65,15 @@ export default class TasksGrid extends Component {
     );
   }
 
-  getTasks() {
-    TaskAPI.getTasks()
-      .then(tasks => this.setState({tasks: tasks}))
-      .catch(err => console.error(err));
-  }
+  listTasks() { tasks.list(); }
 
   editTask(id) { this.routeTo('tasks', id); }
 
   createTask() { this.routeTo('tasks', 'new'); }
 
   deleteTask(id) {
-    this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
-      if (!confirmed) { return; }
-
-      TaskAPI.deleteTask(id)
-        .then(() => this.getTasks())
-        .catch(err => console.error(err));
-    });
+    this.confirmDialog('Are you sure want to delete: ' + id,
+      (confirmed) => confirmed && tasks.destroy(id));
   }
 
 }

@@ -21,19 +21,16 @@ import ActivityActions, { activities } from '../../actions/ActivityActions';
 @mixin.decorate(GridHelpers)
 export default class ActivitiesGrid extends Component {
 
-  state = {
-    activities: null
-  };
+  state = {activities: null};
 
   componentDidMount() {
-    activities.on('change', () => this.setState({
-      activities: activities.all()
-    }));
+    this.unwatchActivities = activities.watchAll('activities', this);
+    this.listActivities();
 
     ActivityActions.add5();
-
-    this.getActivities();
   }
+
+  componentWillUnmout() { this.unwatchActivities(); }
 
   render() {
     return (
@@ -70,20 +67,15 @@ export default class ActivitiesGrid extends Component {
     );
   }
 
-  getActivities() {
-    activities.list();
-  }
+  listActivities() { activities.list(); }
 
   editActivity(id) { this.routeTo('activities', id); }
 
   createActivity() { this.routeTo('activities', 'new'); }
 
   deleteActivity(id) {
-    this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
-      if (!confirmed) { return; }
-
-      activities.destroy(id);
-    });
+    this.confirmDialog('Are you sure want to delete: ' + id,
+      (confirmed) => confirmed && activities.destroy(id));
   }
 
 }

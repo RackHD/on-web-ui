@@ -11,7 +11,7 @@ import CreateWorkflow from './CreateWorkflow';
 export { CreateWorkflow, EditWorkflow };
 
 import {} from 'material-ui';
-import WorkflowAPI from '../../api/WorkflowAPI';
+import { workflows } from '../../actions/WorkflowActions';
 import './Workflow.less';
 
 @mixin.decorate(PageHelpers)
@@ -22,10 +22,11 @@ export default class Workflow extends Component {
   };
 
   componentDidMount() {
-    WorkflowAPI.getWorkflow(this.props.params.workflowId)
-      .then(workflow => this.setState({workflow: workflow}))
-      .catch(err => console.error(err));
+    this.unwatchWorkflow = workflows.watchOne(this.getWorkflowId(), 'workflow', this);
+    this.readWorkflow();
   }
+
+  componentWillUnmount() { this.unwatchWorkflow(); }
 
   render() {
     return (
@@ -39,5 +40,9 @@ export default class Workflow extends Component {
       </div>
     );
   }
+
+  getWorkflowId() { return this.props.params.workflowId; }
+
+  readWorkflow() { workflows.read(this.getWorkflowId()); }
 
 }

@@ -9,13 +9,13 @@ export default class ActivityStore extends Store {
   list() {
     this.empty();
     return ActivityAPI.getActivities()
-      .then(activities => this.collect(activities))
+      .then(list => this.collect(list))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
     return ActivityAPI.getActivity(id)
-      .then(activity => this.change(id, activity))
+      .then(item => this.change(id, item))
       .catch(err => this.error(id, err));
   }
 

@@ -13,7 +13,7 @@ import {
     IconButton,
     RaisedButton
   } from 'material-ui';
-import NodeAPI from '../../api/NodeAPI';
+import { nodes } from '../../actions/NodeActions';
 
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
@@ -21,11 +21,14 @@ import NodeAPI from '../../api/NodeAPI';
 @mixin.decorate(GridHelpers)
 export default class NodesGrid extends Component {
 
-  state = {
-    nodes: null
-  };
+  state = {nodes: null};
 
-  componentDidMount() { this.getNodes(); }
+  componentDidMount() {
+    this.unwatchNodes = nodes.watchAll('nodes', this);
+    this.listNodes();
+  }
+
+  componentWillUnmount() { this.unwatchNodes(); }
 
   render() {
     return (
@@ -64,24 +67,15 @@ export default class NodesGrid extends Component {
     );
   }
 
-  getNodes() {
-    NodeAPI.getNodes()
-      .then(nodes => this.setState({nodes: nodes}))
-      .catch(err => console.error(err));
-  }
+  listNodes() { nodes.list(); }
 
   editNode(id) { this.routeTo('nodes', id); }
 
   createNode() { this.routeTo('nodes', 'new'); }
 
   deleteNode(id) {
-    this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
-      if (!confirmed) { return; }
-
-      NodeAPI.deleteNode(id)
-        .then(() => this.getNodes())
-        .catch(err => console.error(err));
-    });
+    this.confirmDialog('Are you sure want to delete: ' + id,
+      (confirmed) => confirmed && nodes.destroy(id));
   }
 
 }

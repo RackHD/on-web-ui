@@ -11,7 +11,7 @@ import CreateNode from './CreateNode';
 export { CreateNode, EditNode };
 
 import {} from 'material-ui';
-import NodeAPI from '../../api/NodeAPI';
+import { nodes } from '../../actions/NodeActions';
 import './Node.less';
 
 @mixin.decorate(PageHelpers)
@@ -22,10 +22,11 @@ export default class Node extends Component {
   };
 
   componentDidMount() {
-    NodeAPI.getNode(this.props.params.nodeId)
-      .then(node => this.setState({node: node}))
-      .catch(err => console.error(err));
+    this.unwatchNode = nodes.watchOne(this.getNodeId(), 'node', this);
+    this.readNode();
   }
+
+  componentWillUnmount() { this.unwatchNode(); }
 
   render() {
     return (
@@ -39,5 +40,9 @@ export default class Node extends Component {
       </div>
     );
   }
+
+  getNodeId() { return this.props.params.nodeId; }
+
+  readNode() { nodes.read(this.getNodeId()); }
 
 }

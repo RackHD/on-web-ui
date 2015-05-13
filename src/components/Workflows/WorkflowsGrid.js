@@ -13,7 +13,7 @@ import {
     IconButton,
     RaisedButton
   } from 'material-ui';
-import WorkflowAPI from '../../api/WorkflowAPI';
+import { workflows } from '../../actions/WorkflowActions';
 
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
@@ -21,11 +21,14 @@ import WorkflowAPI from '../../api/WorkflowAPI';
 @mixin.decorate(GridHelpers)
 export default class WorkflowsGrid extends Component {
 
-  state = {
-    workflows: null
+  state = {workflows: null};
+
+  componentDidMount() {
+    this.unwatchWorkflows = workflows.watchAll('workflows', this);
+    this.listWorkflows();
   }
 
-  componentDidMount() { this.getWorkflows(); }
+  componentWillUnmount() { this.unwatchWorkflows(); }
 
   render() {
     return (
@@ -63,24 +66,15 @@ export default class WorkflowsGrid extends Component {
     );
   }
 
-  getWorkflows() {
-    WorkflowAPI.getWorkflows()
-      .then(workflows => this.setState({workflows: workflows}))
-      .catch(err => console.error(err));
-  }
+  listWorkflows() { workflows.list(); }
 
   editWorkflow(id) { this.routeTo('workflows', id); }
 
   createWorkflow() { this.routeTo('workflows', 'new'); }
 
   deleteWorkflow(id) {
-    this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
-      if (!confirmed) { return; }
-
-      WorkflowAPI.deleteWorkflow(id)
-        .then(() => this.getWorkflows())
-        .catch(err => console.error(err));
-    });
+    this.confirmDialog('Are you sure want to delete: ' + id,
+      (confirmed) => confirmed && workflows.destroy(id));
   }
 
 }

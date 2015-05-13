@@ -15,7 +15,7 @@ import {
     FlatButton,
     RaisedButton
   } from 'material-ui';
-import WorkflowAPI from '../../api/WorkflowAPI';
+import { workflows } from '../../actions/WorkflowActions';
 import JsonEditor from '../JsonEditor';
 
 @mixin.decorate(DialogHelpers)
@@ -92,23 +92,21 @@ export default class EditWorkflow extends Component {
   }
 
   saveWorkflow() {
-    // TODO: figure out how to save a workflow template.
-    throw new Error('Cannot save workflow templates.');
+    this.disable();
+    workflows.update(this.state.node.id, this.state.node).then(() => this.enable());
   }
 
   deleteWorkflow() {
-    // TODO: get API to support deleting workflows
-    throw new Error('Cannot delete workflow templates.');
+    var id = this.state.node.id;
+    this.disable();
+    this.confirmDialog('Are you sure want to delete: ' + id,
+      (confirmed) => confirmed && workflows.destroy(id).then(() => this.routeBack()));
   }
 
   resetWorkflow() {
     this.disable();
-    WorkflowAPI.getWorkflow(this.state.workflow.id)
-      .then(workflow => {
-        this.setState({workflow: workflow});
-        this.enable();
-      })
-      .catch(err => console.error(err));
+    workflows.read(this.state.node.id)
+      .then(node => this.setState({node: node, disabled: false}));
   }
 
   cloneWorkflow() {}// TODO

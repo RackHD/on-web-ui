@@ -15,7 +15,7 @@ import {
     FlatButton,
     RaisedButton
   } from 'material-ui';
-import NodeAPI from '../../api/NodeAPI';
+import { nodes } from '../../actions/NodeActions';
 import JsonEditor from '../JsonEditor';
 
 @mixin.decorate(DialogHelpers)
@@ -93,33 +93,20 @@ export default class EditNode extends Component {
 
   saveNode() {
     this.disable();
-    NodeAPI.patchNode(this.state.node.id, this.state.node)
-      .then(out => {
-        console.log(out);
-        this.resetNode();
-      })
-      .catch(err => console.error(err));
+    nodes.update(this.state.node.id, this.state.node).then(() => this.enable());
   }
 
   deleteNode() {
     var id = this.state.node.id;
-    this.confirmDialog('Are you sure want to delete: ' + id, (confirmed) => {
-      if (!confirmed) { return; }
-
-      NodeAPI.deleteNode(id)
-        .then(() => this.routeBack())
-        .catch(err => console.error(err));
-    });
+    this.disable();
+    this.confirmDialog('Are you sure want to delete: ' + id,
+      (confirmed) => confirmed && nodes.destroy(id).then(() => this.routeBack()));
   }
 
   resetNode() {
     this.disable();
-    NodeAPI.getNode(this.state.node.id)
-      .then(node => {
-        this.setState({node: node});
-        this.enable();
-      })
-      .catch(err => console.error(err));
+    nodes.read(this.state.node.id)
+      .then(node => this.setState({node: node, disabled: false}));
   }
 
   cloneNode() {}// TODO

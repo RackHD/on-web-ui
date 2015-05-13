@@ -2,12 +2,10 @@
 
 import NodeStore from '../stores/NodeStore';
 
-export const nodes = new NodeStore();
+const nodes = new NodeStore();
 
 export default {
 
-  fetch() {
-    return nodes.fetch();
-  }
+  nodes
 
 };
