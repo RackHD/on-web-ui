@@ -103,11 +103,21 @@ export default class GraphCanvasLink extends Component {
       }
     }
 
+    var transform = 'translate(' + styles.left + ' ' + styles.top + ')',
+        css = styles;
+
+    if (this.props.active) {
+      transform = '';
+    }
+    else {
+      css = {};
+    }
+
     return (
       <svg className={'GraphCanvasLink ' + hover + border + align}
            width={styles.width}
            height={styles.height}
-           style={styles}
+           style={css}
            data-canvasref={this.props.canvasRef}
            onDoubleClick={this.removeLink}
            viewBox={[
@@ -116,17 +126,20 @@ export default class GraphCanvasLink extends Component {
            ].join(' ')}
            preserveAspectRatio="none"
            xmlns="http://www.w3.org/2000/svg">
-        <path d={path}
-              fill="transparent"
-              stroke="black"
-              strokeWidth={stroke}
-              strokeLinecap="round"
-              onMouseOver={this.onHoverCurve.bind(this)}
-              onMouseOut={this.onLeaveCurve.bind(this)} />
-        <text x={halfX} y={halfY}>{
-          'X: ' + this.props.dirX + ' ' +
-          'Y: ' + this.props.dirY
-        }</text>
+        <g transform={transform}>
+          <path d={path}
+                fill="transparent"
+                stroke="black"
+                strokeWidth={stroke}
+                strokeLinecap="round"
+                onMouseOver={this.onHoverCurve.bind(this)}
+                onMouseMove={this.onHoverCurve.bind(this)}
+                onMouseOut={this.onLeaveCurve.bind(this)} />
+          <text x={halfX} y={halfY}>{
+            'X: ' + this.props.dirX + ' ' +
+            'Y: ' + this.props.dirY
+          }</text>
+        </g>
       </svg>
     );
   }

@@ -30,14 +30,22 @@ export default class GraphCanvas extends Component {
                     style={{...this.state.node}}>{Date.now()}</div>;
     }
     if (this.state.link) {
-      activeLink = <GraphCanvasLink {...this.state.link} />;
+      activeLink = <GraphCanvasLink active={true} {...this.state.link} />;
     }
     var links = this.state.links.map(link => <GraphCanvasLink {...link} />),
         nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
     return (
       <div className="GraphCanvas container"
            onMouseDown={this.drawNode()}>
-        {links}
+        <svg
+            className="links"
+            width="100%"
+            height="100%"
+            viewBox="0 0 1000 1000"
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg">
+          {links}
+        </svg>
         {activeLink}
         {nodes}
         {activeNode}

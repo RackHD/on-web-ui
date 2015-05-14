@@ -17,19 +17,27 @@
     border-radius: 10px;
   }
 
+  svg {
+    overflow: visible !important;
+  }
+
   .GraphCanvasNode:hover {
     z-index: 1;
   }
   // .GraphCanvasLink.border:hover,
+
+  .GraphCanvasLink path {
+    pointer-events:all;
+  }
 
   .GraphCanvasLink path:hover {
     stroke: red;
   }
   .GraphCanvasLink.hover {
     // z-index: 1;
-    path, path:hover {
-      stroke: blue;
-    }
+    // path {
+    //   stroke: blue;
+    // }
   }
 
   .node {background: red;}
