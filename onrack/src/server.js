@@ -8,7 +8,7 @@ import React from 'react';
 
 var server = express();
 
-server.set('port', (process.env.PORT || 5000));
+server.set('port', (process.env.ONRACK_PORT || 6000));
 server.use(express.static(path.join(__dirname)));
 
 // Server-side rendering

@@ -157,6 +157,13 @@ gulp.task('sync', ['serve'], function(cb) {
   browserSync = require('browser-sync');
 
   browserSync({
+    ui: {
+      port: 4001,
+      weinre: {
+        port: 9090
+      }
+    },
+    port: 4000,
     logPrefix: '',
     notify: false,
     // Run as an https by setting 'https: true'
@@ -165,7 +172,7 @@ gulp.task('sync', ['serve'], function(cb) {
     https: false,
     // Informs browser-sync to proxy our Express app which would run
     // at the following location
-    proxy: 'localhost:5000'
+    proxy: 'localhost:6000'
   }, cb);
 
   process.on('exit', function() {
