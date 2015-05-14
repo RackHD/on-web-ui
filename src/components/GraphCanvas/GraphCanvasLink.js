@@ -43,7 +43,15 @@ export default class GraphCanvasLink extends Component {
       height: this.props.height
     };
 
-    var riseOverRun = this.props.height / this.props.width,
+    var gutter = 5,
+        stroke = 5,
+        minX = 0 + gutter,
+        minY = 0 + gutter,
+        maxX = this.props.width - gutter,
+        maxY = this.props.height - gutter,
+        halfX = this.props.width / 2,
+        halfY = this.props.height / 2,
+        riseOverRun = this.props.height / this.props.width,
         svgArea = this.props.width * this.props.height,
         border = '',
         hover = this.state.hover ? 'hover ' : '',
@@ -57,32 +65,27 @@ export default class GraphCanvasLink extends Component {
     if (this.props.dirX === 1 && this.props.dirY === 1) {
       align = 'br';
       if (!border) {
-        path = 'M 0 100 Q 0 50, 50 50 T 100 0';
+        path = ['M', minX, maxY, 'Q', minX, halfY, halfX, halfY, 'T', maxX, minY].join(' ');
       }
     }
     else if (this.props.dirX === 1 && this.props.dirY === -1) {
       align = 'bl';
       if (!border) {
-        path = 'M 0 0 Q 0 50, 50 50 T 100 100';
+        path = ['M', minX, minY, 'Q', minX, halfY, halfX, halfY, 'T', maxX, maxY].join(' ');
       }
     }
     else if (this.props.dirX === -1 && this.props.dirY === 1) {
       align = 'tr';
       if (!border) {
-        path = 'M 100 100 Q 100 50, 50 50 T 0 0';
+        path = ['M', maxX, maxY, 'Q', maxX, halfY, halfX, halfY, 'T', minX, minY].join(' ');
       }
     }
     else if (this.props.dirX === -1 && this.props.dirY === -1) {
       align = 'tl';
       if (!border) {
-        path = 'M 100 0 Q 100 50, 50 50 T 0 100';
+        path = ['M', maxX, minY, 'Q', maxX, halfY, halfX, halfY, 'T', minX, maxY].join(' ');
       }
     }
-
-    // styles.width += 100;
-    // styles.height += 100;
-    // styles.left -= 50;
-    // styles.top -= 50;
 
     return (
       <div className={'GraphCanvasLink ' + hover + border + align}
@@ -91,14 +94,17 @@ export default class GraphCanvasLink extends Component {
            onDoubleClick={this.removeLink}>
         <svg width="100%"
              height="100%"
-             viewBox="0 0 100 100"
+             viewBox={[
+               minX - gutter, minY - gutter,
+               maxX + gutter, maxY + gutter
+             ].join(' ')}
              preserveAspectRatio="none"
              xmlns="http://www.w3.org/2000/svg">
 
           <path d={path}
                 fill="transparent"
                 stroke="black"
-                strokeWidth="2"
+                strokeWidth={stroke}
                 strokeLinecap="round"
                 onMouseOver={this.onHoverCurve.bind(this)}
                 onMouseOut={this.onLeaveCurve.bind(this)} />
