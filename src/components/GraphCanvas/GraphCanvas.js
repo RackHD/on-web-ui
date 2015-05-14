@@ -10,6 +10,16 @@ import GraphCanvasLink from './GraphCanvasLink';
 import GraphCanvasNode from './GraphCanvasNode';
 import './GraphCanvas.less';
 
+@decorateComponent({
+  propTypes: {
+    initialNodes: PropTypes.array,
+    initialLinks: PropTypes.array
+  },
+  defaultProps: {
+    initialNodes: [],
+    initialLinks: []
+  }
+})
 @mixin.decorate(DragEventHelpers)
 export default class GraphCanvas extends Component {
 
