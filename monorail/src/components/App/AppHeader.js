@@ -11,7 +11,7 @@ export default class AppHeader extends Component {
   _onMenuIconButtonTouchTap = this.onMenuIconButtonTouchTap.bind(this);
 
   render() {
-    var title = 'OnRack Web UI';
+    var title = 'Monorail Web UI';
 
     var emcTab = (
       <a className="emc-tab right"

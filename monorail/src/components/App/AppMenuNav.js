@@ -42,7 +42,7 @@ export default class AppMenuNav extends Component {
   render() {
     var header = (
       <div className="nav-logo"
-           onClick={this.onHeaderClick}>OnRack Web UI</div>
+           onClick={this.onHeaderClick}>Monorail Web UI</div>
     );
 
     return (

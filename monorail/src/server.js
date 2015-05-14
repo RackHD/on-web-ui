@@ -34,7 +34,7 @@ server.get('*', function(req, res) {
   var html = template({
     body: app && React.renderToString(app) || '',
     description: '',
-    title: 'OnRack Web UI'
+    title: 'Monorail Web UI'
   });
 
   res.send(html);
