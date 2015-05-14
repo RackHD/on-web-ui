@@ -1,8 +1,9 @@
 'use strict';
 
 /* eslint-disable no-unused-vars */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
+import decorateComponent from '../lib/decorateComponent';
 import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
