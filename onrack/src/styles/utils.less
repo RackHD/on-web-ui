@@ -1,0 +1,13 @@
+@default-width: 100%;
+@default-columns: 12;
+@default-gutter: 1%;
+
+.column-width(@size: 1,
+              @gutter: @default-gutter,
+              @columns: @default-columns,
+              @width: @default-width) {
+  @widthRatio: @columns / @size;
+  @gutterScale: (1 / (@size / @columns)) - 1;
+  @availableWidth: @width - (@gutter * @gutterScale);
+  width: (@availableWidth / @widthRatio)
+}

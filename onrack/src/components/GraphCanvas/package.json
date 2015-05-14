@@ -1,0 +1,2 @@
+{ "name": "GraphCanvas",    "version": "0.0.0",
+  "main": "GraphCanvas.js", "private": true }

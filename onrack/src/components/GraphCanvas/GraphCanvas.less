@@ -1,0 +1,68 @@
+.GraphCanvas {
+  width: 1000px;
+  height: 1000px;
+  border: 1px solid #000;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  .node, .link,
+  .GraphCanvasNode, .GraphCanvasLink {
+    display: block;
+    position: absolute;
+    border-radius: 10px;
+  }
+
+  svg {
+    overflow: visible !important;
+  }
+
+  .GraphCanvasNode:hover {
+    z-index: 1;
+  }
+  // .GraphCanvasLink.border:hover,
+
+  .GraphCanvasLink path {
+    pointer-events:all;
+  }
+
+  .GraphCanvasLink path:hover {
+    stroke: red;
+  }
+  .GraphCanvasLink.hover {
+    // z-index: 1;
+    // path {
+    //   stroke: blue;
+    // }
+  }
+
+  .node {background: red;}
+  .link {background: green;}
+
+  .GraphCanvasNode {background: blue;}
+
+  // .GraphCanvasLink.border svg {
+  //   visibility: hidden;
+  // }
+
+  // .GraphCanvasLink.border.tr {
+  //   border-top: 5px solid #000;
+  //   border-right: 5px solid #000;
+  // }
+  // .GraphCanvasLink.border.tl {
+  //   border-top: 5px solid #000;
+  //   border-left: 5px solid #000;
+  // }
+  // .GraphCanvasLink.border.br {
+  //   border-bottom: 5px solid #000;
+  //   border-right: 5px solid #000;
+  // }
+  // .GraphCanvasLink.border.bl {
+  //   border-bottom: 5px solid #000;
+  //   border-left: 5px solid #000;
+  // }
+}
