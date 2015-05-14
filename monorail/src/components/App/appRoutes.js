@@ -14,7 +14,7 @@ import Tasks from '../Tasks';
 import Jobs from '../Jobs';
 import Dashboard from '../Dashboard';
 import UserLogin from '../UserLogin';
-import NotFound from '../NotFound';
+import NotFound from '../../../../common/components/NotFound';
 
 /** Routes: https://github.com/rackt/react-router/blob/master/docs/api/components/Route.md
   *

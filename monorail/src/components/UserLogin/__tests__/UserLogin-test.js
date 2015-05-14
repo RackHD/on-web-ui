@@ -19,9 +19,8 @@ describe('UserLogin', function() {
 
     var userLoginElem = TestUtils.findRenderedDOMComponentWithClass(userLogin, 'UserLogin');
 
-    console.log(userLoginElem, userLogin);
-
     expect(userLogin).toBeDefined();
+    expect(userLoginElem).toBeDefined();
   });
 
 });

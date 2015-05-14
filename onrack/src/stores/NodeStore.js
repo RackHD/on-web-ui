@@ -1,6 +1,6 @@
 'use strict';
 
-import Store from '../lib/Store';
+import Store from '../../../common/lib/Store';
 
 import NodeAPI from '../api/NodeAPI';
 

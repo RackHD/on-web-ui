@@ -3,10 +3,10 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
-import DialogHelpers from '../mixins/DialogHelpers';
-import FormatHelpers from '../mixins/FormatHelpers';
-import RouteHelpers from '../mixins/RouteHelpers';
-import GridHelpers from '../mixins/GridHelpers';
+import DialogHelpers from '../../../../common/mixins/DialogHelpers';
+import FormatHelpers from '../../../../common/mixins/FormatHelpers';
+import RouteHelpers from '../../../../common/mixins/RouteHelpers';
+import GridHelpers from '../../../../common/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {

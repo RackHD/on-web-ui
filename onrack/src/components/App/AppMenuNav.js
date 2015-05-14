@@ -2,29 +2,18 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../lib/decorateComponent';
+import decorateComponent from '../../../../common/lib/decorateComponent';
 /* eslint-enable no-unused-vars */
 
 
 import { MenuItem, LeftNav } from 'material-ui';
 
 const menuItems = [
-  { route: '/',
-    text: 'Dashboard' },
-  { type: MenuItem.Types.SUBHEADER,
-    text: 'Objects' },
-  { route: 'nodes',
-    text: 'Nodes' },
-  { route: 'workflows',
-    text: 'Workflows' },
-  { type: MenuItem.Types.SUBHEADER,
-    text: 'Tools' },
-  { route: 'editor',
-    text: 'Workflow Editor' },
-  { type: MenuItem.Types.SUBHEADER,
-    text: 'Other' },
-  { type: MenuItem.Types.LINK,
-    payload: 'http://emc.com', text: 'EMC' }
+  { text: 'Dashboard', route: '/' },
+  { text: 'Objects', type: MenuItem.Types.SUBHEADER },
+  { text: 'Nodes', route: 'nodes' },
+  { text: 'Other', type: MenuItem.Types.SUBHEADER },
+  { text: 'EMC', type: MenuItem.Types.LINK, payload: 'http://emc.com' }
 ];
 
 @decorateComponent({

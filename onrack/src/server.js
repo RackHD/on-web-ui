@@ -15,7 +15,7 @@ server.use(express.static(path.join(__dirname)));
 // -----------------------------------------------------------------------------
 
 // Main HTML template
-var templateFile = path.join(__dirname, 'templates/index.html'),
+var templateFile = path.join(__dirname, '../../common/templates/index.html'),
     template = _.template(fs.readFileSync(templateFile, 'utf8'));
 
 var preload = true;
@@ -24,7 +24,7 @@ server.get('*', function(req, res) {
   if (preload) {
     // The top-level React component
     var AppComponent = React.createFactory(require('./components/App')),
-        NotFoundComponent = React.createFactory(require('./components/NotFound'));
+        NotFoundComponent = React.createFactory(require('../../common/components/NotFound'));
 
     // NOTE: react-router doesn't work server-side so the dashboard component is forced.
     var view = new NotFoundComponent(),

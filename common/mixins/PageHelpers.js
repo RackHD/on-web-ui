@@ -1,6 +1,6 @@
 'use strict';
 
-import Breadcrumbs from '../Breadcrumbs';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 export default {
 

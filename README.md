@@ -13,7 +13,8 @@ Based on this github project: https://github.com/kriasoft/react-starter-kit from
 ├── /build/                     # The folder for compiled output
 ├── /docs/                      # Documentation files for the project
 ├── /node_modules/              # 3rd-party libraries and utilities
-├── /src/                       # The source code of the application
+├── /common/                    # 
+├── /{UI}/src/                  # The source code of the application
 │   ├── /actions/               # Action creators that allow to trigger a dispatch to stores
 │   ├── /assets/                # Static files which are copied to ./build on compile
 │   ├── /components/            # React components
@@ -23,13 +24,15 @@ Based on this github project: https://github.com/kriasoft/react-starter-kit from
 │   ├── /stores/                # Stores contain the application state and logic
 │   ├── /styles/                # CSS styles (deprecated, put CSS into components' folders)
 │   ├── /templates/             # HTML templates for server-side rendering, emails etc.
-│   ├── /client.js                 # Client-side startup script
+│   ├── /client.js              # Client-side startup script
 │   └── /server.js              # Server-side startup script
 │── gulpfile.js                 # Configuration file for automated builds
 │── package.json                # The list of 3rd party libraries and utilities
 │── preprocessor.js             # ES6 transpiler settings for Jest
 └── webpack.config.js           # Webpack configuration for bundling and optimization
 ```
+
+NOTE: There are two different `{UI}/src` directories on for OnRack and one for Monorail. The `{UI}/src` directory structure also applies to `/common`
 
 ### Getting Started
 
@@ -38,6 +41,7 @@ $ git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
 $ cd on-web-ui
 $ npm install -g gulp           # Install Gulp task runner globally
 $ npm install                   # Install Node.js components listed in ./package.json
+$ cd onrack                     # Or: "cd monorail"
 $ cp src/config.js.example src/config.js
 $ gulp                          # Run gulp to build and start browser-sync
 ```

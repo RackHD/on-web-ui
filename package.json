@@ -68,13 +68,15 @@
     "webpack-dev-server": "^1.8.2"
   },
   "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../preprocessor.js",
+    "rootDir": "./",
+    "testPathDirs": ["monorail/src", "onrack/src"],
+    "scriptPreprocessor": "./preprocessor.js",
     "unmockedModulePathPatterns": ["react"]
   },
   "scripts": {
     "start": "./node_modules/.bin/gulp",
-    "test": "./node_modules/.bin/eslint src gulpfile.js webpack.config.js && ./node_modules/.bin/jest",
+    "test": "./node_modules/.bin/jest",
+    "lint": "./node_modules/.bin/eslint monorail/src monorail/gulpfile.js monorail/webpack.config.js onrack/src onrack/gulpfile.js onrack/webpack.config.js",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "./node_modules/.bin/webdriver-manager update"
   }

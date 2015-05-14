@@ -3,11 +3,11 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
-import DialogHelpers from '../mixins/DialogHelpers';
-import FormatHelpers from '../mixins/FormatHelpers';
-import EditorHelpers from '../mixins/EditorHelpers';
-import RouteHelpers from '../mixins/RouteHelpers';
-import GridHelpers from '../mixins/GridHelpers';
+import DialogHelpers from '../../../../common/mixins/DialogHelpers';
+import FormatHelpers from '../../../../common/mixins/FormatHelpers';
+import EditorHelpers from '../../../../common/mixins/EditorHelpers';
+import RouteHelpers from '../../../../common/mixins/RouteHelpers';
+import GridHelpers from '../../../../common/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
@@ -16,7 +16,7 @@ import {
     RaisedButton
   } from 'material-ui';
 import { workflows } from '../../actions/WorkflowActions';
-import JsonEditor from '../JsonEditor';
+import JsonEditor from '../../../../common/components/JsonEditor';
 
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)

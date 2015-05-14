@@ -2,7 +2,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../lib/decorateComponent';
+import decorateComponent from '../../../../common/lib/decorateComponent';
 /* eslint-enable no-unused-vars */
 
 import { RouteHandler } from 'react-router';
