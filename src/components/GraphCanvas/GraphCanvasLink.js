@@ -51,6 +51,10 @@ export default class GraphCanvasLink extends Component {
         maxY = this.props.height - gutter,
         halfX = this.props.width / 2,
         halfY = this.props.height / 2,
+        // a1X = this.props.width * 0.25,
+        // q1Y = this.props.height * 0.25,
+        // q2X = this.props.width * 0.75,
+        // q2Y = this.props.height * 0.75,
         riseOverRun = this.props.height / this.props.width,
         svgArea = this.props.width * this.props.height,
         border = '',
@@ -63,56 +67,67 @@ export default class GraphCanvasLink extends Component {
     }
 
     if (this.props.dirX === 1 && this.props.dirY === 1) {
-      align = 'br';
+      // align = 'br';
       if (!border) {
         path = ['M', minX, maxY, 'Q', minX, halfY, halfX, halfY, 'T', maxX, minY].join(' ');
       }
-    }
-    else if (this.props.dirX === 1 && this.props.dirY === -1) {
-      align = 'bl';
-      if (!border) {
-        path = ['M', minX, minY, 'Q', minX, halfY, halfX, halfY, 'T', maxX, maxY].join(' ');
+      else {
+        path = ['M', minX, maxY, 'H', maxX, 'V', minY].join(' ');
       }
     }
-    else if (this.props.dirX === -1 && this.props.dirY === 1) {
-      align = 'tr';
+    else if (this.props.dirX === 1 && this.props.dirY === -1) {
+      // align = 'bl';
       if (!border) {
         path = ['M', maxX, maxY, 'Q', maxX, halfY, halfX, halfY, 'T', minX, minY].join(' ');
       }
+      else {
+        path = ['M', maxX, maxY, 'H', minX, 'V', minY].join(' ');
+      }
+    }
+    else if (this.props.dirX === -1 && this.props.dirY === 1) {
+      // align = 'tr';
+      if (!border) {
+        path = ['M', minX, minY, 'Q', minX, halfY, halfX, halfY, 'T', maxX, maxY].join(' ');
+      }
+      else {
+        path = ['M', minX, minY, 'H', maxX, 'V', maxY].join(' ');
+      }
     }
     else if (this.props.dirX === -1 && this.props.dirY === -1) {
-      align = 'tl';
+      // align = 'tl';
       if (!border) {
         path = ['M', maxX, minY, 'Q', maxX, halfY, halfX, halfY, 'T', minX, maxY].join(' ');
+      }
+      else {
+        path = ['M', maxX, minY, 'H', minX, 'V', maxY].join(' ');
       }
     }
 
     return (
-      <div className={'GraphCanvasLink ' + hover + border + align}
+      <svg className={'GraphCanvasLink ' + hover + border + align}
+           width={styles.width}
+           height={styles.height}
            style={styles}
            data-canvasref={this.props.canvasRef}
-           onDoubleClick={this.removeLink}>
-        <svg width="100%"
-             height="100%"
-             viewBox={[
-               minX - gutter, minY - gutter,
-               maxX + gutter, maxY + gutter
-             ].join(' ')}
-             preserveAspectRatio="none"
-             xmlns="http://www.w3.org/2000/svg">
-
-          <path d={path}
-                fill="transparent"
-                stroke="black"
-                strokeWidth={stroke}
-                strokeLinecap="round"
-                onMouseOver={this.onHoverCurve.bind(this)}
-                onMouseOut={this.onLeaveCurve.bind(this)} />
-        </svg>
-        X: &nbsp; {this.props.dirX}&nbsp; | &nbsp;
-        Y: &nbsp; {this.props.dirY}&nbsp; | &nbsp;
-        R: &nbsp; {riseOverRun}
-      </div>
+           onDoubleClick={this.removeLink}
+           viewBox={[
+             minX - gutter, minY - gutter,
+             maxX + gutter, maxY + gutter
+           ].join(' ')}
+           preserveAspectRatio="none"
+           xmlns="http://www.w3.org/2000/svg">
+        <path d={path}
+              fill="transparent"
+              stroke="black"
+              strokeWidth={stroke}
+              strokeLinecap="round"
+              onMouseOver={this.onHoverCurve.bind(this)}
+              onMouseOut={this.onLeaveCurve.bind(this)} />
+        <text x={halfX} y={halfY}>{
+          'X: ' + this.props.dirX + ' ' +
+          'Y: ' + this.props.dirY
+        }</text>
+      </svg>
     );
   }
 

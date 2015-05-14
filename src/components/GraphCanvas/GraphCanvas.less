@@ -20,9 +20,16 @@
   .GraphCanvasNode:hover {
     z-index: 1;
   }
-  .GraphCanvasLink.border:hover,
+  // .GraphCanvasLink.border:hover,
+
+  .GraphCanvasLink path:hover {
+    stroke: red;
+  }
   .GraphCanvasLink.hover {
-    z-index: 1;
+    // z-index: 1;
+    path, path:hover {
+      stroke: blue;
+    }
   }
 
   .node {background: red;}
@@ -30,24 +37,24 @@
 
   .GraphCanvasNode {background: blue;}
 
-  .GraphCanvasLink.border svg {
-    visibility: hidden;
-  }
+  // .GraphCanvasLink.border svg {
+  //   visibility: hidden;
+  // }
 
-  .GraphCanvasLink.border.tr {
-    border-top: 5px solid #000;
-    border-right: 5px solid #000;
-  }
-  .GraphCanvasLink.border.tl {
-    border-top: 5px solid #000;
-    border-left: 5px solid #000;
-  }
-  .GraphCanvasLink.border.br {
-    border-bottom: 5px solid #000;
-    border-right: 5px solid #000;
-  }
-  .GraphCanvasLink.border.bl {
-    border-bottom: 5px solid #000;
-    border-left: 5px solid #000;
-  }
+  // .GraphCanvasLink.border.tr {
+  //   border-top: 5px solid #000;
+  //   border-right: 5px solid #000;
+  // }
+  // .GraphCanvasLink.border.tl {
+  //   border-top: 5px solid #000;
+  //   border-left: 5px solid #000;
+  // }
+  // .GraphCanvasLink.border.br {
+  //   border-bottom: 5px solid #000;
+  //   border-right: 5px solid #000;
+  // }
+  // .GraphCanvasLink.border.bl {
+  //   border-bottom: 5px solid #000;
+  //   border-left: 5px solid #000;
+  // }
 }

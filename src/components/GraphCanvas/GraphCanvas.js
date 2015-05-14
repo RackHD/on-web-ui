@@ -23,14 +23,14 @@ export default class GraphCanvas extends Component {
   rawLinks = [];
 
   render() {
-    var active = null;
+    var activeNode = null,
+        activeLink = null;
     if (this.state.node) {
-      active = <div className="node"
+      activeNode = <div className="node"
                     style={{...this.state.node}}>{Date.now()}</div>;
     }
     if (this.state.link) {
-      active = <div className="link"
-                    style={{...this.state.link}}>{Date.now()}</div>;
+      activeLink = <GraphCanvasLink {...this.state.link} />;
     }
     var links = this.state.links.map(link => <GraphCanvasLink {...link} />),
         nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
@@ -38,8 +38,9 @@ export default class GraphCanvas extends Component {
       <div className="GraphCanvas container"
            onMouseDown={this.drawNode()}>
         {links}
+        {activeLink}
         {nodes}
-        {active}
+        {activeNode}
       </div>
     );
   }
