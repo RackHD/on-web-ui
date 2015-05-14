@@ -32,6 +32,7 @@ import decorateComponent from '../lib/decorateComponent';
 })
 export default class GraphCanvasLink extends Component {
 
+  state = {hover: false};
   removeLink = this.removeLink.bind(this);
 
   render() {
@@ -41,40 +42,50 @@ export default class GraphCanvasLink extends Component {
       width: this.props.width,
       height: this.props.height
     };
-    var border = '',
-        align,
-        path;
+
+    var riseOverRun = this.props.height / this.props.width,
+        svgArea = this.props.width * this.props.height,
+        border = '',
+        hover = this.state.hover ? 'hover ' : '',
+        align = '',
+        path = '';
+
+    if (svgArea < 500 || riseOverRun > 1 || riseOverRun < 0.35) {
+      border = 'border ';
+    }
+
     if (this.props.dirX === 1 && this.props.dirY === 1) {
       align = 'br';
-      path = 'M 0 100 L 100 0 z';
+      if (!border) {
+        path = 'M 0 100 Q 0 50, 50 50 T 100 0';
+      }
     }
     else if (this.props.dirX === 1 && this.props.dirY === -1) {
       align = 'bl';
-      path = 'M 0 0 L 100 100 z';
+      if (!border) {
+        path = 'M 0 0 Q 0 50, 50 50 T 100 100';
+      }
     }
     else if (this.props.dirX === -1 && this.props.dirY === 1) {
       align = 'tr';
-      path = 'M 0 0 L 100 100 z';
+      if (!border) {
+        path = 'M 100 100 Q 100 50, 50 50 T 0 0';
+      }
     }
     else if (this.props.dirX === -1 && this.props.dirY === -1) {
       align = 'tl';
-      path = 'M 0 100 L 100 0 z';
+      if (!border) {
+        path = 'M 100 0 Q 100 50, 50 50 T 0 100';
+      }
     }
-    var riseOverRun = this.props.height / this.props.width;
-    if (riseOverRun > 2) {
-      border = 'border ';
-      path = 'M 50 0 L 50 100 z';
-    }
-    else if (riseOverRun < 0.2) {
-      border = 'border ';
-      path = 'M 0 50 L 100 50 z';
-    }
+
     // styles.width += 100;
     // styles.height += 100;
     // styles.left -= 50;
     // styles.top -= 50;
+
     return (
-      <div className={'GraphCanvasLink ' + border + align}
+      <div className={'GraphCanvasLink ' + hover + border + align}
            style={styles}
            data-canvasref={this.props.canvasRef}
            onDoubleClick={this.removeLink}>
@@ -85,14 +96,26 @@ export default class GraphCanvasLink extends Component {
              xmlns="http://www.w3.org/2000/svg">
 
           <path d={path}
+                fill="transparent"
                 stroke="black"
-                strokeWidth="2" />
+                strokeWidth="2"
+                strokeLinecap="round"
+                onMouseOver={this.onHoverCurve.bind(this)}
+                onMouseOut={this.onLeaveCurve.bind(this)} />
         </svg>
         X: &nbsp; {this.props.dirX}&nbsp; | &nbsp;
         Y: &nbsp; {this.props.dirY}&nbsp; | &nbsp;
         R: &nbsp; {riseOverRun}
       </div>
     );
+  }
+
+  onHoverCurve() {
+    this.setState({hover: true});
+  }
+
+  onLeaveCurve() {
+    this.setState({hover: false});
   }
 
   removeLink(event) {

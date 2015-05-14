@@ -62,7 +62,6 @@ export default {
           upHandler = this.dragMoveHandler(listeners.up, dragState),
           unbindUp = this.bindWindow('mouseup', finish); // eslint-disable-line no-use-before-define
       function finish(upEvent) {
-        console.log('unbind');
         unbindMove();
         unbindUp();
         upHandler(upEvent);
