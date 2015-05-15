@@ -69,9 +69,14 @@
   },
   "jest": {
     "rootDir": "./",
-    "testPathDirs": ["monorail/src", "onrack/src"],
+    "testPathDirs": [
+      "monorail/src",
+      "onrack/src"
+    ],
     "scriptPreprocessor": "./preprocessor.js",
-    "unmockedModulePathPatterns": ["react"]
+    "unmockedModulePathPatterns": [
+      "react"
+    ]
   },
   "scripts": {
     "start": "./node_modules/.bin/gulp",

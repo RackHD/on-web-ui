@@ -6,8 +6,7 @@ import mixin from 'react-mixin';
 import PageHelpers from '../../../../common/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
-import NodesGrid from '../Nodes/NodesGrid';
-import Chart from './Chart';
+import { ChassisGrid } from '../Chassis';
 import './Dashboard.less';
 
 @mixin.decorate(PageHelpers)
@@ -19,17 +18,11 @@ export default class Dashboard extends Component {
         {this.renderBreadcrumbs('Dashboard')}
         <div className="container">
           <div className="row">
-            <div className="three columns chart"><Chart /></div>
-            <div className="three columns chart"><Chart /></div>
-            <div className="three columns chart"><Chart /></div>
-            <div className="three columns chart"><Chart /></div>
-          </div>
-          <div className="row">
             <div className="one-half column">
-              <NodesGrid />
+              <ChassisGrid />
             </div>
             <div className="one-half column">
-              <NodesGrid />
+              {/*<NodesGrid />*/}
             </div>
           </div>
         </div>

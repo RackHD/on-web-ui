@@ -1,13 +1,13 @@
 'use strict';
 
-import { API } from '../config';
+import { API } from '../../config';
 import http from 'superagent';
 
 export default {
 
-  getNodes() {
+  getSystemResetActions(id) {
     return new Promise(function (resolve, reject) {
-      http.get(API + 'nodes')
+      http.get(API + 'ManagedSystems/Systems/' + id + '/Actions/ComputerSystem.Reset')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -16,12 +16,12 @@ export default {
     });
   },
 
-  postNodes(body) {
+  postSystemResetAction(reset_type) { // eslint-disable-line camelcase
     return new Promise(function (resolve, reject) {
       http.post(API + 'nodes')
         .accept('json')
         .type('json')
-        .send(body)
+        .send({ reset_type }) // eslint-disable-line camelcase
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -29,9 +29,9 @@ export default {
     });
   },
 
-  getNode(id) {
+  getSystemBootImages(id) {
     return new Promise(function (resolve, reject) {
-      http.get(API + 'nodes/' + id)
+      http.get(API + 'ManagedSystems/Systems/' + id + '/OEM/OnRack/Actions/OnRack.BootImage')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -40,23 +40,12 @@ export default {
     });
   },
 
-  patchNode(id, body) {
+  postSystemBootImage(boot_image) { // eslint-disable-line camelcase
     return new Promise(function (resolve, reject) {
-      http.patch(API + 'nodes/' + id)
+      http.post(API + 'nodes')
         .accept('json')
         .type('json')
-        .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
-
-  deleteNode(id) {
-    return new Promise(function (resolve, reject) {
-      http.del(API + 'nodes/' + id)
-        .accept('json')
+        .send({ boot_image }) // eslint-disable-line camelcase
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
