@@ -15,18 +15,18 @@ export default class ChassisDetails extends Component {
   state = {chassis: null};
 
   componentDidMount() {
-    this.unwatchNode = chassis.watchOne(this.getChassisId(), 'chassis', this);
+    this.unwatchChassis = chassis.watchOne(this.getChassisId(), 'chassis', this);
     this.readNode();
   }
 
-  componentWillUnmount() { this.unwatchNode(); }
+  componentWillUnmount() { this.unwatchChassis(); }
 
   render() {
     return (
       <div className="ChassisDetails">
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
-          {href: 'nodes', label: 'Chassis'},
+          {href: 'chassis', label: 'Chassis'},
           this.getChassisId()
         )}
         {JSON.stringify(this.state.chassis)}

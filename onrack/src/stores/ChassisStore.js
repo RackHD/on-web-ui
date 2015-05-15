@@ -32,7 +32,7 @@ export default class ChassisStore extends Store {
           state: item.Status.State,
           health: item.Status.Health
         },
-        name: item.name,
+        name: item.Name,
         partNumber: item.partNumber,
         assetTag: item.assetTag,
         computeSystems: item.Links && item.Links.ComputeSystem &&

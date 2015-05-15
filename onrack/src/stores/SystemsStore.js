@@ -42,7 +42,7 @@ export default class SystemsStore extends Store {
           health: item.Status.Health
         },
         actions: item.Actions, // TODO: map this
-        name: item.name,
+        name: item.Name,
         partNumber: item.partNumber,
         assetTag: item.assetTag,
         chassis: item.Links && item.Links.Chassis &&

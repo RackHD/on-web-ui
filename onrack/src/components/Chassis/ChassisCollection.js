@@ -8,7 +8,6 @@ import PageHelpers from '../../../../common/mixins/PageHelpers';
 
 import {} from 'material-ui';
 import ChassisGrid from './ChassisGrid';
-import './Chassis.less';
 
 @mixin.decorate(PageHelpers)
 export default class ChassisCollection extends Component {

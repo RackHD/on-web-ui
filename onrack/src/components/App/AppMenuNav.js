@@ -11,7 +11,8 @@ import { MenuItem, LeftNav } from 'material-ui';
 const menuItems = [
   { text: 'Dashboard', route: '/' },
   { text: 'Objects', type: MenuItem.Types.SUBHEADER },
-  { text: 'Nodes', route: 'nodes' },
+  { text: 'Chassis', route: 'chassis' },
+  { text: 'Systems', route: 'systems' },
   { text: 'Other', type: MenuItem.Types.SUBHEADER },
   { text: 'EMC', type: MenuItem.Types.LINK, payload: 'http://emc.com' }
 ];

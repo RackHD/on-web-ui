@@ -34,6 +34,10 @@ export default class Breadcrumbs extends Component {
     }
     this.path = [];
     this.props.path.forEach((route, index) => {
+      if (!route) {
+        console.error(new Error('Missing route in breadcrumbs.').stack);
+        return;
+      }
       if (typeof route === 'string') { route = {label: route}; }
       var { prefix = '#/', label, href } = route;
       if (href) {

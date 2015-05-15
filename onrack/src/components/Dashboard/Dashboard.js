@@ -7,6 +7,7 @@ import PageHelpers from '../../../../common/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
 import { ChassisGrid } from '../Chassis';
+import { SystemsGrid } from '../Systems';
 import './Dashboard.less';
 
 @mixin.decorate(PageHelpers)
@@ -22,7 +23,7 @@ export default class Dashboard extends Component {
               <ChassisGrid />
             </div>
             <div className="one-half column">
-              {/*<NodesGrid />*/}
+              {<SystemsGrid />}
             </div>
           </div>
         </div>

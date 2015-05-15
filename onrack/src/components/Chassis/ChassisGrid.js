@@ -23,11 +23,11 @@ export default class ChassisGrid extends Component {
   state = {chassisList: null};
 
   componentDidMount() {
-    this.unwatchNodes = chassis.watchAll('chassisList', this);
+    this.unwatchChassis = chassis.watchAll('chassisList', this);
     this.listChassis();
   }
 
-  componentWillUnmount() { this.unwatchNodes(); }
+  componentWillUnmount() { this.unwatchChassis(); }
 
   render() {
     return (
@@ -45,8 +45,8 @@ export default class ChassisGrid extends Component {
           }, chassisItem => (
             {
               ID: <a href={this.routePath('chassis', chassisItem.id)}>{this.shortId(chassisItem.id)}</a>,
-              Name: chassisItem.name || 'Unknown',
-              Type: chassisItem.type,
+              State: chassisItem.status && chassisItem.status.state || 'Unknown',
+              Health: chassisItem.status && chassisItem.status.healthRollUp || 'Unknown',
               Actions: [
                 <IconButton iconClassName="fa fa-info-circle"
                             tooltip="View Chassis"

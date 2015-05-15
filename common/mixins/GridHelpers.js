@@ -13,7 +13,7 @@ export default {
     if (!params || !params.label) {
       return 'Unabled to render grid toolbar.';
     }
-    if (params.count) {
+    if (params.count || params.count === 0) {
       params.count = <span>({params.count})</span>;
     }
     var rightToolbar = null;
