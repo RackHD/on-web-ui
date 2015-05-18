@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
+import DeveloperHelpers from '../../../../common/mixins/DeveloperHelpers';
 import DialogHelpers from '../../../../common/mixins/DialogHelpers';
 import FormatHelpers from '../../../../common/mixins/FormatHelpers';
 import RouteHelpers from '../../../../common/mixins/RouteHelpers';
@@ -14,6 +15,7 @@ import {
   } from 'material-ui';
 import { systems } from '../../actions/SystemActions';
 
+@mixin.decorate(DeveloperHelpers)
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
 @mixin.decorate(RouteHelpers)
@@ -23,11 +25,14 @@ export default class SystemsGrid extends Component {
   state = {systemsList: null};
 
   componentDidMount() {
+    this.profileTime('SystemGrid', 'mount');
     this.unwatchSystems = systems.watchAll('systemsList', this);
     this.listSystems();
   }
 
   componentWillUnmount() { this.unwatchSystems(); }
+
+  componentDidUpdate() { this.profileTime('SystemGrid', 'update'); }
 
   render() {
     return (
@@ -61,7 +66,7 @@ export default class SystemsGrid extends Component {
     );
   }
 
-  listSystems() { systems.list(); }
+  listSystems() { return systems.list(); }
 
   viewSystemDetails(id) { this.routeTo('systems', id); }
 
