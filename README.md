@@ -13,7 +13,7 @@ Based on this github project: https://github.com/kriasoft/react-starter-kit from
 ├── /build/                     # The folder for compiled output
 ├── /docs/                      # Documentation files for the project
 ├── /node_modules/              # 3rd-party libraries and utilities
-├── /common/                    # 
+├── /common/                    #
 ├── /{UI}/src/                  # The source code of the application
 │   ├── /actions/               # Action creators that allow to trigger a dispatch to stores
 │   ├── /assets/                # Static files which are copied to ./build on compile
@@ -51,6 +51,17 @@ $ gulp                          # Run gulp to build and start browser-sync
 By default the application makes api calls to: `http://localhost/api/1.1`
 This can be configured in `src/config.js` after it is created from the example
 config.
+
+##### Feature Flags
+
+The UI has feature flags to allow features to be toggled on or off. They are set in the config file and can be overridden in the query string of the URL.
+
+For example if you want to disable the `dev` flag you can add: `?dev=false` to the url and it will disable the flag.
+
+###### Flags
+
+  * dev - Enables profiling.
+
 
 #### Mock API
 
