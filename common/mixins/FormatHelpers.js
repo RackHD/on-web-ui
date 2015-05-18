@@ -7,7 +7,15 @@ const ellipsis = '\u2026';
 export default {
 
   fromNow: (time) => {
-    return moment(time).fromNow();
+    var m = moment(time);
+    if (!time || !m.isValid()) { return null; }
+    return m.fromNow();
+  },
+
+  longDate: (time) => {
+    var m = moment(time);
+    if (!time || !m.isValid()) { return null; }
+    return m.format('dddd, MMMM Do YYYY, h:mm:ss a');
   },
 
   shortId: (id) =>
