@@ -8,7 +8,7 @@ import Node, { CreateNode } from '../Node';
 import Nodes from '../Nodes';
 import Workflow, { CreateWorkflow } from '../Workflow';
 import Workflows from '../Workflows';
-import WorkflowEditor from '../WorkflowEditor';
+import WorkflowBuilder from '../WorkflowBuilder';
 import Activities from '../Activities';
 import Tasks from '../Tasks';
 import Jobs from '../Jobs';
@@ -36,7 +36,7 @@ export default (
     <Route name="activities" handler={Activities} />
     <Route name="tasks" handler={Tasks} />
     <Route name="jobs" handler={Jobs} />
-    <Route name="editor" handler={WorkflowEditor} />
+    <Route name="builder" handler={WorkflowBuilder} />
     <Route name="login" handler={UserLogin} />
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />

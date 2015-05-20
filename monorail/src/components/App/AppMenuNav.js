@@ -14,7 +14,7 @@ const menuItems = [
   { text: 'Nodes', route: 'nodes' },
   { text: 'Workflows', route: 'workflows' },
   { text: 'Tools', type: MenuItem.Types.SUBHEADER },
-  { text: 'Workflow Editor', route: 'editor' },
+  { text: 'Workflow Builder', route: 'builder' },
   { text: 'Other', type: MenuItem.Types.SUBHEADER },
   { text: 'EMC', type: MenuItem.Types.LINK, payload: 'http://emc.com' }
 ];
