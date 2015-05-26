@@ -1,6 +1,10 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import mixin from 'react-mixin';
+import RouteHelpers from '../../../../common/mixins/RouteHelpers';
+/* eslint-enable no-unused-vars */
 
 import {
     Menu,
@@ -8,6 +12,7 @@ import {
   } from 'material-ui';
 import { workflows } from '../../actions/WorkflowActions';
 
+@mixin.decorate(RouteHelpers)
 export default class WorkflowsMenu extends Component {
 
   state = {workflows: null};
@@ -21,12 +26,13 @@ export default class WorkflowsMenu extends Component {
 
   render() {
     var workflowMenuItems = [
-      {text: 'Workflows', type: MenuItem.Types.SUBHEADER}
+      {text: 'Workflows', type: MenuItem.Types.SUBHEADER},
+      {text: 'New +', workflow: {}}
     ];
     if (this.state.workflows) {
       this.state.workflows.forEach(workflow => {
         workflowMenuItems.push({
-          text: workflow.name,
+          text: workflow.id,
           workflow: workflow
         });
       });
@@ -45,7 +51,12 @@ export default class WorkflowsMenu extends Component {
   loadWorkflow(event, index, menuItem) {
     var workflow = menuItem.workflow;
     if (!workflow) { return; }
-    console.log(workflow.name);
+    if (workflow.id) {
+      this.routeTo('builder', workflow.id);
+    }
+    else {
+      this.routeTo('builder');
+    }
   }
 
 }

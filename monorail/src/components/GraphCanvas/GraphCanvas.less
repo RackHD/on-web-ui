@@ -1,68 +1,128 @@
+@import "../../../../common/styles/colors.less";
+
 .GraphCanvas {
-  width: 1000px;
-  height: 1000px;
-  border: 1px solid #000;
+  position: relative;
+  overflow: hidden;
 
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  .container {
+    position: absolute;
+    top: 0;
+  }
 
-  .node, .link,
   .GraphCanvasNode, .GraphCanvasLink {
     display: block;
     position: absolute;
-    border-radius: 10px;
   }
 
-  svg {
-    overflow: visible !important;
+  .GraphCanvasNode {
+    min-height: 90px;
+    background-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.75);
+
+    &, .mui-paper-container {
+      transition: box-shadow 0.5s;
+      border-radius: 5px;
+    }
+
+    &:hover {
+      z-index: 1;
+    }
+
+    &.active {
+      background-color: rgb(127, 127, 127);
+      background-color: rgba(127, 127, 127, 0.25);
+
+      .mui-paper-container { .header, .flipper {
+        visibility: hidden;
+      } }
+    }
+
+    &.flip .mui-paper-container .flipper {
+      transform: rotateY(180deg);
+    }
+
+    .mui-paper-container {
+      padding: 48px 0 0 0;
+      position: relative;
+      perspective: 1000;
+
+      .header {
+        color: black;
+        background-color: rgb(127, 127, 127);
+        background-color: rgba(127, 127, 127, 0.25);
+        position: absolute;
+        height: 48px;
+        width: 100%;
+        cursor: move;
+        top: 0;
+        border-bottom: 1px solid #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        text-align: center;
+
+        span.name {
+          font-size: 1.2em;
+          line-height: 48px;
+        }
+      }
+
+      .flipper, .front, .back {
+        width: 100%;
+        height: 100%;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+      }
+
+      .flipper {
+        width: 100%;
+        height: 100%;
+        transition: 0.25s;
+        transform-style: preserve-3d;
+        position: relative;
+      }
+
+      .front, .back {
+        backface-visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .front {
+        background: rgba(255, 0, 0, 0.25);
+        z-index: 2;
+        transform: rotateY(0deg);
+      }
+
+      .back {
+        background: rgba(0, 0, 255, 0.25);
+        transform: rotateY(180deg);
+      }
+    }
   }
 
-  .GraphCanvasNode:hover {
-    z-index: 1;
-  }
-  // .GraphCanvasLink.border:hover,
+  .GraphCanvasPort {
+    clear: both;
+    height: 48px;
+    text-align: center;
+    border-bottom: 1px solid #000;
 
-  .GraphCanvasLink path {
-    pointer-events:all;
-  }
-
-  .GraphCanvasLink path:hover {
-    stroke: red;
-  }
-  .GraphCanvasLink.hover {
-    // z-index: 1;
-    // path {
-    //   stroke: blue;
-    // }
+    span.name {
+      line-height: 48px;
+    }
   }
 
-  .node {background: red;}
-  .link {background: green;}
+  .GraphCanvasLink {
+    path {
+      pointer-events:all;
+    }
 
-  .GraphCanvasNode {background: blue;}
+    path:hover {
+      stroke: red;
+    }
 
-  // .GraphCanvasLink.border svg {
-  //   visibility: hidden;
-  // }
-
-  // .GraphCanvasLink.border.tr {
-  //   border-top: 5px solid #000;
-  //   border-right: 5px solid #000;
-  // }
-  // .GraphCanvasLink.border.tl {
-  //   border-top: 5px solid #000;
-  //   border-left: 5px solid #000;
-  // }
-  // .GraphCanvasLink.border.br {
-  //   border-bottom: 5px solid #000;
-  //   border-right: 5px solid #000;
-  // }
-  // .GraphCanvasLink.border.bl {
-  //   border-bottom: 5px solid #000;
-  //   border-left: 5px solid #000;
-  // }
+    &.hover path {
+      // stroke: blue;
+    }
+  }
 }

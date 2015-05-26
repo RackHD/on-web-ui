@@ -37,6 +37,7 @@ export default (
     <Route name="tasks" handler={Tasks} />
     <Route name="jobs" handler={Jobs} />
     <Route name="builder" handler={WorkflowBuilder} />
+    <Route name="builder/:workflowId" handler={WorkflowBuilder} />
     <Route name="login" handler={UserLogin} />
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />

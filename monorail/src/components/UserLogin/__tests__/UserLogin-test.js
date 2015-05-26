@@ -1,12 +1,9 @@
 'use strict';
-/* global jest, describe, it, expect */
+/* global describe, it, expect */
+/* eslint-disable no-unused-expressions */
 
 import React from 'react/addons';
 var { TestUtils } = React.addons;
-
-// TODO: auto mocking is not working properly.
-//       jest is not correctly mocking react components.
-jest.autoMockOff();
 
 var UserLogin = require('../UserLogin');
 
@@ -19,8 +16,8 @@ describe('UserLogin', function() {
 
     var userLoginElem = TestUtils.findRenderedDOMComponentWithClass(userLogin, 'UserLogin');
 
-    expect(userLogin).toBeDefined();
-    expect(userLoginElem).toBeDefined();
+    expect(userLogin).to.be.ok;
+    expect(userLoginElem).to.be.ok;
   });
 
 });

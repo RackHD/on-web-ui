@@ -7,6 +7,10 @@ import decorateComponent from '../../../../common/lib/decorateComponent';
 import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
+import {
+    IconButton
+  } from 'material-ui';
+
 @decorateComponent({
   propTypes: {
   },
@@ -20,10 +24,23 @@ export default class GraphCanvasPort extends Component {
 
   render() {
     return (
-      <div className="GraphCanvasPort">
-        Hello World
+      <div className="GraphCanvasPort"
+           onMouseDown={this.drawLink()}>
+        <IconButton className="socket in left"
+                    iconClassName="fa fa-circle-o" />
+        <span className="name">PORT</span>
+        <IconButton className="socket out right"
+                    iconClassName="fa fa-circle-o" />
       </div>
     );
+  }
+
+  drawLink() {
+    return this.props.canvas.setupClickDrag({
+      down: (event, dragState, e) => this.props.canvas.drawLinkStart(event, dragState, e),
+      move: (event, dragState, e) => this.props.canvas.drawLinkContinue(event, dragState, e),
+      up: (event, dragState, e) => this.props.canvas.drawLinkFinish(event, dragState, e)
+    });
   }
 
 }

@@ -7,6 +7,12 @@ import decorateComponent from '../../../../common/lib/decorateComponent';
 import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
+import {
+    Paper,
+    IconButton
+  } from 'material-ui';
+import GraphCanvasPort from './GraphCanvasPort.js';
+
 @decorateComponent({
   propTypes: {
     top: PropTypes.number,
@@ -29,6 +35,7 @@ export default class GraphCanvasNode extends Component {
 
   state = {};
   removeNode = this.removeNode.bind(this);
+  toggleFlip = this.toggleFlip.bind(this);
 
   render() {
     var styles = {
@@ -37,29 +44,56 @@ export default class GraphCanvasNode extends Component {
       width: this.props.width,
       height: this.props.height
     };
+    var className = 'GraphCanvasNode',
+        zDepth = 2;
+    if (this.props.active) {
+      className += ' active';
+    }
+    if (this.state.moving) {
+      className += ' moving';
+      zDepth = 4;
+    }
+    if (this.state.flip) {
+      className += ' flip';
+    }
+    var ports = [
+      <GraphCanvasPort canvas={this.props.canvas} />,
+      <GraphCanvasPort canvas={this.props.canvas} />,
+      <GraphCanvasPort canvas={this.props.canvas} />
+    ];
     return (
-      <div className="GraphCanvasNode"
-           style={styles}
-           data-canvasref={this.props.canvasRef}
-           onMouseDown={this.drawLink()}>
-        <div onMouseDown={this.moveNode()}>MOVE</div>
-        <div onMouseDown={this.resizeNode()}>RESIZE</div>
-        <div onClick={this.removeNode}>DELETE</div>
-      </div>
+      <Paper className={className}
+             zDepth={zDepth}
+             style={styles}
+             data-canvasref={this.props.canvasRef}>
+        <div className="header"
+             onMouseDown={this.moveNode()}>
+          <IconButton className="left"
+                      iconClassName={'fa fa-info' + (this.state.flip ? '-circle' : '')}
+                      tooltip="Flip"
+                      onClick={this.toggleFlip} />
+          <span className="name">Name</span>
+          <IconButton className="right"
+                      iconClassName="fa fa-remove"
+                      tooltip="Remove"
+                      onClick={this.removeNode} />
+        </div>
+        <div className="flipper">
+          <div className="front">
+            {ports}
+          </div>
+          <div className="back">
+            Selete Type
+          </div>
+        </div>
+      </Paper>
     );
-  }
-
-  drawLink() {
-    return this.props.canvas.setupClickDrag({
-      down: (event, dragState, e) => this.props.canvas.drawLinkStart(event, dragState, e),
-      move: (event, dragState, e) => this.props.canvas.drawLinkContinue(event, dragState, e),
-      up: (event, dragState, e) => this.props.canvas.drawLinkFinish(event, dragState, e)
-    });
   }
 
   moveNode() {
     return this.props.canvas.setupClickDrag({
       down: (event, dragState) => {
+        this.setState({moving: true});
         event.stopPropagation();
         dragState.nextMove = -1;
         dragState.lastMove = {
@@ -80,7 +114,10 @@ export default class GraphCanvasNode extends Component {
           lastX - event.relX,
           lastY - event.relY);
       },
-      up: (event) => event.stopPropagation()
+      up: (event) => {
+        this.setState({moving: false});
+        event.stopPropagation();
+      }
     });
   }
 
@@ -97,6 +134,10 @@ export default class GraphCanvasNode extends Component {
     event.preventDefault();
     if (!window.confirm('Are you sure?')) { return; } // eslint-disable-line no-alert
     this.props.canvas.removeNode(this);
+  }
+
+  toggleFlip() {
+    this.setState({flip: !this.state.flip});
   }
 
 }

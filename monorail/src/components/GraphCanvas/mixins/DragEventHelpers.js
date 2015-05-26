@@ -43,11 +43,13 @@ export default {
                        d=this.findThisDOMNode(),
                        o=this.domOffsetXY(d)
   ) {
-    var x = (e.pageX || e.clientX) - o.x,
-        y = (e.pageY || e.clientY) - o.y;
+    var x = (e.pageX || e.clientX),
+        y = (e.pageY || e.clientY);
     event.relDOM = d;
-    event.relX = x;
-    event.relY = y;
+    event.relX = x - o.x;
+    event.relY = y - o.y;
+    event.absX = x;
+    event.absY = y;
   },
 
   dragDownHandler(listeners={}, dragState={}) {
@@ -78,6 +80,8 @@ export default {
       this.offsetEventXY(event, e,
         dragState.offsetDOMNode,
         dragState.offset);
+      event.diffX = event.absX - dragState.downEvent.absX;
+      event.diffY = event.absY - dragState.downEvent.absY;
       if (moveListener) {
         moveListener.call(this, event, dragState, e);
       }

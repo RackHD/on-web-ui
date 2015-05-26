@@ -1,7 +1,6 @@
 'use strict';
-/* global jest, describe, it, expect */
-
-jest.autoMockOff();
+/* global describe, it, expect */
+/* eslint-disable no-unused-expressions */
 
 var SystemBootImagesStore = require('../SystemBootImagesStore');
 
@@ -9,7 +8,7 @@ describe('SystemBootImagesStore', function() {
 
   it('can be instantiated', function() {
     var store = new SystemBootImagesStore();
-    expect(store).toBeDefined();
+    expect(store).to.be.ok;
   });
 
 });
