@@ -7,7 +7,7 @@ export default {
 
   getSystemsCollection() {
     return new Promise(function (resolve, reject) {
-      http.get(API + 'ManagedSystems/SystemsCollection')
+      http.get(API + 'ManagedSystems/Systems')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

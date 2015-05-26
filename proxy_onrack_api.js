@@ -8,7 +8,7 @@ var superagent = require('superagent');
 
 server.set('port', 2000);
 
-var api = 'http://onrackapi.hwimo.lab.emc.com/rest/v1/';
+var api = 'http://onrackapi.hwimo.lab.emc.com/rest/v1';
 
 var methods = {
   GET: 'get',
@@ -25,7 +25,14 @@ server.get('*', function(req, res) {
   }
 
   agent.end(function (err, agentRes) {
-    res.send(err || agentRes && JSON.parse(agentRes.text) || '');
+    var response = err || agentRes && JSON.parse(agentRes.text) || '';
+    console.log('Proxy Request:', api + req.url);
+    if (err) {
+      console.error(response.message || response.toString());
+    } else {
+      console.log(response);
+    }
+    res.send(response);
   });
 });
 

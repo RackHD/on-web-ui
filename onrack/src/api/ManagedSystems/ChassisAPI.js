@@ -7,7 +7,7 @@ export default {
 
   getChassisCollection() {
     return new Promise(function (resolve, reject) {
-      http.get(API + 'ManagedSystems/ChassisCollection')
+      http.get(API + 'ManagedSystems/Chassis')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
