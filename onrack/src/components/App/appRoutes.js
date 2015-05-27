@@ -7,7 +7,7 @@ import App from './App';
 import { ChassisCollection, ChassisDetails } from '../Chassis';
 import { SystemsCollection, SystemDetails } from '../Systems';
 import Dashboard from '../Dashboard';
-import NotFound from '../../../../common/components/NotFound';
+import NotFound from 'common-web-ui/components/NotFound';
 
 export default (
   <Route name="root" path="/" handler={App}>

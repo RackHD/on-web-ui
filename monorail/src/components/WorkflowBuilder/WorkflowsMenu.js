@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
-import RouteHelpers from '../../../../common/mixins/RouteHelpers';
+import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
 
 import {

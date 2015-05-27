@@ -2,7 +2,7 @@
 /* global describe, it, expect */
 /* eslint-disable no-unused-expressions */
 
-var SystemsStore = require('../SystemsStore');
+import SystemsStore from '../SystemsStore';
 
 describe('SystemsStore', function() {
 

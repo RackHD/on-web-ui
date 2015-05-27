@@ -1,23 +1,33 @@
 'use strict';
-/* global describe, it, expect */
+/* global describe, it, expect, before, after */
 /* eslint-disable no-unused-expressions */
 
-import React from 'react/addons';
-var { TestUtils } = React.addons;
+import React from 'react'; // eslint-disable-line no-unused-vars
+import TestUtils from 'react/addons/TestUtils';
 
-var UserLogin = require('../UserLogin');
+import TestWrapper from 'common-web-ui/components/TestWrapper';
+import UserLogin from '../UserLogin';
 
 describe('UserLogin', function() {
 
-  it('can be rendered.', function() {
-    var userLogin = TestUtils.renderIntoDocument(
-      React.createElement(UserLogin, {})
-    );
+  describe('component', function() {
+    before(function(done) {
+      this.wrapper = TestWrapper.testRender(UserLogin, {}, (err, component) => {
+        this.userLogin = component;
+        done(err);
+      });
+    });
 
-    var userLoginElem = TestUtils.findRenderedDOMComponentWithClass(userLogin, 'UserLogin');
+    after(function(done) {
+      this.wrapper.cleanup(done);
+    });
 
-    expect(userLogin).to.be.ok;
-    expect(userLoginElem).to.be.ok;
+    it('can be rendered.', function() {
+      expect(this.wrapper).to.be.ok;
+      expect(this.userLogin).to.be.ok;
+      expect(TestUtils.findRenderedDOMComponentWithClass(
+        this.userLogin, 'UserLogin')).to.be.ok;
+    });
   });
 
 });

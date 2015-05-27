@@ -2,7 +2,7 @@
 /* global describe, it, expect */
 /* eslint-disable no-unused-expressions */
 
-var ChassisStore = require('../ChassisStore');
+import ChassisStore from '../ChassisStore';
 
 describe('ChassisStore', function() {
 

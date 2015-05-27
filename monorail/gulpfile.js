@@ -5,10 +5,10 @@ process.on('uncaughtException', console.error.bind(console));
 
 // Include Gulp and other build automation tools and utilities
 // See: https://github.com/gulpjs/gulp/blob/master/docs/API.md
-var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
-var del = require('del');
 var path = require('path');
+var gulp = require('gulp');
+var $ = require('gulp-load-plugins')({config: path.join(__dirname, '../package.json')});
+var del = require('del');
 var runSequence = require('run-sequence');
 var webpack = require('webpack');
 var argv = require('minimist')(process.argv.slice(2));

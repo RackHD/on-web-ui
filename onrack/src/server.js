@@ -24,7 +24,7 @@ server.get('*', function(req, res) {
   if (preload) {
     // The top-level React component
     var AppComponent = React.createFactory(require('./components/App')),
-        NotFoundComponent = React.createFactory(require('../../common/components/NotFound'));
+        NotFoundComponent = React.createFactory(require('common-web-ui/components/NotFound'));
 
     // NOTE: react-router doesn't work server-side so the dashboard component is forced.
     var view = new NotFoundComponent(),

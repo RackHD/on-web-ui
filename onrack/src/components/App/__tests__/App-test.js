@@ -1,33 +1,55 @@
 'use strict';
-/* global describe, it, expect */
+/* global describe, it, expect, before, after */
 /* eslint-disable no-unused-expressions */
 
-import React from 'react/addons';
-var { TestUtils } = React.addons;
+import React from 'react'; // eslint-disable-line no-unused-vars
+import TestUtils from 'react/addons/TestUtils';
 
-var App = require('../App');
+import TestWrapper from 'common-web-ui/components/TestWrapper';
+import App from '../App';
 
-describe('App', function() {
+describe('OnRack App', function() {
 
-  it('can be rendered into a viewport with a header, content, and footer.', function() {
-    var appComponent = TestUtils.renderIntoDocument(
-      React.createElement(App, {
+  describe('component', function() {
+    before(function(done) {
+      this.wrapper = TestWrapper.testRender(App, {
         headerOverride: <div className="header">No header.</div>,
         currentView: 'No content.'
-      })
-    );
+      }, (err, component) => {
+        this.app = component;
+        done(err);
+      }, true);
+    });
 
-    var appElement = TestUtils.findRenderedDOMComponentWithClass(appComponent, 'App'),
-        headerElement = TestUtils.findRenderedDOMComponentWithClass(appComponent, 'header'),
-        contentElement = TestUtils.findRenderedDOMComponentWithClass(appComponent, 'content'),
-        footerElement = TestUtils.findRenderedDOMComponentWithClass(appComponent, 'footer');
+    after(function(done) {
+      this.wrapper.cleanup(done);
+    });
 
-    expect(appElement).to.be.ok;
-    expect(headerElement).to.be.ok;
-    expect(contentElement).to.be.ok;
-    expect(footerElement).to.be.ok;
+    it('can be rendered.', function() {
+      expect(this.wrapper).to.be.ok;
+      expect(this.app).to.be.ok;
+      expect(TestUtils.findRenderedDOMComponentWithClass(
+        this.app, 'App')).to.be.ok;
+    });
 
-    // expect(appComponent.state.viewport).to.equal(appComponent.props.initialViewport);
+    it('has a header', function() {
+      expect(TestUtils.findRenderedDOMComponentWithClass(
+        this.app, 'header')).to.be.ok;
+    });
+
+    it('has content', function() {
+      expect(TestUtils.findRenderedDOMComponentWithClass(
+        this.app, 'content')).to.be.ok;
+    });
+
+    it('has a footer', function() {
+      expect(TestUtils.findRenderedDOMComponentWithClass(
+        this.app, 'footer')).to.be.ok;
+    });
+
+    xit('viewport', function() {
+      expect(this.app.state.viewport).to.equal(this.app.props.initialViewport);
+    });
   });
 
 });

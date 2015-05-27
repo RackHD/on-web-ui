@@ -41,6 +41,7 @@ $ git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
 $ cd on-web-ui
 $ npm install -g gulp           # Install Gulp task runner globally
 $ npm install                   # Install Node.js components listed in ./package.json
+$ npm run-script link           # Link local NPM modules
 $ cd onrack                     # Or: "cd monorail"
 $ cp src/config.js.example src/config.js
 $ gulp                          # Run gulp to build and start browser-sync

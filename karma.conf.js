@@ -6,13 +6,13 @@ module.exports = function (config) {
   config.set({
     autoWatch: true,
     browsers: [ 'Chrome' ],
-    captureTimeout: 60000,
-    browserDisconnectTimeout: 5000,
-    browserNoActivityTimeout: 30000,
+    // captureTimeout: 60000,
+    // browserDisconnectTimeout: 5000,
+    // browserNoActivityTimeout: 30000,
     singleRun: false,
     frameworks: [ 'mocha' ],
     files: [
-      'tests.webpack.js',
+      { pattern: 'tests.webpack.js', watched: false, included: true, serverd: true },
       { pattern: 'common/**/*.js', watched: true, included: false, served: false },
       { pattern: 'monorail/src/**/*.js', watched: true, included: false, served: false },
       { pattern: 'onrack/src/**/*.js', watched: true, included: false, served: false }
@@ -21,8 +21,8 @@ module.exports = function (config) {
       'tests.webpack.js': [ 'webpack', 'sourcemap' ] //preprocess with webpack and our sourcemap loader
     },
     logLevel: config.LOG_DEBUG,
-    reporters: [ 'dots' ], //report results in this format
-    webpack: { //kind of a copy of your webpack config
+    reporters: [ 'dots' ], // report results in this format
+    webpack: { // kind of a copy of webpack config files
       cache: true,
       debug: true,
       devtool: '#inline-source-map',
@@ -45,7 +45,7 @@ module.exports = function (config) {
       }
     },
     webpackServer: {
-      // noInfo: true // please don't spam the console when running in karma!
+      noInfo: true // less logging
     },
     client: {
       mocha: {

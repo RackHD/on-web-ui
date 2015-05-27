@@ -2,7 +2,7 @@
 /* global describe, it, expect */
 /* eslint-disable no-unused-expressions */
 
-var SystemResetTypesStore = require('../SystemResetTypesStore');
+import SystemResetTypesStore from '../SystemResetTypesStore';
 
 describe('SystemResetTypesStore', function() {
 

@@ -2,7 +2,7 @@
 /* global describe, it, expect */
 /* eslint-disable no-unused-expressions */
 
-var SystemBootImagesStore = require('../SystemBootImagesStore');
+import SystemBootImagesStore from '../SystemBootImagesStore';
 
 describe('SystemBootImagesStore', function() {
 

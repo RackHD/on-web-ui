@@ -2,10 +2,10 @@
 /* global describe, it, expect */
 /* eslint-disable no-unused-expressions */
 
-import React from 'react/addons';
-var { TestUtils } = React.addons;
+import React from 'react';
+import TestUtils from 'react/addons/TestUtils';
 
-var App = require('../App');
+import App from '../App';
 
 describe('App', function() {
 

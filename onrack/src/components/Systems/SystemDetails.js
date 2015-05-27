@@ -3,9 +3,9 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
-import PageHelpers from '../../../../common/mixins/PageHelpers';
-import FormatHelpers from '../../../../common/mixins/FormatHelpers';
-import DeveloperHelpers from '../../../../common/mixins/DeveloperHelpers';
+import PageHelpers from 'common-web-ui/mixins/PageHelpers';
+import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
+import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 /* eslint-enable no-unused-vars */
 
 import {} from 'material-ui';
