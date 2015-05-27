@@ -22,11 +22,16 @@ export default class AppHeader extends Component {
       </a>
     );
 
+    var stylesAppBar = {
+      position: 'fixed'
+    };
+
     return (
       <div className="AppHeader">
         <AppBar className="header"
                 onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
                 title={title}
+                style={stylesAppBar}
                 zDepth={0}
                 iconElementRight={emcTab}
                 />
