@@ -8,7 +8,7 @@ import AppMenuNav from './AppMenuNav';
 
 export default class AppHeader extends Component {
 
-  _onMenuIconButtonTouchTap = this.onMenuIconButtonTouchTap.bind(this);
+  _onLeftIconButtonTouchTap = this.onLeftIconButtonTouchTap.bind(this);
 
   render() {
     var title = 'Monorail Web UI';
@@ -25,7 +25,7 @@ export default class AppHeader extends Component {
     return (
       <div className="AppHeader">
         <AppBar className="header"
-                onMenuIconButtonTouchTap={this._onMenuIconButtonTouchTap}
+                onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
                 title={title}
                 zDepth={0}
                 iconElementRight={emcTab}
@@ -36,7 +36,7 @@ export default class AppHeader extends Component {
     );
   }
 
-  onMenuIconButtonTouchTap() {
+  onLeftIconButtonTouchTap() {
     this.refs.menuNav.toggle();
   }
 

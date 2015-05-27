@@ -68,7 +68,7 @@ export default class App extends Component {
 
     return (
       <div className="App">
-        <AppCanvas>
+        <AppCanvas predefinedLayout={1}>
           {this.props.headerOverride || <AppHeader />}
 
           <div className="content">
