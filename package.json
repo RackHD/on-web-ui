@@ -17,7 +17,7 @@
     "lodash": "^3.9.3",
     "material-ui": "^0.8.0",
     "moment": "^2.10.3",
-    "react": "^0.14.x",
+    "react": "^0.13.x",
     "react-chartist": "^0.5.1",
     "react-mixin": "^1.2.3",
     "react-router": "^0.13.3",

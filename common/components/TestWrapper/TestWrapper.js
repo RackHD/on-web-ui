@@ -75,7 +75,7 @@ export default class TestWrapper extends Component {
   }
 
   componentWillMount() {
-    console.log('Test wrapper will mount.', this.props);
+    // console.log('Test wrapper will mount.', this.props);
   }
 
   componentDidMount() {

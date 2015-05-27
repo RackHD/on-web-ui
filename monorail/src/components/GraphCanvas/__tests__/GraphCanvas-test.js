@@ -3,7 +3,8 @@
 /* eslint-disable no-unused-expressions */
 
 import React from 'react';
-import TestUtils from 'react/addons/TestUtils';
+import { addons } from 'react/addons';
+var { TestUtils } = addons;
 
 import GraphCanvas from '../GraphCanvas';
 import Vector from '../lib/Vector';

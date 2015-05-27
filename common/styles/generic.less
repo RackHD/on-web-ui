@@ -1,5 +1,15 @@
+html {
+  font-family: 'Roboto', sans-serif;
+}
+
 body {
   background: @emc-grey-dark;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
 }
 
 a { color: #46f; }
@@ -44,4 +54,13 @@ div.empty {
     -ms-user-select: none;
     user-select: none;
   }
+}
+
+// TODO: remove this
+.mui-tooltip { z-index: 99 !important; }
+.mui-toolbar {
+  overflow: hidden;
+  height: auto !important;
+  min-height: 56px;
+  padding: 5px 24px !important;
 }

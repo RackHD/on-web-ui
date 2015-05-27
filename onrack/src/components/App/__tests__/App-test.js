@@ -3,7 +3,8 @@
 /* eslint-disable no-unused-expressions */
 
 import React from 'react'; // eslint-disable-line no-unused-vars
-import TestUtils from 'react/addons/TestUtils';
+import { addons } from 'react/addons';
+var { TestUtils } = addons;
 
 import TestWrapper from 'common-web-ui/components/TestWrapper';
 import App from '../App';
