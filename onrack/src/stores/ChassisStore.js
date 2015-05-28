@@ -11,7 +11,9 @@ export default class ChassisStore extends Store {
     var self = this;
     function map(list) {
       return list.Links.Members.map(member => {
-        var id = member.href.split('/').pop();
+        var url = member.href.split('/'),
+            id = url.pop();
+        if (!id) { id = url.pop(); }
         setTimeout(self.read.bind(self, id), 0);
         return { id };
       });

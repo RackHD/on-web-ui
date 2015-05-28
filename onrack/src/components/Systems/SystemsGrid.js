@@ -11,7 +11,8 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    IconButton
+    IconButton,
+    Checkbox
   } from 'material-ui';
 import { systems } from '../../actions/SystemActions';
 
@@ -23,6 +24,7 @@ import { systems } from '../../actions/SystemActions';
 export default class SystemsGrid extends Component {
 
   state = {systemsList: null};
+  selected = {};
 
   componentDidMount() {
     this.profileTime('SystemGrid', 'mount');
@@ -47,8 +49,9 @@ export default class SystemsGrid extends Component {
           this.renderGrid({
             results: this.state.systemsList,
             resultsPerPage: 10
-          }, systemsItem => (
-            {
+          }, systemsItem => {
+            return {
+              ' ': <Checkbox onCheck={this.linkCheckbox.bind(this, systemsItem)} />,
               ID: <a href={this.routePath('systems', systemsItem.id)}>{this.shortId(systemsItem.id)}</a>,
               Name: systemsItem.name || 'Unknown',
               State: systemsItem.status && systemsItem.status.state || 'Unknown',
@@ -59,11 +62,20 @@ export default class SystemsGrid extends Component {
                             touch={true}
                             onClick={this.viewSystemDetails.bind(this, systemsItem.id)} />
               ]
-            }
-          ), 'No systems.')
+            };
+          }, 'No systems.')
         }
       </div>
     );
+  }
+
+  linkCheckbox(item, event) {
+    if (event.target.checked) {
+      this.selected[item.id] = item;
+    }
+    else {
+      delete this.selected[item.id];
+    }
   }
 
   listSystems() { return systems.list(); }

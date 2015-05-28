@@ -23,7 +23,7 @@ export default class Dashboard extends Component {
               <ChassisGrid />
             </div>
             <div className="one-half column">
-              {<SystemsGrid />}
+              <SystemsGrid />
             </div>
           </div>
         </div>

@@ -11,7 +11,8 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    IconButton
+    IconButton,
+    Checkbox
   } from 'material-ui';
 import { chassis } from '../../actions/ChassisActions';
 
@@ -23,6 +24,7 @@ import { chassis } from '../../actions/ChassisActions';
 export default class ChassisGrid extends Component {
 
   state = {chassisList: null};
+  selected = {};
 
   componentDidMount() {
     this.profileTime('ChassisGrid', 'mount');
@@ -47,8 +49,9 @@ export default class ChassisGrid extends Component {
           this.renderGrid({
             results: this.state.chassisList,
             resultsPerPage: 10
-          }, chassisItem => (
-            {
+          }, chassisItem => {
+            return {
+              ' ': <Checkbox onCheck={this.linkCheckbox.bind(this, chassisItem)} />,
               ID: <a href={this.routePath('chassis', chassisItem.id)}>{this.shortId(chassisItem.id)}</a>,
               State: chassisItem.status && chassisItem.status.state || 'Unknown',
               Health: chassisItem.status && chassisItem.status.healthRollUp || 'Unknown',
@@ -58,11 +61,20 @@ export default class ChassisGrid extends Component {
                             touch={true}
                             onClick={this.viewChassisDetails.bind(this, chassisItem.id)} />
               ]
-            }
-          ), 'No chassis.')
+            };
+          }, 'No chassis.')
         }
       </div>
     );
+  }
+
+  linkCheckbox(item, event) {
+    if (event.target.checked) {
+      this.selected[item.id] = item;
+    }
+    else {
+      delete this.selected[item.id];
+    }
   }
 
   listChassis() { return chassis.list(); }
