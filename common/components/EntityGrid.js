@@ -52,14 +52,7 @@ export default class EntityGrid extends Component {
 
   selected = {};
 
-  componentWillMount() {
-    this.profileTime('EntityGrid', 'will-mount');
-    this.props.tableFields.push({
-      label: <Checkbox onCheck={this.checkAll.bind(this)} />,
-      func: (data) =>
-        <Checkbox ref={'cb-' + data.id} onCheck={this.linkCheckbox.bind(this, data)} />
-    });
-  }
+  componentWillMount() { this.profileTime('EntityGrid', 'will-mount'); }
 
   componentDidMount() { this.profileTime('EntityGrid', 'did-mount'); }
 
@@ -75,30 +68,31 @@ export default class EntityGrid extends Component {
     this.profileTime('EntityGrid', 'did-update');
   }
 
-  update(entities) {
-    this.setState({entities: entities});
-  }
+  update(entities) { this.setState({entities: entities}); }
 
   render() {
     var styles = this.props.style || {};
     styles.position = styles.position || 'relative';
-
+    var tableFields = this.props.tableFields.concat([{
+      label: <Checkbox onCheck={this.checkAll.bind(this)} />,
+      func: (data) => <Checkbox ref={'cb-' + data.id} onCheck={this.linkCheckbox.bind(this, data)} />
+    }]);
     return (
       <div
           className={'EntityGrid ' + this.props.className}
-          style={{styles}}>
+          style={styles}>
         <div
             style={{opacity: this.state.error ? '0.5' : '1.0'}}>
           <DataTableToolbar
               style={{zIndex: 1}}
               label={<a href={'#/' + this.props.routeName}>{this.props.headerContent}</a>}
               count={this.state.entities && this.state.entities.length || 0}>
-            {this.props.toolbar}
+            {this.props.toolbarContent}
           </DataTableToolbar>
           <DataTable
               ref="table"
               style={{width: '100%'}}
-              fields={this.props.tableFields}
+              fields={tableFields}
               initialData={this.state.entities}
               emptyContent={this.props.emptyContent}
               uniqueName={this.props.routeName} />
@@ -113,9 +107,7 @@ export default class EntityGrid extends Component {
     );
   }
 
-  showError(error) {
-    this.setState({error: error.message || error});
-  }
+  showError(error) { this.setState({error: error.message || error}); }
 
   dismissError() {
     this.refs.error.dismiss();
@@ -123,21 +115,15 @@ export default class EntityGrid extends Component {
   }
 
   checkAll(event) {
-    this.state.chassisList.forEach(chassisData => {
-      var checkbox = this.refs.table.refs['cb-' + chassisData.id];
-      if (checkbox) {
-        checkbox.setChecked(event.target.checked);
-      }
+    this.state.entities.forEach(data => {
+      var checkbox = this.refs.table.refs['cb-' + data.id];
+      if (checkbox) { checkbox.setChecked(event.target.checked); }
     });
   }
 
   linkCheckbox(item, event) {
-    if (event.target.checked) {
-      this.selected[item.id] = item;
-    }
-    else {
-      delete this.selected[item.id];
-    }
+    if (event.target.checked) { this.selected[item.id] = item; }
+    else { delete this.selected[item.id]; }
   }
 
 }
