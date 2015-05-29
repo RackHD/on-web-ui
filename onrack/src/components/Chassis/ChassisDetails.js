@@ -8,6 +8,7 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 /* eslint-enable no-unused-vars */
 
 import {} from 'material-ui';
+import JsonEditor from 'common-web-ui/components/JsonEditor';
 import { chassis } from '../../actions/ChassisActions';
 
 @mixin.decorate(PageHelpers)
@@ -24,7 +25,10 @@ export default class ChassisDetails extends Component {
 
   componentWillUnmount() { this.unwatchChassis(); }
 
-  componentDidUpdate() { this.profileTime('ChassisDetails', 'update'); }
+  componentDidUpdate() {
+    this.profileTime('ChassisDetails', 'update');
+    this.refs.chassis.setState({value: this.state.chassis});
+  }
 
   render() {
     return (
@@ -35,7 +39,11 @@ export default class ChassisDetails extends Component {
           this.getChassisId()
         )}
         <h2>Chassis</h2>
-        {JSON.stringify(this.state.chassis)}
+        <JsonEditor
+            initialValue={this.state.chassis}
+            updateParentState={this.updateChassis.bind(this)}
+            disabled={this.state.disabled}
+            ref="chassis" />
       </div>
     );
   }
@@ -43,5 +51,9 @@ export default class ChassisDetails extends Component {
   getChassisId() { return this.props.chassisId || this.props.params.chassisId; }
 
   readChassis() { return chassis.read(this.getChassisId()); }
+
+  updateChassis(data) {
+    this.setState({chassis: data});
+  }
 
 }
