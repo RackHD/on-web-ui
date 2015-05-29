@@ -17,21 +17,17 @@ export default {
       params.count = <span>({params.count})</span>;
     }
     var rightToolbar = null;
-    if (params.createButton) {
+    if (params.right) {
       rightToolbar = (
         <ToolbarGroup key={1} float="right">
-          <span className="mui-toolbar-separator">&nbsp;</span>
-          {params.createButton}
+          {params.right}
         </ToolbarGroup>
       );
     }
     return (
       <Toolbar>
         <ToolbarGroup key={0} float="left">
-          <h4 style={{display: 'inline-block'}}>
-            &nbsp; {params.label} &nbsp;
-            {params.count}
-          </h4>
+          <h3>{params.label} &nbsp; {params.count}</h3>
         </ToolbarGroup>
         {rightToolbar}
       </Toolbar>

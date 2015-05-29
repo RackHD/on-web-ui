@@ -1,6 +1,5 @@
 'use strict';
 
-
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import decorateComponent from '../../lib/decorateComponent';

@@ -7,23 +7,24 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
     IconButton,
-    Checkbox
+    Checkbox,
+    DropDownIcon
   } from 'material-ui';
+import DataTable from 'common-web-ui/components/DataTable';
+import DataTableToolbar from 'common-web-ui/components/DataTableToolbar';
 import { chassis } from '../../actions/ChassisActions';
 
 @mixin.decorate(DeveloperHelpers)
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
 @mixin.decorate(RouteHelpers)
-@mixin.decorate(GridHelpers)
 export default class ChassisGrid extends Component {
 
-  state = {chassisList: null};
+  state = {chassisList: []};
   selected = {};
 
   componentDidMount() {
@@ -34,38 +35,70 @@ export default class ChassisGrid extends Component {
 
   componentWillUnmount() { this.unwatchChassis(); }
 
-  componentDidUpdate() { this.profileTime('ChassisGrid', 'update'); }
+  componentDidUpdate() {
+    this.refs.table.update(this.state.chassisList);
+    this.profileTime('ChassisGrid', 'update');
+  }
 
   render() {
     return (
       <div className="ChassisGrid">
-        {this.renderGridToolbar({
-          label: <a href="#/chassis">Chassis List</a>,
-          count: this.state.chassisList && this.state.chassisList.length || 0,
-          createButton: null
-        })}
-        <div className="clearfix"></div>
-        {
-          this.renderGrid({
-            results: this.state.chassisList,
-            resultsPerPage: 10
-          }, chassisItem => {
-            return {
-              ' ': <Checkbox onCheck={this.linkCheckbox.bind(this, chassisItem)} />,
-              ID: <a href={this.routePath('chassis', chassisItem.id)}>{this.shortId(chassisItem.id)}</a>,
-              State: chassisItem.status && chassisItem.status.state || 'Unknown',
-              Health: chassisItem.status && chassisItem.status.healthRollUp || 'Unknown',
-              Actions: [
+      <DataTableToolbar
+          style={{zIndex: 1}}
+          label={<a href="#/chassis">Chassis List</a>}
+          count={this.state.chassisList && this.state.chassisList.length || 0}>
+        <DropDownIcon
+            iconClassName="fa fa-wrench"
+            menuItems={[
+              { payload: '1', text: 'Reset' },
+              { payload: '2', text: <span>Boot&nbsp;Image</span> }
+            ]}
+            style={{zIndex: 1}} />
+      </DataTableToolbar>
+      <div className="clearfix"></div>
+      <DataTable
+          ref="table"
+          style={{
+            zIndex: 1,
+            width: '100%'
+          }}
+          fields={[
+            { label: 'ID', property: 'id',
+              func: (id) =>
+                <a href={this.routePath('chassis', id)}>{this.shortId(id)}</a>
+            },
+            { label: 'Name', property: 'name', default: 'Unknown' },
+            { label: 'State', property: 'status.state', default: 'Unknown' },
+            { label: 'Health', property: 'status.healthRollUp', default: 'Unknown' },
+            { label: 'Actions',
+              func: (data) => [
                 <IconButton iconClassName="fa fa-info-circle"
                             tooltip="View Chassis"
                             touch={true}
-                            onClick={this.viewChassisDetails.bind(this, chassisItem.id)} />
-              ]
-            };
-          }, 'No chassis.')
-        }
+                            onClick={this.viewChassisDetails.bind(this, data.id)} />
+            ] },
+            { label: <Checkbox onCheck={this.checkAll.bind(this)} />,
+              func: (data) =>
+                <Checkbox ref={'cb-' + data.id} onCheck={this.linkCheckbox.bind(this, data)} />
+            }
+          ]}
+          initialData={this.state.chassisList}
+          emptyContent="No chassis." />
       </div>
     );
+  }
+
+  listChassis() { return chassis.list(); }
+
+  viewChassisDetails(id) { this.routeTo('chassis', id); }
+
+  checkAll(event) {
+    this.state.systemsList.forEach(system => {
+      var checkbox = this.refs.table.refs['cb-' + system.id];
+      if (checkbox) {
+        checkbox.setChecked(event.target.checked);
+      }
+    });
   }
 
   linkCheckbox(item, event) {
@@ -76,9 +109,5 @@ export default class ChassisGrid extends Component {
       delete this.selected[item.id];
     }
   }
-
-  listChassis() { return chassis.list(); }
-
-  viewChassisDetails(id) { this.routeTo('chassis', id); }
 
 }
