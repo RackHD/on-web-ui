@@ -14,7 +14,7 @@ import {
   propTypes: {
     className: PropTypes.string,
     count: PropTypes.number,
-    label: PropTypes.string,
+    label: PropTypes.any,
     style: PropTypes.object
   },
   defaultProps: {

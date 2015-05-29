@@ -12,6 +12,7 @@ import decorateComponent from '../lib/decorateComponent';
     emptyContent: PropTypes.string,
     fields: PropTypes.array,
     initialData: PropTypes.array,
+    uniqueName: PropTypes.string,
     style: PropTypes.object
   },
   defaultProps: {
@@ -20,6 +21,7 @@ import decorateComponent from '../lib/decorateComponent';
     emptyContent: 'No data.',
     fields: {},
     initialData: [],
+    uniqueName: '',
     style: {}
   }
 })
@@ -55,8 +57,10 @@ export default class DataTable extends Component {
 
   get fieldElements() {
     return this.props.fields.map((field, i) => {
+      var key = field.property ? field.property.replace('.', '-') : 'h' + i;
+      if (this.props.uniqueName) { key = this.props.uniqueName + key; }
       return (
-        <th key={field.property || i}>{field.label}</th>
+        <th key={key}>{field.label}</th>
       );
     });
   }
@@ -66,17 +70,17 @@ export default class DataTable extends Component {
       throw new Error('Invalid data supplied to DataTable.');
     }
     var dataKey = this.props.dataKey;
-    return this.state.data.map((data, i) => {
-      var cells = this.props.fields.map(field => {
-        return this.getCellElement(field, data);
+    return this.state.data.map((data, ri) => {
+      var cells = this.props.fields.map((field, ci) => {
+        return this.getCellElement(field, data, ri, ci);
       });
       return (
-        <tr key={data[dataKey] || i}>{cells}</tr>
+        <tr key={(data[dataKey] || '') + 'r' + ri}>{cells}</tr>
       );
     });
   }
 
-  getCellElement(field, data) {
+  getCellElement(field, data, ri, ci) {
     var prop = field.property;
     if (!prop && !field.func) { return null; }
     if (prop && prop.indexOf('.') !== -1) {
@@ -91,7 +95,7 @@ export default class DataTable extends Component {
     if (field.func) { value = field.func(value); }
     value = value || field.default;
     return (
-      <td>{value}</td>
+      <td key={'c' + (prop || '') + ci + ri}>{value}</td>
     );
   }
 

@@ -11,11 +11,9 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
 import {
     IconButton,
-    Checkbox,
     DropDownIcon
   } from 'material-ui';
-import DataTable from 'common-web-ui/components/DataTable';
-import DataTableToolbar from 'common-web-ui/components/DataTableToolbar';
+import EntityGrid from 'common-web-ui/components/EntityGrid';
 import { systems } from '../../actions/SystemActions';
 
 @mixin.decorate(DeveloperHelpers)
@@ -27,39 +25,39 @@ export default class SystemsGrid extends Component {
   state = {systemsList: []};
   selected = {};
 
+  componentWillMount() { this.profileTime('SystemGrid', 'will-mount'); }
+
   componentDidMount() {
-    this.profileTime('SystemGrid', 'mount');
-    this.unwatchSystems = systems.watchAll('systemsList', this);
+    this.profileTime('SystemGrid', 'did-mount');
+    var onError = this.refs.entityGrid.showError.bind(this.refs.entityGrid);
+    this.unwatchSystems = systems.watchAll('systemsList', this, onError);
     this.listSystems();
   }
 
-  componentWillUnmount() { this.unwatchSystems(); }
+  componentWillUnmount() {
+    this.profileTime('ChassisGrid', 'will-unmount');
+    this.unwatchSystems();
+  }
+
+  componentDidUnmount() { this.profileTime('SystemGrid', 'did-unmount'); }
+
+  componentWillUpdate() { this.profileTime('SystemGrid', 'will-update'); }
 
   componentDidUpdate() {
-    this.refs.table.update(this.state.systemsList);
-    this.profileTime('SystemGrid', 'update');
+    this.profileTime('SystemGrid', 'did-update');
+    this.refs.entityGrid.update(this.state.systemsList);
   }
 
   render() {
     return (
-      <div className="SystemsGrid">
-        <DataTableToolbar
-            style={{zIndex: 1}}
-            label={<a href="#/systems">Systems List</a>}
-            count={this.state.systemsList && this.state.systemsList.length || 0}>
-          <DropDownIcon
-              iconClassName="fa fa-wrench"
-              menuItems={[
-                { payload: '1', text: 'Reset' },
-                { payload: '2', text: <span>Boot&nbsp;Image</span> }
-              ]}
-              style={{zIndex: 1}} />
-        </DataTableToolbar>
-        <div className="clearfix"></div>
-        <DataTable
-            ref="table"
-            style={{width: '100%'}}
-            fields={[
+      <div
+          className="SystemsGrid">
+        <EntityGrid
+            ref="entityGrid"
+            emptyContent="No systems."
+            headerContent="Systems List"
+            initialEntities={this.state.systemsList}
+            tableFields={[
               { label: 'ID', property: 'id',
                 func: (id) =>
                   <a href={this.routePath('systems', id)}>{this.shortId(id)}</a>
@@ -73,14 +71,18 @@ export default class SystemsGrid extends Component {
                               tooltip="View System"
                               touch={true}
                               onClick={this.viewSystemDetails.bind(this, data.id)} />
-              ] },
-              { label: <Checkbox onCheck={this.checkAll.bind(this)} />,
-                func: (data) =>
-                  <Checkbox ref={'cb-' + data.id} onCheck={this.linkCheckbox.bind(this, data)} />
-              }
+              ] }
             ]}
-            initialData={this.state.systemsList}
-            emptyContent="No systems." />
+            toolbarContent={
+              <DropDownIcon
+                  iconClassName="fa fa-wrench"
+                  menuItems={[
+                    { payload: '1', text: 'Reset' },
+                    { payload: '2', text: <span>Boot&nbsp;Image</span> }
+                  ]}
+                  style={{zIndex: 1}} />
+            }
+            routeName="systems" />
       </div>
     );
   }
@@ -88,23 +90,5 @@ export default class SystemsGrid extends Component {
   listSystems() { return systems.list(); }
 
   viewSystemDetails(id) { this.routeTo('systems', id); }
-
-  checkAll(event) {
-    this.state.systemsList.forEach(system => {
-      var checkbox = this.refs.table.refs['cb-' + system.id];
-      if (checkbox) {
-        checkbox.setChecked(event.target.checked);
-      }
-    });
-  }
-
-  linkCheckbox(item, event) {
-    if (event.target.checked) {
-      this.selected[item.id] = item;
-    }
-    else {
-      delete this.selected[item.id];
-    }
-  }
 
 }

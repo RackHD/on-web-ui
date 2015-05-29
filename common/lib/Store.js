@@ -56,7 +56,7 @@ export default class Store extends EventEmitter {
 
   insert(id, data) {
     if (!id) { return; }
-    data = data || data;
+    data = data || {};
     data.id = data.id || id;
     this.collection[id] = data;
     this.publish(id);

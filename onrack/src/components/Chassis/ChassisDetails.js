@@ -44,6 +44,4 @@ export default class ChassisDetails extends Component {
 
   readChassis() { return chassis.read(this.getChassisId()); }
 
-  unwatchSystems() {}
-
 }
