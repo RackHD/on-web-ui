@@ -5,7 +5,7 @@ import React, { Component, PropTypes } from 'react';
 import decorateComponent from '../lib/decorateComponent';
 /* eslint-enable no-unused-vars */
 
-import onReady from '../../lib/onReady';
+import onReady from '../lib/onReady';
 import { Styles } from 'material-ui';
 
 var testContainer = document.createElement('div');
