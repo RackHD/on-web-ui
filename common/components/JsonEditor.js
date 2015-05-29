@@ -2,12 +2,10 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../../lib/decorateComponent';
+import decorateComponent from '../lib/decorateComponent';
 /* eslint-enable no-unused-vars */
 
 // Based on http://www.mbates.com/play/ReactJsonEditor/
-
-import './JsonEditor.less';
 
 @decorateComponent({
   propTypes: {
@@ -64,7 +62,8 @@ export default class JsonEditor extends Component {
         <textarea valueLink={this.linkState()}
                   rows={this.props.rows}
                   cols={this.props.cols}
-                  disabled={this.props.disabled} />
+                  disabled={this.props.disabled}
+                  style={{width: '100%', height: 300}} />
       </div>
     );
   }

@@ -2,10 +2,8 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../../lib/decorateComponent';
+import decorateComponent from '../lib/decorateComponent';
 /* eslint-enable no-unused-vars */
-
-import './Breadcrumbs.less';
 
 @decorateComponent({
   propTypes: {
@@ -55,8 +53,19 @@ export default class Breadcrumbs extends Component {
   }
 
   render() {
-    var path = this.renderPath();
-    return <div className="Breadcrumbs">{path}</div>;
+    var styles = {
+      paddingTop: 10,
+      paddingLeft: 20,
+      paddingRight: 20,
+      paddingBottom: 10,
+      marginBottom: 10,
+      background: '#ccc'
+    };
+    return (
+      <div className="Breadcrumbs" style={styles}>
+        {this.renderPath()}
+      </div>
+    );
   }
 
 }
