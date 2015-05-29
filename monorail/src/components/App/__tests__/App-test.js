@@ -8,7 +8,7 @@ var { TestUtils } = addons;
 
 import App from '../App';
 
-describe('App', function() {
+describe('MonoRail App', function() {
 
   it('can be rendered into a viewport with a header, content, and footer.', function() {
     var appComponent = TestUtils.renderIntoDocument(

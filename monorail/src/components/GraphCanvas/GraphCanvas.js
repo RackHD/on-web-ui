@@ -66,6 +66,7 @@ export default class GraphCanvas extends Component {
         />,
         links = this.state.links.map(link => <GraphCanvasLink {...link} />),
         nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
+    console.log('WBB', worldBoundingBox.toSVGViewBox());
     return (
       <div className="GraphCanvas"
            onMouseDown={this.translateCanvas()}
@@ -192,14 +193,14 @@ export default class GraphCanvas extends Component {
       move: (event, dragState) => {
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
-        var //scale = this.scale,
+        var scale = this.scale,
             start = dragState.start,
             min = dragState.min,
             max = dragState.max;
         this.setState({
           screenPosition: {
-            x: Math.min(max.x, Math.max(min.x, start.x + (event.diffX/* * scale*/))),
-            y: Math.min(max.y, Math.max(min.y, start.y + (event.diffY/* * scale*/)))
+            x: Math.min(max.x, Math.max(min.x, start.x + (event.diffX / scale))),
+            y: Math.min(max.y, Math.max(min.y, start.y + (event.diffY / scale)))
           }
         });
       },
