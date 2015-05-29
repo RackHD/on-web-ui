@@ -93,8 +93,8 @@ export default class ChassisGrid extends Component {
   viewChassisDetails(id) { this.routeTo('chassis', id); }
 
   checkAll(event) {
-    this.state.systemsList.forEach(system => {
-      var checkbox = this.refs.table.refs['cb-' + system.id];
+    this.state.chassisList.forEach(chassisData => {
+      var checkbox = this.refs.table.refs['cb-' + chassisData.id];
       if (checkbox) {
         checkbox.setChecked(event.target.checked);
       }
