@@ -60,7 +60,7 @@ export default class DataTable extends Component {
       var key = field.property ? field.property.replace('.', '-') : 'h' + i;
       if (this.props.uniqueName) { key = this.props.uniqueName + key; }
       return (
-        <th key={key}>{field.label}</th>
+        <th key={key} className={field.className} style={field.style}>{field.label}</th>
       );
     });
   }
@@ -95,7 +95,7 @@ export default class DataTable extends Component {
     if (field.func) { value = field.func(value); }
     value = value || field.default;
     return (
-      <td key={'c' + (prop || '') + ci + ri}>{value}</td>
+      <td key={'c' + (prop || '') + ci + ri} className={field.className} style={field.style}>{value}</td>
     );
   }
 

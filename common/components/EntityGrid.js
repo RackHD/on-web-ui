@@ -68,6 +68,7 @@ export default class EntityGrid extends Component {
     var styles = this.props.style || {};
     styles.position = styles.position || 'relative';
     var tableFields = this.props.tableFields.concat([{
+      style: {width: 50},
       label: <Checkbox onCheck={this.checkAll.bind(this)} />,
       func: (data) => <Checkbox ref={'cb-' + data.id} onCheck={this.linkCheckbox.bind(this, data)} />
     }]);
