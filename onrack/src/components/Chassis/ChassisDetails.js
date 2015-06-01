@@ -31,7 +31,7 @@ export default class ChassisDetails extends Component {
   componentDidMount() {
     this.profileTime('ChassisDetails', 'mount');
     var onError = this.refs.error.showError.bind(this.refs.error);
-    this.unwatchChassis = chassis.watchOne(this.getChassisId(), 'chassis', this, onError);
+    this.unwatchChassis = chassis.watchOne(this.chassisId, 'chassis', this, onError);
     this.readChassis();
   }
 
@@ -48,7 +48,7 @@ export default class ChassisDetails extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'chassis', label: 'Chassis'},
-          this.getChassisId()
+          this.chassisId
         )}
         <h2>Chassis</h2>
         <ErrorNotification ref="error"/>
@@ -69,9 +69,9 @@ export default class ChassisDetails extends Component {
     return computeSystems.indexOf(system.id) !== -1;
   }
 
-  getChassisId() { return this.props.chassisId || this.props.params.chassisId; }
+  get chassisId() { return this.props.chassisId || this.props.params.chassisId; }
 
-  readChassis() { return chassis.read(this.getChassisId()); }
+  readChassis() { return chassis.read(this.chassisId); }
 
   updateChassis(data) {
     this.setState({chassis: data});

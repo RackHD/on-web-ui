@@ -8,10 +8,13 @@ import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 /* eslint-enable no-unused-vars */
 
-import {} from 'material-ui';
+import {
+    FlatButton,
+    Toggle
+  } from 'material-ui';
 import JsonEditor from 'common-web-ui/components/JsonEditor';
 import ErrorNotification from 'common-web-ui/components/ErrorNotification';
-import { systems } from '../../actions/SystemActions';
+import { systems, systemResetActions } from '../../actions/SystemActions';
 import { chassis } from '../../actions/ChassisActions';
 import ChassisDetails from '../Chassis/ChassisDetails';
 
@@ -21,14 +24,14 @@ import ChassisDetails from '../Chassis/ChassisDetails';
 export default class SystemDetails extends Component {
 
   state = {
-    system: systems.get(this.getSystemId()) || null,
+    system: systems.get(this.systemId) || null,
     chassis: null
   };
 
   componentDidMount() {
     this.profileTime('SystemDetails', 'mount');
     var onError = this.refs.error.showError.bind(this.refs.error);
-    this.unwatchSystem = systems.watchOne(this.getSystemId(), 'system', this, onError);
+    this.unwatchSystem = systems.watchOne(this.systemId, 'system', this, onError);
     this.readSystem();
   }
 
@@ -46,7 +49,7 @@ export default class SystemDetails extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'systems', label: 'System'},
-          this.getSystemId()
+          this.systemId
         )}
         <h3 className="right">{system.type || 'Unknown type.'}</h3>
         <h2>{system.name || 'Unknown system.'}</h2>
@@ -54,6 +57,15 @@ export default class SystemDetails extends Component {
         <ErrorNotification ref="error"/>
         <div className="container">
           <div className="two columns">
+            <Toggle
+                defaultToggled={true}
+                name="powerState"
+                value="On"
+                label="Power:" />
+            <Toggle
+                name="powerState"
+                value="On"
+                label="Locator LED:" />
             <h4>BMC Information</h4>
             <ul>
               <li>Hostname: NodeName</li>
@@ -63,15 +75,11 @@ export default class SystemDetails extends Component {
             </ul>
             <h4>Server Actions</h4>
             <ul>
-              <li>Power On Server</li>
-              <li>Shutdown Server</li>
-              <li>Power Off Server</li>
-              <li>Restart Server</li>
-              <li>Reset Server</li>
+              {this.availableActions}
               <li>Launch KVM Console</li>
               <li>Map Virtual Media</li>
-              <li>Toggle Locator LED</li>
             </ul>
+
           </div>
           <div className="eight columns">
             <JsonEditor
@@ -83,12 +91,10 @@ export default class SystemDetails extends Component {
           <div className="two columns">
             <h4>Server Status</h4>
             <ul>
-              <li>Power State: On</li>
               <li>Server Status: Good</li>
               <li>Processors: Good</li>
               <li>Memory: Good</li>
               <li>Power Supply: Good</li>
-              <li>Locator LED: Off</li>
             </ul>
             <h4>Server Properties</h4>
             <ul>
@@ -106,12 +112,97 @@ export default class SystemDetails extends Component {
     );
   }
 
-  getSystemId() { return this.props.systemId || this.props.params.systemId; }
+  get systemId() { return this.props.systemId || this.props.params.systemId; }
 
-  readSystem() { return systems.read(this.getSystemId()); }
+  readSystem() { return systems.read(this.systemId); }
 
   readChassis(id) { return chassis.read(id); }
 
   updateSystem(system) { this.setState({system: system}); }
+
+  get availableActions() {
+    console.log('GH', this.state.system && this.state.system.actions);
+    var system = this.state.system;
+    function computerSystemResetActionTest(type) {
+      var a = system && system.actions;
+      a = a && a['ComputerSystem.Reset'];
+      a = a && a.reset_type;
+      return a && a.indexOf(type) !== -1;
+    }
+    var availableActions = [
+      {
+        filter: () => computerSystemResetActionTest('ForceOn'),
+        button: (
+          <li>
+            <FlatButton
+                label="Power On Server"
+                onClick={() =>
+                  systemResetActions.sendReset(this.systemId, 'ForceOn')
+                } />
+          </li>
+        )
+      },
+      {
+        filter: () => computerSystemResetActionTest('ForceOff'),
+        button: (
+          <li>
+            <FlatButton
+                label="Power Off Server"
+                onClick={() =>
+                  systemResetActions.sendReset(this.systemId, 'ForceOff')
+                } />
+          </li>
+        )
+      },
+      {
+        filter: () => computerSystemResetActionTest('ForceRestart'),
+        button: (
+          <li>
+            <FlatButton
+                label="Reset Server"
+                onClick={() =>
+                  systemResetActions.sendReset('ForceRestart')
+                } />
+          </li>
+        )
+      },
+      {
+        filter: () => computerSystemResetActionTest('GracefulRestart'),
+        button: (
+          <li>
+            <FlatButton
+                label="Restart Server"
+                onClick={() =>
+                  systemResetActions.sendReset(this.systemId, 'GracefulRestart')
+                } />
+          </li>
+        )
+      },
+      {
+        filter: () => true,
+        button: (
+          <li>
+            <FlatButton
+                label="Toggle Locator LED"
+                onClick={() => null} />
+          </li>
+        )
+      },
+      {
+        filter: () => false,
+        button: (
+          <li>
+            <FlatButton
+                label="Boot Image"
+                onClick={() => null} />
+          </li>
+        )
+      }
+    ];
+    availableActions = availableActions.filter((action) => {
+      return action.filter && action.filter();
+    });
+    return availableActions;
+  }
 
 }
