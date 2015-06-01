@@ -16,9 +16,9 @@ export default {
     });
   },
 
-  postSystemResetAction(reset_type) { // eslint-disable-line camelcase
+  postSystemResetAction(id, reset_type) { // eslint-disable-line camelcase
     return new Promise(function (resolve, reject) {
-      http.post(API + 'nodes')
+      http.post(API + 'ManagedSystems/Systems/' + id + '/Actions/ComputerSystem.Reset')
         .accept('json')
         .type('json')
         .send({ reset_type }) // eslint-disable-line camelcase

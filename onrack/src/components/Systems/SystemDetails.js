@@ -29,11 +29,10 @@ export default class SystemDetails extends Component {
     this.profileTime('SystemDetails', 'mount');
     var onError = this.refs.error.showError.bind(this.refs.error);
     this.unwatchSystem = systems.watchOne(this.getSystemId(), 'system', this, onError);
-    console.log('SystemDetails watching');
     this.readSystem();
   }
 
-  componentWillUnmount() { this.unwatchSystem(); console.log('SystemDetails unwatching'); }
+  componentWillUnmount() { this.unwatchSystem(); }
 
   componentDidUpdate() {
     this.profileTime('SystemDetails', 'update');
@@ -71,7 +70,7 @@ export default class SystemDetails extends Component {
               <li>Reset Server</li>
               <li>Launch KVM Console</li>
               <li>Map Virtual Media</li>
-              <li>Turn On Locator LED</li>
+              <li>Toggle Locator LED</li>
             </ul>
           </div>
           <div className="eight columns">

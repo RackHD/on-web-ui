@@ -17,23 +17,27 @@ import DataTableToolbar from './DataTableToolbar';
 @decorateComponent({
   propTypes: {
     className: PropTypes.string,
+    checkable: PropTypes.bool,
     emptyContent: PropTypes.any,
     headerContent: PropTypes.any,
     initialEntities: PropTypes.array,
     tableFields: PropTypes.array,
     toolbarContent: PropTypes.any,
     routeName: PropTypes.string,
-    style: PropTypes.object
+    style: PropTypes.object,
+    onSelectionChange: PropTypes.func
   },
   defaultProps: {
     className: '',
+    checkable: true,
     emptyContent: 'No content.',
     headerContent: '',
     initialEntities: [],
     tableFields: [],
     toolbarContent: null,
     routeName: '',
-    style: {}
+    style: {},
+    onSelectionChange: null
   }
 })
 @mixin.decorate(DeveloperHelpers)
@@ -67,11 +71,14 @@ export default class EntityGrid extends Component {
   render() {
     var styles = this.props.style || {};
     styles.position = styles.position || 'relative';
-    var tableFields = this.props.tableFields.concat([{
-      style: {width: 50},
-      label: <Checkbox onCheck={this.checkAll.bind(this)} />,
-      func: (data) => <Checkbox ref={'cb-' + data.id} onCheck={this.linkCheckbox.bind(this, data)} />
-    }]);
+    var tableFields = this.props.tableFields;
+    if (this.props.checkable) {
+      tableFields = tableFields.concat([{
+        style: {width: 50},
+        label: <Checkbox ref="cb-all" onCheck={this.checkAll.bind(this)} />,
+        func: (data) => <Checkbox ref={'cb-' + data.id} onCheck={this.linkCheckbox.bind(this, data)} />
+      }]);
+    }
     return (
       <div
           className={'EntityGrid ' + this.props.className}
@@ -112,13 +119,24 @@ export default class EntityGrid extends Component {
   checkAll(event) {
     this.state.entities.forEach(data => {
       var checkbox = this.refs.table.refs['cb-' + data.id];
-      if (checkbox) { checkbox.setChecked(event.target.checked); }
+      if (checkbox) {
+        checkbox.setChecked(event.target.checked);
+        this.linkCheckbox(data, event);
+      }
     });
+    var cbAll = this.refs['cb-all'];
+    if (cbAll) { cbAll.setChecked(event.target.checked); }
+    if (this.props.onSelectionChange) {
+      this.props.onSelectionChange(this.selected);
+    }
   }
 
   linkCheckbox(item, event) {
     if (event.target.checked) { this.selected[item.id] = item; }
     else { delete this.selected[item.id]; }
+    if (this.props.onSelectionChange) {
+      this.props.onSelectionChange(this.selected);
+    }
   }
 
 }

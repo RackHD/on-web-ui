@@ -60,6 +60,7 @@ export default class ChassisGrid extends Component {
           className="ChassisGrid">
         <EntityGrid
             ref="entityGrid"
+            checkable={false}
             emptyContent="No chassis."
             headerContent="Chassis List"
             initialEntities={this.chassisList}
@@ -70,24 +71,9 @@ export default class ChassisGrid extends Component {
               },
               { label: 'Name', property: 'name', default: 'Unknown' },
               { label: 'State', property: 'status.state', default: 'Unknown' },
-              { label: 'Health', property: 'status.healthRollUp', default: 'Unknown' },
-              { label: 'Actions',
-                func: (data) => [
-                  <IconButton iconClassName="fa fa-info-circle"
-                              tooltip="View Chassis"
-                              touch={true}
-                              onClick={this.viewChassisDetails.bind(this, data.id)} />
-              ] }
+              { label: 'Health', property: 'status.healthRollUp', default: 'Unknown' }
             ]}
-            toolbarContent={
-              <DropDownIcon
-                  iconClassName="fa fa-wrench"
-                  menuItems={[
-                    { payload: '1', text: 'Reset' },
-                    { payload: '2', text: <span>Boot&nbsp;Image</span> }
-                  ]}
-                  style={{zIndex: 1}} />
-            }
+            toolbarContent={null}
             routeName="chassis" />
       </div>
     );

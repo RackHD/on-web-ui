@@ -17,7 +17,7 @@ import { Snackbar } from 'material-ui';
   defaultProps: {
     autoDismiss: 10000,
     className: '',
-    initialError: null,
+    initialError: '',
     style: {}
   }
 })
@@ -33,8 +33,6 @@ export default class ErrorNotification extends Component {
   }
 
   render() {
-    var style = this.props.style;
-    style.position = style.position || 'absolute';
     return (
       <Snackbar
         ref="snackbar"
