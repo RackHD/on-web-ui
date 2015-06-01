@@ -10,6 +10,7 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 
 import {} from 'material-ui';
 import JsonEditor from 'common-web-ui/components/JsonEditor';
+import ErrorNotification from 'common-web-ui/components/ErrorNotification';
 import { systems } from '../../actions/SystemActions';
 import { chassis } from '../../actions/ChassisActions';
 import ChassisDetails from '../Chassis/ChassisDetails';
@@ -26,11 +27,13 @@ export default class SystemDetails extends Component {
 
   componentDidMount() {
     this.profileTime('SystemDetails', 'mount');
-    this.unwatchSystem = systems.watchOne(this.getSystemId(), 'system', this);
+    var onError = this.refs.error.showError.bind(this.refs.error);
+    this.unwatchSystem = systems.watchOne(this.getSystemId(), 'system', this, onError);
+    console.log('SystemDetails watching');
     this.readSystem();
   }
 
-  componentWillUnmount() { this.unwatchSystem(); }
+  componentWillUnmount() { this.unwatchSystem(); console.log('SystemDetails unwatching'); }
 
   componentDidUpdate() {
     this.profileTime('SystemDetails', 'update');
@@ -49,6 +52,7 @@ export default class SystemDetails extends Component {
         <h3 className="right">{system.type || 'Unknown type.'}</h3>
         <h2>{system.name || 'Unknown system.'}</h2>
         <div className="clearfix">Modified: {this.longDate(system.modified)}</div>
+        <ErrorNotification ref="error"/>
         <div className="container">
           <div className="two columns">
             <h4>BMC Information</h4>
@@ -97,7 +101,8 @@ export default class SystemDetails extends Component {
             </ul>
           </div>
         </div>
-        {system.chassis ? <ChassisDetails chassisId={system.chassis} /> : null}
+        {system.chassis ? <ChassisDetails
+            chassisId={system.chassis} showSystems={false} /> : null}
       </div>
     );
   }

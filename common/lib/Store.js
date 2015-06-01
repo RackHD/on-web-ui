@@ -55,9 +55,11 @@ export default class Store extends EventEmitter {
   }
 
   insert(id, data) {
-    if (!id) { return; }
-    data = data || {};
-    data.id = data.id || id;
+    if (!id) { throw new Error('Store: Unable to insert data without an id.'); }
+    if (data === undefined) {
+      console.warn(new Error('Store: Insert called with undefined data.'));
+      data = this.collection[id];
+    }
     this.collection[id] = data;
     this.publish(id);
   }

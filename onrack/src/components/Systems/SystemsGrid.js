@@ -1,10 +1,10 @@
 'use strict';
 
 /* eslint-disable no-unused-vars */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import decorateComponent from 'common-web-ui/lib/decorateComponent';
 import mixin from 'react-mixin';
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
@@ -16,8 +16,15 @@ import {
 import EntityGrid from 'common-web-ui/components/EntityGrid';
 import { systems } from '../../actions/SystemActions';
 
+@decorateComponent({
+  propTypes: {
+    filter: PropTypes.func
+  },
+  defaultProps: {
+    filter: null
+  }
+})
 @mixin.decorate(DeveloperHelpers)
-@mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
 @mixin.decorate(RouteHelpers)
 export default class SystemsGrid extends Component {
@@ -31,11 +38,13 @@ export default class SystemsGrid extends Component {
     this.profileTime('SystemGrid', 'did-mount');
     var onError = this.refs.entityGrid.showError.bind(this.refs.entityGrid);
     this.unwatchSystems = systems.watchAll('systemsList', this, onError);
+    console.log('SystemGrid watching');
     this.listSystems();
   }
 
   componentWillUnmount() {
     this.profileTime('ChassisGrid', 'will-unmount');
+    console.log('SystemGrid unwatching');
     this.unwatchSystems();
   }
 
@@ -45,7 +54,7 @@ export default class SystemsGrid extends Component {
 
   componentDidUpdate() {
     this.profileTime('SystemGrid', 'did-update');
-    this.refs.entityGrid.update(this.state.systemsList);
+    this.refs.entityGrid.update(this.systemsList);
   }
 
   render() {
@@ -56,7 +65,7 @@ export default class SystemsGrid extends Component {
             ref="entityGrid"
             emptyContent="No systems."
             headerContent="Systems List"
-            initialEntities={this.state.systemsList}
+            initialEntities={this.systemsList}
             tableFields={[
               { label: 'ID', property: 'id',
                 func: (id) =>
@@ -85,6 +94,12 @@ export default class SystemsGrid extends Component {
             routeName="systems" />
       </div>
     );
+  }
+
+  get systemsList() {
+    var systemsList = this.state.systemsList;
+    if (this.props.filter) { return systemsList.filter(this.props.filter); }
+    return systemsList;
   }
 
   listSystems() { return systems.list(); }

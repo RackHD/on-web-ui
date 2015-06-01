@@ -1,10 +1,10 @@
 'use strict';
 
 /* eslint-disable no-unused-vars */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import decorateComponent from 'common-web-ui/lib/decorateComponent';
 import mixin from 'react-mixin';
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
@@ -16,8 +16,15 @@ import {
 import EntityGrid from 'common-web-ui/components/EntityGrid';
 import { chassis } from '../../actions/ChassisActions';
 
+@decorateComponent({
+  propTypes: {
+    filter: PropTypes.func
+  },
+  defaultProps: {
+    filter: null
+  }
+})
 @mixin.decorate(DeveloperHelpers)
-@mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
 @mixin.decorate(RouteHelpers)
 export default class ChassisGrid extends Component {
@@ -44,7 +51,7 @@ export default class ChassisGrid extends Component {
 
   componentDidUpdate() {
     this.profileTime('ChassisGrid', 'did-update');
-    this.refs.entityGrid.update(this.state.chassisList);
+    this.refs.entityGrid.update(this.chassisList);
   }
 
   render() {
@@ -55,7 +62,7 @@ export default class ChassisGrid extends Component {
             ref="entityGrid"
             emptyContent="No chassis."
             headerContent="Chassis List"
-            initialEntities={this.state.chassisList}
+            initialEntities={this.chassisList}
             tableFields={[
               { label: 'ID', property: 'id',
                 func: (id) =>
@@ -84,6 +91,12 @@ export default class ChassisGrid extends Component {
             routeName="chassis" />
       </div>
     );
+  }
+
+  get chassisList() {
+    var chassisList = this.state.chassisList;
+    if (this.props.filter) { return chassisList.filter(this.props.filter); }
+    return chassisList;
   }
 
   listChassis() { return chassis.list(); }
