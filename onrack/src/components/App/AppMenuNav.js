@@ -10,6 +10,7 @@ import { MenuItem, LeftNav } from 'material-ui';
 
 const menuItems = [
   { text: 'Dashboard', route: '/' },
+  { text: 'Login', route: 'login' },
   { text: 'Objects', type: MenuItem.Types.SUBHEADER },
   { text: 'Chassis', route: 'chassis' },
   { text: 'Systems', route: 'systems' },

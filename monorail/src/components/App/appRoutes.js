@@ -13,7 +13,6 @@ import Activities from '../Activities';
 import Tasks from '../Tasks';
 import Jobs from '../Jobs';
 import Dashboard from '../Dashboard';
-import UserLogin from '../UserLogin';
 import NotFound from 'common-web-ui/components/NotFound';
 
 /** Routes: https://github.com/rackt/react-router/blob/master/docs/api/components/Route.md
@@ -38,7 +37,6 @@ export default (
     <Route name="jobs" handler={Jobs} />
     <Route name="builder" handler={WorkflowBuilder} />
     <Route name="builder/:workflowId" handler={WorkflowBuilder} />
-    <Route name="login" handler={UserLogin} />
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />
   </Route>

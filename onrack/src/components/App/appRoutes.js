@@ -7,6 +7,7 @@ import App from './App';
 import { ChassisCollection, ChassisDetails } from '../Chassis';
 import { SystemsCollection, SystemDetails } from '../Systems';
 import Dashboard from '../Dashboard';
+import UserLogin from 'common-web-ui/components/UserLogin';
 import NotFound from 'common-web-ui/components/NotFound';
 
 export default (
@@ -18,6 +19,8 @@ export default (
 
     <Route name="systems" handler={SystemsCollection} />
     <Route name="system" path="/systems/:systemId" handler={SystemDetails} />
+
+    <Route name="login" handler={UserLogin} />
 
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />

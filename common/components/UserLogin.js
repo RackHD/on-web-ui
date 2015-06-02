@@ -3,7 +3,6 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
@@ -11,9 +10,7 @@ import {
     RaisedButton,
     FlatButton
   } from 'material-ui';
-import './UserLogin.less';
 
-@mixin.decorate(PageHelpers)
 export default class UserLogin extends Component {
 
   state = {disabled: false};
@@ -29,12 +26,14 @@ export default class UserLogin extends Component {
               <TextField name="user"
                          hintText="Ralph"
                          floatingLabelText="User Name"
+                         style={{width: '100%'}}
                          disabled={this.state.disabled} />
               <TextField name="pass"
                          hintText="Secret"
                          floatingLabelText="Password"
+                         style={{width: '100%'}}
                          disabled={this.state.disabled} />
-              <div className="buttons container">
+              <div className="buttons container center">
                 <div className="one-half column">
                   <FlatButton className="button"
                               label="Cancel"
