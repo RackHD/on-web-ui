@@ -4,6 +4,7 @@
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
 import decorateComponent from 'common-web-ui/lib/decorateComponent';
+import StyleHelpers from 'common-web-ui/mixins/StyleHelpers';
 import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
@@ -33,6 +34,7 @@ import './GraphCanvas.less';
   }
 })
 @mixin.decorate(DragEventHelpers)
+@mixin.decorate(StyleHelpers)
 export default class GraphCanvas extends Component {
 
   state = {
@@ -77,9 +79,9 @@ export default class GraphCanvas extends Component {
              height: screenSize.y
            }}>
         <div className="links container"
-             style={{
+             style={this.mergeAndPrefix({
                transform: css3WorldSpaceTransform//'scale(' + scale + ') ' + worldPosition.toCSS3Transform()
-             }}>
+             })}>
           <svg
               width={worldBoundingBox.width}
               height={worldBoundingBox.height}
