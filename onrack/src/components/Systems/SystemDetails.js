@@ -121,7 +121,6 @@ export default class SystemDetails extends Component {
   updateSystem(system) { this.setState({system: system}); }
 
   get availableActions() {
-    console.log('GH', this.state.system && this.state.system.actions);
     var system = this.state.system;
     function computerSystemResetActionTest(type) {
       var a = system && system.actions;
