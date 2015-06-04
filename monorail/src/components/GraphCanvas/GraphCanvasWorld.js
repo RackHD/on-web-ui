@@ -10,7 +10,6 @@ import CoordinateHelpers from './mixins/CoordinateHelpers';
 
 import Vector from './lib/Vector';
 import GraphCanvasGrid from './GraphCanvasGrid';
-import './GraphCanvasView.less';
 
 @decorateComponent({
   propTypes: {

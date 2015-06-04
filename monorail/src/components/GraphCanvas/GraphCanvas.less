@@ -6,13 +6,29 @@
   width: 100%;
   height: 100%;
 
-  // svg.vectors, canvas.rastors, div.elements {
-  //   position: absolute;
-  //   left: 0;
-  //   top: 0;
-  //   width: 100%;
-  //   height: 100%;
-  // }
+  .GraphCanvasView {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+    overflow: hidden;
+  }
+
+  .GraphCanvasWorld {
+    svg {
+      overflow: visible !important;
+    }
+
+    canvas.rastors,
+    svg.vectors,
+    div.elements {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  }
 
   .GraphCanvasNode, .GraphCanvasLink {
     display: block;

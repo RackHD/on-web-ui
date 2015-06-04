@@ -11,7 +11,6 @@ import CoordinateHelpers from './mixins/CoordinateHelpers';
 
 import Vector from './lib/Vector';
 import GraphCanvasWorld from './GraphCanvasWorld';
-import './GraphCanvasView.less';
 
 @decorateComponent({
   propTypes: {
