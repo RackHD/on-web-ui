@@ -39,7 +39,7 @@ export default class Rectangle {
 
   toSVGViewBox() { return this.toArray().join(' '); }
 
-  setWorld(width, height) {
+  fromCenter(width, height) {
     var halfWidth = width / 2,
         halfHeight = height / 2;
     this.top = halfHeight;
@@ -48,15 +48,6 @@ export default class Rectangle {
     this.left = -halfWidth;
     return this;
   }
-
-  // viewMatrix(scale=1, viewPosition=new Vector(), screen=new Rectangle()) {
-  //   var viewMatrix = new Matrix().identity(),
-  //       offsetX = screen.right / 2 + (viewPosition.x * scale),
-  //       offsetY = screen.bottom / 2 + (viewPosition.y * scale);
-  //   return viewMatrix.
-  //     scale(new Vector(scale, scale)).
-  //     translate(new Vector(offsetX, offsetY));
-  // }
 
   /* eslint-disable no-return-assign */
   get left() { return this.min.x; }
@@ -147,7 +138,6 @@ export default class Rectangle {
         y = 2 * Math.abs(this.top - bbox.top),
         w = this.width + bbox.width,
         h = this.height + bbox.height;
-
     return x < w && y < h;
   }
 

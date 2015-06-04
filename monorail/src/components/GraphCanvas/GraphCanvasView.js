@@ -6,90 +6,60 @@ import mixin from 'react-mixin';
 import decorateComponent from 'common-web-ui/lib/decorateComponent';
 import StyleHelpers from 'common-web-ui/mixins/StyleHelpers';
 import DragEventHelpers from './mixins/DragEventHelpers';
-import WorldSpaceHelpers from './mixins/WorldSpaceHelpers';
+import CoordinateHelpers from './mixins/CoordinateHelpers';
 /* eslint-enable no-unused-vars */
 
 import Vector from './lib/Vector';
-import Rectangle from './lib/Rectangle';
-import GraphCanvasGrid from './GraphCanvasGrid';
+import GraphCanvasWorld from './GraphCanvasWorld';
 import './GraphCanvasView.less';
 
 @decorateComponent({
   propTypes: {
+    initialViewX: PropTypes.number,
+    initialViewY: PropTypes.number,
+    initialScale: PropTypes.number,
     worldWidth: PropTypes.number,
     worldHeight: PropTypes.number,
-    screenWidth: PropTypes.number,
-    screenHeight: PropTypes.number
+    viewWidth: PropTypes.number,
+    viewHeight: PropTypes.number
   },
   defaultProps: {
+    initialViewX: 0,
+    initialViewY: 0,
+    initialScale: 1,
     worldWidth: 800,
     worldHeight: 600,
-    screenWidth: 400,
-    screenHeight: 300
+    viewWidth: 400,
+    viewHeight: 300
   }
 })
-@mixin.decorate(WorldSpaceHelpers)
+@mixin.decorate(CoordinateHelpers)
 @mixin.decorate(DragEventHelpers)
 @mixin.decorate(StyleHelpers)
 export default class GraphCanvasView extends Component {
 
-  state = {
-    screenPosition: new Vector(0, 0),
-    scale: 1,
-    marks: []
-  };
+  state = {};
 
   render() { try {
-    var screenSize = this.screenSize,
-        worldSize = this.worldSize,
-        gridBoundingBox = new Rectangle(0, 0, worldSize.x, worldSize.y),
-        cssWorldSpaceTransform = {
-          transform: this.worldSpaceTransform.toCSS3Transform()
-        },
-        cssScreenSize = {
-          width: screenSize.x,
-          height: screenSize.y
-        },
-        cssWorldSize = {
-          width: worldSize.x,
-          height: worldSize.y
+    var props = this.props,
+        viewSize = this.viewSize,
+        cssViewSize = {
+          width: viewSize.x,
+          height: viewSize.y
         };
     return (
       <div
           className="GraphCanvasView"
           onMouseDown={this.translateWorld()}
           onWheel={this.scaleWorld.bind(this)}
-          style={cssScreenSize}>
+          style={cssViewSize}>
         <div
             ref="view"
             className="view"
-            style={cssScreenSize}>
-          <div
+            style={cssViewSize}>
+          <GraphCanvasWorld
               ref="world"
-              className="world"
-              onDoubleClick={this.touchWorld.bind(this)}
-              style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
-            <svg
-                className="vectors"
-                width={worldSize.x}
-                height={worldSize.y}
-                style={cssWorldSize}
-                viewBox={'0 0 ' + worldSize.x + ' ' + worldSize.y}
-                preserveAspectRatio="none"
-                xmlns="http://www.w3.org/2000/svg">
-              <GraphCanvasGrid
-                  top={gridBoundingBox.top}
-                  left={gridBoundingBox.left}
-                  width={gridBoundingBox.width}
-                  height={gridBoundingBox.height} />
-              {this.markVectors}
-            </svg>
-            <div
-              className="elements"
-              style={cssWorldSize}>
-              {this.markElements}
-            </div>
-          </div>
+              {...props} />
         </div>
       </div>
     );
@@ -99,46 +69,55 @@ export default class GraphCanvasView extends Component {
     return this.setupClickDrag(this.translateWorldListeners);
   }
 
-  touchWorld(event) {
+  get translateWorldListeners() {
+    return {
+      down: (event, dragState) => {
+        if (event.shiftKey) {
+          this.drawNode(null, {shiftKey: (dragState.shiftKey = true)})(event);
+        }
+        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        event.stopPropagation();
+        // var scale = this.state.scale;
+        dragState.start = new Vector(this.refs.world.position);
+        dragState.min = new Vector(-1000, -1000);
+        dragState.max = new Vector(1000, 1000);
+      },
+      move: (event, dragState) => {
+        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        event.stopPropagation();
+        var scale = this.refs.world.scale,
+            start = dragState.start,
+            min = dragState.min,
+            max = dragState.max;
+        this.refs.world.updatePosition({
+          x: Math.min(max.x, Math.max(min.x, start.x - (event.diffX / scale))),
+          y: Math.min(max.y, Math.max(min.y, start.y - (event.diffY / scale)))
+        });
+      },
+      up: (event, dragState) => {
+        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        event.stopPropagation();
+      }
+    };
+  }
+
+  scaleWorld(event) {
     event.stopPropagation();
     event.preventDefault();
-    var domoff = this.domOffsetXY(event.currentTarget);
-    var client = new Vector(event.clientX, event.clientY);
-    var mark = client.sub(domoff).squish(this.scale);
-    console.log('Mark: ' + mark);
-    this.setState(function(currentState) {
-      return {marks: currentState.marks.concat([mark])};
-    });
-  }
-
-  get marks() {
-    return this.state.marks;
-  }
-
-  get markVectors() {
-    return this.marks.map(mark => {
-      return <rect
-        x={mark.x - 2}
-        y={mark.y - 2}
-        width={3}
-        height={3}
-        fill="black" />;
-    });
-  }
-
-  get markElements() {
-    return this.marks.map(mark => {
-      return <div style={{
-        position: 'absolute',
-        top: mark.y - 7,
-        left: mark.x - 7,
-        width: 10,
-        height: 10,
-        opacity: 0.5,
-        borderRadius: 5,
-        background: 'red'
-      }} />;
-    });
+    this.offsetEventXY(event);
+    var scale = this.refs.world.scale,
+        // viewPosition = this.viewPosition,
+        // mousePosition = new Vector(event.relX, event.relY),
+        force = Math.max(0.1, scale / 5);
+    // console.log(event.deltaY);
+    if (event.deltaY < 0) {
+      scale = Math.max(0.5, scale - force);
+    }
+    else {
+      scale = Math.min(5, scale + force);
+    }
+    // console.log(this.viewBoundingBox);
+    this.refs.world.updateScale(scale);
   }
 
 }
