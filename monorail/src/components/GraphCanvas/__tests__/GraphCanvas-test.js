@@ -39,7 +39,8 @@ describe('GraphCanvasMap', function() {
     });
   });
 
-  describe('coordinates', function() {
+  // TODO: move this test to GraphCanvasWorld-test
+  xdescribe('coordinates', function() {
     beforeEach(function() {
       this.subject = new GraphCanvas(props);
     });
@@ -63,7 +64,6 @@ describe('GraphCanvasMap', function() {
     });
 
     xit('should be able to convert betwen world space and screen space', function() {
-      // TODO: move this test to GraphCanvasView-test
       var a = new Vector(5, 5),
           w = this.subject.worldSpaceTransform,
           v = this.subject.viewSpaceTransform;

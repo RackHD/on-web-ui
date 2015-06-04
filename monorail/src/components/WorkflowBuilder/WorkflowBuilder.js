@@ -54,6 +54,7 @@ export default class WorkflowBuilder extends Component {
         <Paper ref="graphCanvas" className="eight columns">
           <div>
             <GraphCanvas
+                initialScale={3}
                 viewWidth={this.state.canvasWidth}
                 viewHeight={this.state.canvasHeight} />
           </div>
