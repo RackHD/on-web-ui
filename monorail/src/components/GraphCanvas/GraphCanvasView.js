@@ -124,12 +124,12 @@ export default class GraphCanvasView extends Component {
     event.preventDefault();
     this.offsetEventXY(event);
     var scale = this.refs.world.scale,
-        force = Math.max(0.1, scale / 5);
+        force = Math.max(0.05, scale / 5);
     if (event.deltaY < 0) {
-      scale = Math.max(0.5, scale - force);
+      scale = Math.max(0.2, scale - force);
     }
     else {
-      scale = Math.min(5, scale + force);
+      scale = Math.min(8, scale + force);
     }
     this.refs.world.updateScale(scale);
   }

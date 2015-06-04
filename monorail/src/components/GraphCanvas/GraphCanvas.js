@@ -76,6 +76,7 @@ export default class GraphCanvas extends Component {
           style={cssViewSize}>
         <GraphCanvasView
             ref="view"
+            initialScale={3}
             worldWidth={worldSize.x}
             worldHeight={worldSize.y}
             viewWidth={viewSize.x}
