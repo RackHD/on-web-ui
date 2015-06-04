@@ -39,7 +39,7 @@ export default class GraphCanvasGrid extends Component {
             props.left,
             props.top,
             props.left + props.width,
-            props.top + props.width
+            props.top + props.bottom
           ].join(' ')}
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg">

@@ -14,7 +14,7 @@ import NotFound from 'common-web-ui/components/NotFound';
 import featureFlag from 'common-web-ui/lib/featureFlag';
 const devFlag = featureFlag('dev');
 
-import GraphCanvasMap from 'monorail-web-ui/src/components/GraphCanvas/GraphCanvasMap';
+import GraphCanvasView from 'monorail-web-ui/src/components/GraphCanvas/GraphCanvasView';
 
 export default (
   <Route name="root" path="/" handler={App}>
@@ -29,7 +29,7 @@ export default (
     <Route name="login" handler={UserLogin} />
 
     { !devFlag.check() ? null :
-      <Route name="map" handler={GraphCanvasMap} />
+      <Route name="map" handler={GraphCanvasView} />
     }
 
     <NotFoundRoute handler={NotFound}/>

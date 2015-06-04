@@ -10,10 +10,9 @@ import WorldSpaceHelpers from './mixins/WorldSpaceHelpers';
 /* eslint-enable no-unused-vars */
 
 import Vector from './lib/Vector';
-import Matrix from './lib/Matrix';
 import Rectangle from './lib/Rectangle';
 import GraphCanvasGrid from './GraphCanvasGrid';
-import './GraphCanvasMap.less';
+import './GraphCanvasView.less';
 
 @decorateComponent({
   propTypes: {
@@ -32,7 +31,7 @@ import './GraphCanvasMap.less';
 @mixin.decorate(WorldSpaceHelpers)
 @mixin.decorate(DragEventHelpers)
 @mixin.decorate(StyleHelpers)
-export default class GraphCanvasMap extends Component {
+export default class GraphCanvasView extends Component {
 
   state = {
     screenPosition: new Vector(0, 0),
@@ -43,55 +42,39 @@ export default class GraphCanvasMap extends Component {
   render() { try {
     var screenSize = this.screenSize,
         worldSize = this.worldSize,
-        // worldBoundingBox = this.worldBoundingBox,
-        // screenBoundingBox = this.screenBoundingBox,
-        // gridSize = Math.max(worldSize.x, worldSize.y),
-        gridBoundingBox = new Rectangle(0, 0, 600, 600),
-        // gridBoundingBox = new Rectangle().setWorld(gridSize, gridSize),
+        gridBoundingBox = new Rectangle(0, 0, worldSize.x, worldSize.y),
         worldSpaceTransform = this.worldSpaceTransform,
-        css3WorldSpaceTransform = {
+        cssWorldSpaceTransform = {
           transform: worldSpaceTransform.toCSS3Transform()
+        },
+        cssScreenSize = {
+          width: screenSize.x,
+          height: screenSize.y
+        },
+        cssWorldSize = {
+          width: worldSize.x,
+          height: worldSize.y
         };
-    // console.log(screenSize.toString(), worldSize.toString(), gridSize);
-    // console.log(
-    //   'S', screenBoundingBox.toSVGViewBox(),
-    //   '\nW', worldBoundingBox.toSVGViewBox(),
-    //   '\nG', gridBoundingBox.toSVGViewBox());
     return (
       <div
           className="GraphCanvasMap"
           onMouseDown={this.translateWorld()}
           onWheel={this.scaleWorld.bind(this)}
-          style={{
-            width: screenSize.x,
-            height: screenSize.y
-          }}>
+          style={cssScreenSize}>
         <div
             ref="view"
             className="view"
-            style={{
-              width: screenSize.x,
-              height: screenSize.y,
-              border: '2px solid blue'
-            }}>
+            style={cssScreenSize}>
           <div
               ref="world"
               className="world"
               onDoubleClick={this.touchWorld.bind(this)}
-              style={this.mergeAndPrefix(css3WorldSpaceTransform, {
-                width: worldSize.x,
-                height: worldSize.y,
-                border: '1px solid green'
-              })}>
+              style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
             <svg
                 className="vectors"
                 width={worldSize.x}
                 height={worldSize.y}
-                style={{
-                  width: worldSize.x,
-                  height: worldSize.y,
-                  border: '1px dotted green'
-                }}
+                style={cssWorldSize}
                 viewBox={'0 0 ' + worldSize.x + ' ' + worldSize.y}
                 preserveAspectRatio="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -99,18 +82,14 @@ export default class GraphCanvasMap extends Component {
                   top={gridBoundingBox.top}
                   left={gridBoundingBox.left}
                   width={gridBoundingBox.width}
-                  height={gridBoundingBox.height}
-                  style={{
-                    border: '1px dotted red'
-                  }} />
+                  height={gridBoundingBox.height} />
               {this.markVectors}
             </svg>
             <div
               className="elements"
               style={{
                 width: worldSize.x,
-                height: worldSize.y,
-                border: '2px dotted blue'
+                height: worldSize.y
               }}>
               {this.markElements}
             </div>
@@ -129,25 +108,8 @@ export default class GraphCanvasMap extends Component {
     event.preventDefault();
     var domoff = this.domOffsetXY(event.currentTarget);
     var client = new Vector(event.clientX, event.clientY);
-    // console.log('dom: ' + domoff);
-    // console.log('client: ' + client);
-    // console.log('diff: ' + client.sub(domoff));
-    // console.log('diff*: ' + client.sub(domoff).squish(this.scale));
-    // console.log(this.scale);
-
-    var coords = client.sub(domoff).squish(this.scale);
-
-    // if (event) { return; }
-    // this.offsetEventXY(event, undefined, event.currentTarget);
-    var mark = coords;//new Vector(event.relX, event.relY);
-    // mark = mark.transform(this.screenSpaceTransform);
-    // mark = mark.div([this.scale, this.scale]);
-    console.log(
-      // this.scale, this.screenPosition.toString(),
-      // event.relX,
-      // event.relX * this.scale,
-      // event.relY * this.scale,
-      'Mark: ' + mark);
+    var mark = client.sub(domoff).squish(this.scale);
+    console.log('Mark: ' + mark);
     this.setState(function(currentState) {
       return {marks: currentState.marks.concat([mark])};
     });
@@ -158,12 +120,10 @@ export default class GraphCanvasMap extends Component {
   }
 
   get markVectors() {
-    // var magicTransform = new Matrix().identity();
     return this.marks.map(mark => {
-      // mark = mark.transform(magicTransform);
       return <rect
-        x={mark.x - 0.5}
-        y={mark.y - 0.5}
+        x={mark.x - 2}
+        y={mark.y - 2}
         width={3}
         height={3}
         fill="black" />;
@@ -171,13 +131,11 @@ export default class GraphCanvasMap extends Component {
   }
 
   get markElements() {
-    // var magicTransform = new Matrix().identity();
     return this.marks.map(mark => {
-      // mark = mark.transform(magicTransform);
       return <div style={{
         position: 'absolute',
-        top: mark.y - 5,
-        left: mark.x - 5,
+        top: mark.y - 7,
+        left: mark.x - 7,
         width: 10,
         height: 10,
         opacity: 0.5,
