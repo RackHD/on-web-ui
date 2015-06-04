@@ -15,18 +15,22 @@ import './GraphCanvasView.less';
 
 @decorateComponent({
   propTypes: {
-    initialViewX: PropTypes.number,
-    initialViewY: PropTypes.number,
+    initialElements: PropTypes.any,
+    initialVectors: PropTypes.any,
     initialScale: PropTypes.number,
+    initialX: PropTypes.number,
+    initialY: PropTypes.number,
     worldWidth: PropTypes.number,
     worldHeight: PropTypes.number,
     viewWidth: PropTypes.number,
     viewHeight: PropTypes.number
   },
   defaultProps: {
-    initialViewX: 0,
-    initialViewY: 0,
+    initialElements: [],
+    initialVectors: [],
     initialScale: 1,
+    initialX: 0,
+    initialY: 0,
     worldWidth: 800,
     worldHeight: 600,
     viewWidth: 400,
@@ -39,6 +43,14 @@ import './GraphCanvasView.less';
 export default class GraphCanvasView extends Component {
 
   state = {};
+
+  updateVectors(vectors) {
+    this.refs.world.updateVectors(vectors);
+  }
+
+  updateElements(elements) {
+    this.refs.world.updateElements(elements);
+  }
 
   render() { try {
     var props = this.props,
@@ -75,6 +87,19 @@ export default class GraphCanvasView extends Component {
         dragState.start = new Vector(this.refs.world.position);
         dragState.min = new Vector(-1000, -1000);
         dragState.max = new Vector(1000, 1000);
+        // TODO: fix these clamps
+        // var scale = this.state.scale;
+        // dragState.min = new Vector(
+          // (this.worldBoundingBox.left / 2) - (this.screenSize.x / 2 / scale),
+          // (this.worldBoundingBox.top / 2) - (this.screenSize.y / 2 / scale)
+        // );
+        // dragState.max = new Vector(
+          // (this.worldBoundingBox.right / 2) + (this.screenSize.x / 2 / scale),
+          // (this.worldBoundingBox.bottom / 2) + (this.screenSize.y / 2 / scale)
+        // );
+        // console.log(this.worldBoundingBox.toArray());
+        // console.log(dragState.start.toArray());
+        // console.log(dragState.min.toArray(), dragState.max.toArray());
       },
       move: (event, dragState) => {
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click

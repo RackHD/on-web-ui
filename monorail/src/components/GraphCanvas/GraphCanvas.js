@@ -6,43 +6,44 @@ import mixin from 'react-mixin';
 import decorateComponent from 'common-web-ui/lib/decorateComponent';
 import StyleHelpers from 'common-web-ui/mixins/StyleHelpers';
 import DragEventHelpers from './mixins/DragEventHelpers';
+import CoordinateHelpers from './mixins/CoordinateHelpers';
 /* eslint-enable no-unused-vars */
 
-import Vector from './lib/Vector';
-import Matrix from './lib/Matrix';
-import Rectangle from './lib/Rectangle';
-import GraphCanvasGrid from './GraphCanvasGrid';
-import GraphCanvasLink from './GraphCanvasLink';
-import GraphCanvasNode from './GraphCanvasNode';
+// import Vector from './lib/Vector';
+// import Matrix from './lib/Matrix';
+// import Rectangle from './lib/Rectangle';
+import GraphCanvasView from './GraphCanvasView';
+// import GraphCanvasGrid from './GraphCanvasGrid';
+// import GraphCanvasLink from './GraphCanvasLink';
+// import GraphCanvasNode from './GraphCanvasNode';
 import './GraphCanvas.less';
 
 @decorateComponent({
   propTypes: {
     worldWidth: PropTypes.number,
     worldHeight: PropTypes.number,
-    screenWidth: PropTypes.number,
-    screenHeight: PropTypes.number,
+    viewWidth: PropTypes.number,
+    viewHeight: PropTypes.number,
     initialNodes: PropTypes.array,
     initialLinks: PropTypes.array
   },
   defaultProps: {
-    worldWidth: 500,
-    worldHeight: 500,
-    screenWidth: 1000,
-    screenHeight: 1000,
+    worldWidth: 1000,
+    worldHeight: 1000,
+    viewWidth: 1000,
+    viewHeight: 1000,
     initialNodes: [],
     initialLinks: []
   }
 })
+@mixin.decorate(CoordinateHelpers)
 @mixin.decorate(DragEventHelpers)
 @mixin.decorate(StyleHelpers)
 export default class GraphCanvas extends Component {
 
   state = {
-    screenPosition: new Vector(0, 0),
-    scale: 1,
-    node: null,
-    link: null,
+    activeNode: null,
+    activeLink: null,
     nodes: [],
     links: []
   };
@@ -50,183 +51,38 @@ export default class GraphCanvas extends Component {
   rawLinks = [];
 
   render() { try {
-    var screenSize = this.screenSize,
-        // worldSize = this.worldSize,
-        worldBoundingBox = this.worldBoundingBox,
-        worldSpaceTransform = this.worldSpaceTransform.translate(this.screenPosition),
-        css3WorldSpaceTransform = this.mergeAndPrefix({
-          transform: worldSpaceTransform.toCSS3Transform()
-        }),
-        activeNode = this.state.node &&
-          <GraphCanvasNode active={true} canvas={this} {...this.state.node} />,
-        activeLink = this.state.link &&
-          <GraphCanvasLink active={true} canvas={this} {...this.state.link} />,
-        links = this.state.links.map(link => <GraphCanvasLink {...link} />),
-        nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
+    var viewSize = this.viewSize,
+        worldSize = this.worldSize,
+        cssViewSize = {
+          width: viewSize.x,
+          height: viewSize.y
+        };
+    // var activeNode = this.state.node &&
+    //       <GraphCanvasNode active={true} canvas={this} {...this.state.node} />,
+    //     activeLink = this.state.link &&
+    //       <GraphCanvasLink active={true} canvas={this} {...this.state.link} />,
+    //     links = this.state.links.map(link => <GraphCanvasLink {...link} />),
+    //     nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
+    /*
+      {links}
+      {activeLink}
+      {nodes}
+      {activeNode}
+    */
     return (
-      <div className="GraphCanvas"
-           onMouseDown={this.translateCanvas()}
-           onContextMenu={this.drawNode()}
-           onWheel={this.scaleCanvas.bind(this)}
-           style={{
-             width: screenSize.x,
-             height: screenSize.y
-           }}>
-        <canvas className="rastors"></canvas>
-        <svg
-            className="vectors"
-            width={screenSize.x}
-            height={screenSize.y}
-            style={css3WorldSpaceTransform}
-            viewBox={'0 0 ' + screenSize.toArray().join(' ')}
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg">
-          <GraphCanvasGrid
-              top={worldBoundingBox.top}
-              left={worldBoundingBox.left}
-              width={worldBoundingBox.width}
-              height={worldBoundingBox.height} />
-          {links}
-        </svg>
-        {activeLink}
-        <div className="elements"
-             style={css3WorldSpaceTransform}>
-          {nodes}
-          {activeNode}
-        </div>
+      <div
+          className="GraphCanvas"
+          onContextMenu={this.drawNode()}
+          style={cssViewSize}>
+        <GraphCanvasView
+            ref="view"
+            worldWidth={worldSize.x}
+            worldHeight={worldSize.y}
+            viewWidth={viewSize.x}
+            viewHeight={viewSize.y} />
       </div>
     );
   } catch (err) { console.error(err.stack || err); } }
-
-  // Coordinates
-
-  get scale() {
-    return this.state.scale;
-  }
-
-  get screenPosition() {
-    return new Vector(this.state.screenPosition);
-  }
-
-  get worldPosition() {
-    return new Vector(this.state.screenPosition).transform(this.worldSpaceTransform);
-  }
-
-  get screenSize() {
-    return new Vector(this.props.screenWidth, this.props.screenHeight);
-  }
-
-  get worldSize() {
-    return new Vector(this.props.worldWidth, this.props.worldHeight);
-  }
-
-  get viewBoundingBox() {
-    return this.screenBoundingBox.transform(this.worldSpaceTransform);
-  }
-
-  get screenBoundingBox() {
-    var screenSize = this.screenSize,
-        screenPosition = this.screenPosition;
-    return new Rectangle(//0, 0,
-      screenPosition.x, screenPosition.y,
-      screenPosition.x + screenSize.x, screenPosition.y + screenSize.y);
-  }
-
-  get worldBoundingBox() {
-    var worldSize = this.worldSize;
-    return new Rectangle().setWorld(worldSize.x, -worldSize.y);
-  }
-
-  // get eventCoordsTransform() {
-  //   // var s = this.scale;
-  //   var w = this.worldSize.div([2, 2]),
-  //       s = this.screenSize.div([2, 2]);
-  //   return new Matrix().identity().translate(w.negate()).translate(s.negate());
-  // }
-
-  get worldSpaceTransform() {
-    var s = this.scale;
-    return new Matrix().
-      identity().
-      scale([s, s]).
-      translate(this.screenSize.div([2, 2]).add(this.worldSize.div([2, 2]).negate()));
-  }
-  get worldSpaceTransform2() {
-    var s = this.scale;
-    return new Matrix().
-      identity().
-      scale([s, s]).
-      translate(this.screenSize.div([2, 2]).add(this.worldSize.div([2, 2]).negate()).negate());
-  }
-
-  get screenSpaceTransform() {
-    return this.worldSpaceTransform.invert();
-  }
-
-  // Canvas events
-
-  translateCanvas() {
-    return this.setupClickDrag({
-      down: (event, dragState) => {
-        if (event.shiftKey) {
-          this.drawNode(null, {shiftKey: (dragState.shiftKey = true)})(event);
-        }
-        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
-        event.stopPropagation();
-        // var scale = this.state.scale;
-        dragState.start = new Vector(this.state.screenPosition);
-        // TODO: fix these clamps
-        dragState.min = new Vector(-1000, -1000);
-          // (this.worldBoundingBox.left / 2) - (this.screenSize.x / 2 / scale),
-          // (this.worldBoundingBox.top / 2) - (this.screenSize.y / 2 / scale)
-        // );
-        dragState.max = new Vector(1000, 1000);
-          // (this.worldBoundingBox.right / 2) + (this.screenSize.x / 2 / scale),
-          // (this.worldBoundingBox.bottom / 2) + (this.screenSize.y / 2 / scale)
-        // );
-        // console.log(this.worldBoundingBox.toArray());
-        // console.log(dragState.start.toArray());
-        // console.log(dragState.min.toArray(), dragState.max.toArray());
-      },
-      move: (event, dragState) => {
-        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
-        event.stopPropagation();
-        var scale = this.scale,
-            start = dragState.start,
-            min = dragState.min,
-            max = dragState.max;
-        this.setState({
-          screenPosition: {
-            x: Math.min(max.x, Math.max(min.x, start.x + (event.diffX / scale))),
-            y: Math.min(max.y, Math.max(min.y, start.y + (event.diffY / scale)))
-          }
-        });
-      },
-      up: (event, dragState) => {
-        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
-        event.stopPropagation();
-      }
-    });
-  }
-
-  scaleCanvas(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    this.offsetEventXY(event);
-    var scale = this.scale,
-        // screenPosition = this.screenPosition,
-        // mousePosition = new Vector(event.relX, event.relY),
-        force = Math.max(0.1, scale / 5);
-    // console.log(event.deltaY);
-    if (event.deltaY < 0) {
-      scale = Math.max(0.5, scale - force);
-    }
-    else {
-      scale = Math.min(5, scale + force);
-    }
-    // console.log(this.viewBoundingBox);
-    this.setState({ scale });
-  }
 
   // Node events
 
@@ -235,37 +91,15 @@ export default class GraphCanvas extends Component {
       down: (event) => {
         event.stopPropagation();
         event.preventDefault();
-        var matrix = this.worldSpaceTransform2,
-            mouseX = event.relX,
-            mouseY = event.relY,
-            newX = mouseX * matrix[0] + mouseY * matrix[2] + matrix[4],
-            newY = mouseX * matrix[1] + mouseY * matrix[3] + matrix[5];
-        console.log(newX, newY);
-        // event.coords = new Vector(event.relX, event.relY).transform(this.eventCoordsTransform);
-        // console.log(event.relX, event.relY);
-        // var worldCoords = new Vector(event.relX, event.relY),
-        //     screenSize = new Vector(this.props.screenWidth, this.props.screenHeight),
-        //     worldSize = new Vector(this.props.worldWidth, this.props.worldHeight),
-        //     ratio = screenSize.div(worldSize);
-        // // worldCoords = worldCoords.div(ratio);
-        // worldCoords = worldCoords.transform(this.screenSpaceTransform);
-        // console.log('wc', worldCoords.toArray(), ratio, worldSize, screenSize);
-        // console.log(this.state.screenPosition.toArray(), this.state.scale);
-        // console.log(event.coords);
       },
       move: (event, dragState) => {
         if (this.state.link) { return; }
         event.stopPropagation();
-        // event.coords = new Vector(event.relX, event.relY).transform(this.eventCoordsTransform);
         var node = {
           startX: dragState.downEvent.relX,
           startY: dragState.downEvent.relY,
           endX: event.relX,
           endY: event.relY
-          // startX: dragState.downEvent.coords.x,
-          // startY: dragState.downEvent.coords.y,
-          // endX: event.coords.x,
-          // endY: event.coords.y
         };
         this.calculateNodeBox(node);
         this.setState({

@@ -3,11 +3,9 @@
 /* eslint-disable no-unused-expressions */
 
 import React from 'react';
-import { addons } from 'react/addons';
-var { TestUtils } = addons;
 
 import TestWrapper from 'common-web-ui/components/TestWrapper';
-import GraphCanvasMap from '../GraphCanvasMap';
+import GraphCanvasView from '../GraphCanvasView';
 import Vector from '../lib/Vector';
 
 var props = {
@@ -26,7 +24,7 @@ describe('GraphCanvasMap', function() {
         this.element = React.findDOMNode(this.subject);
         done(err);
       };
-      this.wrapper = TestWrapper.testRender(GraphCanvasMap, props, handler);
+      this.wrapper = TestWrapper.testRender(GraphCanvasView, props, handler);
     });
 
     after(function(done) {
@@ -43,7 +41,7 @@ describe('GraphCanvasMap', function() {
 
   describe('coordinates', function() {
     beforeEach(function() {
-      this.subject = new GraphCanvasMap(props);
+      this.subject = new GraphCanvasView(props);
     });
 
     it('should have a screen size', function() {

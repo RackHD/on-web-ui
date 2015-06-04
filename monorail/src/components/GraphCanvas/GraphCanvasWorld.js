@@ -14,16 +14,20 @@ import './GraphCanvasView.less';
 
 @decorateComponent({
   propTypes: {
+    initialElements: PropTypes.any,
+    initialVectors: PropTypes.any,
+    initialScale: PropTypes.number,
     initialX: PropTypes.number,
     initialY: PropTypes.number,
-    initialScale: PropTypes.number,
     worldWidth: PropTypes.number,
     worldHeight: PropTypes.number
   },
   defaultProps: {
+    initialElements: [],
+    initialVectors: [],
+    initialScale: 1,
     initialX: 0,
     initialY: 0,
-    initialScale: 1,
     worldWidth: 800,
     worldHeight: 600
   }
@@ -38,6 +42,8 @@ export default class GraphCanvasView extends Component {
       this.props.initialY
     ),
     scale: this.props.initialScale,
+    vectors: this.props.initialVectors,
+    elements: this.props.initialElements,
     marks: []
   };
 
@@ -47,6 +53,14 @@ export default class GraphCanvasView extends Component {
 
   updateScale(scale) {
     this.setState({ scale });
+  }
+
+  updateVectors(vectors) {
+    this.setState({ vectors });
+  }
+
+  updateElements(elements) {
+    this.setState({ elements });
   }
 
   render() { try {
@@ -62,9 +76,10 @@ export default class GraphCanvasView extends Component {
     return (
       <div
           ref="world"
-          className="world"
+          className="GraphCanvasWorld"
           onDoubleClick={this.touchWorld.bind(this)}
           style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
+        <canvas className="rastors"></canvas>
         <svg
             className="vectors"
             width={worldSize.x}
@@ -79,11 +94,14 @@ export default class GraphCanvasView extends Component {
               width={worldBoundingBox.width}
               height={worldBoundingBox.height} />
           {this.markVectors}
+          {this.state.vectors}
         </svg>
         <div
           className="elements"
           style={cssWorldSize}>
           {this.markElements}
+          {this.state.elements}
+          {this.props.children}
         </div>
       </div>
     );
@@ -92,12 +110,7 @@ export default class GraphCanvasView extends Component {
   touchWorld(event) {
     event.stopPropagation();
     event.preventDefault();
-    // TODO: make it easier to convert event coords to world coords
-    var rect = event.currentTarget.getBoundingClientRect(),
-        offset = new Vector(rect.left, rect.top),
-        client = new Vector(event.clientX, event.clientY),
-        mark = client.sub(offset).squish(this.scale);
-    console.log('Mark: ' + mark);
+    var mark = this.getEventCoords(event);
     this.setState(function(currentState) {
       return {marks: currentState.marks.concat([mark])};
     });

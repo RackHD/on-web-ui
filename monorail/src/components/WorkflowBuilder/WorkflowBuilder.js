@@ -52,7 +52,11 @@ export default class WorkflowBuilder extends Component {
           <WorkflowsMenu />
         </div>
         <Paper ref="graphCanvas" className="eight columns">
-          <GraphCanvas screenWidth={this.state.canvasWidth} screenHeight={this.state.canvasHeight}/>
+          <div>
+            <GraphCanvas
+                viewWidth={this.state.canvasWidth}
+                viewHeight={this.state.canvasHeight} />
+          </div>
         </Paper>
         <div className="two columns">
           <br /><br /><br />

@@ -43,6 +43,13 @@ export default {
 
   get viewSpaceTransform() {
     return this.worldSpaceTransform.invert();
+  },
+
+  getEventCoords(event, element=event.currentTarget) {
+    var rect = element.getBoundingClientRect(),
+        offset = new Vector(rect.left, rect.top),
+        client = new Vector(event.clientX, event.clientY);
+    return client.sub(offset).squish(this.scale);
   }
 
 };
