@@ -81,7 +81,7 @@ export default class Vector {
 
   random(scale) { return vec2.random(new Vector(), scale); }
 
-  scale(vector) { return vec2.scale(new Vector(), this, vector); }
+  scale(scalar) { return vec2.scale(new Vector(), this, scalar); }
 
   scaleAndAdd(vector, scale) { return vec2.scaleAndAdd(new Vector(), this, vector, scale); }
 
@@ -94,6 +94,8 @@ export default class Vector {
   sqrLength() { return vec2.sqrLength(this); }
 
   squaredLength() { return vec2.squaredLength(this); }
+
+  squish(scalar) { return new Vector(this.x / scalar, this.y / scalar); }
 
   sub(vector) { return vec2.sub(new Vector(), this, vector); }
 

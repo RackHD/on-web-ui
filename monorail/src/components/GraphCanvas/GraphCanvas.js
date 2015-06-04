@@ -11,6 +11,7 @@ import DragEventHelpers from './mixins/DragEventHelpers';
 import Vector from './lib/Vector';
 import Matrix from './lib/Matrix';
 import Rectangle from './lib/Rectangle';
+import GraphCanvasGrid from './GraphCanvasGrid';
 import GraphCanvasLink from './GraphCanvasLink';
 import GraphCanvasNode from './GraphCanvasNode';
 import './GraphCanvas.less';
@@ -49,26 +50,19 @@ export default class GraphCanvas extends Component {
   rawLinks = [];
 
   render() { try {
-    var //scale = this.scale,
-        screenSize = this.screenSize,
-        worldSize = this.worldSize,
+    var screenSize = this.screenSize,
+        // worldSize = this.worldSize,
         worldBoundingBox = this.worldBoundingBox,
         worldSpaceTransform = this.worldSpaceTransform.translate(this.screenPosition),
-        css3WorldSpaceTransform = worldSpaceTransform.toCSS3Transform(),
-        // worldPosition = this.worldPosition,
-        activeNode = this.state.node && <GraphCanvasNode
-          active={true}
-          canvas={this}
-          {...this.state.node}
-        />,
-        activeLink = this.state.link && <GraphCanvasLink
-          active={true}
-          canvas={this}
-          {...this.state.link}
-        />,
+        css3WorldSpaceTransform = this.mergeAndPrefix({
+          transform: worldSpaceTransform.toCSS3Transform()
+        }),
+        activeNode = this.state.node &&
+          <GraphCanvasNode active={true} canvas={this} {...this.state.node} />,
+        activeLink = this.state.link &&
+          <GraphCanvasLink active={true} canvas={this} {...this.state.link} />,
         links = this.state.links.map(link => <GraphCanvasLink {...link} />),
         nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
-    console.log('WBB', worldBoundingBox.toSVGViewBox());
     return (
       <div className="GraphCanvas"
            onMouseDown={this.translateCanvas()}
@@ -78,38 +72,25 @@ export default class GraphCanvas extends Component {
              width: screenSize.x,
              height: screenSize.y
            }}>
-        <div className="links container"
-             style={this.mergeAndPrefix({
-               transform: css3WorldSpaceTransform//'scale(' + scale + ') ' + worldPosition.toCSS3Transform()
-             })}>
-          <svg
+        <canvas className="rastors"></canvas>
+        <svg
+            className="vectors"
+            width={screenSize.x}
+            height={screenSize.y}
+            style={css3WorldSpaceTransform}
+            viewBox={'0 0 ' + screenSize.toArray().join(' ')}
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg">
+          <GraphCanvasGrid
+              top={worldBoundingBox.top}
+              left={worldBoundingBox.left}
               width={worldBoundingBox.width}
-              height={worldBoundingBox.height}
-              viewBox={'0 0 ' + worldSize.toArray().join(' ')||worldBoundingBox.toSVGViewBox()}
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10 10 10 Z" fill="none" stroke="#ddd" strokeWidth="0.25"/>
-              </pattern>
-              <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-                <rect width="100" height="100" x="0" y="0" fill="url(#smallGrid)"/>
-                <path d="M 100 0 L 0 0 0 100 100 100 Z" fill="none" stroke="#bbb" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width={worldBoundingBox.width}
-                  height={worldBoundingBox.height}
-                  x={0}
-                  y={0}
-                  fill="url(#grid)" />
-            {links}
-          </svg>
-          {activeLink}
-        </div>
-        <div className="nodes container"
-             style={{
-               transform: css3WorldSpaceTransform//'scale(' + scale + ') ' + worldPosition.toCSS3Transform()
-             }}>
+              height={worldBoundingBox.height} />
+          {links}
+        </svg>
+        {activeLink}
+        <div className="elements"
+             style={css3WorldSpaceTransform}>
           {nodes}
           {activeNode}
         </div>
@@ -144,8 +125,11 @@ export default class GraphCanvas extends Component {
   }
 
   get screenBoundingBox() {
-    var screenSize = this.screenSize;
-    return new Rectangle(0, 0, screenSize.x, screenSize.y);
+    var screenSize = this.screenSize,
+        screenPosition = this.screenPosition;
+    return new Rectangle(//0, 0,
+      screenPosition.x, screenPosition.y,
+      screenPosition.x + screenSize.x, screenPosition.y + screenSize.y);
   }
 
   get worldBoundingBox() {
@@ -153,14 +137,26 @@ export default class GraphCanvas extends Component {
     return new Rectangle().setWorld(worldSize.x, -worldSize.y);
   }
 
+  // get eventCoordsTransform() {
+  //   // var s = this.scale;
+  //   var w = this.worldSize.div([2, 2]),
+  //       s = this.screenSize.div([2, 2]);
+  //   return new Matrix().identity().translate(w.negate()).translate(s.negate());
+  // }
+
   get worldSpaceTransform() {
     var s = this.scale;
-    // console.log(this.screenSize);
     return new Matrix().
       identity().
-      translate(this.screenSize.div([2, 2]).add(this.worldSize.div([2, 2]).negate())).
-      // translate();
-      scale([s, s]);
+      scale([s, s]).
+      translate(this.screenSize.div([2, 2]).add(this.worldSize.div([2, 2]).negate()));
+  }
+  get worldSpaceTransform2() {
+    var s = this.scale;
+    return new Matrix().
+      identity().
+      scale([s, s]).
+      translate(this.screenSize.div([2, 2]).add(this.worldSize.div([2, 2]).negate()).negate());
   }
 
   get screenSpaceTransform() {
@@ -239,23 +235,37 @@ export default class GraphCanvas extends Component {
       down: (event) => {
         event.stopPropagation();
         event.preventDefault();
+        var matrix = this.worldSpaceTransform2,
+            mouseX = event.relX,
+            mouseY = event.relY,
+            newX = mouseX * matrix[0] + mouseY * matrix[2] + matrix[4],
+            newY = mouseX * matrix[1] + mouseY * matrix[3] + matrix[5];
+        console.log(newX, newY);
+        // event.coords = new Vector(event.relX, event.relY).transform(this.eventCoordsTransform);
         // console.log(event.relX, event.relY);
         // var worldCoords = new Vector(event.relX, event.relY),
         //     screenSize = new Vector(this.props.screenWidth, this.props.screenHeight),
         //     worldSize = new Vector(this.props.worldWidth, this.props.worldHeight),
-        //     ratio = screenSize.div(worldSize),
-        // worldCoords = worldCoords.div(ratio);
+        //     ratio = screenSize.div(worldSize);
+        // // worldCoords = worldCoords.div(ratio);
+        // worldCoords = worldCoords.transform(this.screenSpaceTransform);
         // console.log('wc', worldCoords.toArray(), ratio, worldSize, screenSize);
         // console.log(this.state.screenPosition.toArray(), this.state.scale);
+        // console.log(event.coords);
       },
       move: (event, dragState) => {
         if (this.state.link) { return; }
         event.stopPropagation();
+        // event.coords = new Vector(event.relX, event.relY).transform(this.eventCoordsTransform);
         var node = {
           startX: dragState.downEvent.relX,
           startY: dragState.downEvent.relY,
           endX: event.relX,
           endY: event.relY
+          // startX: dragState.downEvent.coords.x,
+          // startY: dragState.downEvent.coords.y,
+          // endX: event.coords.x,
+          // endY: event.coords.y
         };
         this.calculateNodeBox(node);
         this.setState({

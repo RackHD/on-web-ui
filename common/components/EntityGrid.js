@@ -86,7 +86,6 @@ export default class EntityGrid extends Component {
         <div
             style={{opacity: this.state.error ? '0.5' : '1.0'}}>
           <DataTableToolbar
-              style={{zIndex: 1}}
               label={<a href={'#/' + this.props.routeName}>{this.props.headerContent}</a>}
               count={this.state.entities && this.state.entities.length || 0}>
             {this.props.toolbarContent}

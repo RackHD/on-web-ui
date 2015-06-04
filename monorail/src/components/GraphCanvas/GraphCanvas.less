@@ -3,10 +3,15 @@
 .GraphCanvas {
   position: relative;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 
-  .container {
+  svg.vectors, canvas.rastors, div.elements {
     position: absolute;
+    left: 0;
     top: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .GraphCanvasNode, .GraphCanvasLink {
@@ -16,13 +21,10 @@
 
   .GraphCanvasNode {
     min-height: 90px;
+    transition: box-shadow 0.5s;
+    border-radius: 5px;
     background-color: rgb(255, 255, 255);
     background-color: rgba(255, 255, 255, 0.75);
-
-    &, .mui-paper-container {
-      transition: box-shadow 0.5s;
-      border-radius: 5px;
-    }
 
     &:hover {
       z-index: 1;
@@ -32,16 +34,16 @@
       background-color: rgb(127, 127, 127);
       background-color: rgba(127, 127, 127, 0.25);
 
-      .mui-paper-container { .header, .flipper {
-        visibility: hidden;
-      } }
+      // .container { .header, .flipper { visibility: hidden; } }
     }
 
-    &.flip .mui-paper-container .flipper {
+    &.flip .container .flipper {
       transform: rotateY(180deg);
     }
 
-    .mui-paper-container {
+    .container {
+      width: 100%;
+      height: 100%;
       padding: 48px 0 0 0;
       position: relative;
       perspective: 1000;

@@ -1,0 +1,23 @@
+.GraphCanvasMap {
+  margin: 300px;
+  position: relative;
+  // overflow: hidden;
+  width: 100%;
+  height: 100%;
+
+  .view {}
+
+  .world {}
+
+  svg {
+    overflow: visible !important;
+  }
+
+  svg.vectors, canvas.rastors, div.elements {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}

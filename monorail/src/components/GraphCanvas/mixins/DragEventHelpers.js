@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import Vector from '../lib/Vector';
+
 export default {
 
   bindWindow(event, listener) {
@@ -18,6 +20,10 @@ export default {
   },
 
   domOffsetXY(element) {
+    if (element.getBoundingClientRect) {
+      var rect = element.getBoundingClientRect();
+      return new Vector(rect.left, rect.top);
+    }
     var x = 0,
         y = 0;
     do {
@@ -25,7 +31,7 @@ export default {
       y += element.offsetTop;
       element = element.offsetParent;
     } while(element);
-    return { x, y };
+    return new Vector(x, y);
   },
 
   delegatesTo(element, className) {

@@ -66,24 +66,26 @@ export default class GraphCanvasNode extends Component {
              zDepth={zDepth}
              style={styles}
              data-canvasref={this.props.canvasRef}>
-        <div className="header"
-             onMouseDown={this.moveNode()}>
-          <IconButton className="left"
-                      iconClassName={'fa fa-info' + (this.state.flip ? '-circle' : '')}
-                      tooltip="Flip"
-                      onClick={this.toggleFlip} />
-          <span className="name">Name</span>
-          <IconButton className="right"
-                      iconClassName="fa fa-remove"
-                      tooltip="Remove"
-                      onClick={this.removeNode} />
-        </div>
-        <div className="flipper">
-          <div className="front">
-            {ports}
+        <div className="container">
+          <div className="header"
+               onMouseDown={this.moveNode()}>
+            <IconButton className="left"
+                        iconClassName={'fa fa-info' + (this.state.flip ? '-circle' : '')}
+                        tooltip="Flip"
+                        onClick={this.toggleFlip} />
+            <span className="name">Name</span>
+            <IconButton className="right"
+                        iconClassName="fa fa-remove"
+                        tooltip="Remove"
+                        onClick={this.removeNode} />
           </div>
-          <div className="back">
-            Selete Type
+          <div className="flipper">
+            <div className="front">
+              {ports}
+            </div>
+            <div className="back">
+              Selete Type
+            </div>
           </div>
         </div>
       </Paper>

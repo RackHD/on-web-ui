@@ -82,8 +82,7 @@ export default class SystemsGrid extends Component {
               <DropDownIcon
                   onChange={this.onSelectAction.bind(this)}
                   iconClassName="fa fa-wrench"
-                  menuItems={a}
-                  style={{zIndex: 1}} />
+                  menuItems={a} />
               : null
             }
             routeName="systems" />

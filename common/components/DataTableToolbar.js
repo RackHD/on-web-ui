@@ -32,7 +32,7 @@ export default class DataTableToolbar extends Component {
         <ToolbarGroup key={0} float="left">
           <h3>{this.props.label} &nbsp; ({this.props.count})</h3>
         </ToolbarGroup>
-        <ToolbarGroup key={1} float="right">
+        <ToolbarGroup key={1} float="right" style={{zIndex: 1}}>
           {this.props.children}
         </ToolbarGroup>
       </Toolbar>
