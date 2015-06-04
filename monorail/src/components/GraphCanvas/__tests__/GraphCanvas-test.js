@@ -1,30 +1,42 @@
 'use strict';
-/* global describe, it, expect, beforeEach */
+/* global describe, it, expect, before, after, beforeEach */
 /* eslint-disable no-unused-expressions */
 
 import React from 'react';
-import { addons } from 'react/addons';
-var { TestUtils } = addons;
 
+import TestWrapper from 'common-web-ui/components/TestWrapper';
 import GraphCanvas from '../GraphCanvas';
 import Vector from '../lib/Vector';
 
 var props = {
   worldWidth: 240,
   worldHeight: 200,
-  screenWidth: 120,
-  screenHeight: 100
+  viewWidth: 120,
+  viewHeight: 100
 };
 
-describe('GraphCanvas', function() {
+describe('GraphCanvasMap', function() {
 
-  it('can be rendered.', function() {
-    var graphCanvas = TestUtils.renderIntoDocument(
-      React.createElement(GraphCanvas, props));
-    var graphCanvasElem =
-      TestUtils.findRenderedDOMComponentWithClass(graphCanvas, 'GraphCanvas');
-    expect(graphCanvas).to.be.ok;
-    expect(graphCanvasElem).to.be.ok;
+  describe('component', function() {
+    before(function(done) {
+      var handler = (err, component) => {
+        this.subject = component;
+        this.element = React.findDOMNode(this.subject);
+        done(err);
+      };
+      this.wrapper = TestWrapper.testRender(GraphCanvas, props, handler);
+    });
+
+    after(function(done) {
+      this.timeout(1000);
+      setTimeout(() => this.wrapper.cleanup(done), 500);
+    });
+
+    it('can be rendered', function () {
+      expect(this.wrapper).to.be.ok;
+      expect(this.subject).to.be.ok;
+      expect(this.element).to.be.ok;
+    });
   });
 
   describe('coordinates', function() {
@@ -33,9 +45,9 @@ describe('GraphCanvas', function() {
     });
 
     it('should have a screen size', function() {
-      expect(this.subject.screenSize).to.be.an.instanceof(Vector);
-      this.subject.screenSize.x.should.equal(props.screenWidth);
-      this.subject.screenSize.y.should.equal(props.screenHeight);
+      expect(this.subject.viewSize).to.be.an.instanceof(Vector);
+      this.subject.viewSize.x.should.equal(props.viewWidth);
+      this.subject.viewSize.y.should.equal(props.viewHeight);
     });
 
     it('should have a world size', function() {
@@ -45,21 +57,19 @@ describe('GraphCanvas', function() {
     });
 
     it('should have a screen position', function() {
-      expect(this.subject.screenPosition).to.be.an.instanceof(Vector);
-      this.subject.screenPosition.x.should.equal(0);
-      this.subject.screenPosition.y.should.equal(0);
+      expect(this.subject.position).to.be.an.instanceof(Vector);
+      this.subject.position.x.should.equal(0);
+      this.subject.position.y.should.equal(0);
     });
 
-    it('should have a world position', function() {
-      expect(this.subject.worldPosition).to.be.an.instanceof(Vector);
-      this.subject.worldPosition.x.should.equal(-60);
-      this.subject.worldPosition.y.should.equal(-50);
-    });
-
-    it('should be able to convert betwen world space and screen space', function() {
+    xit('should be able to convert betwen world space and screen space', function() {
+      // TODO: move this test to GraphCanvasView-test
       var a = new Vector(5, 5),
-          b = a.transform(this.subject.worldSpaceTransform),
-          c = a.transform(this.subject.screenSpaceTransform);
+          w = this.subject.worldSpaceTransform,
+          v = this.subject.viewSpaceTransform;
+      // debugger;
+      var b = a.transform(w),
+          c = a.transform(v);
       b.x.should.equal(-55);
       b.y.should.equal(-45);
       c.x.should.equal(65);

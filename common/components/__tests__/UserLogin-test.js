@@ -20,7 +20,8 @@ describe('UserLogin', function() {
     });
 
     after(function(done) {
-      this.wrapper.cleanup(done);
+      this.timeout(200);
+      setTimeout(() => this.wrapper.cleanup(done), 100);
     });
 
     it('can be rendered.', function() {
