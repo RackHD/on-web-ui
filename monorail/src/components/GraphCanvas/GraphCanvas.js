@@ -30,8 +30,8 @@ import './GraphCanvas.less';
   defaultProps: {
     worldWidth: 1000,
     worldHeight: 1000,
-    viewWidth: 1000,
-    viewHeight: 1000,
+    viewWidth: 800,
+    viewHeight: 600,
     initialNodes: [],
     initialLinks: []
   }
