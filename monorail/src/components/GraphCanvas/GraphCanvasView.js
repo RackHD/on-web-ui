@@ -53,14 +53,9 @@ export default class GraphCanvasView extends Component {
           onMouseDown={this.translateWorld()}
           onWheel={this.scaleWorld.bind(this)}
           style={cssViewSize}>
-        <div
-            ref="view"
-            className="view"
-            style={cssViewSize}>
-          <GraphCanvasWorld
-              ref="world"
-              {...props} />
-        </div>
+        <GraphCanvasWorld
+            ref="world"
+            {...props} />
       </div>
     );
   } catch (err) { console.error(err.stack || err); } }
@@ -77,7 +72,6 @@ export default class GraphCanvasView extends Component {
         }
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
-        // var scale = this.state.scale;
         dragState.start = new Vector(this.refs.world.position);
         dragState.min = new Vector(-1000, -1000);
         dragState.max = new Vector(1000, 1000);
@@ -106,17 +100,13 @@ export default class GraphCanvasView extends Component {
     event.preventDefault();
     this.offsetEventXY(event);
     var scale = this.refs.world.scale,
-        // viewPosition = this.viewPosition,
-        // mousePosition = new Vector(event.relX, event.relY),
         force = Math.max(0.1, scale / 5);
-    // console.log(event.deltaY);
     if (event.deltaY < 0) {
       scale = Math.max(0.5, scale - force);
     }
     else {
       scale = Math.min(5, scale + force);
     }
-    // console.log(this.viewBoundingBox);
     this.refs.world.updateScale(scale);
   }
 

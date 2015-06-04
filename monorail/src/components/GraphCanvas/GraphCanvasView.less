@@ -3,22 +3,21 @@
   width: 100%;
   height: 100%;
   cursor: crosshair;
+  overflow: hidden;
 
-  .view {
-    overflow: hidden;
-  }
+  .GraphCanvasWorld {
+    svg {
+      overflow: visible !important;
+    }
 
-  .world {}
-
-  svg {
-    overflow: visible !important;
-  }
-
-  svg.vectors, canvas.rastors, div.elements {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
+    canvas.rastors,
+    svg.vectors,
+    div.elements {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
   }
 }

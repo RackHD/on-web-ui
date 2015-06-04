@@ -110,11 +110,11 @@ export default class GraphCanvasView extends Component {
   get markVectors() {
     return this.marks.map(mark => {
       return <rect
-        x={mark.x - 2}
-        y={mark.y - 2}
+        x={mark.x - 1.45}
+        y={mark.y - 1.45}
         width={3}
         height={3}
-        fill="black" />;
+        fill="rgba(0, 0, 0, 0.5)" />;
     });
   }
 
@@ -122,8 +122,8 @@ export default class GraphCanvasView extends Component {
     return this.marks.map(mark => {
       return <div style={{
         position: 'absolute',
-        top: mark.y - 7,
-        left: mark.x - 7,
+        top: mark.y - 5.25,
+        left: mark.x - 5.25,
         width: 10,
         height: 10,
         opacity: 0.5,
