@@ -359,8 +359,10 @@ export default class GraphCanvasView extends Component {
   moveNode(nodeRef, displaceX, displaceY) {
     var node = this.rawNodes.filter(n => n.canvasRef === nodeRef)[0],
         links = this.rawLinks.filter(l => l.from === nodeRef || l.to === nodeRef);
-    node.left -= displaceX / this.scale;
-    node.top -= displaceY / this.scale;
+    displaceX /= this.scale;
+    displaceY /= this.scale;
+    node.left -= displaceX;
+    node.top -= displaceY;
     links.forEach(l => {
       if (l.from === nodeRef) {
         l.startX -= displaceX;

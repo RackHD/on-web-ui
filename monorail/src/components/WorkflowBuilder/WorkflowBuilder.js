@@ -46,22 +46,20 @@ export default class WorkflowBuilder extends Component {
     //   );
     // }
     return (
-      <div className="WorkflowBuilder container">
-        <div className="two columns">
-          <WorkflowTasksTray />
-          <WorkflowsMenu />
-        </div>
-        <Paper ref="graphCanvas" className="eight columns">
-          <div>
-            <GraphCanvas
-                initialScale={3}
-                viewWidth={this.state.canvasWidth}
-                viewHeight={this.state.canvasHeight} />
+      <div className="WorkflowBuilder" ref="graphCanvas">
+        <GraphCanvas
+            initialScale={3}
+            viewWidth={this.state.canvasWidth}
+            viewHeight={this.state.canvasHeight} />
+        <div className="overlay container">
+          <div className="panel left two columns">
+            <WorkflowTasksTray />
+            <WorkflowsMenu />
           </div>
-        </Paper>
-        <div className="two columns">
-          <br /><br /><br />
-          <WorkflowInspector />
+          <div className="panel right two columns">
+            <br /><br /><br />
+            <WorkflowInspector />
+          </div>
         </div>
       </div>
     );
@@ -70,7 +68,7 @@ export default class WorkflowBuilder extends Component {
   updateCanvasSize() {
     var canvasElem = React.findDOMNode(this.refs.graphCanvas || this),
         canvasWidth = canvasElem.offsetWidth,
-        canvasHeight = Math.max(800, window.innerHeight - 150);
+        canvasHeight = Math.max(800, window.innerHeight - 300);
     if (this.state.canvasWidth !== canvasWidth) { this.setState({ canvasWidth }); }
     if (this.state.canvasHeight !== canvasHeight) { this.setState({ canvasHeight }); }
   }
