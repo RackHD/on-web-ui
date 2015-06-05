@@ -8,7 +8,6 @@ import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    IconButton
   } from 'material-ui';
 
 @decorateComponent({
@@ -26,11 +25,9 @@ export default class GraphCanvasPort extends Component {
     return (
       <div className="GraphCanvasPort"
            onMouseDown={this.drawLink()}>
-        <IconButton className="socket in left"
-                    iconClassName="fa fa-circle-o" />
-        <span className="name">PORT</span>
-        <IconButton className="socket out right"
-                    iconClassName="fa fa-circle-o" />
+        <span className="socket in left fa fa-circle-o" />
+        <span className="name">socket</span>
+        <span className="socket out right fa fa-circle-o" />
       </div>
     );
   }

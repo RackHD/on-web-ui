@@ -8,8 +8,7 @@ import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    Paper,
-    IconButton
+    Paper
   } from 'material-ui';
 import GraphCanvasPort from './GraphCanvasPort.js';
 
@@ -28,6 +27,9 @@ import GraphCanvasPort from './GraphCanvasPort.js';
     width: 0,
     height: 0,
     canvas: null
+  },
+  childContextTypes: {
+    muiTheme: PropTypes.object
   }
 })
 @mixin.decorate(DragEventHelpers)
@@ -42,7 +44,10 @@ export default class GraphCanvasNode extends Component {
       top: this.state.top || this.props.top,
       left: this.state.left || this.props.left,
       width: this.props.width,
-      height: this.props.height
+      height: this.props.height,
+      transition: null,
+      borderRadius: null,
+      backgroundColor: null
     };
     var className = 'GraphCanvasNode',
         zDepth = 2;
@@ -56,6 +61,9 @@ export default class GraphCanvasNode extends Component {
     if (this.state.flip) {
       className += ' flip';
     }
+    if (this.state.flipping) {
+      className += ' flipping' + this.state.flipping;
+    }
     var ports = [
       <GraphCanvasPort canvas={this.props.canvas} />,
       <GraphCanvasPort canvas={this.props.canvas} />,
@@ -63,28 +71,25 @@ export default class GraphCanvasNode extends Component {
     ];
     return (
       <Paper className={className}
+             rounded={false}
              zDepth={zDepth}
              style={styles}
              data-canvasref={this.props.canvasRef}>
         <div className="container">
           <div className="header"
                onMouseDown={this.moveNode()}>
-            <IconButton className="left"
-                        iconClassName={'fa fa-info' + (this.state.flip ? '-circle' : '')}
-                        tooltip="Flip"
-                        onClick={this.toggleFlip} />
+            <a className={'left fa fa-info' + (this.state.flip ? '-circle' : '')}
+                onClick={this.toggleFlip} />
             <span className="name">Name</span>
-            <IconButton className="right"
-                        iconClassName="fa fa-remove"
-                        tooltip="Remove"
-                        onClick={this.removeNode} />
+            <a className="right fa fa-remove"
+                onClick={this.removeNode} />
           </div>
           <div className="flipper">
             <div className="front">
               {ports}
             </div>
             <div className="back">
-              Selete Type
+              Edit Task:
             </div>
           </div>
         </div>
@@ -139,7 +144,13 @@ export default class GraphCanvasNode extends Component {
   }
 
   toggleFlip() {
-    this.setState({flip: !this.state.flip});
+    if (this.state.flipping) { return; }
+    this.setState({
+      flipping: this.state.flip ? 'Back' : 'Front',
+      flip: !this.state.flip
+    });
+    // TODO: use css transition end event for this:
+    setTimeout(() => this.setState({flipping: null}), 750);
   }
 
 }
