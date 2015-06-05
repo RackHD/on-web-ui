@@ -10,11 +10,9 @@ import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import Vector from './lib/Vector';
-// import Matrix from './lib/Matrix';
-// import Rectangle from './lib/Rectangle';
-// import GraphCanvasLink from './GraphCanvasLink';
-// import GraphCanvasNode from './GraphCanvasNode';
 import GraphCanvasGrid from './GraphCanvasGrid';
+import GraphCanvasNode from './GraphCanvasNode';
+import GraphCanvasLink from './GraphCanvasLink';
 
 @decorateComponent({
   propTypes: {
@@ -47,8 +45,14 @@ export default class GraphCanvasView extends Component {
       this.props.initialY
     ),
     scale: this.props.initialScale,
-    marks: []
+    marks: [],
+    activeNode: null,
+    activeLink: null,
+    nodes: [],
+    links: []
   };
+  rawNodes = [];
+  rawLinks = [];
 
   updatePosition(position) {
     this.setState({ position });
@@ -68,25 +72,19 @@ export default class GraphCanvasView extends Component {
           width: worldSize.x,
           height: worldSize.y
         };
-    // var activeNode = this.state.node &&
-    //       <GraphCanvasNode active={true} canvas={this} {...this.state.node} />,
-    //     activeLink = this.state.link &&
-    //       <GraphCanvasLink active={true} canvas={this} {...this.state.link} />,
-    //     links = this.state.links.map(link => <GraphCanvasLink {...link} />),
-    //     nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
-    /*
-      {links}
-      {activeLink}
-      {nodes}
-      {activeNode}
-    */
+    var activeNode = this.state.activeNode &&
+          <GraphCanvasNode active={true} canvas={this} {...this.state.activeNode} />,
+        activeLink = this.state.activeLink &&
+          <GraphCanvasLink active={true} canvas={this} {...this.state.activeLink} />,
+        links = this.state.links.map(link => <GraphCanvasLink {...link} />),
+        nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
     return (
       <div
-          ref="world"
           className="GraphCanvasWorld"
           onWheel={this.scaleWorld.bind(this)}
           onMouseDown={this.translateWorld()}
           onDoubleClick={this.touchWorld.bind(this)}
+          onContextMenu={this.drawNode()}
           style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
         <canvas className="rastors"></canvas>
         <svg
@@ -103,14 +101,15 @@ export default class GraphCanvasView extends Component {
               width={worldBoundingBox.width}
               height={worldBoundingBox.height} />
           {this.markVectors}
-          {this.state.vectors}
+          {links}
+          {activeLink}
         </svg>
         <div
           className="elements"
           style={cssWorldSize}>
           {this.markElements}
-          {this.state.elements}
-          {this.props.children}
+          {nodes}
+          {activeNode}
         </div>
       </div>
     );
@@ -183,28 +182,37 @@ export default class GraphCanvasView extends Component {
 
   drawNode() {
     return this.setupClickDrag({
-      down: (event) => {
+      down: (event, dragState) => {
         event.stopPropagation();
         event.preventDefault();
+        var dom = React.findDOMNode(this);
+        dragState.start = this.getEventCoords(event, dom);
       },
       move: (event, dragState) => {
-        if (this.state.link) { return; }
+        if (this.state.activeLink) { return; }
         event.stopPropagation();
+        var dom = React.findDOMNode(this),
+            start = dragState.start,
+            end = this.getEventCoords(event, dom);
         var node = {
-          startX: dragState.downEvent.relX,
-          startY: dragState.downEvent.relY,
-          endX: event.relX,
-          endY: event.relY
+          // startX: dragState.downEvent,
+          // startY: dragState.downEvent,
+          // endX: event.relX,
+          // endY: event.relY
+          startX: start.x,
+          startY: start.y,
+          endX: end.x,
+          endY: end.y
         };
         this.calculateNodeBox(node);
         this.setState({
-          node: (node.height < 50 || node.width < 50) ? null : node
+          activeNode: (node.height < 50 || node.width < 50) ? null : node
         });
       },
       up: (event) => {
         event.stopPropagation();
-        var node = this.state.node;
-        this.setState({node: null});
+        var node = this.state.activeNode;
+        this.setState({activeNode: null});
         if (node) {
           node.width = Math.max(node.width, 200);
           node.height = Math.max(node.height, 180);
@@ -219,21 +227,32 @@ export default class GraphCanvasView extends Component {
   drawLinkStart(event, dragState, e) {
     event.stopPropagation();
     dragState.fromNode = this.delegatesTo(e.target, 'GraphCanvasNode');
+    var dom = React.findDOMNode(this);
+    dragState.start = this.getEventCoords(event, dom);
   }
 
   drawLinkContinue(event, dragState) {
-    if (this.state.node) { return; }
+    if (this.state.activeNode) { return; }
     event.stopPropagation();
+    var dom = React.findDOMNode(this),
+        start = dragState.start,
+        end = this.getEventCoords(event, dom);
     dragState.link = {
-      startX: dragState.downEvent.relX,
-      startY: dragState.downEvent.relY,
-      endX: event.relX,
-      endY: event.relY,
+      // startX: dragState.downEvent.relX,
+      // startY: dragState.downEvent.relY,
+      // endX: event.relX,
+      // endY: event.relY,
+      // dirX: 1,
+      // dirY: 1
+      startX: start.x,
+      startY: start.y,
+      endX: end.x,
+      endY: end.y,
       dirX: 1,
       dirY: 1
     };
     this.calculateLinkBox(dragState.link);
-    this.setState({link: dragState.link});
+    this.setState({activeLink: dragState.link});
   }
 
   drawLinkFinish(event, dragState, e) {
@@ -244,7 +263,7 @@ export default class GraphCanvasView extends Component {
       this.addLink(dragState.link, dragState.fromNode, isTargetNode);
     }
     this.linkFromNode = null;
-    this.setState({link: null});
+    this.setState({activeLink: null});
   }
 
   // Box calculations
