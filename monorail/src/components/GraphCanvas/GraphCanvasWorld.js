@@ -62,58 +62,60 @@ export default class GraphCanvasView extends Component {
     this.setState({ scale });
   }
 
-  render() { try {
-    var worldSize = this.worldSize,
-        worldBoundingBox = this.worldBoundingBox,
-        cssWorldSpaceTransform = {
-          transform: this.worldSpaceTransform.toCSS3Transform()
-        },
-        cssWorldSize = {
-          width: worldSize.x,
-          height: worldSize.y
-        };
-    var activeNode = this.state.activeNode &&
-          <GraphCanvasNode active={true} canvas={this} {...this.state.activeNode} />,
-        activeLink = this.state.activeLink &&
-          <GraphCanvasLink active={true} canvas={this} {...this.state.activeLink} />,
-        links = this.state.links.map(link => <GraphCanvasLink {...link} />),
-        nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
-    return (
-      <div
-          className="GraphCanvasWorld"
-          onWheel={this.scaleWorld.bind(this)}
-          onMouseDown={this.translateWorld()}
-          onDoubleClick={this.touchWorld.bind(this)}
-          onContextMenu={this.drawNode()}
-          style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
-        <canvas className="rastors"></canvas>
-        <svg
-            className="vectors"
-            width={worldSize.x}
-            height={worldSize.y}
-            style={cssWorldSize}
-            viewBox={worldBoundingBox.toSVGViewBox()}
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg">
-          <GraphCanvasGrid
-              top={worldBoundingBox.top}
-              left={worldBoundingBox.left}
-              width={worldBoundingBox.width}
-              height={worldBoundingBox.height} />
-          {this.markVectors}
-          {links}
-          {activeLink}
-        </svg>
+  render() {
+    try {
+      var worldSize = this.worldSize,
+          worldBoundingBox = this.worldBoundingBox,
+          cssWorldSpaceTransform = {
+            transform: this.worldSpaceTransform.toCSS3Transform()
+          },
+          cssWorldSize = {
+            width: worldSize.x,
+            height: worldSize.y
+          };
+      var activeNode = this.state.activeNode &&
+            <GraphCanvasNode active={true} canvas={this} {...this.state.activeNode} />,
+          activeLink = this.state.activeLink &&
+            <GraphCanvasLink active={true} canvas={this} {...this.state.activeLink} />,
+          links = this.state.links.map(link => <GraphCanvasLink {...link} />),
+          nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
+      return (
         <div
-          className="elements"
-          style={cssWorldSize}>
-          {this.markElements}
-          {nodes}
-          {activeNode}
+            className="GraphCanvasWorld"
+            onWheel={this.scaleWorld.bind(this)}
+            onMouseDown={this.translateWorld()}
+            onDoubleClick={this.touchWorld.bind(this)}
+            onContextMenu={this.drawNode()}
+            style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
+          <canvas className="rastors"></canvas>
+          <svg
+              className="vectors"
+              width={worldSize.x}
+              height={worldSize.y}
+              style={cssWorldSize}
+              viewBox={worldBoundingBox.toSVGViewBox()}
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg">
+            <GraphCanvasGrid
+                top={worldBoundingBox.top}
+                left={worldBoundingBox.left}
+                width={worldBoundingBox.width}
+                height={worldBoundingBox.height} />
+            {this.markVectors}
+            {links}
+            {activeLink}
+          </svg>
+          <div
+            className="elements"
+            style={{width: worldSize.x, height: 0}}>
+            {this.markElements}
+            {nodes}
+            {activeNode}
+          </div>
         </div>
-      </div>
-    );
-  } catch (err) { console.error(err.stack || err); } }
+      );
+    } catch (err) { console.error(err.stack || err); }
+  }
 
   translateWorld() {
     return this.setupClickDrag(this.translateWorldListeners);
