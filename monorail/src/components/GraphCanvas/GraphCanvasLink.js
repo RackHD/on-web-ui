@@ -36,90 +36,50 @@ export default class GraphCanvasLink extends Component {
   removeLink = this.removeLink.bind(this);
 
   render() {
-    var props = this.props;
+    var props = this.props,
+        gutter = 5,
+        stroke = 3;
+
     var styles = {
-      top: props.top,
-      left: props.left,
-      width: props.width,
-      height: props.height
+      top: props.top - gutter,
+      left: props.left - gutter,
+      width: props.width + gutter + gutter,
+      height: props.height + gutter + gutter
     };
 
-    var gutter = 5,
-        stroke = 3,
-        minX = 0 + gutter,
+    var minX = 0 + gutter,
         minY = 0 + gutter,
-        maxX = props.width - gutter,
-        maxY = props.height - gutter,
-        halfX = props.width / 2,
-        halfY = props.height / 2,
+        maxX = styles.width - gutter,
+        maxY = styles.height - gutter,
+        halfX = styles.width / 2,
+        halfY = styles.height / 2,
         // a1X = props.width * 0.25,
         // q1Y = props.height * 0.25,
         // q2X = props.width * 0.75,
         // q2Y = props.height * 0.75,
-        riseOverRun = props.height / props.width,
-        svgArea = props.width * props.height,
-        border = '',
         hover = this.state.hover ? 'hover ' : '',
-        align = '',
         path = '';
 
-    if (svgArea < 500 || riseOverRun > 1 || riseOverRun < 0.35) {
-      border = 'border ';
-    }
-
     if (props.dirX === 1 && props.dirY === 1) {
-      // align = 'br';
-      if (!border) {
-        path = ['M', minX, maxY, 'Q', minX, halfY, halfX, halfY, 'T', maxX, minY].join(' ');
-      }
-      else {
-        path = ['M', minX, maxY, 'H', maxX, 'V', minY].join(' ');
-      }
-    }
-    else if (props.dirX === 1 && props.dirY === -1) {
-      // align = 'bl';
-      if (!border) {
-        path = ['M', maxX, maxY, 'Q', maxX, halfY, halfX, halfY, 'T', minX, minY].join(' ');
-      }
-      else {
-        path = ['M', maxX, maxY, 'H', minX, 'V', minY].join(' ');
-      }
-    }
-    else if (props.dirX === -1 && props.dirY === 1) {
-      // align = 'tr';
-      if (!border) {
-        path = ['M', minX, minY, 'Q', minX, halfY, halfX, halfY, 'T', maxX, maxY].join(' ');
-      }
-      else {
-        path = ['M', minX, minY, 'H', maxX, 'V', maxY].join(' ');
-      }
+      path = ['M', minX, maxY, 'Q', halfX, maxY, halfX, halfY, 'T', maxX, minY].join(' ');
     }
     else if (props.dirX === -1 && props.dirY === -1) {
-      // align = 'tl';
-      if (!border) {
-        path = ['M', maxX, minY, 'Q', maxX, halfY, halfX, halfY, 'T', minX, maxY].join(' ');
-      }
-      else {
-        path = ['M', maxX, minY, 'H', minX, 'V', maxY].join(' ');
-      }
+      path = ['M', maxX, minY, 'Q', halfX, minY, halfX, halfY, 'T', minX, maxY].join(' ');
+    }
+    else if (props.dirX === 1 && props.dirY === -1) {
+      path = ['M', maxX, maxY, 'Q', halfX, maxY, halfX, halfY, 'T', minX, minY].join(' ');
+    }
+    else if (props.dirX === -1 && props.dirY === 1) {
+      path = ['M', minX, minY, 'Q', halfX, minY, halfX, halfY, 'T', maxX, maxY].join(' ');
     }
 
-    var transform = 'translate(' + styles.left + ' ' + styles.top + ')',
-        css = styles;
+    var transform = 'translate(' + styles.left + ' ' + styles.top + ')';
 
-    // if (props.active) {
-    //   transform = '';
-    // }
-    // else {
-    //   css = {};
-    // }
-
+    // <g>
     return (
-      <g>
-      <svg className={'GraphCanvasLink ' + hover + border + align}
+      <svg className={'GraphCanvasLink ' + hover /*+ border + align*/}
            width={styles.width}
            height={styles.height}
-           style={css && null}
            data-canvasref={props.canvasRef}
            onDoubleClick={this.removeLink}
            viewBox={[
@@ -137,24 +97,24 @@ export default class GraphCanvasLink extends Component {
                 onMouseOver={this.onHoverCurve.bind(this)}
                 onMouseMove={this.onHoverCurve.bind(this)}
                 onMouseOut={this.onLeaveCurve.bind(this)} />
-          <text x={halfX} y={halfY}>{
+          {/*<text x={halfX} y={halfY}>{
             'X: ' + props.dirX + ' ' +
             'Y: ' + props.dirY
-          }</text>
+          }</text>*/}
         </g>
       </svg>
-      <circle
-        cx={props.startX}
-        cy={props.startY}
-        r={10}
-        fill="rgba(255, 0, 0, 0.5)" />
-      <circle
-        cx={props.endX}
-        cy={props.endY}
-        r={10}
-        fill="rgba(255, 0, 0, 0.5)" />
-      </g>
     );
+    // <circle
+    //   cx={props.startX}
+    //   cy={props.startY}
+    //   r={10}
+    //   fill="rgba(255, 0, 0, 0.5)" />
+    // <circle
+    //   cx={props.endX}
+    //   cy={props.endY}
+    //   r={10}
+    //   fill="rgba(255, 0, 0, 0.5)" />
+    // </g>
   }
 
   onHoverCurve() {
