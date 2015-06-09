@@ -10,6 +10,7 @@ import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import Vector from './lib/Vector';
+import Graph from './lib/Graph';
 import GraphCanvasGrid from './GraphCanvasGrid';
 import GraphCanvasNode from './GraphCanvasNode';
 import GraphCanvasLink from './GraphCanvasLink';
@@ -39,6 +40,7 @@ import GraphCanvasLink from './GraphCanvasLink';
 @mixin.decorate(StyleHelpers)
 export default class GraphCanvasView extends Component {
 
+  graph = new Graph();
   state = {
     position: new Vector(
       this.props.initialX,

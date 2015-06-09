@@ -7,7 +7,11 @@ import Matrix from './Matrix';
 export default class Rectangle {
 
   constructor(min, max, x, y) {
-    if (arguments.length === 4) {
+    if (arguments.length === 1 && min) {
+      min = new Vector(min[0] || min.left, min[1] || min.top);
+      max = new Vector(min[2] || min.right, min[3] || min.bottom);
+    }
+    else if (arguments.length === 4) {
       min = new Vector(min, max);
       max = new Vector(x, y);
     }
@@ -33,6 +37,17 @@ export default class Rectangle {
     return bbox;
   }
 
+  toObject() {
+    return {
+      left: this.left,
+      top: this.top,
+      right: this.right,
+      bottom: this.bottom,
+      width: this.width,
+      height: this.height
+    };
+  }
+
   toArray() { return [this.left, this.top, this.right, this.bottom]; }
 
   toString() { return this.toArray().toString(); }
@@ -47,6 +62,15 @@ export default class Rectangle {
     this.bottom = -halfHeight;
     this.left = -halfWidth;
     return this;
+  }
+
+  get dir() {
+    var a = this.min,
+        b = this.max;
+    return new Vector(
+      a.x < b.x ? 1 : -1,
+      a.y < b.y ? 1 : -1
+    );
   }
 
   /* eslint-disable no-return-assign */
