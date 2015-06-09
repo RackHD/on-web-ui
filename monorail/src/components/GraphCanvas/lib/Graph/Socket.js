@@ -35,7 +35,7 @@ export default class Socket {
       throw new Error('Socket: cannot to de-serialize json object without graph reference.');
     }
     this.port = this.graph.port(object.port) || this.port;
-    this.graph.socket(this.id, this);
+    this.cache();
   }
 
   get json() {

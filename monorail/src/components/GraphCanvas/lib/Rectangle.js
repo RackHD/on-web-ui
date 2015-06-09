@@ -8,8 +8,8 @@ export default class Rectangle {
 
   constructor(min, max, x, y) {
     if (arguments.length === 1 && min) {
-      min = new Vector(min[0] || min.left, min[1] || min.top);
       max = new Vector(min[2] || min.right, min[3] || min.bottom);
+      min = new Vector(min[0] || min.left, min[1] || min.top);
     }
     else if (arguments.length === 4) {
       min = new Vector(min, max);
@@ -63,6 +63,25 @@ export default class Rectangle {
     this.left = -halfWidth;
     return this;
   }
+
+  // flip() {
+  //   this.flipX();
+  //   this.flipY();
+  // }
+  //
+  // flipX() {
+  //   var x1 = this.min.x,
+  //       x2 = this.max.x;
+  //   this.min.x = x2;
+  //   this.max.x = x1;
+  // }
+  //
+  // flipY() {
+  //   var y1 = this.min.y,
+  //       y2 = this.max.y;
+  //   this.min.y = y2;
+  //   this.max.y = y1;
+  // }
 
   get dir() {
     var a = this.min,

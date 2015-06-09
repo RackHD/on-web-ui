@@ -14,19 +14,14 @@ import GraphCanvasPort from './GraphCanvasPort.js';
 
 @decorateComponent({
   propTypes: {
-    top: PropTypes.number,
-    left: PropTypes.number,
-    width: PropTypes.number,
-    height: PropTypes.number,
+    active: PropTypes.bool,
     canvas: PropTypes.any,
-    canvasRef: PropTypes.string
+    model: PropTypes.any
   },
   defaultProps: {
-    top: 0,
-    left: 0,
-    width: 0,
-    height: 0,
-    canvas: null
+    active: false,
+    canvas: null,
+    model: null
   },
   childContextTypes: {
     muiTheme: PropTypes.object
@@ -40,11 +35,17 @@ export default class GraphCanvasNode extends Component {
   toggleFlip = this.toggleFlip.bind(this);
 
   render() {
-    var styles = {
-      top: this.state.top || this.props.top,
-      left: this.state.left || this.props.left,
-      width: this.props.width,
-      height: this.props.height,
+    if (!this.props.model || !this.props.model.bounds) {
+      console.error(new Error('Invalid node').stack);
+      console.log(this.props);
+      return null;
+    }
+    var dir = this.props.model.bounds.dir;
+    var style = {
+      top: this.props.model.bounds[dir.y > 0 ? 'top' : 'bottom'],
+      left: this.props.model.bounds[dir.x > 0 ? 'left' : 'right'],
+      width: this.props.model.bounds.width,
+      height: this.props.model.bounds.height,
       transition: null,
       borderRadius: null,
       backgroundColor: null
@@ -53,6 +54,10 @@ export default class GraphCanvasNode extends Component {
         zDepth = 2;
     if (this.props.active) {
       className += ' active';
+    }
+    else {
+      style.width = Math.max(80, style.width);
+      style.height = Math.max(80, style.height);
     }
     if (this.state.moving) {
       className += ' moving';
@@ -73,8 +78,8 @@ export default class GraphCanvasNode extends Component {
       <Paper className={className}
              rounded={false}
              zDepth={zDepth}
-             style={styles}
-             data-canvasref={this.props.canvasRef}>
+             style={style}
+             data-canvasref={this.props.model.id}>
         <div className="container">
           <div className="header"
                onMouseDown={this.moveNode()}>
@@ -117,7 +122,7 @@ export default class GraphCanvasNode extends Component {
           y: event.relY
         };
         this.props.canvas.moveNode(
-          this.props.canvasRef,
+          this.props.model.id,
           lastX - event.relX,
           lastY - event.relY);
       },

@@ -6,12 +6,12 @@ const idPrefixCode = 'L'.charCodeAt(0);
 
 export default class Link {
 
-  constructor({ id, graph, socketIn, socketOut, layer, scale }) {
+  constructor({ id, data, graph, socketIn, socketOut, layer, scale }) {
     this.id = newId(id || idPrefixCode);
-    this.data = null;
-    this.graph = graph || null;
-    this.socketIn = socketIn || null;
-    this.socketOut = socketOut || null;
+    this.data = data;
+    this.graph = graph;
+    this.socketIn = socketIn;
+    this.socketOut = socketOut;
     this.layer = layer || 0;
     this.scale = scale || 1;
   }
@@ -36,7 +36,7 @@ export default class Link {
     if (!this.graph) {
       throw new Error('Link: cannot de-serialize json object without graph reference.');
     }
-    this.graph.link(this.id, this);
+    this.cache();
     if (object.socketOut && object.socketIn) {
       this.socketOut = this.graph.socket(object.socketOut);
       this.socketIn = this.graph.socket(object.socketIn);

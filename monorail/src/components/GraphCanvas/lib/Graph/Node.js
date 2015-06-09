@@ -8,13 +8,13 @@ const idPrefixCode = 'N'.charCodeAt(0);
 
 export default class Node {
 
-  constructor({ id, graph, ports, bounds, layer, scale }) {
+  constructor({ id, data, graph, ports, bounds, layer, scale }) {
     this.id = newId(id || idPrefixCode);
-    this.data = null;
+    this.data = data;
     this.graph = graph;
     this.bounds = new Rectangle(bounds);
-    this.layer = layer;
-    this.scale = scale;
+    this.layer = layer || 0;
+    this.scale = scale || 1;
     this.ports = ports;
   }
 
@@ -42,14 +42,17 @@ export default class Node {
     if (object.ports) {
       this.ports = object.ports;
     }
-    this.graph.node(this.id, this);
+    this.cache();
     this.graph.add(this);
   }
 
   get json() {
     var ports = [];
     this.forEachPort(
-      port => ports.push(Port.fromJSON(port, {graph: this.graph}))
+      port => ports.push(Port.fromJSON(port, {
+        graph: this.graph,
+        node: this
+      }))
     );
     return {
       id: this.id,

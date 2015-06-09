@@ -71,10 +71,6 @@ export default class Graph {
   // Graph interface
 
   add(node) {
-    if (node) {
-      node = Object.create(node);
-      node.graph = this;
-    }
     node = new Node(node || {graph: this});
     node.cache(this);
     this.cache.index = this.cache.index || {};
@@ -90,12 +86,17 @@ export default class Graph {
     node.uncache(this);
   }
 
+  associate(index, a, b, id, value) {
+    index[a] = index[a] || {};
+    index[a][b] = index[a][b] || {};
+    if (value) { index[a][b][id] = value; }
+    else { delete index[a][b][id]; }
+  }
+
   connect(link) {
     if (!link) {
       throw new Error('Graph: invalid link.');
     }
-    link = Object.create(link);
-    link.graph = this;
     link = new Link(link);
     link.cache(this);
     if (link.socketOut && link.socketIn) {
@@ -106,35 +107,20 @@ export default class Graph {
       var socketOut = link.socketOut.id,
           socketIn = link.socketIn.id;
 
-      linksIndex[socketOut] = linksIndex[socketOut] || {};
-      linksIndex[socketOut][socketIn] = linksIndex[socketOut][socketIn] || {};
-      linksIndex[socketOut][socketIn][link.id] = link;
-
-      linksIndex[socketIn] = linksIndex[socketIn] || {};
-      linksIndex[socketIn][socketOut] = linksIndex[socketIn][socketOut] || {};
-      linksIndex[socketIn][socketOut][link.id] = link;
+      this.associate(linksIndex, socketOut, socketIn, link.id, link);
+      this.associate(linksIndex, socketIn, socketOut, link.id, link);
 
       var portOut = link.socketOut.port.id,
           portIn = link.socketIn.port.id;
 
-      linksIndex[portOut] = linksIndex[portOut] || {};
-      linksIndex[portOut][portIn] = linksIndex[portOut][portIn] || {};
-      linksIndex[portOut][portIn][link.id] = link;
-
-      linksIndex[portIn] = linksIndex[portIn] || {};
-      linksIndex[portIn][portOut] = linksIndex[portIn][portOut] || {};
-      linksIndex[portIn][portOut][link.id] = link;
+      this.associate(linksIndex, portOut, portIn, link.id, link);
+      this.associate(linksIndex, portIn, portOut, link.id, link);
 
       var nodeOut = link.socketOut.port.node.id,
           nodeIn = link.socketIn.port.node.id;
 
-      linksIndex[nodeOut] = linksIndex[nodeOut] || {};
-      linksIndex[nodeOut][nodeIn] = linksIndex[nodeOut][nodeIn] || {};
-      linksIndex[nodeOut][nodeIn][link.id] = link;
-
-      linksIndex[nodeIn] = linksIndex[nodeIn] || {};
-      linksIndex[nodeIn][nodeOut] = linksIndex[nodeIn][nodeOut] || {};
-      linksIndex[nodeIn][nodeOut][link.id] = link;
+      this.associate(linksIndex, nodeOut, nodeIn, link.id, link);
+      this.associate(linksIndex, nodeIn, nodeOut, link.id, link);
     }
     return link;
   }
@@ -152,35 +138,20 @@ export default class Graph {
       var socketOut = link.socketOut.id,
           socketIn = link.socketIn.id;
 
-      linksIndex[socketOut] = linksIndex[socketOut] || {};
-      linksIndex[socketOut][socketIn] = linksIndex[socketOut][socketIn] || {};
-      delete linksIndex[socketOut][socketIn][link.id];
-
-      linksIndex[socketIn] = linksIndex[socketIn] || {};
-      linksIndex[socketIn][socketOut] = linksIndex[socketIn][socketOut] || {};
-      delete linksIndex[socketIn][socketOut][link.id];
+      this.associate(linksIndex, socketOut, socketIn, link.id);
+      this.associate(linksIndex, socketIn, socketOut, link.id);
 
       var portOut = link.socketOut.port.id,
           portIn = link.socketIn.port.id;
 
-      linksIndex[portOut] = linksIndex[portOut] || {};
-      linksIndex[portOut][portIn] = linksIndex[portOut][portIn] || {};
-      delete linksIndex[portOut][portIn][link.id];
-
-      linksIndex[portIn] = linksIndex[portIn] || {};
-      linksIndex[portIn][portOut] = linksIndex[portIn][portOut] || {};
-      delete linksIndex[portIn][portOut][link.id];
+      this.associate(linksIndex, portOut, portIn, link.id);
+      this.associate(linksIndex, portIn, portOut, link.id);
 
       var nodeOut = link.socketOut.port.node.id,
           nodeIn = link.socketIn.port.node.id;
 
-      linksIndex[nodeOut] = linksIndex[nodeOut] || {};
-      linksIndex[nodeOut][nodeIn] = linksIndex[nodeOut][nodeIn] || {};
-      delete linksIndex[nodeOut][nodeIn][link.id];
-
-      linksIndex[nodeIn] = linksIndex[nodeIn] || {};
-      linksIndex[nodeIn][nodeOut] = linksIndex[nodeIn][nodeOut] || {};
-      delete linksIndex[nodeIn][nodeOut][link.id];
+      this.associate(linksIndex, nodeOut, nodeIn, link.id);
+      this.associate(linksIndex, nodeIn, nodeOut, link.id);
     }
   }
 

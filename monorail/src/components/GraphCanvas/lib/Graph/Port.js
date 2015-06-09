@@ -34,17 +34,20 @@ export default class Port {
     if (!this.graph) {
       throw new Error('Port: cannot de-serialize json object without graph reference.');
     }
-    this.node = this.graph.node(this.node) || this.node;
+    this.node = this.graph.node(object.node) || this.node;
     if (object.sockets) {
       this.sockets = object.sockets;
     }
-    this.graph.port(this.id, this);
+    this.cache();
   }
 
   get json() {
     var sockets = [];
     this.forEachSocket(
-      socket => socket.push(Socket.fromJSON(socket, {graph: this.graph}))
+      socket => socket.push(Socket.fromJSON(socket, {
+        graph: this.graph,
+        port: this
+      }))
     );
     return {
       id: this.id,

@@ -10,7 +10,10 @@ import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import Vector from './lib/Vector';
+import Rectangle from './lib/Rectangle';
 import Graph from './lib/Graph';
+import Node from './lib/Graph/Node';
+import Link from './lib/Graph/Link';
 import GraphCanvasGrid from './GraphCanvasGrid';
 import GraphCanvasNode from './GraphCanvasNode';
 import GraphCanvasLink from './GraphCanvasLink';
@@ -75,12 +78,15 @@ export default class GraphCanvasView extends Component {
             width: worldSize.x,
             height: worldSize.y
           };
+      this.graph.bounds = this.worldBoundingBox.clone();
       var activeNode = this.state.activeNode &&
-            <GraphCanvasNode active={true} canvas={this} {...this.state.activeNode} />,
+            <GraphCanvasNode ref={this.state.activeNode.id} active={true} canvas={this} model={this.state.activeNode} />,
           activeLink = this.state.activeLink &&
-            <GraphCanvasLink active={true} canvas={this} {...this.state.activeLink} />,
-          links = this.state.links.map(link => <GraphCanvasLink {...link} />),
-          nodes = this.state.nodes.map(node => <GraphCanvasNode {...node} />);
+            <GraphCanvasLink ref={this.state.activeLink.id} active={true} canvas={this} model={this.state.activeLink} />,
+          links = this.state.links.map(link =>
+            <GraphCanvasLink ref={link.id} key={link.id} canvas={this} model={link} />),
+          nodes = this.state.nodes.map(node =>
+            <GraphCanvasNode ref={node.id} key={node.id} canvas={this} model={node} />);
       return (
         <div
             className="GraphCanvasWorld"
@@ -190,38 +196,25 @@ export default class GraphCanvasView extends Component {
         event.stopPropagation();
         event.preventDefault();
         var dom = React.findDOMNode(this);
-        dragState.start = this.getEventCoords(event, dom);
+        dragState.node = new Node({
+          bounds: this.getEventCoords(event, dom),
+          layer: 1,
+          scale: 1
+        });
       },
       move: (event, dragState) => {
         if (this.state.activeLink) { return; }
         event.stopPropagation();
-        var dom = React.findDOMNode(this),
-            start = dragState.start,
-            end = this.getEventCoords(event, dom);
-        var node = {
-          // startX: dragState.downEvent,
-          // startY: dragState.downEvent,
-          // endX: event.relX,
-          // endY: event.relY
-          startX: start.x,
-          startY: start.y,
-          endX: end.x,
-          endY: end.y
-        };
-        this.calculateNodeBox(node);
-        this.setState({
-          activeNode: (node.height < 50 || node.width < 50) ? null : node
-        });
+        var dom = React.findDOMNode(this);
+        dragState.node.bounds.max = this.getEventCoords(event, dom);
+        this.setState({activeNode: dragState.node});
       },
-      up: (event) => {
+      up: (event, dragState) => {
         event.stopPropagation();
-        var node = this.state.activeNode;
+        var node = dragState.node;
         this.setState({activeNode: null});
-        if (node) {
-          node.width = Math.max(node.width, 80);
-          node.height = Math.max(node.height, 80);
-          this.addNode(node);
-        }
+        this.graph.add(dragState.node);
+        this.addNode(node);
       }
     });
   }
@@ -244,7 +237,15 @@ export default class GraphCanvasView extends Component {
     // var dom = this.delegatesTo(e.target, 'socket');
     // dragState.start = this.getSocketCenter(dom);
     var dom = React.findDOMNode(this);
-    dragState.start = this.getEventCoords(event, dom);
+    // dragState.start = this.getEventCoords(event, dom);
+    dragState.link = new Link({
+      data: {
+        bounds: new Rectangle(this.getEventCoords(event, dom)),
+        fromNode: dragState.fromNode
+      },
+      layer: 1,
+      scale: 1
+    });
   }
 
   drawLinkContinue(event, dragState, e) {
@@ -260,153 +261,126 @@ export default class GraphCanvasView extends Component {
     //   end = this.getEventCoords(event, dom);
     // }
     var dom = React.findDOMNode(this),
-        start = dragState.start,
         end = this.getEventCoords(event, dom);
-    dragState.link = {
-      // startX: dragState.downEvent.relX,
-      // startY: dragState.downEvent.relY,
-      // endX: event.relX,
-      // endY: event.relY,
-      // dirX: 1,
-      // dirY: 1
-      startX: start.x,
-      startY: start.y,
-      endX: end.x,
-      endY: end.y,
-      dirX: 1,
-      dirY: 1
-    };
-    this.calculateLinkBox(dragState.link);
+    dragState.link.data.bounds.max = end;
     this.setState({activeLink: dragState.link});
   }
 
   drawLinkFinish(event, dragState, e) {
     event.stopPropagation();
     var isTargetNode = this.delegatesTo(e.target, 'GraphCanvasNode');
-    console.log(isTargetNode !== dragState.fromNode, isTargetNode);
+    dragState.link.data.toNode = isTargetNode;
+    // console.log(isTargetNode !== dragState.fromNode, isTargetNode);
     if (dragState.link && isTargetNode && isTargetNode !== dragState.fromNode) {
       this.addLink(dragState.link, dragState.fromNode, isTargetNode);
     }
-    this.linkFromNode = null;
+    // this.linkFromNode = null;
     this.setState({activeLink: null});
   }
 
   // Box calculations
 
-  calculateNodeBox(node) {
-    if (node.endX < node.startX) {
-      node.left = node.endX;
-      node.width = node.startX - node.endX;
-    } else {
-      node.left = node.startX;
-      node.width = node.endX - node.startX;
-    }
-    if (node.endY < node.startY) {
-      node.top = node.endY;
-      node.height = node.startY - node.endY;
-    }
-    else {
-      node.top = node.startY;
-      node.height = node.endY - node.startY;
-    }
-  }
-
-  calculateLinkBox(link) {
-    if (link.endX < link.startX) {
-      link.left = link.endX;
-      link.width = link.startX - link.endX;
-      link.dirX = -1;
-    }
-    else {
-      link.left = link.startX;
-      link.width = link.endX - link.startX;
-      link.dirX = 1;
-    }
-    if (link.endY < link.startY) {
-      link.top = link.endY;
-      link.height = link.startY - link.endY;
-      link.dirY = 1;
-    }
-    else {
-      link.top = link.startY;
-      link.height = link.endY - link.startY;
-      link.dirY = -1;
-    }
-  }
+  // calculateLinkBox(link) {
+  //   if (link.endX < link.startX) {
+  //     link.left = link.endX;
+  //     link.width = link.startX - link.endX;
+  //     link.dirX = -1;
+  //   }
+  //   else {
+  //     link.left = link.startX;
+  //     link.width = link.endX - link.startX;
+  //     link.dirX = 1;
+  //   }
+  //   if (link.endY < link.startY) {
+  //     link.top = link.endY;
+  //     link.height = link.startY - link.endY;
+  //     link.dirY = 1;
+  //   }
+  //   else {
+  //     link.top = link.startY;
+  //     link.height = link.endY - link.startY;
+  //     link.dirY = -1;
+  //   }
+  // }
 
   // List management
 
-  newKey() {
-    return Math.round(Math.random() * 1000 + Date.now()).toString(32);
-  }
+  // newKey() {
+  //   return Math.round(Math.random() * 1000 + Date.now()).toString(32);
+  // }
 
   addNode(node) {
-    var key = this.newKey();
-    node = {
-      key: key,
-      ref: key,
-      canvas: this,
-      canvasRef: key,
-      ...node
-    };
-    this.rawNodes.push(node);
-    this.setState({nodes: this.rawNodes.slice(0)});
+    node.layer = 0;
+    this.graph.add(node);
+    this.setState({nodes: this.graph.nodes});
   }
 
   removeNode(node) {
-    this.rawNodes = this.rawNodes.filter(n => n.canvasRef !== node.props.canvasRef);
-    this.setState({nodes: this.rawNodes});
+    this.graph.remove(node);
+    this.setState({nodes: this.graph.nodes});
   }
 
   moveNode(nodeRef, displaceX, displaceY) {
-    var node = this.rawNodes.filter(n => n.canvasRef === nodeRef)[0],
-        links = this.rawLinks.filter(l => l.from === nodeRef || l.to === nodeRef);
+    var node = this.graph.nodes.filter(n => n.id === nodeRef)[0],
+        links = this.graph.links.filter(l => l.from === nodeRef || l.to === nodeRef);
     displaceX /= this.scale;
     displaceY /= this.scale;
-    node.left -= displaceX;
-    node.top -= displaceY;
+    var displace = [displaceX, displaceY];
+    node.bounds.translate(displace);
+    // node.left -= displaceX;
+    // node.top -= displaceY;
     links.forEach(l => {
       if (l.from === nodeRef) {
-        l.startX -= displaceX;
-        l.startY -= displaceY;
+        // l.startX -= displaceX;
+        // l.startY -= displaceY;
+        l.bounds.start.sub(displace);
       }
       else {
-        l.endX -= displaceX;
-        l.endY -= displaceY;
+        // l.endX -= displaceX;
+        // l.endY -= displaceY;
+        l.bounds.end.sub(displace);
       }
-      this.calculateLinkBox(l);
+      // this.calculateLinkBox(l);
     });
     this.setState({
-      nodes: this.rawNodes.slice(0),
-      links: this.rawLinks.slice(0)
+      nodes: this.graph.nodes,
+      links: this.graph.links
     });
   }
 
-  displaceNode(nodeRef, displacement) {
-    // TODO:
-    this.moveNode(nodeRef, displacement.x, displacement.y);
-  }
+  // displaceNode(nodeRef, displacement) {
+  //   // TODO:
+  //   this.moveNode(nodeRef, displacement.x, displacement.y);
+  // }
 
   addLink(link, nodeElemA, nodeElemB) {
-    var key = this.newKey(),
+    var //key = this.newKey(),
         nodeKeyA = nodeElemA.dataset.canvasref,
         nodeKeyB = nodeElemB.dataset.canvasref;
-    link = {
-      key: key,
-      ref: key,
-      from: nodeKeyA,
-      to: nodeKeyB,
-      canvas: this,
-      canvasRef: key,
-      ...link
-    };
-    this.rawLinks.push(link);
-    this.setState({links: this.rawLinks.slice(0)});
+    // link = {
+    //   key: key,
+    //   ref: key,
+    //   from: nodeKeyA,
+    //   to: nodeKeyB,
+    //   canvas: this,
+    //   canvasRef: key,
+    //   ...link
+    // };
+    // this.rawLinks.push(link);
+    // this.setState({links: this.rawLinks.slice(0)});
+    // debugger;
+    link.layer = 0;
+    link.data.from = nodeKeyA;
+    link.data.to = nodeKeyB;
+    this.graph.connect(link);
+    this.setState({links: this.graph.links});
   }
 
   removeLink(link) {
-    this.rawLinks = this.rawLinks.filter(l => l.canvasRef !== link.props.canvasRef);
-    this.setState({links: this.rawLinks});
+    this.graph.disconnect(link);
+    this.setState({links: this.graph.links});
+    // this.rawLinks = this.rawLinks.filter(l => l.canvasRef !== link.props.canvasRef);
+    // this.setState({links: this.rawLinks});
   }
 
   // marks
@@ -446,8 +420,14 @@ export default class GraphCanvasView extends Component {
         opacity: 0.5,
         borderRadius: 5,
         background: 'red'
-      }} />;
+      }} onClick={this.removeMark.bind(this, mark)} />;
     });
+  }
+
+  removeMark(mark, event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.setState({marks: this.marks.filter(m => m !== mark)});
   }
 
 }
