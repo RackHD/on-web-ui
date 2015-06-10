@@ -78,7 +78,7 @@ export default class GraphCanvasNode extends Component {
              rounded={false}
              zDepth={zDepth}
              style={style}
-             data-canvasref={this.props.model.id}>
+             data-id={this.props.model.id}>
         <div className="container">
           <div className="header"
                onMouseDown={this.moveNode()}>

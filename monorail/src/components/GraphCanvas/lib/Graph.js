@@ -50,6 +50,12 @@ export default class Graph {
     };
   }
 
+  getIndex(type) {
+    this.cache.index = this.cache.index || {};
+    this.cache.index[type] = this.cache.index[type] || {};
+    return this.cache.index[type];
+  }
+
   // Cache collections
 
   get nodes() {

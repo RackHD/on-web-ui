@@ -55,6 +55,42 @@ export default class Link {
     };
   }
 
+  get socketOut() {
+    var socket = this._socketOut;
+    if (typeof socket === 'string' && this.graph) {
+      socket = this.socketOut = socket;
+    }
+    return socket;
+  }
+
+  get socketIn() {
+    var socket = this._socketIn;
+    if (typeof socket === 'string' && this.graph) {
+      socket = this.socketIn = socket;
+    }
+    return socket;
+  }
+
+  set socketOut(socket) {
+    if (!socket) { return null; }
+    var id = socket.id || socket;
+    if (this.graph) {
+      socket = this.graph.socket(id) || this.graph.socket(id, socket);
+    }
+    this._socketOut = socket;
+    return socket;
+  }
+
+  set socketIn(socket) {
+    if (!socket) { return null; }
+    var id = socket.id || socket;
+    if (this.graph) {
+      socket = this.graph.socket(id) || this.graph.socket(id, socket);
+    }
+    this._socketIn = socket;
+    return socket;
+  }
+
   get graph() { return this._graph; }
 
   set graph(graph) {

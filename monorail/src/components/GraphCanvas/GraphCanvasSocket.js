@@ -26,20 +26,27 @@ export default class GraphCanvasSocket extends Component {
   state = {};
 
   render() {
+    var model = this.props.model;
+
     var typeCell = (
       <div key="type" className="cell">
-        <span className="type">{this.props.model.type}</span>
+        <span className="type">{model.type}</span>
       </div>
     );
 
+    var socketClassName = 'GraphCanvasSocketIcon socket fa ';
+    var links = model.links;
+    socketClassName += (links.length) ?
+      'fa-dot-circle-o' : 'fa-circle-o';
+
     var socketCell = (
       <div key="socket" className="cell">
-        <span className="GraphCanvasSocketIcon socket fa fa-circle-o"
+        <span className={socketClassName}
               onMouseDown={this.drawLink()} />
       </div>
     );
 
-    var dir = this.props.model.dir,
+    var dir = model.dir,
         cells;
 
     if (dir.x === -1) {
@@ -53,7 +60,8 @@ export default class GraphCanvasSocket extends Component {
     }
 
     return (
-      <div className="GraphCanvasSocket ungrid">
+      <div className="GraphCanvasSocket ungrid"
+           data-id={model.id}>
         <div className="line">
           {cells}
         </div>

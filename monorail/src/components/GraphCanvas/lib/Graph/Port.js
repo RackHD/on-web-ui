@@ -88,7 +88,7 @@ export default class Port {
   }
 
   get links() {
-    var subindex = this.graph.cache.index.links[this.id],
+    var subindex = this.graph.getIndex('links')[this.id],
         links = {};
     Object.keys(subindex || {}).forEach(otherEnd => {
       otherEnd = subindex[otherEnd];

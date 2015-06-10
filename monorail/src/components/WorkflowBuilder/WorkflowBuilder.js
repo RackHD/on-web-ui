@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 
-import { Paper } from 'material-ui';
+// import { Paper } from 'material-ui';
 import GraphCanvas from '../GraphCanvas';
 import WorkflowsMenu from './WorkflowsMenu';
 import WorkflowTasksTray from './WorkflowTasksTray';

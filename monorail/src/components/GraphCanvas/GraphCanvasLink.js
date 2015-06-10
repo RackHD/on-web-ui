@@ -67,7 +67,7 @@ export default class GraphCanvasLink extends Component {
       <svg className={'GraphCanvasLink ' + hover /*+ border + align*/}
            width={style.width}
            height={style.height}
-           data-canvasref={props.model.id}
+           data-id={props.model.id}
            onDoubleClick={this.removeLink}
            viewBox={[
              minX - gutter, minY - gutter,

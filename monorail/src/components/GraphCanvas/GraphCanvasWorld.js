@@ -41,7 +41,7 @@ import GraphCanvasLink from './GraphCanvasLink';
 @mixin.decorate(DragEventHelpers)
 @mixin.decorate(CoordinateHelpers)
 @mixin.decorate(StyleHelpers)
-export default class GraphCanvasView extends Component {
+export default class GraphCanvasWorld extends Component {
 
   graph = new Graph();
   state = {
@@ -262,7 +262,8 @@ export default class GraphCanvasView extends Component {
     dragState.link = new Link({
       data: {
         bounds: new Rectangle(start),
-        fromNode: dragState.fromNode
+        fromNode: dragState.fromNode,
+        fromSocket: this.delegatesTo(e.target, 'GraphCanvasSocket')
       },
       layer: 1,
       scale: 1
@@ -288,8 +289,9 @@ export default class GraphCanvasView extends Component {
     event.stopPropagation();
     var isTargetNode = this.delegatesTo(e.target, 'GraphCanvasNode');
     dragState.link.data.toNode = isTargetNode;
+    dragState.link.data.toSocket = this.delegatesTo(e.target, 'GraphCanvasSocket');
     if (dragState.link && isTargetNode && isTargetNode !== dragState.fromNode) {
-      this.addLink(dragState.link, dragState.fromNode, isTargetNode);
+      this.addLink(dragState.link);
     }
     this.setState({activeLink: null});
   }
@@ -329,12 +331,16 @@ export default class GraphCanvasView extends Component {
     });
   }
 
-  addLink(link, nodeElemA, nodeElemB) {
-    var nodeKeyA = nodeElemA.dataset.canvasref,
-        nodeKeyB = nodeElemB.dataset.canvasref;
+  addLink(link) {
+    var nodeIdA = link.data.fromNode.dataset.id,
+        nodeIdB = link.data.toNode.dataset.id,
+        socketIdA = link.data.fromSocket.dataset.id,
+        socketIdB = link.data.toSocket.dataset.id;
     link.layer = 0;
-    link.data.from = nodeKeyA;
-    link.data.to = nodeKeyB;
+    link.data.from = nodeIdA;
+    link.data.to = nodeIdB;
+    link.socketOut = socketIdA;
+    link.socketIn = socketIdB;
     this.graph.connect(link);
     this.setState({links: this.graph.links});
   }

@@ -43,7 +43,8 @@ export default class GraphCanvasPort extends Component {
       }
     });
     return (
-      <div className="GraphCanvasPort ungrid">
+      <div className="GraphCanvasPort ungrid"
+           data-id={this.props.model.id}>
         <div className="line">
           <div className="cell">{leftSockets}</div>
           <div className="cell">
