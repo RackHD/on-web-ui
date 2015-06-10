@@ -10,12 +10,12 @@ export default {
         scale: 1,
         ports: [
           {name: 'lala', sockets: [
-            {id: 'S1', type: 'in'},
-            {id: 'S2', type: 'out'}
+            {id: 'S1', type: 'in', dir: [-1, 0]},
+            {id: 'S2', type: 'out', dir: [1, 0]}
           ]},
           {name: 'foofoo', sockets: [
-            {id: 'S3', type: 'in'},
-            {id: 'S4', type: 'out'}
+            {id: 'S3', type: 'in', dir: [-1, 0]},
+            {id: 'S4', type: 'out', dir: [1, 0]}
           ]}
         ]
       },
@@ -24,13 +24,13 @@ export default {
         layer: 1,
         scale: 1,
         ports: [
+          {name: 'action', sockets: [
+            {id: 'S8', type: 'apply', dir: [0, -1]}
+          ]},
           {name: 'state', sockets: [
             {id: 'S5', type: 'failure', dir: [0, 1]},
             {id: 'S6', type: 'success', dir: [0, 1]},
             {id: 'S7', type: 'complete', dir: [0, 1]}
-          ]},
-          {name: 'action', sockets: [
-            {id: 'S8', type: 'apply', dir: [0, 1]}
           ]}
         ]
       }

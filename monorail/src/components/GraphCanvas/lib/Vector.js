@@ -7,7 +7,7 @@ export default class Vector {
   constructor(x, y) {
     if (x && typeof x === 'object') {
       y = x.y || x[1];
-      x = x.x || x[2]; // Must be last.
+      x = x.x || x[0]; // Must be last.
     }
     this.x = x || 0;
     this.y = y || 0;

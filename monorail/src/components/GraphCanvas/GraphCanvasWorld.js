@@ -197,9 +197,20 @@ export default class GraphCanvasView extends Component {
         event.preventDefault();
         var dom = React.findDOMNode(this);
         dragState.node = new Node({
+          graph: this.graph,
           bounds: this.getEventCoords(event, dom),
           layer: 1,
-          scale: 1
+          scale: 1,
+          ports: [
+            {name: 'Yield', sockets: [
+              {type: 'Signal', dir: [-1, 0]}
+            ]},
+            {name: 'State', sockets: [
+              {type: 'Failure', dir: [1, 0]},
+              {type: 'Success', dir: [1, 0]},
+              {type: 'Complete', dir: [1, 0]}
+            ]}
+          ]
         });
       },
       move: (event, dragState) => {
@@ -239,14 +250,18 @@ export default class GraphCanvasView extends Component {
   drawLinkStart(event, dragState, e) {
     event.stopPropagation();
     dragState.fromNode = this.delegatesTo(e.target, 'GraphCanvasNode');
-    var dom = this.delegatesTo(e.target, 'socket');
-    // var dom = React.findDOMNode(this);
+    var dom = this.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
+        start;
+    if (dom) {
+      start = this.getSocketCenter(dom);
+    }
+    else {
+      dom = React.findDOMNode(this);
+      start = this.getEventCoords(event, dom);
+    }
     dragState.link = new Link({
       data: {
-        bounds: new Rectangle(
-          this.getSocketCenter(dom)
-          // this.getEventCoords(event, dom)
-        ),
+        bounds: new Rectangle(start),
         fromNode: dragState.fromNode
       },
       layer: 1,
@@ -257,7 +272,7 @@ export default class GraphCanvasView extends Component {
   drawLinkContinue(event, dragState, e) {
     if (this.state.activeNode) { return; }
     event.stopPropagation();
-    var dom = this.delegatesTo(e.target, 'socket'),
+    var dom = this.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
         end;
     if (dom) {
       end = this.getSocketCenter(dom);
@@ -265,8 +280,6 @@ export default class GraphCanvasView extends Component {
       dom = React.findDOMNode(this);
       end = this.getEventCoords(event, dom);
     }
-    // var dom = React.findDOMNode(this),
-    //     end = this.getEventCoords(event, dom);
     dragState.link.data.bounds.max = end;
     this.setState({activeLink: dragState.link});
   }
@@ -291,7 +304,10 @@ export default class GraphCanvasView extends Component {
 
   removeNode(node) {
     this.graph.remove(node);
-    this.setState({nodes: this.graph.nodes});
+    this.setState({
+      nodes: this.graph.nodes,
+      links: this.graph.links
+    });
   }
 
   moveNode(nodeRef, displaceX, displaceY) {

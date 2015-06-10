@@ -183,20 +183,26 @@
 
 .GraphCanvasPort {
   clear: both;
-  height: 16px;
+  min-height: 16px;
   text-align: center;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px dotted #ccc;
+
+  span.name {
+    font-size: 0.7em;
+    line-height: 16px;
+  }
+}
+
+.GraphCanvasSocket {
+  span.type {
+    font-size: 4px;
+    line-height: 8px;
+  }
 
   span.socket {
     padding: 4px;
-    display: inline-block;
-    font-size: 8px;
     width: 8px;
     height: 8px;
-  }
-
-  span.name {
-    line-height: 16px;
   }
 }
 

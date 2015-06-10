@@ -35,11 +35,11 @@ export default class GraphCanvasNode extends Component {
   toggleFlip = this.toggleFlip.bind(this);
 
   render() {
-    if (!this.props.model || !this.props.model.bounds) {
-      console.error(new Error('Invalid node').stack);
-      console.log(this.props);
-      return null;
-    }
+    // if (!this.props.model || !this.props.model.bounds) {
+    //   console.error(new Error('Invalid node').stack);
+    //   console.log(this.props);
+    //   return null;
+    // }
     var dir = this.props.model.bounds.dir;
     var style = {
       top: this.props.model.bounds[dir.y > 0 ? 'top' : 'bottom'],
@@ -69,11 +69,10 @@ export default class GraphCanvasNode extends Component {
     if (this.state.flipping) {
       className += ' flipping' + this.state.flipping;
     }
-    var ports = [
-      <GraphCanvasPort key={0} canvas={this.props.canvas} />,
-      <GraphCanvasPort key={1} canvas={this.props.canvas} />,
-      <GraphCanvasPort key={2} canvas={this.props.canvas} />
-    ];
+    var ports = [];
+    this.props.model.forEachPort(port => {
+      ports.push(<GraphCanvasPort key={port.name} canvas={this.props.canvas} model={port} />);
+    });
     return (
       <Paper className={className}
              rounded={false}
@@ -85,7 +84,7 @@ export default class GraphCanvasNode extends Component {
                onMouseDown={this.moveNode()}>
             <a className={'left fa fa-info' + (this.state.flip ? '-circle' : '')}
                 onClick={this.toggleFlip} />
-            <span className="name">Name</span>
+            <span className="name">Task Node</span>
             <a className="right fa fa-remove"
                 onClick={this.removeNode} />
           </div>

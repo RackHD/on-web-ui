@@ -7,28 +7,11 @@ import decorateComponent from 'common-web-ui/lib/decorateComponent';
 
 @decorateComponent({
   propTypes: {
-    // from: PropTypes.string,
-    // to: PropTypes.string,
-    // top: PropTypes.number,
-    // left: PropTypes.number,
-    // width: PropTypes.number,
-    // height: PropTypes.number,
     active: PropTypes.bool,
     canvas: PropTypes.any,
     model: PropTypes.any
-    // canvasRef: PropTypes.string,
-    // startX: PropTypes.number,
-    // startY: PropTypes.number,
-    // endX: PropTypes.number,
-    // endY: PropTypes.number,
-    // dirX: PropTypes.number,
-    // dirY: PropTypes.number
   },
   defaultProps: {
-    // top: 0,
-    // left: 0,
-    // width: 0,
-    // height: 0,
     active: false,
     canvas: null,
     model: null
@@ -44,8 +27,6 @@ export default class GraphCanvasLink extends Component {
         gutter = 5,
         stroke = 3,
         dir = props.model.data.bounds.dir;
-
-    // console.log(props.model.data.bounds);
 
     var style = {
       top: props.model.data.bounds[dir.y > 0 ? 'top' : 'bottom'] - gutter,

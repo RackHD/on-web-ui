@@ -9,11 +9,16 @@ import DragEventHelpers from './mixins/DragEventHelpers';
 
 import {
   } from 'material-ui';
+import GraphCanvasSocket from './GraphCanvasSocket';
 
 @decorateComponent({
   propTypes: {
+    canvas: PropTypes.any,
+    model: PropTypes.any
   },
   defaultProps: {
+    canvas: null,
+    model: null
   }
 })
 @mixin.decorate(DragEventHelpers)
@@ -22,22 +27,32 @@ export default class GraphCanvasPort extends Component {
   state = {};
 
   render() {
+    var leftSockets = [],
+        rightSockets = [];
+    this.props.model.forEachSocket(socket => {
+      var element = <GraphCanvasSocket
+        key={socket.type} canvas={this.props.canvas} model={socket} />;
+      if (socket.dir.x === -1) {
+        leftSockets.push(element);
+      }
+      else if (socket.dir.x === 1) {
+        rightSockets.push(element);
+      }
+      else {
+        console.error(new Error('Invalid socket dir').stack);
+      }
+    });
     return (
-      <div className="GraphCanvasPort"
-           onMouseDown={this.drawLink()}>
-        <span className="socket in left fa fa-circle-o" />
-        <span className="name">socket</span>
-        <span className="socket out right fa fa-circle-o" />
+      <div className="GraphCanvasPort ungrid">
+        <div className="line">
+          <div className="cell">{leftSockets}</div>
+          <div className="cell">
+            <span className="name">{this.props.model.name}</span>
+          </div>
+          <div className="cell">{rightSockets}</div>
+        </div>
       </div>
     );
-  }
-
-  drawLink() {
-    return this.props.canvas.setupClickDrag({
-      down: (event, dragState, e) => this.props.canvas.drawLinkStart(event, dragState, e),
-      move: (event, dragState, e) => this.props.canvas.drawLinkContinue(event, dragState, e),
-      up: (event, dragState, e) => this.props.canvas.drawLinkFinish(event, dragState, e)
-    });
   }
 
 }

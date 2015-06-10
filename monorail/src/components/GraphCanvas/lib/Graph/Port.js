@@ -63,7 +63,7 @@ export default class Port {
     this._sockets = {};
     if (!sockets) { return; }
     if (!Array.isArray(sockets)) {
-      if (typeof ports !== 'object') { return; }
+      if (typeof sockets !== 'object') { return; }
       sockets = Object.keys(sockets).map(socketType => sockets[socketType]);
     }
     sockets.forEach(socket => {
@@ -96,7 +96,6 @@ export default class Port {
         links[linkId] = otherEnd[linkId];
       });
     });
-    console.log(links);
     return Object.keys(links).map(linkId => links[linkId]);
   }
 

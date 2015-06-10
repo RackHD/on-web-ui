@@ -83,6 +83,7 @@ export default class Graph {
     if (!(node instanceof Node)) {
       throw new Error('Graph: unable to remove invalid node object.');
     }
+    node.links.forEach(link => link.uncache(this));
     node.uncache(this);
   }
 
@@ -126,7 +127,7 @@ export default class Graph {
   }
 
   disconnect(link) {
-    if (!(Link instanceof Link)) {
+    if (!(link instanceof Link)) {
       throw new Error('Graph: unable to remove invalid link object.');
     }
     link.uncache(this);
@@ -163,7 +164,8 @@ export default class Graph {
 
   entity(name, id, def) {
     if (this.isDef(def)) { return this.cache[name][id]; }
-    this.cache[name][id] = def;
+    if (def !== null) { this.cache[name][id] = def; }
+    else { delete this.cache[name][id]; }
     return def;
   }
 
