@@ -270,44 +270,13 @@ export default class GraphCanvasView extends Component {
     event.stopPropagation();
     var isTargetNode = this.delegatesTo(e.target, 'GraphCanvasNode');
     dragState.link.data.toNode = isTargetNode;
-    // console.log(isTargetNode !== dragState.fromNode, isTargetNode);
     if (dragState.link && isTargetNode && isTargetNode !== dragState.fromNode) {
       this.addLink(dragState.link, dragState.fromNode, isTargetNode);
     }
-    // this.linkFromNode = null;
     this.setState({activeLink: null});
   }
 
-  // Box calculations
-
-  // calculateLinkBox(link) {
-  //   if (link.endX < link.startX) {
-  //     link.left = link.endX;
-  //     link.width = link.startX - link.endX;
-  //     link.dirX = -1;
-  //   }
-  //   else {
-  //     link.left = link.startX;
-  //     link.width = link.endX - link.startX;
-  //     link.dirX = 1;
-  //   }
-  //   if (link.endY < link.startY) {
-  //     link.top = link.endY;
-  //     link.height = link.startY - link.endY;
-  //     link.dirY = 1;
-  //   }
-  //   else {
-  //     link.top = link.startY;
-  //     link.height = link.endY - link.startY;
-  //     link.dirY = -1;
-  //   }
-  // }
-
   // List management
-
-  // newKey() {
-  //   return Math.round(Math.random() * 1000 + Date.now()).toString(32);
-  // }
 
   addNode(node) {
     node.layer = 0;
@@ -322,25 +291,16 @@ export default class GraphCanvasView extends Component {
 
   moveNode(nodeRef, displaceX, displaceY) {
     var node = this.graph.nodes.filter(n => n.id === nodeRef)[0],
-        links = this.graph.links.filter(l => l.from === nodeRef || l.to === nodeRef);
-    displaceX /= this.scale;
-    displaceY /= this.scale;
-    var displace = [displaceX, displaceY];
+        links = this.graph.links.filter(l => l.data.from === nodeRef || l.data.to === nodeRef),
+        displace = new Vector(displaceX, displaceY).squish(this.scale).negate();
     node.bounds.translate(displace);
-    // node.left -= displaceX;
-    // node.top -= displaceY;
     links.forEach(l => {
-      if (l.from === nodeRef) {
-        // l.startX -= displaceX;
-        // l.startY -= displaceY;
-        l.bounds.start.sub(displace);
+      if (l.data.from === nodeRef) {
+        l.data.bounds.min = l.data.bounds.min.add(displace);
       }
       else {
-        // l.endX -= displaceX;
-        // l.endY -= displaceY;
-        l.bounds.end.sub(displace);
+        l.data.bounds.max = l.data.bounds.max.add(displace);
       }
-      // this.calculateLinkBox(l);
     });
     this.setState({
       nodes: this.graph.nodes,
@@ -348,27 +308,9 @@ export default class GraphCanvasView extends Component {
     });
   }
 
-  // displaceNode(nodeRef, displacement) {
-  //   // TODO:
-  //   this.moveNode(nodeRef, displacement.x, displacement.y);
-  // }
-
   addLink(link, nodeElemA, nodeElemB) {
-    var //key = this.newKey(),
-        nodeKeyA = nodeElemA.dataset.canvasref,
+    var nodeKeyA = nodeElemA.dataset.canvasref,
         nodeKeyB = nodeElemB.dataset.canvasref;
-    // link = {
-    //   key: key,
-    //   ref: key,
-    //   from: nodeKeyA,
-    //   to: nodeKeyB,
-    //   canvas: this,
-    //   canvasRef: key,
-    //   ...link
-    // };
-    // this.rawLinks.push(link);
-    // this.setState({links: this.rawLinks.slice(0)});
-    // debugger;
     link.layer = 0;
     link.data.from = nodeKeyA;
     link.data.to = nodeKeyB;
@@ -379,8 +321,6 @@ export default class GraphCanvasView extends Component {
   removeLink(link) {
     this.graph.disconnect(link);
     this.setState({links: this.graph.links});
-    // this.rawLinks = this.rawLinks.filter(l => l.canvasRef !== link.props.canvasRef);
-    // this.setState({links: this.rawLinks});
   }
 
   // marks

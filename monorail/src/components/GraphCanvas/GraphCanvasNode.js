@@ -145,7 +145,7 @@ export default class GraphCanvasNode extends Component {
     event.stopPropagation();
     event.preventDefault();
     if (!window.confirm('Are you sure?')) { return; } // eslint-disable-line no-alert
-    this.props.canvas.removeNode(this);
+    this.props.canvas.removeNode(this.props.model);
   }
 
   toggleFlip() {

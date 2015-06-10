@@ -136,7 +136,7 @@ export default class GraphCanvasLink extends Component {
     e.stopPropagation();
     e.preventDefault();
     if (!window.confirm('Are you sure?')) { return; } // eslint-disable-line no-alert
-    this.props.canvas.removeLink(this);
+    this.props.canvas.removeLink(this.props.model);
   }
 
 }
