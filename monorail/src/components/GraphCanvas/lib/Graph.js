@@ -89,7 +89,7 @@ export default class Graph {
     if (!(node instanceof Node)) {
       throw new Error('Graph: unable to remove invalid node object.');
     }
-    node.links.forEach(link => link.uncache(this));
+    node.links.forEach(link => this.disconnect(link));
     node.uncache(this);
   }
 
