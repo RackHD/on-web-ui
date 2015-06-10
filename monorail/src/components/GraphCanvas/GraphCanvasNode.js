@@ -70,9 +70,9 @@ export default class GraphCanvasNode extends Component {
       className += ' flipping' + this.state.flipping;
     }
     var ports = [
-      <GraphCanvasPort canvas={this.props.canvas} />,
-      <GraphCanvasPort canvas={this.props.canvas} />,
-      <GraphCanvasPort canvas={this.props.canvas} />
+      <GraphCanvasPort key={0} canvas={this.props.canvas} />,
+      <GraphCanvasPort key={1} canvas={this.props.canvas} />,
+      <GraphCanvasPort key={2} canvas={this.props.canvas} />
     ];
     return (
       <Paper className={className}

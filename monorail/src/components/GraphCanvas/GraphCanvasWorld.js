@@ -221,26 +221,32 @@ export default class GraphCanvasView extends Component {
 
   // Link events
 
-  // getSocketCenter(socketElement) {
-  //   var rectA = React.findDOMNode(this).getBoundingClientRect(),
-  //       rectB = socketElement.getBoundingClientRect();
-  //   console.log(rectA, rectB);
-  //   return new Vector(
-  //     rectA.left + rectB.left + rectB.width / 2,
-  //     rectB.top + rectB.top + rectB.height / 2
-  //   );
-  // }
+  getSocketCenter(socketElement) {
+    var element = socketElement,
+        stop = React.findDOMNode(this).parentNode,
+        x = 0,
+        y = 0;
+    do {
+      x += element.offsetLeft;
+      y += element.offsetTop;
+      element = element.offsetParent;
+    } while(element && element !== stop);
+    x += socketElement.clientWidth / 2;
+    y += socketElement.clientHeight / 2;
+    return new Vector(x, y);
+  }
 
   drawLinkStart(event, dragState, e) {
     event.stopPropagation();
     dragState.fromNode = this.delegatesTo(e.target, 'GraphCanvasNode');
-    // var dom = this.delegatesTo(e.target, 'socket');
-    // dragState.start = this.getSocketCenter(dom);
-    var dom = React.findDOMNode(this);
-    // dragState.start = this.getEventCoords(event, dom);
+    var dom = this.delegatesTo(e.target, 'socket');
+    // var dom = React.findDOMNode(this);
     dragState.link = new Link({
       data: {
-        bounds: new Rectangle(this.getEventCoords(event, dom)),
+        bounds: new Rectangle(
+          this.getSocketCenter(dom)
+          // this.getEventCoords(event, dom)
+        ),
         fromNode: dragState.fromNode
       },
       layer: 1,
@@ -251,17 +257,16 @@ export default class GraphCanvasView extends Component {
   drawLinkContinue(event, dragState, e) {
     if (this.state.activeNode) { return; }
     event.stopPropagation();
-    // var start = dragState.start;
-    // var dom = this.delegatesTo(e.target, 'socket'),
-    //     end;
-    // if (dom) {
-    //   end = this.getSocketCenter(dom);
-    // } else {
-    //   dom = React.findDOMNode(this);
-    //   end = this.getEventCoords(event, dom);
-    // }
-    var dom = React.findDOMNode(this),
-        end = this.getEventCoords(event, dom);
+    var dom = this.delegatesTo(e.target, 'socket'),
+        end;
+    if (dom) {
+      end = this.getSocketCenter(dom);
+    } else {
+      dom = React.findDOMNode(this);
+      end = this.getEventCoords(event, dom);
+    }
+    // var dom = React.findDOMNode(this),
+    //     end = this.getEventCoords(event, dom);
     dragState.link.data.bounds.max = end;
     this.setState({activeLink: dragState.link});
   }
