@@ -44,7 +44,7 @@ export default class Port {
   get json() {
     var sockets = [];
     this.forEachSocket(
-      socket => socket.push(Socket.fromJSON(socket, {
+      socket => sockets.push(Socket.fromJSON(socket, {
         graph: this.graph,
         port: this
       }))

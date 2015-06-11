@@ -202,10 +202,8 @@ export default class GraphCanvasWorld extends Component {
           layer: 1,
           scale: 1,
           ports: [
-            {name: 'Yield', sockets: [
-              {type: 'Signal', dir: [-1, 0]}
-            ]},
-            {name: 'State', sockets: [
+            {name: 'Flow', sockets: [
+              {type: 'Signal', dir: [-1, 0]},
               {type: 'Failure', dir: [1, 0]},
               {type: 'Success', dir: [1, 0]},
               {type: 'Complete', dir: [1, 0]}

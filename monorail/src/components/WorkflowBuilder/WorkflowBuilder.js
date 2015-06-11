@@ -48,7 +48,7 @@ export default class WorkflowBuilder extends Component {
     return (
       <div className="WorkflowBuilder" ref="graphCanvas">
         <GraphCanvas
-            initialScale={3}
+            initialScale={2.4}
             viewWidth={this.state.canvasWidth}
             viewHeight={this.state.canvasHeight} />
         <div className="overlay container">
