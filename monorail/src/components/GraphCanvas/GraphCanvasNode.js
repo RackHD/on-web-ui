@@ -34,11 +34,11 @@ export default class GraphCanvasNode extends Component {
   removeNode = this.removeNode.bind(this);
   toggleFlip = this.toggleFlip.bind(this);
 
-  componentWillMount() {
-    var model = this.props.model;
-    model.data = model.data || {};
-    model.data.component = this;
-  }
+  // componentWillMount() {
+    // var model = this.props.model;
+    // model.data = model.data || {};
+    // model.data.component = this;
+  // }
 
   render() {
     // if (!this.props.model || !this.props.model.bounds) {
@@ -91,6 +91,7 @@ export default class GraphCanvasNode extends Component {
              onClick={this.selectNode.bind(this)}>
         <div className="container">
           <div className="header"
+               onClick={this.stopEvent.bind(this)}
                onMouseDown={this.moveNode()}>
             <a className={'left fa fa-info' + (this.state.flip ? '-circle' : '')}
                 onClick={this.toggleFlip} />
@@ -111,6 +112,11 @@ export default class GraphCanvasNode extends Component {
     );
   }
 
+  stopEvent(event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   selectNode(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -122,6 +128,7 @@ export default class GraphCanvasNode extends Component {
       down: (event, dragState) => {
         this.setState({moving: true});
         event.stopPropagation();
+        dragState.start = event.timeStamp || Date.now();
         dragState.nextMove = -1;
         dragState.lastMove = {
           x: event.relX,
@@ -141,9 +148,11 @@ export default class GraphCanvasNode extends Component {
           lastX - event.relX,
           lastY - event.relY);
       },
-      up: (event) => {
+      up: (event, dragState) => {
         this.setState({moving: false});
         event.stopPropagation();
+        var duration = (event.timeStamp || Date.now()) - dragState.start;
+        if (duration < 100) { this.selectNode(event); }
       }
     });
   }

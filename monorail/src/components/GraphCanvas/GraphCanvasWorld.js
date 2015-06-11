@@ -92,7 +92,6 @@ export default class GraphCanvasWorld extends Component {
             className="GraphCanvasWorld"
             onWheel={this.scaleWorld.bind(this)}
             onMouseDown={this.translateWorld()}
-            onClick={this.unselectAllNodes.bind(this)}
             onDoubleClick={this.touchWorld.bind(this)}
             onContextMenu={this.drawNode()}
             style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
@@ -138,6 +137,7 @@ export default class GraphCanvasWorld extends Component {
         }
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
+        dragState.startTime = event.timeStamp || Date.now();
         dragState.start = new Vector(this.position);
         dragState.min = new Vector(-1000, -1000);
         dragState.max = new Vector(1000, 1000);
@@ -168,6 +168,8 @@ export default class GraphCanvasWorld extends Component {
         });
       },
       up: (event, dragState) => {
+        var duration = (event.timeStamp || Date.now()) - dragState.startTime;
+        if (duration < 150) { this.unselectAllNodes(); }
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
       }
@@ -300,28 +302,32 @@ export default class GraphCanvasWorld extends Component {
 
   selectNode(node, shiftKey) {
     this.selected = this.selected || [];
-    if (this.selected.indexOf(node) !== -1) { return this.unselectNode(node); }
+    var isSelected = this.selected.indexOf(node) !== -1;
     if (!shiftKey) { this.unselectAllNodes(); }
+    if (isSelected) { return this.unselectNode(node); }
     this.selected.push(node);
     node.data = node.data || {};
     node.data.selected = true;
-    if (node.data.component) {
-      node.data.component.setState({ selected: true });
+    if (this.refs[node.id]) {
+      this.refs[node.id].setState({selected: true});
     }
   }
 
   unselectNode(node) {
     node.data = node.data || {};
     node.data.selected = false;
-    if (node.data.component) {
-      node.data.component.setState({ selected: false });
+    if (this.refs[node.id]) {
+      this.refs[node.id].setState({selected: false});
     }
-    var index = this.selected.indexOf(node);
-    this.selected.splice(index, 1);
+    if (this.selected) {
+      this.selected = this.selected.filter(n => n !== node);
+    }
   }
 
   unselectAllNodes() {
-    this.selected.forEach(n => this.unselectNode(n));
+    if (this.selected) {
+      this.selected.forEach(n => this.unselectNode(n));
+    }
   }
 
   addNode(node) {
