@@ -201,7 +201,7 @@ export default class GraphCanvasWorld extends Component {
           });
           averageVelocity = averageVelocity.scale(0.95);
           if (!this.stopPhysicsScroll) {
-            this.physicsScrollTimer = setTimeout(tick, 32);
+            this.physicsScrollTimer = setTimeout(tick, 16);
           }
         };
         tick();
