@@ -54,6 +54,18 @@
 
   &.selected {
     border: 2px solid red;
+
+    .container {
+      .header {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+      }
+
+      .flipper, .front, .back {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+      }
+    }
   }
 
   .container {
@@ -73,8 +85,8 @@
       cursor: move;
       top: 0;
       border-bottom: 1px solid #ccc;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
       text-align: center;
 
       a {
