@@ -34,6 +34,12 @@ export default class GraphCanvasNode extends Component {
   removeNode = this.removeNode.bind(this);
   toggleFlip = this.toggleFlip.bind(this);
 
+  componentWillMount() {
+    var model = this.props.model;
+    model.data = model.data || {};
+    model.data.component = this;
+  }
+
   render() {
     // if (!this.props.model || !this.props.model.bounds) {
     //   console.error(new Error('Invalid node').stack);
@@ -56,8 +62,8 @@ export default class GraphCanvasNode extends Component {
       className += ' active';
     }
     else {
-      style.width = Math.max(80, style.width);
-      style.height = Math.max(80, style.height);
+      style.width = Math.max(100, style.width);
+      style.height = Math.max(100, style.height);
     }
     if (this.state.moving) {
       className += ' moving';
@@ -69,6 +75,9 @@ export default class GraphCanvasNode extends Component {
     if (this.state.flipping) {
       className += ' flipping' + this.state.flipping;
     }
+    if (this.state.selected) {
+      className += ' selected';
+    }
     var ports = [];
     this.props.model.forEachPort(port => {
       ports.push(<GraphCanvasPort key={port.name} canvas={this.props.canvas} model={port} />);
@@ -78,7 +87,8 @@ export default class GraphCanvasNode extends Component {
              rounded={false}
              zDepth={zDepth}
              style={style}
-             data-id={this.props.model.id}>
+             data-id={this.props.model.id}
+             onClick={this.selectNode.bind(this)}>
         <div className="container">
           <div className="header"
                onMouseDown={this.moveNode()}>
@@ -99,6 +109,12 @@ export default class GraphCanvasNode extends Component {
         </div>
       </Paper>
     );
+  }
+
+  selectNode(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.props.canvas.selectNode(this.props.model, event.shiftKey);
   }
 
   moveNode() {
@@ -132,13 +148,13 @@ export default class GraphCanvasNode extends Component {
     });
   }
 
-  resizeNode() {
-    return this.setupClickDrag({
-      down: (event) => event.stopPropagation(),
-      move: (event) => event.stopPropagation(),
-      up: (event) => event.stopPropagation()
-    });
-  }
+  // resizeNode() {
+  //   return this.setupClickDrag({
+  //     down: (event) => event.stopPropagation(),
+  //     move: (event) => event.stopPropagation(),
+  //     up: (event) => event.stopPropagation()
+  //   });
+  // }
 
   removeNode(event) {
     event.stopPropagation();

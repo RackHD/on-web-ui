@@ -92,6 +92,7 @@ export default class GraphCanvasWorld extends Component {
             className="GraphCanvasWorld"
             onWheel={this.scaleWorld.bind(this)}
             onMouseDown={this.translateWorld()}
+            onClick={this.unselectAllNodes.bind(this)}
             onDoubleClick={this.touchWorld.bind(this)}
             onContextMenu={this.drawNode()}
             style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
@@ -210,6 +211,7 @@ export default class GraphCanvasWorld extends Component {
             ]}
           ]
         });
+        dragState.node.bounds.max = dragState.node.bounds.min;
       },
       move: (event, dragState) => {
         if (this.state.activeLink) { return; }
@@ -295,6 +297,32 @@ export default class GraphCanvasWorld extends Component {
   }
 
   // List management
+
+  selectNode(node, shiftKey) {
+    this.selected = this.selected || [];
+    if (this.selected.indexOf(node) !== -1) { return this.unselectNode(node); }
+    if (!shiftKey) { this.unselectAllNodes(); }
+    this.selected.push(node);
+    node.data = node.data || {};
+    node.data.selected = true;
+    if (node.data.component) {
+      node.data.component.setState({ selected: true });
+    }
+  }
+
+  unselectNode(node) {
+    node.data = node.data || {};
+    node.data.selected = false;
+    if (node.data.component) {
+      node.data.component.setState({ selected: false });
+    }
+    var index = this.selected.indexOf(node);
+    this.selected.splice(index, 1);
+  }
+
+  unselectAllNodes() {
+    this.selected.forEach(n => this.unselectNode(n));
+  }
 
   addNode(node) {
     node.layer = 0;
