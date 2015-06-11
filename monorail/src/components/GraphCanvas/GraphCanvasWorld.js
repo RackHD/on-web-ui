@@ -130,6 +130,17 @@ export default class GraphCanvasWorld extends Component {
   }
 
   get translateWorldListeners() {
+    var pushFrame = (event, dragState) => {
+      dragState.frames = dragState.frames || [];
+      var index = dragState.frames.length,
+          frame = {position: this.position, time: event.timeStamp || Date.now()},
+          lastFrame = dragState.frames[index - 1] || frame,
+          timeLapse = (frame.time - lastFrame.time);
+      frame.velocity = frame.position.sub(lastFrame.position).squish(timeLapse);
+      frame.duration = timeLapse;
+      dragState.frames.push(frame);
+      if (dragState.frames.length >= 12) { dragState.frames.shift(); }
+    };
     return {
       down: (event, dragState) => {
         if (event.shiftKey) {
@@ -141,6 +152,7 @@ export default class GraphCanvasWorld extends Component {
         dragState.start = new Vector(this.position);
         dragState.min = new Vector(-1000, -1000);
         dragState.max = new Vector(1000, 1000);
+        pushFrame(event, dragState);
         // TODO: fix these clamps
         // var scale = this.state.scale;
         // dragState.min = new Vector(
@@ -154,6 +166,8 @@ export default class GraphCanvasWorld extends Component {
         // console.log(this.worldBoundingBox.toArray());
         // console.log(dragState.start.toArray());
         // console.log(dragState.min.toArray(), dragState.max.toArray());
+        clearTimeout(this.physicsScrollTimer);
+        this.stopPhysicsScroll = true;
       },
       move: (event, dragState) => {
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
@@ -162,16 +176,35 @@ export default class GraphCanvasWorld extends Component {
             start = dragState.start,
             min = dragState.min,
             max = dragState.max;
+        pushFrame(event, dragState);
         this.updatePosition({
           x: Math.min(max.x, Math.max(min.x, start.x - (event.diffX / scale))),
           y: Math.min(max.y, Math.max(min.y, start.y - (event.diffY / scale)))
         });
       },
       up: (event, dragState) => {
-        var duration = (event.timeStamp || Date.now()) - dragState.startTime;
-        if (duration < 150) { this.unselectAllNodes(); }
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
+        var dragDuration = (event.timeStamp || Date.now()) - dragState.startTime;
+        if (dragDuration < 150) { this.unselectAllNodes(); }
+        pushFrame(event, dragState);
+        var averageVelocity = dragState.frames.reduce(function (lastValue, currFrame) {
+          return (lastValue.velocity || lastValue).add(currFrame.velocity);
+        });
+        this.stopPhysicsScroll = false;
+        var tick = () => {
+          if (Math.abs(averageVelocity.x) < 0.000001 &&
+              Math.abs(averageVelocity.y) < 0.000001) { return; }
+          this.updatePosition({
+            x: this.position.x + averageVelocity.x,
+            y: this.position.y + averageVelocity.y
+          });
+          averageVelocity = averageVelocity.scale(0.95);
+          if (!this.stopPhysicsScroll) {
+            this.physicsScrollTimer = setTimeout(tick, 32);
+          }
+        };
+        tick();
       }
     };
   }
