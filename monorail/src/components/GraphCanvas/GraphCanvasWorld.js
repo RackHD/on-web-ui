@@ -135,8 +135,8 @@ export default class GraphCanvasWorld extends Component {
       var index = dragState.frames.length,
           frame = {position: this.position, time: event.timeStamp || Date.now()},
           lastFrame = dragState.frames[index - 1] || frame,
-          timeLapse = (frame.time - lastFrame.time);
-      frame.velocity = frame.position.sub(lastFrame.position).squish(timeLapse);
+          timeLapse = (frame.time - lastFrame.time) || 1;
+      frame.velocity = frame.position.sub(lastFrame.position).squish(timeLapse).finite();
       frame.duration = timeLapse;
       dragState.frames.push(frame);
       if (dragState.frames.length >= 12) { dragState.frames.shift(); }

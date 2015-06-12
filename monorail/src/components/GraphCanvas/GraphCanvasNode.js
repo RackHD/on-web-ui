@@ -42,7 +42,8 @@ export default class GraphCanvasNode extends Component {
     }
     var className = 'GraphCanvasNode',
         zDepth = 2,
-        style = this.props.model.bounds.css;
+        bounds = this.props.model.bounds,
+        style = bounds.css;
     style.transition =
     style.borderRadius =
     style.backgroundColor = null;
@@ -52,6 +53,8 @@ export default class GraphCanvasNode extends Component {
     else {
       style.width = Math.max(100, style.width);
       style.height = Math.max(100, style.height);
+      bounds.max.x = bounds.left + style.width;
+      bounds.max.y = bounds.top + style.height;
     }
     if (this.state.moving) {
       className += ' moving';
@@ -119,8 +122,8 @@ export default class GraphCanvasNode extends Component {
             time: event.timeStamp || Date.now()
           },
           lastFrame = dragState.frames[index - 1] || frame,
-          timeLapse = (frame.time - lastFrame.time);
-      frame.velocity = lastFrame.position.sub(frame.position).squish(timeLapse);
+          timeLapse = (frame.time - lastFrame.time) || 1;
+      frame.velocity = lastFrame.position.sub(frame.position).squish(timeLapse).finite();
       frame.duration = timeLapse;
       dragState.frames.push(frame);
       if (dragState.frames.length >= 12) { dragState.frames.shift(); }

@@ -39,6 +39,15 @@ export default class Vector {
     return this.transform(viewMatrix.invert());
   }
 
+  finite() { return new Vector(
+    isFinite(this.x) ? this.x : 0,
+    isFinite(this.y) ? this.y : 0
+  ); }
+
+  squish(scalar) { return new Vector(this.x / scalar, this.y / scalar); }
+
+  // gl matrix methods
+
   add(vector) { return vec2.add(new Vector(), this, vector); }
 
   clone() { return new Vector(this); }
@@ -94,8 +103,6 @@ export default class Vector {
   sqrLength() { return vec2.sqrLength(this); }
 
   squaredLength() { return vec2.squaredLength(this); }
-
-  squish(scalar) { return new Vector(this.x / scalar, this.y / scalar); }
 
   sub(vector) { return vec2.sub(new Vector(), this, vector); }
 

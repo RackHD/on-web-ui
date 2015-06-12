@@ -43,6 +43,9 @@ export default class GraphCanvasLink extends Component {
           hover = this.state.hover ? 'hover ' : '',
           path = '';
 
+      if (!isFinite(halfX)) { halfX = 0; }
+      if (!isFinite(halfY)) { halfY = 0; }
+
       if (dir.x === 1 && dir.y === 1) {
         path = ['M', maxX, maxY, 'Q', halfX, maxY, halfX, halfY, 'T', minX, minY].join(' ');
       }
