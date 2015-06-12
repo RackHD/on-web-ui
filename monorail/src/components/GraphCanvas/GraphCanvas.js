@@ -44,11 +44,22 @@ export default class GraphCanvas extends Component {
       return (
         <div className="GraphCanvas" style={cssViewSize}>
           <div className="GraphCanvasView" ref="view">
-            <GraphCanvasWorld ref="world" {...props} />
+            <GraphCanvasWorld ref="world"
+                selectionHandler={this.selectionHandler.bind(this)} {...props} />
           </div>
         </div>
       );
     } catch (err) { console.error(err.stack || err); }
+  }
+
+  onSelect(callback) {
+    this.selectionCallbacks = this.selectionCallbacks || [];
+    this.selectionCallbacks.push(callback);
+  }
+
+  selectionHandler(selection) {
+    this.selectionCallbacks = this.selectionCallbacks || [];
+    this.selectionCallbacks.forEach(callback => callback.call(this, selection));
   }
 
 }

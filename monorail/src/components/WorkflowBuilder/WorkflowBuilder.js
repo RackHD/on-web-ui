@@ -26,6 +26,9 @@ export default class WorkflowBuilder extends Component {
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleResize);
     document.body.classList.add('no-select');
+    this.refs.graphCanvas.onSelect((selection) => {
+      this.refs.inspector.update(selection);
+    });
   }
 
   componentWillUnmount() {
@@ -46,8 +49,9 @@ export default class WorkflowBuilder extends Component {
     //   );
     // }
     return (
-      <div className="WorkflowBuilder" ref="graphCanvas">
+      <div className="WorkflowBuilder" ref="root">
         <GraphCanvas
+            ref="graphCanvas"
             initialScale={2.4}
             viewWidth={this.state.canvasWidth}
             viewHeight={this.state.canvasHeight} />
@@ -58,7 +62,7 @@ export default class WorkflowBuilder extends Component {
               <WorkflowTasksTray />
             </div>
             <div className="panel right two columns">
-              <WorkflowInspector />
+              <WorkflowInspector ref="inspector" editor={this} />
             </div>
           </div>
         </div>
@@ -67,7 +71,7 @@ export default class WorkflowBuilder extends Component {
   }
 
   updateCanvasSize() {
-    var canvasElem = React.findDOMNode(this.refs.graphCanvas || this),
+    var canvasElem = React.findDOMNode(this.refs.root || this),
         canvasWidth = canvasElem.offsetWidth,
         canvasHeight = Math.max(800, window.innerHeight - 300);
     if (this.state.canvasWidth !== canvasWidth) { this.setState({ canvasWidth }); }

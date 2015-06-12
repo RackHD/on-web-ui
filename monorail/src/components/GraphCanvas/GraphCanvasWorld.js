@@ -345,6 +345,9 @@ export default class GraphCanvasWorld extends Component {
     if (this.refs[node.id]) {
       this.refs[node.id].setState({selected: true});
     }
+    if (this.props.selectionHandler) {
+      this.props.selectionHandler(this.selected);
+    }
   }
 
   unselectNode(node) {
@@ -356,11 +359,17 @@ export default class GraphCanvasWorld extends Component {
     if (this.selected) {
       this.selected = this.selected.filter(n => n !== node);
     }
+    if (this.props.selectionHandler) {
+      this.props.selectionHandler(this.selected);
+    }
   }
 
   unselectAllNodes() {
     if (this.selected) {
       this.selected.forEach(n => this.unselectNode(n));
+    }
+    if (this.props.selectionHandler) {
+      this.props.selectionHandler(this.selected);
     }
   }
 
