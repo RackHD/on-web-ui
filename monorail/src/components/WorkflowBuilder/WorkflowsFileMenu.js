@@ -40,7 +40,7 @@ export default class WorkflowsFileMenu extends Component {
     return (
       <DropDownMenu ref="root" className="WorkflowsFileMenu"
           menuItems={workflowMenuItems}
-          onItemClick={this.loadWorkflow.bind(this)} />
+          onChange={this.loadWorkflow.bind(this)} />
     );
   }
 
@@ -49,11 +49,17 @@ export default class WorkflowsFileMenu extends Component {
   loadWorkflow(event, index, menuItem) {
     var workflow = menuItem.workflow;
     if (!workflow) { return; }
+    // if (workflow.id) {
+    //   this.routeTo('builder', workflow.id);
+    // }
+    // else {
+    //   this.routeTo('builder');
+    // }
     if (workflow.id) {
-      this.routeTo('builder', workflow.id);
+      this.props.editor.loadWorkflow(workflow);
     }
     else {
-      this.routeTo('builder');
+      this.props.editor.resetWorkflow();
     }
   }
 

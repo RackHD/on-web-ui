@@ -34,7 +34,7 @@ export default class WorkflowBuilderToolbar extends Component {
     return (
       <Toolbar className="WorkflowsBuilderToolbar">
         <ToolbarGroup key={0} float="left">
-          <WorkflowsFileMenu />
+          <WorkflowsFileMenu editor={this.props.editor} />
         </ToolbarGroup>
         <ToolbarGroup key={1} float="right" style={{paddingRight: '18%'}}>
           <ToolbarTitle text="Options" />

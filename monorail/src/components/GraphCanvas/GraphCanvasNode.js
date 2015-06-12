@@ -71,7 +71,7 @@ export default class GraphCanvasNode extends Component {
     }
     var ports = [];
     this.props.model.forEachPort(port => {
-      ports.push(<GraphCanvasPort key={port.name} canvas={this.props.canvas} model={port} />);
+      ports.push(<GraphCanvasPort key={port.name} ref={port.name} canvas={this.props.canvas} model={port} />);
     });
     return (
       <Paper className={className}
@@ -86,7 +86,7 @@ export default class GraphCanvasNode extends Component {
                onMouseDown={this.moveNode()}>
             <a className={'left fa fa-info' + (this.state.flip ? '-circle' : '')}
                 onClick={this.toggleFlip} />
-            <span className="name">Task Node</span>
+            <span className="name">{this.props.model.data && this.props.model.data.task && this.props.model.data.task.label || 'Task Node'}</span>
             <a className="right fa fa-remove"
                 onClick={this.removeNode} />
           </div>

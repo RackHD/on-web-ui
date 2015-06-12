@@ -67,6 +67,36 @@ export default class GraphCanvasWorld extends Component {
     this.setState({ scale });
   }
 
+  updateGraph(graph) {
+    this.graph = graph || this.graph;
+    this.setState({nodes: this.graph.nodes});
+    console.log(this.graph.nodes);
+    setTimeout(() => {
+      console.log(this.graph.links);
+      this.setState({links: this.fixLinkPositions(this.graph.links)});
+    }, 250);
+  }
+
+  fixLinkPositions(links) {
+    var getSocketPosition = (link, k) => {
+      var socket = link['socket' + k],
+          port = socket.port,
+          node = port.node;
+      var nodeRef = this.refs[node.id],
+          portRef = nodeRef.refs[port.name],
+          socketRef = portRef.refs[socket.type];
+      return this.getSocketCenter(
+        React.findDOMNode(socketRef).querySelector('.GraphCanvasSocketIcon')
+      );
+    };
+    links.forEach(link => {
+      var a = getSocketPosition(link, 'Out'),
+          b = getSocketPosition(link, 'In');
+      link.data.bounds = new Rectangle(a.x, a.y, b.x, b.y);
+    });
+    return links;
+  }
+
   render() {
     try {
       var worldSize = this.worldSize,

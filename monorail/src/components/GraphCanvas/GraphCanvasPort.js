@@ -31,7 +31,7 @@ export default class GraphCanvasPort extends Component {
         rightSockets = [];
     this.props.model.forEachSocket(socket => {
       var element = <GraphCanvasSocket
-        key={socket.type} canvas={this.props.canvas} model={socket} />;
+        key={socket.type} ref={socket.type} canvas={this.props.canvas} model={socket} />;
       if (socket.dir.x === -1) {
         leftSockets.push(element);
       }
