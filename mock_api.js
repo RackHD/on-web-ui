@@ -161,6 +161,9 @@ server.use(jsonServer.router({
         {
           label: 'runcmd-castspell',
           taskName: 'Task.RunCommand',
+          waitOn: {
+            'runcmd-manacheck': 'succeeded'
+          },
           options: {
             command: 'cast-spell magic missle'
           }

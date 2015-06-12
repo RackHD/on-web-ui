@@ -87,7 +87,7 @@ export default class WorkflowBuilder extends Component {
       task._node = workflowGraph.add({
         graph: workflowGraph,
         data: {task: task},
-        bounds: [1000, 1000, 1100, 1100],
+        bounds: [900, 900, 1000, 1000],
         layer: 0,
         scale: 1,
         ports: [
