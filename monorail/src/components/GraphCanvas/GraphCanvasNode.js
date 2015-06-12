@@ -41,23 +41,17 @@ export default class GraphCanvasNode extends Component {
   // }
 
   render() {
-    // if (!this.props.model || !this.props.model.bounds) {
-    //   console.error(new Error('Invalid node').stack);
-    //   console.log(this.props);
-    //   return null;
-    // }
-    var dir = this.props.model.bounds.dir;
-    var style = {
-      top: this.props.model.bounds[dir.y > 0 ? 'top' : 'bottom'],
-      left: this.props.model.bounds[dir.x > 0 ? 'left' : 'right'],
-      width: this.props.model.bounds.width,
-      height: this.props.model.bounds.height,
-      transition: null,
-      borderRadius: null,
-      backgroundColor: null
-    };
+    if (!this.props.model || !this.props.model.bounds) {
+      console.error(new Error('Invalid node').stack);
+      console.log(this.props);
+      return null;
+    }
     var className = 'GraphCanvasNode',
-        zDepth = 2;
+        zDepth = 2,
+        style = this.props.model.bounds.css;
+    style.transition =
+    style.borderRadius =
+    style.backgroundColor = null;
     if (this.props.active) {
       className += ' active';
     }
@@ -118,12 +112,25 @@ export default class GraphCanvasNode extends Component {
   }
 
   selectNode(event) {
-    event.stopPropagation();
-    event.preventDefault();
+    this.stopEvent(event);
     this.props.canvas.selectNode(this.props.model, event.shiftKey);
   }
 
   moveNode() {
+    var pushFrame = (event, dragState) => {
+      dragState.frames = dragState.frames || [];
+      var index = dragState.frames.length,
+          frame = {
+            position: this.props.model.bounds.position,
+            time: event.timeStamp || Date.now()
+          },
+          lastFrame = dragState.frames[index - 1] || frame,
+          timeLapse = (frame.time - lastFrame.time);
+      frame.velocity = lastFrame.position.sub(frame.position).squish(timeLapse);
+      frame.duration = timeLapse;
+      dragState.frames.push(frame);
+      if (dragState.frames.length >= 12) { dragState.frames.shift(); }
+    };
     return this.props.canvas.setupClickDrag({
       down: (event, dragState) => {
         this.setState({moving: true});
@@ -134,8 +141,12 @@ export default class GraphCanvasNode extends Component {
           x: event.relX,
           y: event.relY
         };
+        pushFrame(event, dragState);
+        clearTimeout(this.physicsMoveTimer);
+        this.stopPhysicsMove = true;
       },
       move: (event, dragState) => {
+        clearInterval(this.moveRepeat);
         event.stopPropagation();
         var lastX = dragState.lastMove.x,
             lastY = dragState.lastMove.y;
@@ -143,16 +154,39 @@ export default class GraphCanvasNode extends Component {
           x: event.relX,
           y: event.relY
         };
+        pushFrame(event, dragState);
         this.props.canvas.moveNode(
           this.props.model.id,
           lastX - event.relX,
           lastY - event.relY);
+        this.moveRepeat = setInterval(() => {
+          pushFrame(event, dragState);
+        }, 100);
       },
       up: (event, dragState) => {
+        clearInterval(this.moveRepeat);
         this.setState({moving: false});
         event.stopPropagation();
         var duration = (event.timeStamp || Date.now()) - dragState.start;
         if (duration < 100) { this.selectNode(event); }
+        pushFrame(event, dragState);
+        var velocitySum = dragState.frames.reduce(function (lastValue, currFrame) {
+          return (lastValue.velocity || lastValue).add(currFrame.velocity);
+        });
+        this.stopPhysicsMove = false;
+        var tick = () => {
+          if (Math.abs(velocitySum.x) < 0.000001 &&
+              Math.abs(velocitySum.y) < 0.000001) { return; }
+          this.props.canvas.moveNode(
+            this.props.model.id,
+            velocitySum.x,
+            velocitySum.y);
+          velocitySum = velocitySum.scale(0.95);
+          if (!this.stopPhysicsMove) {
+            this.physicsMoveTimer = setTimeout(tick, 16);
+          }
+        };
+        tick();
       }
     });
   }

@@ -188,18 +188,18 @@ export default class GraphCanvasWorld extends Component {
         var dragDuration = (event.timeStamp || Date.now()) - dragState.startTime;
         if (dragDuration < 150) { this.unselectAllNodes(); }
         pushFrame(event, dragState);
-        var averageVelocity = dragState.frames.reduce(function (lastValue, currFrame) {
+        var velocitySum = dragState.frames.reduce(function (lastValue, currFrame) {
           return (lastValue.velocity || lastValue).add(currFrame.velocity);
         });
         this.stopPhysicsScroll = false;
         var tick = () => {
-          if (Math.abs(averageVelocity.x) < 0.000001 &&
-              Math.abs(averageVelocity.y) < 0.000001) { return; }
+          if (Math.abs(velocitySum.x) < 0.000001 &&
+              Math.abs(velocitySum.y) < 0.000001) { return; }
           this.updatePosition({
-            x: this.position.x + averageVelocity.x,
-            y: this.position.y + averageVelocity.y
+            x: this.position.x + velocitySum.x,
+            y: this.position.y + velocitySum.y
           });
-          averageVelocity = averageVelocity.scale(0.95);
+          velocitySum = velocitySum.scale(0.95);
           if (!this.stopPhysicsScroll) {
             this.physicsScrollTimer = setTimeout(tick, 16);
           }
@@ -222,6 +222,7 @@ export default class GraphCanvasWorld extends Component {
       scale = Math.min(8, scale + force);
     }
     this.updateScale(scale);
+
   }
 
   // Node events

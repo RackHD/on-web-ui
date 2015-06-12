@@ -64,25 +64,6 @@ export default class Rectangle {
     return this;
   }
 
-  // flip() {
-  //   this.flipX();
-  //   this.flipY();
-  // }
-  //
-  // flipX() {
-  //   var x1 = this.min.x,
-  //       x2 = this.max.x;
-  //   this.min.x = x2;
-  //   this.max.x = x1;
-  // }
-  //
-  // flipY() {
-  //   var y1 = this.min.y,
-  //       y2 = this.max.y;
-  //   this.min.y = y2;
-  //   this.max.y = y1;
-  // }
-
   get dir() {
     var a = this.min,
         b = this.max;
@@ -90,6 +71,31 @@ export default class Rectangle {
       a.x < b.x ? 1 : -1,
       a.y < b.y ? 1 : -1
     );
+  }
+
+  get normalPosition() {
+    var dir = this.dir;
+    return new Vector(
+      this[dir.x > 0 ? 'left' : 'right'],
+      this[dir.y > 0 ? 'top' : 'bottom']
+    );
+  }
+
+  normalize() {
+    var position = this.position,
+        bottom = position.y + this.height,
+        right = position.x + this.width;
+    return new Rectangle(position.x, position.y, right, bottom);
+  }
+
+  get css() {
+    var dir = this.dir;
+    return {
+      top: this[dir.y > 0 ? 'top' : 'bottom'],
+      left: this[dir.x > 0 ? 'left' : 'right'],
+      width: this.width,
+      height: this.height
+    };
   }
 
   /* eslint-disable no-return-assign */
