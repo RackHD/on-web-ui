@@ -4,7 +4,7 @@ import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 
 // import { Paper } from 'material-ui';
 import GraphCanvas from '../GraphCanvas';
-import WorkflowsMenu from './WorkflowsMenu';
+import WorkflowBuilderToolbar from './WorkflowBuilderToolbar';
 import WorkflowTasksTray from './WorkflowTasksTray';
 import WorkflowInspector from './WorkflowInspector';
 import './WorkflowBuilder.less';
@@ -52,13 +52,14 @@ export default class WorkflowBuilder extends Component {
             viewWidth={this.state.canvasWidth}
             viewHeight={this.state.canvasHeight} />
         <div className="overlay container">
-          <div className="panel left two columns">
-            <WorkflowTasksTray />
-            <WorkflowsMenu />
-          </div>
-          <div className="panel right two columns">
-            <br /><br /><br />
-            <WorkflowInspector />
+          <WorkflowBuilderToolbar />
+          <div className="row">
+            <div className="panel left two columns">
+              <WorkflowTasksTray />
+            </div>
+            <div className="panel right two columns">
+              <WorkflowInspector />
+            </div>
           </div>
         </div>
       </div>

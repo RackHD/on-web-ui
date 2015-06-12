@@ -7,13 +7,13 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    Menu,
+    DropDownMenu,
     MenuItem
   } from 'material-ui';
 import { workflows } from '../../actions/WorkflowActions';
 
 @mixin.decorate(RouteHelpers)
-export default class WorkflowsMenu extends Component {
+export default class WorkflowsFileMenu extends Component {
 
   state = {workflows: null};
 
@@ -26,7 +26,7 @@ export default class WorkflowsMenu extends Component {
 
   render() {
     var workflowMenuItems = [
-      {text: 'Workflows', type: MenuItem.Types.SUBHEADER},
+      {text: 'File', type: MenuItem.Types.SUBHEADER},
       {text: 'New +', workflow: {}}
     ];
     if (this.state.workflows) {
@@ -38,11 +38,9 @@ export default class WorkflowsMenu extends Component {
       });
     }
     return (
-      <div className="WorkflowsMenu container">
-        <Menu menuItems={workflowMenuItems}
-              onItemClick={this.loadWorkflow.bind(this)}
-              autoWidth={false} />
-      </div>
+      <DropDownMenu ref="root" className="WorkflowsFileMenu"
+          menuItems={workflowMenuItems}
+          onItemClick={this.loadWorkflow.bind(this)} />
     );
   }
 
