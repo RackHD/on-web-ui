@@ -34,12 +34,6 @@ export default class GraphCanvasNode extends Component {
   removeNode = this.removeNode.bind(this);
   toggleFlip = this.toggleFlip.bind(this);
 
-  // componentWillMount() {
-    // var model = this.props.model;
-    // model.data = model.data || {};
-    // model.data.component = this;
-  // }
-
   render() {
     if (!this.props.model || !this.props.model.bounds) {
       console.error(new Error('Invalid node').stack);
