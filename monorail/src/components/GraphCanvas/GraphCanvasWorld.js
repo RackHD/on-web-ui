@@ -74,7 +74,7 @@ export default class GraphCanvasWorld extends Component {
     setTimeout(() => {
       console.log(this.graph.links);
       this.setState({links: this.fixLinkPositions(this.graph.links)});
-    }, 250);
+    }, 80);
   }
 
   fixLinkPositions(links) {

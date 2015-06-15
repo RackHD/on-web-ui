@@ -18,7 +18,7 @@ server.use(express.static(path.join(__dirname)));
 var templateFile = path.join(__dirname, '../../common/templates/index.html'),
     template = _.template(fs.readFileSync(templateFile, 'utf8'));
 
-var preload = true;
+var preload = false;
 
 server.get('*', function(req, res) {
   if (preload) {

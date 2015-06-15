@@ -10,6 +10,8 @@ import React from 'react';
 import Router from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
+import {} from 'material-ui';
+
 // Needed for React Developer Tools
 window.React = React;
 

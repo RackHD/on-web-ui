@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var webpack = require('webpack');
 var argv = require('minimist')(process.argv.slice(2));
+var path = require('path');
 
 var DEBUG = !argv.release;
 
@@ -41,8 +42,12 @@ var config = {
   ],
 
   resolve: {
+    fallback: path.join(__dirname, '../node_modules'),
+    modulesDirectories: ['node_modules'],
     extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
   },
+
+  resolveLoader: { fallback: path.join(__dirname, '../node_modules') },
 
   module: {
     preLoaders: [

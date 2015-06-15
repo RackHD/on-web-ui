@@ -1,11 +1,19 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component, PropTypes } from 'react';
+import decorateComponent from 'common-web-ui/lib/decorateComponent';
+/* eslint-enable no-unused-vars */
 
 import { AppBar } from 'material-ui';
 
 import AppMenuNav from './AppMenuNav';
 
+@decorateComponent({
+  contextTypes: {
+    muiTheme: PropTypes.object
+  }
+})
 export default class AppHeader extends Component {
 
   _onLeftIconButtonTouchTap = this.onLeftIconButtonTouchTap.bind(this);

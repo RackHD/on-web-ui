@@ -145,7 +145,7 @@ export default class WorkflowBuilder extends Component {
     columns.forEach((column, c) => {
       if (column) {
         column.forEach((task, i) => {
-          task._node.bounds.translate([150 * c, 150 * i]);
+          task._node.bounds.translate([150 * c, 120 * i]);
         });
       }
     });
