@@ -53,8 +53,16 @@ export default class GraphCanvasNode extends Component {
     else {
       style.width = Math.max(100, style.width);
       style.height = Math.max(100, style.height);
-      bounds.max.x = bounds.left + style.width;
-      bounds.max.y = bounds.top + style.height;
+      if (bounds.min.x > bounds.max.x) {
+        bounds.min.x = style.left + style.width;
+      } else {
+        bounds.max.x = style.left + style.width;
+      }
+      if (bounds.min.y > bounds.max.y) {
+        bounds.min.y = style.top + style.height;
+      } else {
+        bounds.max.y = style.top + style.height;
+      }
     }
     if (this.state.moving) {
       className += ' moving';
