@@ -19,9 +19,17 @@ export default class WorkflowInspector extends Component {
   }
 
   render() {
-    var selected = this.state.selected.map(function (node) {
+    var selected = this.state.selected || [];
+    selected = selected.map(function (node) {
+      var task = null;
+      if (node.data.task) {
+        task = node.data.task.label;
+      }
       return (
-        <div>{node.id}</div>
+        <div className="task" key={node.id} ref={node.id}>
+          {node.id}
+          <div>{task}</div>
+        </div>
       );
     });
     return (
