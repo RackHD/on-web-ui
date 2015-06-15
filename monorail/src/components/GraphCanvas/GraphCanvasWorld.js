@@ -202,6 +202,7 @@ export default class GraphCanvasWorld extends Component {
       move: (event, dragState) => {
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
+        clearInterval(this.moveRepeat);
         var scale = this.scale,
             start = dragState.start,
             min = dragState.min,
@@ -211,10 +212,14 @@ export default class GraphCanvasWorld extends Component {
           x: Math.min(max.x, Math.max(min.x, start.x - (event.diffX / scale))),
           y: Math.min(max.y, Math.max(min.y, start.y - (event.diffY / scale)))
         });
+        this.moveRepeat = setInterval(() => {
+          pushFrame(event, dragState);
+        }, 100);
       },
       up: (event, dragState) => {
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
+        clearInterval(this.moveRepeat);
         var dragDuration = (event.timeStamp || Date.now()) - dragState.startTime;
         if (dragDuration < 150) { this.unselectAllNodes(); }
         pushFrame(event, dragState);
