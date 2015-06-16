@@ -6,4 +6,5 @@ build/
 node_modules/
 npm-debug.log
 
-src/config.js
+apps/monorail/config.js
+apps/onrack/config.js

@@ -1,8 +1,8 @@
 {
-  "name": "onrack-web-ui",
+  "name": "monorail-web-ui",
   "private": true,
   "version": "0.0.0",
-  "description": "OnRack Web UI",
+  "description": "Monorail Web UI",
   "repository": "",
   "license": "",
   "engines": {

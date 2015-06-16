@@ -1,13 +1,15 @@
 cd common
 npm link
+cd ../
 
-cd ../monorail
+cd apps/monorail
 npm link
+cd ../../
 
-cd ../onrack
+cd apps/onrack
 npm link
+cd ../../
 
-cd ..
 npm link common-web-ui
 npm link monorail-web-ui
 npm link onrack-web-ui
