@@ -5,14 +5,14 @@ var merge = require('merge-stream'),
     changed = require('gulp-changed'),
     size = require('gulp-size');
 
-var getFolders = require('./lib/getFolders');
+var getFolders = require('../lib/getFolders');
 
 // Build static asset files
 gulp.task('assets', function() {
   var streams = [];
 
   // Copy app assets into build directory.
-  var apps = getFolders(path.join(__dirname, '..', 'apps'));
+  var apps = getFolders(path.join(__dirname, '..', '..', 'apps'));
   apps.forEach(function (appName) {
     var appDir = path.join('apps', appName),
         target = path.join('build', appName);

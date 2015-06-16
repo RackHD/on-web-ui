@@ -3,7 +3,7 @@
 
 var runSequence = require('run-sequence');
 
-var getFolders = require('./lib/getFolders');
+var getFolders = require('../lib/getFolders');
 
 // Build and start watching for modifications
 gulp.task('watch', function(cb) {
@@ -13,7 +13,7 @@ gulp.task('watch', function(cb) {
       styles = [],
       templates = [];
 
-  var apps = getFolders(path.join(__dirname, '..', 'apps'));
+  var apps = getFolders(path.join(__dirname, '..', '..', 'apps'));
   apps.forEach(function (appName) {
     var appDir = path.join('apps', appName);
 

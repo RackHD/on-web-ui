@@ -6,7 +6,7 @@ var merge = require('merge-stream'),
     template = require('gulp-template'),
     size = require('gulp-size');
 
-var getFolders = require('./lib/getFolders');
+var getFolders = require('../lib/getFolders');
 
 // Build static html files
 gulp.task('templates', function() {
@@ -20,7 +20,7 @@ gulp.task('templates', function() {
   };
 
   // Copy app assets into build directory.
-  var apps = getFolders(path.join(__dirname, '..', 'apps'));
+  var apps = getFolders(path.join(__dirname, '..', '..', 'apps'));
   apps.forEach(function (appName) {
     var appDir = path.join('apps', appName),
         target = path.join('build', appName);

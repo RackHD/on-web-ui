@@ -33,6 +33,9 @@ gulp.task('sync', ['serve'], function(cb) {
   gulp.watch(['build/**/*.*'].concat(
     global.serverSrc ? ['!' + global.serverSrc] : []
   ), function(file) {
-    browserSync.reload(path.relative(__dirname, file.path));
+    browserSync.reload(path.relative(
+      path.join(__dirname, '..', '..'),
+      file.path
+    ));
   });
 });

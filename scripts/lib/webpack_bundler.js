@@ -7,7 +7,7 @@ var _ = require('lodash'),
 var params = global.parameters || require('./parameters')(1),
     DEBUG = !params.RELEASE;
 
-// var AUTOPREFIXER_LOADER = require('./autoprefixer').loader;
+var AUTOPREFIXER_LOADER = require('./autoprefixer').loader;
 
 var GLOBALS = {
   'process.env.NODE_ENV': DEBUG ? '"development"' : '"production"',
@@ -33,14 +33,14 @@ exports = module.exports = function (options) {
 exports.baseConfig = function (options) {
   options = options || {};
 
-  var autoprefixer = '';//options.hasOwnProperty('autoprefixer') ?
-    // (options.autoprefixer || '') : AUTOPREFIXER_LOADER;
+  var autoprefixer = options.hasOwnProperty('autoprefixer') ?
+    (options.autoprefixer || '') : AUTOPREFIXER_LOADER;
 
   var modulesDir = options.modulesDir ||
-    path.join(__dirname, '..', 'node_modules');
+    path.join(__dirname, '..', '..', 'node_modules');
 
   var outputPath = options.outputPath ||
-    path.join(__dirname, '..', 'build', options.appName || '', '');
+    path.join(__dirname, '..', '..', 'build', options.appName || '', '');
 
   return {
     output: {
@@ -75,7 +75,7 @@ exports.baseConfig = function (options) {
     module: {
       preLoaders: [
         { test: /\.js$/,
-          loader: 'eslint-loader', exclude: /node_modules/ }
+          loader: 'eslint-loader', exclude: /node_modules|material-ui/ }
       ],
 
       loaders: [
@@ -92,7 +92,7 @@ exports.baseConfig = function (options) {
         { test: /\.svg/,
           loader: 'url-loader?limit=10000&mimetype=image/svg+xml' },
         { test: /\.jsx?$/,
-          loader: 'babel-loader', exclude: /node_modules/ }
+          loader: 'babel-loader', exclude: /node_modules|material-ui/ }
       ]
     }
   };

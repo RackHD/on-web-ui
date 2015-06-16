@@ -5,12 +5,12 @@ var async = require('async'),
     gulpUtil = require('gulp-util'),
     webpack = require('webpack');
 
-var getFolders = require('./lib/getFolders'),
-    webpackBundler = require('../config/webpack_bundler');
+var getFolders = require('../lib/getFolders'),
+    webpackBundler = require('../lib/webpack_bundler');
 
 // Bundle
 gulp.task('bundle', function (done) {
-  var bundles = getFolders(path.join(__dirname, '..', 'apps'));
+  var bundles = getFolders(path.join(__dirname, '..', '..', 'apps'));
 
   bundles = bundles.map(function (appName) {
     return createBundle.bind(null, appName); // eslint-disable-line no-use-before-define
