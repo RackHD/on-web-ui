@@ -40,5 +40,22 @@ gulp.task('css', function() {
     );
   });
 
+  // Copy common assets into build directory
+  var commonTarget = path.join('build', 'common');
+  streams.push(
+    gulp.src(path.join('common', 'styles', 'main.less'))
+      .pipe(plumber())
+      .pipe(less({
+        sourceMap: !params.RELEASE,
+        sourceMapBasepath: path.join(__dirname, '..')
+      }))
+      .on('error', console.error.bind(console))
+      .pipe(autoprefixer({browsers: autoprefixerBrowsers}))
+      .pipe(csscomb())
+      .pipe(gulpIf(params.RELEASE, minifyCss()))
+      .pipe(gulp.dest(commonTarget))
+      .pipe(size({title: 'common styles'}))
+  );
+
   return merge(streams);
 });

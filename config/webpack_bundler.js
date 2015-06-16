@@ -7,7 +7,7 @@ var _ = require('lodash'),
 var params = global.parameters || require('./parameters')(1),
     DEBUG = !params.RELEASE;
 
-var AUTOPREFIXER_LOADER = require('./autoprefixer').loader;
+// var AUTOPREFIXER_LOADER = require('./autoprefixer').loader;
 
 var GLOBALS = {
   'process.env.NODE_ENV': DEBUG ? '"development"' : '"production"',
@@ -18,10 +18,11 @@ var GLOBALS = {
 
 exports = module.exports = function (options) {
   options = options || {};
-  return [
-    exports.clientConfig(options.client, options)//,
-    // exports.serverConfig(options.server, options)
-  ];
+  var bundles = [exports.clientConfig(options.client, options)];
+  if (options.server) {
+    bundles.push(exports.serverConfig(options.server, options));
+  }
+  return bundles;
 };
 
 //
@@ -44,7 +45,7 @@ exports.baseConfig = function (options) {
   return {
     output: {
       path: outputPath,
-      publicPath: './',
+      publicPath: path.join(__dirname, '..'),
       sourcePrefix: '  '
     },
 
@@ -123,35 +124,35 @@ exports.clientConfig = function (overrides, options) {
 // Configuration for the server-side bundle (server.js)
 // -----------------------------------------------------------------------------
 
-// exports.serverConfig = function (overrides, options) {
-//   var baseConfig = exports.baseConfig(options),
-//       localGlobals = _.merge(GLOBALS, {'__SERVER__': true}),
-//       globalsPlugin = new webpack.DefinePlugin(localGlobals);
-//
-//   return _.merge({}, baseConfig, {
-//     entry: './apps/' + options.appName + '/src/server.js',
-//     output: {
-//       filename: 'server.js',
-//       libraryTarget: 'commonjs2'
-//     },
-//     target: 'node',
-//     externals: /^[a-z][a-z\.\-0-9]*$/,
-//     node: {
-//       console: false,
-//       global: false,
-//       process: false,
-//       Buffer: false,
-//       __filename: false,
-//       __dirname: false
-//     },
-//     plugins: baseConfig.plugins.concat(globalsPlugin),
-//     module: {
-//       loaders: baseConfig.module.loaders.map(function(loader) {
-//         // Remove style-loader
-//         return _.merge(loader, {
-//           loader: loader.loader = loader.loader.replace('style-loader!', '')
-//         });
-//       })
-//     }
-//   }, overrides);
-// };
+exports.serverConfig = function (overrides, options) {
+  var baseConfig = exports.baseConfig(options),
+      localGlobals = _.merge(GLOBALS, {'__SERVER__': true}),
+      globalsPlugin = new webpack.DefinePlugin(localGlobals);
+
+  return _.merge({}, baseConfig, {
+    entry: './apps/' + options.appName + '/src/server.js',
+    output: {
+      filename: 'server.js',
+      libraryTarget: 'commonjs2'
+    },
+    target: 'node',
+    externals: /^[a-z][a-z\.\-0-9]*$/,
+    node: {
+      console: false,
+      global: false,
+      process: false,
+      Buffer: false,
+      __filename: false,
+      __dirname: false
+    },
+    plugins: baseConfig.plugins.concat(globalsPlugin),
+    module: {
+      loaders: baseConfig.module.loaders.map(function(loader) {
+        // Remove style-loader
+        return _.merge(loader, {
+          loader: loader.loader = loader.loader.replace('style-loader!', '')
+        });
+      })
+    }
+  }, overrides);
+};
