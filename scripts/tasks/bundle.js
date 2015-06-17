@@ -1,26 +1,54 @@
 'use strict';
 /* global gulp, path */
 
-var async = require('async'),
-    gulpUtil = require('gulp-util'),
+var gulpUtil = require('gulp-util'),
     webpack = require('webpack');
 
 var getFolders = require('../lib/getFolders'),
     webpackBundler = require('../lib/webpack_bundler');
 
+var rootDir = path.join(__dirname, '..', '..');
+
 // Bundle
 gulp.task('bundle', function (done) {
-  var bundles = getFolders(path.join(__dirname, '..', '..', 'apps'));
+  var bundles = getFolders(path.join(rootDir, 'apps'));
+
+  var entry = {
+    'vendor.js': [
+      // common
+      'material-ui',
+      'moment',
+      'react',
+      'react-router',
+      'react-mixin',
+      'react-tap-event-plugin',
+
+      // other
+      'gl-matrix',
+      'griddle-react',
+      'react-chartist',
+      'superagent'
+    ],
+    common: path.join(rootDir, 'common', 'bundle.js')
+  };
 
   bundles = bundles.map(function (appName) {
-    return createBundle.bind(null, appName); // eslint-disable-line no-use-before-define
+    entry[appName] = path.join(rootDir, 'apps', appName, 'bundle.js');
   });
 
-  async.parallel(bundles, done);
+  createBundle(// eslint-disable-line no-use-before-define
+    webpackBundler({
+      entry: entry,
+      commonsChunkPlugins: [
+        new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
+        new webpack.optimize.CommonsChunkPlugin('common', 'common.js')
+      ]
+    }),
+    done);
 });
 
-function createBundle(appName, callback) {
-  var bundle = webpack(webpackBundler({appName: appName})),
+function createBundle(config, callback) {
+  var bundle = webpack(config),
       started = false;
 
   function handler(err, stats) {
@@ -29,7 +57,7 @@ function createBundle(appName, callback) {
     }
 
     if (global.parameters.argv.verbose) {
-      gulpUtil.log('[webpack ' + appName + ']', stats.toString({colors: true}));
+      gulpUtil.log('[webpack]', stats.toString({colors: true}));
     }
 
     if (!started) {

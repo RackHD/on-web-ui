@@ -24,7 +24,6 @@ require('./scripts/tasks/deploy');
 require('./scripts/tasks/server');
 require('./scripts/tasks/sync');
 require('./scripts/tasks/templates');
-require('./scripts/tasks/test');
 require('./scripts/tasks/watch');
 
 global.gulp.task('default', ['sync']);

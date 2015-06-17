@@ -1,5 +1,6 @@
 {
   "name": "common-web-ui",
+  "main": "client.js",
   "private": true,
   "version": "0.0.0",
   "description": "Common Web UI",

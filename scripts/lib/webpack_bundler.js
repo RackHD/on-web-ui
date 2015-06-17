@@ -27,7 +27,7 @@ exports = module.exports = function (options) {
 
 //
 // Common configuration chunk to be used for both
-// client-side (client.js) and server-side (server.js) bundles
+// client-side and server-side bundles
 // -----------------------------------------------------------------------------
 
 exports.baseConfig = function (options) {
@@ -40,7 +40,7 @@ exports.baseConfig = function (options) {
     path.join(__dirname, '..', '..', 'node_modules');
 
   var outputPath = options.outputPath ||
-    path.join(__dirname, '..', '..', 'build', options.appName || '', '');
+    path.join(__dirname, '..', '..', 'build', options.appName || 'bundle');
 
   return {
     output: {
@@ -75,7 +75,7 @@ exports.baseConfig = function (options) {
     module: {
       preLoaders: [
         { test: /\.js$/,
-          loader: 'eslint-loader', exclude: /node_modules|material-ui/ }
+          loader: 'eslint-loader', exclude: /node_modules/ }
       ],
 
       loaders: [
@@ -92,36 +92,41 @@ exports.baseConfig = function (options) {
         { test: /\.svg/,
           loader: 'url-loader?limit=10000&mimetype=image/svg+xml' },
         { test: /\.jsx?$/,
-          loader: 'babel-loader', exclude: /node_modules|material-ui/ }
+          loader: 'babel-loader', exclude: /node_modules/ }
       ]
     }
   };
 };
 
 //
-// Configuration for the client-side bundle (client.js)
+// Configuration for the client-side bundle
 // -----------------------------------------------------------------------------
 
 exports.clientConfig = function (overrides, options) {
   var baseConfig = exports.baseConfig(options),
       localGlobals = _.merge(GLOBALS, {'__SERVER__': false}),
-      globalsPlugin = new webpack.DefinePlugin(localGlobals);
+      globalsPlugin = new webpack.DefinePlugin(localGlobals),
+      commonsChunkPlugins = options.commonsChunkPlugins || [],
+      entry = options.entry || path.join('.', 'apps', options.appName, 'bundle.js');
 
   return _.merge({}, baseConfig, {
-    entry: './apps/' + options.appName + '/client.js',
+    entry: entry,
     output: {
-      filename: 'client.js'
+      filename: typeof entry === 'string' ? 'client.js' : '[name].js'
     },
-    plugins: baseConfig.plugins.concat([globalsPlugin].concat(DEBUG ? [] : [
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.UglifyJsPlugin(),
-      new webpack.optimize.AggressiveMergingPlugin()
-    ]))
+    plugins: baseConfig.plugins
+      .concat([globalsPlugin])
+      .concat(commonsChunkPlugins)
+      .concat(DEBUG ? [] : [
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin(),
+        new webpack.optimize.AggressiveMergingPlugin()
+      ])
   }, overrides);
 };
 
 //
-// Configuration for the server-side bundle (server.js)
+// Configuration for the server-side bundle
 // -----------------------------------------------------------------------------
 
 exports.serverConfig = function (overrides, options) {
@@ -130,7 +135,7 @@ exports.serverConfig = function (overrides, options) {
       globalsPlugin = new webpack.DefinePlugin(localGlobals);
 
   return _.merge({}, baseConfig, {
-    entry: './apps/' + options.appName + '/src/server.js',
+    entry: options.entry || path.join('.', 'apps', options.appName, 'server.js'),
     output: {
       filename: 'server.js',
       libraryTarget: 'commonjs2'

@@ -1,5 +1,6 @@
 {
   "name": "monorail-web-ui",
+  "main": "client.js",
   "private": true,
   "version": "0.0.0",
   "description": "Monorail Web UI",
