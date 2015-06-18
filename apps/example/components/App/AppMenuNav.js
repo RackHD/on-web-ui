@@ -6,7 +6,10 @@ import decorateComponent from 'common-web-ui/lib/decorateComponent';
 /* eslint-enable no-unused-vars */
 
 
-import { /* MenuItem, LeftNav */ } from 'material-ui';
+import {
+    // MenuItem,
+    LeftNav
+  } from 'material-ui';
 
 const menuItems = [
   { text: 'Login', route: '/' },
