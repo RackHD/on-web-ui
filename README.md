@@ -1,57 +1,79 @@
-# OnRack/Monorail Web UI
-
-Based on this github project: https://github.com/kriasoft/react-starter-kit from commit: [e382c282f5a4871f012023402bd214a1b9a19a90](https://github.com/kriasoft/react-starter-kit/commit/e382c282f5a4871f012023402bd214a1b9a19a90)
+# On Web UI
 
 ### Documentation
 
-- [React Style Guide](./docs/react-style-guide.md)
+- [Documentation Index](./docs/index.md)
 
-### Directory Layout
+### Directory Structure
 
 ```
 .
-├── /build/                     # The folder for compiled output
-├── /docs/                      # Documentation files for the project
-├── /node_modules/              # 3rd-party libraries and utilities
-├── /common/                    #
-├── /{UI}/src/                  # The source code of the application
-│   ├── /actions/               # Action creators that allow to trigger a dispatch to stores
-│   ├── /assets/                # Static files which are copied to ./build on compile
-│   ├── /components/            # React components
-│   ├── /constants/             # Enumerations used in action creators and stores
-│   ├── /content/               # Website content (plain HTML or Markdown, Jade, you name it)
-│   ├── /core/                  # Core components (Flux dispatcher, base classes, utilities)
-│   ├── /stores/                # Stores contain the application state and logic
-│   ├── /styles/                # CSS styles (deprecated, put CSS into components' folders)
-│   ├── /templates/             # HTML templates for server-side rendering, emails etc.
-│   ├── /client.js              # Client-side startup script
-│   └── /server.js              # Server-side startup script
-│── gulpfile.js                 # Configuration file for automated builds
-│── package.json                # The list of 3rd party libraries and utilities
-│── preprocessor.js             # ES6 transpiler settings for Jest
-└── webpack.config.js           # Webpack configuration for bundling and optimization
+├── apps              # Directory of separated applications.
+│   └── {app}
+│       ├── actions       # Actions modules delegate calls to stores.
+│       ├── api           # API requests for application data.
+│       ├── assets        # Static files to be made public.
+│       ├── components    # React components.
+│       ├── stores        # Stores contain persisted application data.
+│       ├── styles        # Less and CSS files.
+│       ├── templates     # HTML files.
+│       ├── bundle.js     # Main application entry point.
+│       └── config.js     # Client configuration file.
+|
+├── build             # Output folder for built code.
+│   ├── {app}         # Compiled CSS, HTML and assets go in app folders.
+│   └── bundle        # Compiled JavaScript code for all apps go here.
+|
+├── common            # Commonly used code goes here.
+│   ├── components    # Common React components.
+│   ├── lib           # Reusable JavaScript code.
+│   ├── mixins        # React component mixin definitions.
+│   ├── styles        # Base Less and CSS files.
+│   ├── bundle.js     # Entry point for common code.
+│   └── server.js     # Development server for apps.
+|
+├── docs              # Project documentation files.
+|
+├── node_modules      # External dependencies.
+|
+├── scripts           # Scripts for dev, build, and test.
+│   ├── lib           # Reusable JavaScript code.
+│   ├── tasks         # Gulp task definitions.
+│   ├── test          # Test bootstrap files.
+│   └── tools         # Development utilities.
+|
+├── .babelrc          # BabelJS configuration file.
+├── .eslintrc         # eslint configuration file.
+├── .gitignore        # git ignored files.
+|
+├── gulpfile.js       # Gulpfile for project gulp tasks.
+|
+├── HWIMO-BUILD       # Build script.
+├── HWIMO-DOC         # Doc script.
+├── HWIMO-TEST        # Test script.
+|
+├── karma.ci.conf.js  # Karma configuration for continuous integration.
+├── karma.conf.js     # Karma test running configuration for development.
+|
+├── package.json      # NPM package, dependency file.
+└── README.md         # Everything that follows is a result of what you see here.
 ```
-
-NOTE: There are two different `{UI}/src` directories on for OnRack and one for Monorail. The `{UI}/src` directory structure also applies to `/common`
 
 ### Getting Started
 
 ```shell
 $ git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
 $ cd on-web-ui
-$ npm install -g gulp           # Install Gulp task runner globally
-$ npm install                   # Install Node.js components listed in ./package.json
-$ npm run-script link           # Link local NPM modules
-$ cd onrack                     # Or: "cd monorail"
-$ cp src/config.js.example src/config.js
+$ npm install                   # Install Node.js modules.
+$ ./scripts/setup_project.sh    # Create config files from examples.
 $ gulp                          # Run gulp to build and start browser-sync
 ```
 
 #### Configuration
 
 By default the application makes api calls to: `http://localhost/api/1.1`
-This can be configured in `src/config.js` after it is created from the example
-config.
+
+This can be configured in `apps/{app}/config.js` after it is created from the example config.
 
 ##### Feature Flags
 
@@ -62,7 +84,6 @@ For example if you want to disable the `dev` flag you can add: `?dev=false` to t
 ###### Flags
 
   * dev - Enables profiling.
-
 
 #### Mock API
 
@@ -90,16 +111,24 @@ synchronized browsing across multiple devices and browsers.
 
 ### How to Deploy
 
+NOTE: Currently not supported.
+
 ```shell
 $ gulp build --release          # Builds the project in release mode
 $ gulp deploy                   # or, `gulp deploy --production`
 ```
 
-For more information see `deploy` task in `gulpfile.js`.
+For more information see `deploy` task in `script/tasks/deploy.js`.
 
 ### How to Test
 
-Run unit tests powered by [Jest](https://facebook.github.io/jest/) with the following
+Run unit tests powered by Karma, Mocha, and Chai:
+  * [Karma - Spectacular Test Runner](http://karma-runner.github.io/)
+  * [Mocha](http://mochajs.org/)
+  * [Chai](http://chaijs.com/)
+  * [chai-spies](https://github.com/chaijs/chai-spies)
+
+
 [npm](https://www.npmjs.org/doc/misc/npm-scripts.html) command:
 
 ```shell
@@ -107,17 +136,17 @@ $ npm test
 ```
 
 Test any javascript module by creating a `__tests__/` directory where
-the file is. Name the test by appending `-test.js` to the js file.
-[Jest](https://facebook.github.io/jest/) will do the rest.
+the file is. Name the test by appending `-test.js` to the js file
+
+### Build tools
+ * [gulp.js](http://gulpjs.com/)
+ * [webpack module bundler](http://webpack.github.io/)
 
 ### Learn More
-
  * [Getting Started with React.js](http://facebook.github.io/react/)
  * [React.js Wiki on GitHub](https://github.com/facebook/react/wiki)
  * [React.js Questions on StackOverflow](http://stackoverflow.com/questions/tagged/reactjs)
  * [React.js Discussion Board](https://groups.google.com/forum/#!forum/reactjs)
- * [Flux Architecture for Building User Interfaces](http://facebook.github.io/flux/)
- * [Jest - Painless Unit Testing](http://facebook.github.io/jest/)
- * [Flow - A static type checker for JavaScript](http://flowtype.org/)
  * [The Future of React](https://github.com/reactjs/react-future)
+ * [Flux Architecture for Building User Interfaces](http://facebook.github.io/flux/)
  * [Learn ES6](https://babeljs.io/docs/learn-es6/), [ES6 Features](https://github.com/lukehoban/es6features#readme)

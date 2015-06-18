@@ -40,7 +40,7 @@ gulp.task('bundle', function (done) {
     webpackBundler({
       entry: entry,
       commonsChunkPlugins: [
-        new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
+        new webpack.optimize.CommonsChunkPlugin('vendor.js'),
         new webpack.optimize.CommonsChunkPlugin('common', 'common.js')
       ]
     }),

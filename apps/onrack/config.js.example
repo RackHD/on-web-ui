@@ -1,3 +1,5 @@
 'use strict';
 
+export const devFlag = featureFlag('dev').on();
+
 export const API = 'http://onrackapi.hwimo.lab.emc.com/rest/v1/';

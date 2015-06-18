@@ -33,15 +33,5 @@ gulp.task('templates', function() {
     );
   });
 
-  // Copy common assets into build directory
-  var commonTarget = path.join('build', 'common');
-  streams.push(
-    gulp.src(path.join('common', 'templates', '**', '*.*'))
-      .pipe(template(data))
-      .pipe(changed(commonTarget))
-      .pipe(gulp.dest(commonTarget))
-      .pipe(size({title: 'common templates'}))
-  );
-
   return merge(streams);
 });
