@@ -98,6 +98,16 @@ export default class Rectangle {
     };
   }
 
+  getCSSTransform(scale=1) {
+    var pos = this.normalPosition.squish(scale),
+        transform = 'scale(' + scale + ') translate(' + pos.x + 'px, ' + pos.y + 'px)';
+    return {
+      width: this.width,
+      height: this.height,
+      transform
+    };
+  }
+
   /* eslint-disable no-return-assign */
   get left() { return this.min.x; }
   set left(value) { return this.min.x = value; }

@@ -43,7 +43,7 @@ export default class GraphCanvasNode extends Component {
     var className = 'GraphCanvasNode',
         zDepth = 2,
         bounds = this.props.model.bounds,
-        style = bounds.css;
+        style = bounds.getCSSTransform();
     style.transition =
     style.borderRadius =
     style.backgroundColor = null;
@@ -54,14 +54,14 @@ export default class GraphCanvasNode extends Component {
       style.width = Math.max(100, style.width);
       style.height = Math.max(100, style.height);
       if (bounds.min.x > bounds.max.x) {
-        bounds.min.x = style.left + style.width;
+        bounds.min.x = bounds.max.x + style.width;
       } else {
-        bounds.max.x = style.left + style.width;
+        bounds.max.x = bounds.min.x + style.width;
       }
       if (bounds.min.y > bounds.max.y) {
-        bounds.min.y = style.top + style.height;
+        bounds.min.y = bounds.max.y + style.height;
       } else {
-        bounds.max.y = style.top + style.height;
+        bounds.max.y = bounds.min.y + style.height;
       }
     }
     if (this.state.moving) {
