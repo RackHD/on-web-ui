@@ -13,8 +13,6 @@ global.parameters = require('./scripts/lib/parameters')(2);
 global.browserSync = null;
 global.watch = false;
 
-// global.apps = null;
-
 require('./scripts/tasks/assets');
 require('./scripts/tasks/build');
 require('./scripts/tasks/bundle');
