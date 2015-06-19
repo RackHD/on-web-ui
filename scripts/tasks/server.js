@@ -2,7 +2,7 @@
 /* global gulp, path */
 
 var gulpUtil = require('gulp-util'),
-    assign = require('react/lib/Object.assign'),
+    assign = require('lodash/object/assign'),
     cp = require('child_process');
 
 // Launch a Node.js/Express server

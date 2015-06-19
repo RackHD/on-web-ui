@@ -2,7 +2,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../lib/decorateComponent';
+import decorate from '../lib/decorate';
 /* eslint-enable no-unused-vars */
 
 import {
@@ -10,7 +10,7 @@ import {
     ToolbarGroup
   } from 'material-ui';
 
-@decorateComponent({
+@decorate({
   propTypes: {
     className: PropTypes.string,
     count: PropTypes.number,

@@ -2,11 +2,12 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../lib/decorateComponent';
+import mixin from 'react-mixin';
+import decorate from '../lib/decorate';
+import MUIContextHelpers from '../mixins/mui/MUIContextHelpers';
 /* eslint-enable no-unused-vars */
 
 import onReady from '../lib/onReady';
-import { Styles } from 'material-ui';
 
 var testContainer = document.createElement('div');
 testContainer.setAttribute('id', (testContainer.id = 'tests'));
@@ -15,9 +16,7 @@ onReady(function() {
   document.body.appendChild(testContainer);
 });
 
-const ThemeManager = new Styles.ThemeManager();
-
-@decorateComponent({
+@decorate({
   propTypes: {
     disableAutoTheme: PropTypes.bool,
     TestComponent: PropTypes.func,
@@ -28,10 +27,9 @@ const ThemeManager = new Styles.ThemeManager();
     disableAutoTheme: false,
     componentProps: {}
   },
-  childContextTypes: {
-    muiTheme: PropTypes.object
-  }
+  childContextTypes: MUIContextHelpers.muiContextTypes()
 })
+@mixin.decorate(MUIContextHelpers)
 export default class TestWrapper extends Component {
 
   static testRender(TestComponent, componentProps, done, disableAutoTheme) {
@@ -39,8 +37,7 @@ export default class TestWrapper extends Component {
       disableAutoTheme={!!disableAutoTheme}
       TestComponent={TestComponent}
       componentProps={componentProps}
-      done={done}
-    />;
+      done={done} />;
     return React.render(testWrapper, testContainer);
   }
 
@@ -64,9 +61,8 @@ export default class TestWrapper extends Component {
   getDOMNode() { return React.findDOMNode(this); }
 
   getChildContext() {
-    return this.props.disableAutoTheme ? {} : {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
+    if (!this.props.disableAutoTheme) { return this.muiContext(); }
+    return {};
   }
 
   get component() {

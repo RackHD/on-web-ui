@@ -2,7 +2,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../lib/decorateComponent';
+import decorate from '../lib/decorate';
 import mixin from 'react-mixin';
 import DeveloperHelpers from '../mixins/DeveloperHelpers';
 /* eslint-enable no-unused-vars */
@@ -14,7 +14,7 @@ import {
 import DataTable from './DataTable';
 import DataTableToolbar from './DataTableToolbar';
 
-@decorateComponent({
+@decorate({
   propTypes: {
     className: PropTypes.string,
     checkable: PropTypes.bool,

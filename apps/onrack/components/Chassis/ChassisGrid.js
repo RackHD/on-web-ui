@@ -2,7 +2,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from 'common-web-ui/lib/decorateComponent';
+import decorate from 'common-web-ui/lib/decorate';
 import mixin from 'react-mixin';
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
@@ -16,7 +16,7 @@ import {
 import EntityGrid from 'common-web-ui/components/EntityGrid';
 import { chassis } from '../../actions/ChassisActions';
 
-@decorateComponent({
+@decorate({
   propTypes: {
     filter: PropTypes.func
   },

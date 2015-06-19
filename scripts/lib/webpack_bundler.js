@@ -79,6 +79,8 @@ exports.baseConfig = function (options) {
       ],
 
       loaders: [
+        { test: /\.json$/,
+          loader: 'json-loader' },
         { test: /\.css$/,
           loader: 'style-loader!css-loader' + autoprefixer },
         { test: /\.less$/,

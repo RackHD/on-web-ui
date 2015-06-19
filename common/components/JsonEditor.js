@@ -2,12 +2,12 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../lib/decorateComponent';
+import decorate from '../lib/decorate';
 /* eslint-enable no-unused-vars */
 
 // Based on http://www.mbates.com/play/ReactJsonEditor/
 
-@decorateComponent({
+@decorate({
   propTypes: {
     rows: PropTypes.number,
     cols: PropTypes.number,

@@ -1,23 +1,21 @@
 'use strict';
 
-/* eslint-disable no-unused-vars */
-import React, { Component, PropTypes } from 'react';
-import decorateComponent from 'common-web-ui/lib/decorateComponent';
-/* eslint-enable no-unused-vars */
+import React, {// eslint-disable-line no-unused-vars
+  Component,
+  PropTypes } from 'react';
+import radium from 'radium';
+import decorate from '../lib/decorate';
 
+import { LeftNav } from 'material-ui';
 
-import {
-    // MenuItem,
-    LeftNav
-  } from 'material-ui';
-
-const menuItems = [
-  { text: 'Login', route: '/' },
-  { text: 'Not Found', route: '404' },
-  { text: 'Canvas', route: 'canvas' }
-];
-
-@decorateComponent({
+@radium
+@decorate({
+  propTypes: {
+    menuItems: PropTypes.array
+  },
+  defaultProps: {
+    menuItems: []
+  },
   contextTypes: {
     router: PropTypes.func
   }
@@ -42,7 +40,7 @@ export default class AppMenuNav extends Component {
         docked={false}
         isInitiallyOpen={false}
         header={header}
-        menuItems={menuItems}
+        menuItems={this.props.menuItems}
         selectedIndex={this.getSelectedIndex()}
         onChange={this.onLeftNavChange} />
     );
@@ -58,7 +56,8 @@ export default class AppMenuNav extends Component {
   }
 
   getSelectedIndex() {
-    var currentItem;
+    var menuItems = this.props.menuItems,
+        currentItem;
 
     for (var i = menuItems.length - 1; i >= 0; i--) {
       currentItem = menuItems[i];
@@ -80,3 +79,22 @@ export default class AppMenuNav extends Component {
   }
 
 }
+
+// .AppMenuNav {
+//   color: @emc-off-white;
+//
+//   .mui-menu, .mui-left-nav-menu {
+//     background-color: black !important;
+//   }
+//
+//   .mui-left-nav-menu .mui-menu a.mui-menu-item {
+//     color: white !important;
+//   }
+//
+//   .nav-logo {
+//     padding: 10px 0;
+//     font-weight: bold;
+//     text-align: center;
+//     border-bottom: 1px solid #ddd;
+//   }
+// }

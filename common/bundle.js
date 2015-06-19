@@ -48,15 +48,15 @@ var components = {
   UserLogin
 };
 
-import decorateComponent from './lib/decorateComponent';
+import decorate from './lib/decorate';
 import featureFlag from './lib/featureFlag';
 import onReady from './lib/onReady';
 import Store from './lib/Store';
 
 var lib = {
-  decorateComponent,
-  onReady,
+  decorate,
   featureFlag,
+  onReady,
   Store
 };
 
@@ -67,7 +67,9 @@ import FormatHelpers from './mixins/FormatHelpers';
 import GridHelpers from './mixins/GridHelpers';
 import PageHelpers from './mixins/PageHelpers';
 import RouteHelpers from './mixins/RouteHelpers';
-import StyleHelpers from './mixins/StyleHelpers';
+// mui
+import MUIContextHelpers from './mixins/mui/MUIContextHelpers';
+import MUIStyleHelpers from './mixins/mui/MUIStyleHelpers';
 
 var mixins = {
   DeveloperHelpers,
@@ -77,7 +79,10 @@ var mixins = {
   GridHelpers,
   PageHelpers,
   RouteHelpers,
-  StyleHelpers
+  mui: {
+    MUIContextHelpers,
+    MUIStyleHelpers
+  }
 };
 
 var stores = {};

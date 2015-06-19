@@ -3,14 +3,14 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
-import decorateComponent from 'common-web-ui/lib/decorateComponent';
+import decorate from 'common-web-ui/lib/decorate';
 import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
   } from 'material-ui';
 
-@decorateComponent({
+@decorate({
   propTypes: {
     canvas: PropTypes.any,
     model: PropTypes.any

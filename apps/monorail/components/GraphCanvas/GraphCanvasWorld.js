@@ -3,8 +3,8 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
-import decorateComponent from 'common-web-ui/lib/decorateComponent';
-import StyleHelpers from 'common-web-ui/mixins/StyleHelpers';
+import decorate from 'common-web-ui/lib/decorate';
+import MUIStyleHelpers from 'common-web-ui/mixins/mui/MUIStyleHelpers';
 import CoordinateHelpers from './mixins/CoordinateHelpers';
 import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
@@ -18,7 +18,7 @@ import GraphCanvasGrid from './GraphCanvasGrid';
 import GraphCanvasNode from './GraphCanvasNode';
 import GraphCanvasLink from './GraphCanvasLink';
 
-@decorateComponent({
+@decorate({
   propTypes: {
     initialElements: PropTypes.any,
     initialVectors: PropTypes.any,
@@ -40,7 +40,7 @@ import GraphCanvasLink from './GraphCanvasLink';
 })
 @mixin.decorate(DragEventHelpers)
 @mixin.decorate(CoordinateHelpers)
-@mixin.decorate(StyleHelpers)
+@mixin.decorate(MUIStyleHelpers)
 export default class GraphCanvasWorld extends Component {
 
   graph = new Graph();

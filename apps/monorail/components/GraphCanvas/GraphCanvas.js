@@ -2,13 +2,13 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from 'common-web-ui/lib/decorateComponent';
+import decorate from 'common-web-ui/lib/decorate';
 /* eslint-enable no-unused-vars */
 
 import GraphCanvasWorld from './GraphCanvasWorld';
 import './GraphCanvas.less';
 
-@decorateComponent({
+@decorate({
   propTypes: {
     initialNodes: PropTypes.any,
     initialLinks: PropTypes.any,

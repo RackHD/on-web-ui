@@ -2,12 +2,12 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorateComponent from '../lib/decorateComponent';
+import decorate from '../lib/decorate';
 /* eslint-enable no-unused-vars */
 
 import { Snackbar } from 'material-ui';
 
-@decorateComponent({
+@decorate({
   propTypes: {
     autoDismiss: PropTypes.number,
     className: PropTypes.string,
