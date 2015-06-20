@@ -28,8 +28,7 @@ gulp.task('bundle', function (done) {
       'griddle-react',
       'react-chartist',
       'superagent'
-    ],
-    common: path.join(rootDir, 'common', 'bundle.js')
+    ]
   };
 
   bundles = bundles.map(function (appName) {

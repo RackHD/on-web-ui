@@ -16,7 +16,7 @@ var getFolders = require('../lib/getFolders'),
     autoprefixerBrowsers = require('../lib/autoprefixer').browsers;
 
 // CSS style sheets
-gulp.task('css', function() {
+gulp.task('less', function() {
   var streams = [];
 
   var apps = getFolders(path.join(__dirname, '..', '..', 'apps'));
@@ -40,17 +40,9 @@ gulp.task('css', function() {
     streams.push(
       compileLess(gulp.src(path.join(appDir, 'less', 'main.less')))
         .pipe(gulp.dest(target))
-        .pipe(size({title: appName + ' styles'}))
+        .pipe(size({title: appName + ' less'}))
     );
   });
-
-  // Copy common assets into build directory
-  var commonTarget = path.join('build', 'common');
-  streams.push(
-    compileLess(gulp.src(path.join('common', 'less', 'main.less')))
-      .pipe(gulp.dest(commonTarget))
-      .pipe(size({title: 'common styles'}))
-  );
 
   return merge(streams);
 });

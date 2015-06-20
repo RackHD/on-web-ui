@@ -1,6 +1,6 @@
-cd common
+cd apps/common
 npm link
-cd ../
+cd ../../
 
 cd apps/monorail
 npm link

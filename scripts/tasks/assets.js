@@ -24,14 +24,5 @@ gulp.task('assets', function() {
     );
   });
 
-  // Copy common assets into build directory
-  var commonTarget = path.join('build', 'common');
-  streams.push(
-    gulp.src(path.join('common', 'assets', '**'))
-      .pipe(changed(commonTarget))
-      .pipe(gulp.dest(commonTarget))
-      .pipe(size({title: 'common assets'}))
-  );
-
   return merge(streams);
 });
