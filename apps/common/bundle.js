@@ -23,10 +23,6 @@ var vendor = {
 };
 
 // Local dependencies
-var actions = {};
-
-var api = {};
-
 import AppContainer from './components/AppContainer';
 import AppFooter from './components/AppFooter';
 import AppHeader from './components/AppHeader';
@@ -38,6 +34,13 @@ import DataTableToolbar from './components/DataTableToolbar';
 import EMCTab from './components/EMCTab';
 import EntityGrid from './components/EntityGrid';
 import ErrorNotification from './components/ErrorNotification';
+import GraphCanvas from './components/GraphCanvas';
+import GraphCanvasGrid from './components/GraphCanvas/Grid';
+import GraphCanvasLink from './components/GraphCanvas/Link';
+import GraphCanvasNode from './components/GraphCanvas/Node';
+import GraphCanvasPort from './components/GraphCanvas/Port';
+import GraphCanvasSocket from './components/GraphCanvas/Socket';
+import GraphCanvasWorld from './components/GraphCanvas/World';
 import JsonEditor from './components/JsonEditor';
 import NotFound from './components/NotFound';
 import TestWrapper from './components/TestWrapper';
@@ -56,6 +59,13 @@ var components = {
   EMCTab,
   EntityGrid,
   ErrorNotification,
+  GraphCanvas,
+  GraphCanvasGrid,
+  GraphCanvasLink,
+  GraphCanvasNode,
+  GraphCanvasPort,
+  GraphCanvasSocket,
+  GraphCanvasWorld,
   JsonEditor,
   NotFound,
   TestWrapper,
@@ -66,19 +76,39 @@ var components = {
 import decorate from './lib/decorate';
 import emcColors from './lib/emcColors';
 import featureFlag from './lib/featureFlag';
+import Graph from './lib/Graph';
+import GraphLink from './lib/Graph/Link';
+import GraphId from './lib/Graph/newId';
+import GraphNode from './lib/Graph/Node';
+import GraphPort from './lib/Graph/Port';
+import GraphSocket from './lib/Graph/Socket';
+import Matrix from './lib/Matrix';
 import onReady from './lib/onReady';
+import Rectangle from './lib/Rectangle';
 import Store from './lib/Store';
+import Vector from './lib/Vector';
 
 var lib = {
   decorate,
   emcColors,
   featureFlag,
+  Graph,
+  GraphLink,
+  GraphId,
+  GraphNode,
+  GraphPort,
+  GraphSocket,
+  Matrix,
   onReady,
-  Store
+  Rectangle,
+  Store,
+  Vector
 };
 
+import CoordinateHelpers from './mixins/CoordinateHelpers';
 import DeveloperHelpers from './mixins/DeveloperHelpers';
 import DialogHelpers from './mixins/DialogHelpers';
+import DragEventHelpers from './mixins/DragEventHelpers';
 import EditorHelpers from './mixins/EditorHelpers';
 import FormatHelpers from './mixins/FormatHelpers';
 import GridHelpers from './mixins/GridHelpers';
@@ -86,29 +116,28 @@ import MUIContextHelpers from './mixins/MUIContextHelpers';
 import MUIStyleHelpers from './mixins/MUIStyleHelpers';
 import PageHelpers from './mixins/PageHelpers';
 import RouteHelpers from './mixins/RouteHelpers';
+import ViewportHelpers from './mixins/ViewportHelpers';
 
 var mixins = {
+  CoordinateHelpers,
   DeveloperHelpers,
   DialogHelpers,
+  DragEventHelpers,
   EditorHelpers,
   FormatHelpers,
   GridHelpers,
   MUIContextHelpers,
   MUIStyleHelpers,
   PageHelpers,
-  RouteHelpers
+  RouteHelpers,
+  ViewportHelpers
 };
-
-var stores = {};
 
 var OnWebUI = {
   vendor,
-  actions,
-  api,
   components,
   lib,
-  mixins,
-  stores
+  mixins
 };
 
 // Expose to the global namespace.

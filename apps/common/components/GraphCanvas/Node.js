@@ -3,14 +3,14 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
-import decorate from 'common-web-ui/lib/decorate';
-import DragEventHelpers from './mixins/DragEventHelpers';
+import decorate from '../../lib/decorate';
+import DragEventHelpers from '../../mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
     Paper
   } from 'material-ui';
-import GraphCanvasPort from './GraphCanvasPort.js';
+import GraphCanvasPort from './Port.js';
 
 @decorate({
   propTypes: {

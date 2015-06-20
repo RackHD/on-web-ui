@@ -3,20 +3,20 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
-import decorate from 'common-web-ui/lib/decorate';
-import MUIStyleHelpers from 'common-web-ui/mixins/MUIStyleHelpers';
-import CoordinateHelpers from './mixins/CoordinateHelpers';
-import DragEventHelpers from './mixins/DragEventHelpers';
+import decorate from '../../lib/decorate';
+import MUIStyleHelpers from '../../mixins/MUIStyleHelpers';
+import CoordinateHelpers from '../../mixins/CoordinateHelpers';
+import DragEventHelpers from '../../mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
-import Vector from './lib/Vector';
-import Rectangle from './lib/Rectangle';
-import Graph from './lib/Graph';
-import Node from './lib/Graph/Node';
-import Link from './lib/Graph/Link';
-import GraphCanvasGrid from './GraphCanvasGrid';
-import GraphCanvasNode from './GraphCanvasNode';
-import GraphCanvasLink from './GraphCanvasLink';
+import Vector from '../../lib/Vector';
+import Rectangle from '../../lib/Rectangle';
+import Graph from '../../lib/Graph';
+import Node from '../../lib/Graph/Node';
+import Link from '../../lib/Graph/Link';
+import GraphCanvasGrid from './Grid';
+import GraphCanvasNode from './Node';
+import GraphCanvasLink from './Link';
 
 @decorate({
   propTypes: {

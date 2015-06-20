@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import TestWrapper from 'common-web-ui/components/TestWrapper';
+import TestWrapper from '../components/TestWrapper';
 import GraphCanvas from '../GraphCanvas';
 import Vector from '../lib/Vector';
 

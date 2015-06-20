@@ -8,7 +8,7 @@ import App from '../views/App';
 
 import NotFound from 'common-web-ui/components/NotFound';
 import UserLogin from 'common-web-ui/components/UserLogin';
-import GraphCanvas from 'monorail-web-ui/components/GraphCanvas';
+import GraphCanvas from 'common-web-ui/components/GraphCanvas';
 
 let routes = (
   <Route name="root" path="/" handler={App}>

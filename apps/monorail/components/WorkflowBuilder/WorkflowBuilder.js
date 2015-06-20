@@ -3,9 +3,9 @@
 import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 
 // import { Paper } from 'material-ui';
-import Rectangle from '../GraphCanvas/lib/Rectangle';
-import Graph from '../GraphCanvas/lib/Graph';
-import GraphCanvas from '../GraphCanvas';
+import Rectangle from 'common-web-ui/lib/Rectangle';
+import Graph from 'common-web-ui/lib/Graph';
+import GraphCanvas from 'common-web-ui/components/GraphCanvas';
 import WorkflowBuilderToolbar from './WorkflowBuilderToolbar';
 import WorkflowTasksTray from './WorkflowTasksTray';
 import WorkflowInspector from './WorkflowInspector';

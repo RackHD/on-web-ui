@@ -2,10 +2,10 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from 'common-web-ui/lib/decorate';
+import decorate from '../lib/decorate';
 /* eslint-enable no-unused-vars */
 
-import GraphCanvasWorld from './GraphCanvasWorld';
+import GraphCanvasWorld from './GraphCanvas/World';
 import './GraphCanvas.less';
 
 @decorate({

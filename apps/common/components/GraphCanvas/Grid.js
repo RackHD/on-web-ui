@@ -2,10 +2,8 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from 'common-web-ui/lib/decorate';
+import decorate from '../../lib/decorate';
 /* eslint-enable no-unused-vars */
-
-import './GraphCanvas.less';
 
 @decorate({
   propTypes: {
