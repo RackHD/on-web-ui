@@ -4,29 +4,30 @@ import React, { // eslint-disable-line no-unused-vars
   Component, PropTypes } from 'react';
 import radium from 'radium';
 import decorate from '../lib/decorate';
+
 import { AppBar } from 'material-ui';
-
-import emcColors from '../lib/emcColors';
-
 import AppNavigation from './AppNavigation';
 import EMCTab from './EMCTab';
 
 @radium
 @decorate({
   propTypes: {
-    title: PropTypes.string,
-    appBarStyles: PropTypes.object,
+    appBarStyle: PropTypes.object,
     className: PropTypes.string,
-    navigationItems: PropTypes.array
+    navigation: PropTypes.array,
+    style: PropTypes.any,
+    title: PropTypes.string
   },
   defaultProps: {
-    title: 'On Web UI',
-    appBarStyles: {
-      background: emcColors.mediumGrey.hexString(),
-      color: emcColors.offWhite.hexString()
+    appBarStyle: {
+      color: 'inherit',
+      background: 'inherit',
+      position: 'fixed'
     },
     className: '',
-    navigationItems: []
+    navigation: [],
+    style: [],
+    title: 'On Web UI'
   }
 })
 export default class AppHeader extends Component {
@@ -34,25 +35,24 @@ export default class AppHeader extends Component {
   _onLeftIconButtonTouchTap = this.onLeftIconButtonTouchTap.bind(this);
 
   render() {
-    var stylesAppBar = this.props.appBarStyles;
-    stylesAppBar.position = 'fixed';
-
     var emcTab = <EMCTab />;
 
     return (
       <div
-          className={this.props.className}>
+          className={this.props.className}
+          style={this.props.style}>
 
         <AppBar
             onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
             iconElementRight={emcTab}
             title={this.props.title}
-            style={stylesAppBar}
+            style={this.props.appBarStyle}
             zDepth={0} />
 
         <AppNavigation
             ref="navigation"
-            menuItems={this.props.navigationItems} />
+            title={this.props.title}
+            menuItems={this.props.navigation} />
 
       </div>
     );

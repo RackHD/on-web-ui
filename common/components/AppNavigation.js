@@ -3,18 +3,25 @@
 import React, {// eslint-disable-line no-unused-vars
   Component,
   PropTypes } from 'react';
+import mixin from 'react-mixin';
 import radium from 'radium';
 import decorate from '../lib/decorate';
+import MUIStyleHelpers from '../mixins/MUIStyleHelpers';
 
 import { LeftNav } from 'material-ui';
 
 @radium
+@mixin.decorate(MUIStyleHelpers)
 @decorate({
   propTypes: {
-    menuItems: PropTypes.array
+    title: PropTypes.string,
+    menuItems: PropTypes.array,
+    brandStyle: PropTypes.object
   },
   defaultProps: {
-    menuItems: []
+    title: 'On Web UI',
+    menuItems: [],
+    brandStyle: {}
   },
   contextTypes: {
     router: PropTypes.func
@@ -29,8 +36,16 @@ export default class AppMenuNav extends Component {
 
   render() {
     var header = (
-      <div className="nav-logo"
-           onClick={this.onHeaderClick}>OnRack Web UI</div>
+      <div
+          onClick={this.onHeaderClick}
+          style={this.mergeAndPrefix({
+            padding: '10px 0',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            borderBottom: '1px solid #ddd'
+          }, this.props.brandStyle)}>
+        {this.props.title}
+      </div>
     );
 
     return (

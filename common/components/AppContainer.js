@@ -5,17 +5,14 @@ import React, { // eslint-disable-line no-unused-vars
 import mixin from 'react-mixin';
 import radium from 'radium';
 import decorate from '../lib/decorate';
-
-import MUIContextHelpers from '../mixins/mui/MUIContextHelpers';
+import MUIContextHelpers from '../mixins/MUIContextHelpers';
 
 import { RouteHandler } from 'react-router';
 import { AppCanvas } from 'material-ui';
-
-import ViewportSize from './ViewportSize';
 import AppHeader from './AppHeader';
-// import AppFooter from './AppFooter';
-
+import AppFooter from './AppFooter';
 import emcColors from '../lib/emcColors';
+
 let defaultStyles = {
   root: {},
 
@@ -41,23 +38,17 @@ let defaultStyles = {
 @mixin.decorate(MUIContextHelpers)
 @decorate({
   propTypes: {
-    title: PropTypes.string,
-    header: PropTypes.any,
-    footer: PropTypes.any,
-    content: PropTypes.any,
     className: PropTypes.string,
+    navigation: PropTypes.array,
     styles: PropTypes.object,
-    navigationItems: PropTypes.array
+    title: PropTypes.string
   },
 
   defaultProps: {
-    title: 'On Web UI',
-    header: null,
-    footer: null,
-    content: null,
     className: '',
+    navigation: [],
     styles: {},
-    navigationItems: []
+    title: 'On Web UI'
   },
 
   childContextTypes: MUIContextHelpers.muiContextTypes()
@@ -79,29 +70,22 @@ export default class AppContainer extends Component {
         <AppCanvas
             predefinedLayout={1}>
 
-          {this.props.header ||
-            <AppHeader
-                className="header"
-                title={this.props.title}
-                appBarStyles={styles.header}
-                navigationItems={this.props.navigationItems} />}
+          <AppHeader
+              className="header"
+              navigation={this.props.navigation}
+              style={[defaultStyles.header, styles.header]}
+              title={this.props.title} />
 
           <div
               className="content"
               style={[defaultStyles.content, styles.content]}>
 
-            {this.props.content || this.props.children || <RouteHandler />}
+            {this.props.children || <RouteHandler />}
           </div>
 
-          <div
+          <AppFooter
               className="footer"
-              style={[defaultStyles.footer, styles.footer]}>
-
-            {this.props.footer || <div>
-              <span>© 2015 EMC<sup>2</sup></span>
-              <ViewportSize className="right" />
-            </div>}
-          </div>
+              style={[defaultStyles.footer, styles.footer]} />
 
         </AppCanvas>
       </div>

@@ -38,7 +38,7 @@ gulp.task('css', function() {
     var appDir = path.join('apps', appName),
         target = path.join('build', appName);
     streams.push(
-      compileLess(gulp.src(path.join(appDir, 'styles', 'main.less')))
+      compileLess(gulp.src(path.join(appDir, 'less', 'main.less')))
         .pipe(gulp.dest(target))
         .pipe(size({title: appName + ' styles'}))
     );
@@ -47,7 +47,7 @@ gulp.task('css', function() {
   // Copy common assets into build directory
   var commonTarget = path.join('build', 'common');
   streams.push(
-    compileLess(gulp.src(path.join('common', 'styles', 'main.less')))
+    compileLess(gulp.src(path.join('common', 'less', 'main.less')))
       .pipe(gulp.dest(commonTarget))
       .pipe(size({title: 'common styles'}))
   );

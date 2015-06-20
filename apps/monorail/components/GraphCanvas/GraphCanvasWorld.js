@@ -4,7 +4,7 @@
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
-import MUIStyleHelpers from 'common-web-ui/mixins/mui/MUIStyleHelpers';
+import MUIStyleHelpers from 'common-web-ui/mixins/MUIStyleHelpers';
 import CoordinateHelpers from './mixins/CoordinateHelpers';
 import DragEventHelpers from './mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */

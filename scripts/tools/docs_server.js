@@ -6,9 +6,9 @@ var express = require('express'),
 
 var server = express();
 
-server.set('port', (process.env.MONORAIL_PORT || 5000));
+server.set('port', (process.env.ONWEBDOCS_PORT || 6000));
 
-var publicPath = path.join(__dirname, '..', 'build');
+var publicPath = path.join(__dirname, '..', '..', 'apps');
 
 server.use(express.static(publicPath));
 server.use(serveIndex(publicPath, {'icons': true}));

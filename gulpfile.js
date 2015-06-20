@@ -13,15 +13,27 @@ global.parameters = require('./scripts/lib/parameters')(2);
 global.browserSync = null;
 global.watch = false;
 
-require('./scripts/tasks/assets');
+// build
 require('./scripts/tasks/build');
-require('./scripts/tasks/bundle');
 require('./scripts/tasks/clean');
-require('./scripts/tasks/css');
-require('./scripts/tasks/deploy');
-require('./scripts/tasks/server');
-require('./scripts/tasks/sync');
+
+// build assets
+require('./scripts/tasks/assets');
+require('./scripts/tasks/less');
 require('./scripts/tasks/templates');
+
+// build bundle
+require('./scripts/tasks/bundle');
+
+// build run
+require('./scripts/tasks/server');
+
+// build run dev
+require('./scripts/tasks/sync');
 require('./scripts/tasks/watch');
+
+// build deploy
+require('./scripts/tasks/deploy');
+
 
 global.gulp.task('default', ['sync']);

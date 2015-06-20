@@ -7,7 +7,7 @@ var gulpUtil = require('gulp-util'),
 
 // Launch a Node.js/Express server
 gulp.task('serve', ['watch'], function(cb) {
-  global.serverSrc = path.join('common', 'server.js');
+  global.serverSrc = path.join('scripts', 'tools', 'build_server.js');
 
   var started = false,
       server;

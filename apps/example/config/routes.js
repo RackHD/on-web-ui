@@ -12,13 +12,13 @@ import GraphCanvas from 'monorail-web-ui/components/GraphCanvas';
 
 let routes = (
   <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={UserLogin}/>
+    <DefaultRoute handler={UserLogin} />
 
     <Route name="404" handler={NotFound} />
     <Route name="login" handler={UserLogin} />
     <Route name="canvas" handler={GraphCanvas} />
 
-    <NotFoundRoute handler={NotFound}/>
+    <NotFoundRoute handler={NotFound} />
 
     <Redirect from="home" to="/" />
   </Route>

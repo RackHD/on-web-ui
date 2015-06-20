@@ -4,7 +4,7 @@
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
 import decorate from '../lib/decorate';
-import MUIContextHelpers from '../mixins/mui/MUIContextHelpers';
+import MUIContextHelpers from '../mixins/MUIContextHelpers';
 /* eslint-enable no-unused-vars */
 
 import onReady from '../lib/onReady';
