@@ -10,8 +10,7 @@ export default class App extends Component {
     title: this.title,
     navigation: [
       { text: 'Login', route: '/' },
-      { text: 'Not Found', route: '404' },
-      { text: 'Canvas', route: 'canvas' }
+      { text: 'Not Found', route: '404' }
     ]
   };
 

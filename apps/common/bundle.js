@@ -83,6 +83,7 @@ import GraphNode from './lib/Graph/Node';
 import GraphPort from './lib/Graph/Port';
 import GraphSocket from './lib/Graph/Socket';
 import Matrix from './lib/Matrix';
+import Messenger from './lib/Messenger';
 import onReady from './lib/onReady';
 import Rectangle from './lib/Rectangle';
 import Store from './lib/Store';
@@ -99,6 +100,7 @@ var lib = {
   GraphPort,
   GraphSocket,
   Matrix,
+  Messenger,
   onReady,
   Rectangle,
   Store,
