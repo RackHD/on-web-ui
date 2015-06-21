@@ -2,7 +2,7 @@
 
 import { Component } from 'react';
 
-import AppContainer from 'common-web-ui/components/AppContainer';
+import AppContainer from 'common-web-ui/views/AppContainer';
 
 export default class App extends Component {
 

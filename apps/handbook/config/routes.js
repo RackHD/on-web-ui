@@ -6,9 +6,9 @@ import onReady from 'common-web-ui/lib/onReady';
 
 import App from '../views/App';
 
-import NotFound from 'common-web-ui/components/NotFound';
-import UserLogin from 'common-web-ui/components/UserLogin';
-import GraphCanvas from 'common-web-ui/components/GraphCanvas';
+import NotFound from 'common-web-ui/views/NotFound';
+import UserLogin from 'common-web-ui/views/UserLogin';
+import GraphCanvas from 'common-web-ui/views/GraphCanvas';
 
 let routes = (
   <Route name="root" path="/" handler={App}>

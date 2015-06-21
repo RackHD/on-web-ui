@@ -23,31 +23,31 @@ var vendor = {
 };
 
 // Local dependencies
-import AppContainer from './components/AppContainer';
-import AppFooter from './components/AppFooter';
-import AppHeader from './components/AppHeader';
-import AppNavigation from './components/AppNavigation';
-import Breadcrumbs from './components/Breadcrumbs';
-import Console from './components/Console';
-import DataTable from './components/DataTable';
-import DataTableToolbar from './components/DataTableToolbar';
-import EMCTab from './components/EMCTab';
-import EntityGrid from './components/EntityGrid';
-import ErrorNotification from './components/ErrorNotification';
-import GraphCanvas from './components/GraphCanvas';
-import GraphCanvasGrid from './components/GraphCanvas/Grid';
-import GraphCanvasLink from './components/GraphCanvas/Link';
-import GraphCanvasNode from './components/GraphCanvas/Node';
-import GraphCanvasPort from './components/GraphCanvas/Port';
-import GraphCanvasSocket from './components/GraphCanvas/Socket';
-import GraphCanvasWorld from './components/GraphCanvas/World';
-import JsonEditor from './components/JsonEditor';
-import NotFound from './components/NotFound';
-import TestWrapper from './components/TestWrapper';
-import UserLogin from './components/UserLogin';
-import ViewportSize from './components/ViewportSize';
+import AppContainer from './views/AppContainer';
+import AppFooter from './views/AppFooter';
+import AppHeader from './views/AppHeader';
+import AppNavigation from './views/AppNavigation';
+import Breadcrumbs from './views/Breadcrumbs';
+import Console from './views/Console';
+import DataTable from './views/DataTable';
+import DataTableToolbar from './views/DataTableToolbar';
+import EMCTab from './views/EMCTab';
+import EntityGrid from './views/EntityGrid';
+import ErrorNotification from './views/ErrorNotification';
+import GraphCanvas from './views/GraphCanvas';
+import GraphCanvasGrid from './views/GraphCanvas/Grid';
+import GraphCanvasLink from './views/GraphCanvas/Link';
+import GraphCanvasNode from './views/GraphCanvas/Node';
+import GraphCanvasPort from './views/GraphCanvas/Port';
+import GraphCanvasSocket from './views/GraphCanvas/Socket';
+import GraphCanvasWorld from './views/GraphCanvas/World';
+import JsonEditor from './views/JsonEditor';
+import NotFound from './views/NotFound';
+import TestWrapper from './views/TestWrapper';
+import UserLogin from './views/UserLogin';
+import ViewportSize from './views/ViewportSize';
 
-var components = {
+var views = {
   AppContainer,
   AppFooter,
   AppHeader,
@@ -135,7 +135,7 @@ var mixins = {
 
 var OnWebUI = {
   vendor,
-  components,
+  views,
   lib,
   mixins
 };

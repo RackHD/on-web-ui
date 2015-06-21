@@ -1,64 +1,5 @@
 # On Web UI
 
-### Documentation
-
-- [Documentation Index](./docs/index.md)
-
-### Directory Structure
-
-```
-.
-├── apps              # Directory of separated applications.
-│   └── {app}
-│       ├── actions       # Actions modules delegate calls to stores.
-│       ├── api           # API requests for application data.
-│       ├── assets        # Static files to be made public.
-│       ├── components    # React components.
-│       ├── stores        # Stores contain persisted application data.
-│       ├── styles        # Less and CSS files.
-│       ├── templates     # HTML files.
-│       ├── bundle.js     # Main application entry point.
-│       └── config.js     # Client configuration file.
-|
-├── build             # Output folder for built code.
-│   ├── {app}         # Compiled CSS, HTML and assets go in app folders.
-│   └── bundle        # Compiled JavaScript code for all apps go here.
-|
-├── common            # Commonly used code goes here.
-│   ├── components    # Common React components.
-│   ├── lib           # Reusable JavaScript code.
-│   ├── mixins        # React component mixin definitions.
-│   ├── styles        # Base Less and CSS files.
-│   ├── bundle.js     # Entry point for common code.
-│   └── server.js     # Development server for apps.
-|
-├── docs              # Project documentation files.
-|
-├── node_modules      # External dependencies.
-|
-├── scripts           # Scripts for dev, build, and test.
-│   ├── lib           # Reusable JavaScript code.
-│   ├── tasks         # Gulp task definitions.
-│   ├── test          # Test bootstrap files.
-│   └── tools         # Development utilities.
-|
-├── .babelrc          # BabelJS configuration file.
-├── .eslintrc         # eslint configuration file.
-├── .gitignore        # git ignored files.
-|
-├── gulpfile.js       # Gulpfile for project gulp tasks.
-|
-├── HWIMO-BUILD       # Build script.
-├── HWIMO-DOC         # Doc script.
-├── HWIMO-TEST        # Test script.
-|
-├── karma.ci.conf.js  # Karma configuration for continuous integration.
-├── karma.conf.js     # Karma test running configuration for development.
-|
-├── package.json      # NPM package, dependency file.
-└── README.md         # Everything that follows is a result of what you see here.
-```
-
 ### Getting Started
 
 ```shell
@@ -150,3 +91,52 @@ the file is. Name the test by appending `-test.js` to the js file
  * [The Future of React](https://github.com/reactjs/react-future)
  * [Flux Architecture for Building User Interfaces](http://facebook.github.io/flux/)
  * [Learn ES6](https://babeljs.io/docs/learn-es6/), [ES6 Features](https://github.com/lukehoban/es6features#readme)
+
+### Directory Structure
+
+```
+.
+├── apps              # Directory of separated applications.
+│   └── {app}
+│       ├── actions       # Actions modules delegate calls to stores.
+│       ├── api           # API requests for application data.
+│       ├── assets        # Static files to be made public.
+│       ├── lib           # Reusable JavaScript code.
+│       ├── mixins        # React component mixin definitions.
+│       ├── views         # React views.
+│       ├── stores        # Stores contain persisted application data.
+│       ├── less          # Less and CSS files.
+│       ├── templates     # HTML files.
+│       ├── bundle.js     # Main application entry point.
+│       └── config.js     # Client configuration file.
+|
+├── build             # Output folder for built code.
+│   ├── {app}         # Compiled CSS, HTML and assets go in app folders.
+│   └── bundle        # Compiled JavaScript code for all apps go here.
+|
+├── node_modules      # External dependencies.
+|
+├── scripts           # Scripts for dev, build, and test.
+│   ├── lib           # Reusable JavaScript code.
+│   ├── tasks         # Gulp task definitions.
+│   ├── test          # Test bootstrap files.
+│   └── tools         # Development utilities.
+|
+├── .babelrc          # BabelJS configuration file.
+├── .eslintrc         # eslint configuration file.
+├── .gitignore        # git ignored files.
+|
+├── gulpfile.js       # Gulpfile for project gulp tasks.
+|
+├── HWIMO-BUILD       # Build script.
+├── HWIMO-DOC         # Doc script.
+├── HWIMO-TEST        # Test script.
+|
+├── karma.ci.conf.js  # Karma configuration for continuous integration.
+├── karma.conf.js     # Karma test running configuration for development.
+|
+├── package.json      # NPM package, dependency file.
+└── README.md         # Everything that follows is a result of what you see here.
+```
+
+### Dependency Overview

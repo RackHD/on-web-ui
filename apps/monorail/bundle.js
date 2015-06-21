@@ -4,7 +4,7 @@ import 'babel/polyfill';
 
 import './config';
 
-import appRoutes from './components/App/appRoutes';
+import appRoutes from './views/App/appRoutes';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import React from 'react';
 import Router from 'react-router';
