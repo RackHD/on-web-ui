@@ -1,6 +1,6 @@
 {
   "name": "onrack-web-ui",
-  "main": "client.js",
+  "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
   "description": "OnRack/Monorail Web UI",

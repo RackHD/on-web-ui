@@ -1,9 +1,9 @@
 'use strict';
 /* global gulp, path */
 
-import conflict from 'gulp-conflict';
-import template from 'gulp-template';
-import inquirer from 'inquirer';
+var conflict = require('gulp-conflict'),
+    template = require('gulp-template'),
+    inquirer = require('inquirer');
 
 var src = path.join(__dirname, '..', '..', 'templates', 'app', '**');
 
