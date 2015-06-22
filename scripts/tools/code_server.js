@@ -6,7 +6,7 @@ var express = require('express'),
 
 var server = express();
 
-server.set('port', (process.env.ONWEBDOCS_PORT || 6000));
+server.set('port', (process.env.ONWEBCODE_PORT || 7000));
 
 var publicPath = path.join(__dirname, '..', '..', 'apps');
 

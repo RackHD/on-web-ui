@@ -1,3 +1,4 @@
 {
+  "API": "http://onrackapi.hwimo.lab.emc.com/rest/v1/",
   "dev": false
 }

@@ -1,7 +1,0 @@
-'use strict';
-
-var featureFlag = require('common-web-ui/lib/featureFlag');
-
-export const devFlag = featureFlag('dev').on();
-
-export const API = 'http://onrackapi.hwimo.lab.emc.com/rest/v1/';

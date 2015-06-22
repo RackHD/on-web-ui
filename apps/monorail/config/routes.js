@@ -32,7 +32,6 @@ import Tasks from '../views/Tasks';
 import Jobs from '../views/Jobs';
 import Dashboard from '../views/Dashboard';
 
-
 // See http://rackt.github.io/react-router/
 let routes = (
   <Route name="root" path="/" handler={App}>
