@@ -9,19 +9,22 @@ import NotFound from 'common-web-ui/views/NotFound';
 import UserLogin from 'common-web-ui/views/UserLogin';
 import GraphCanvas from 'common-web-ui/views/GraphCanvas';
 
+import HomePage from '../views/HomePage';
+
 export var navigation = [
-  { text: 'Login', route: '/' },
-  { text: 'Not Found', route: '404' },
+  { text: 'Home', route: '/' },
+  { text: 'Login', route: 'login' },
+  { text: 'Not Found', route: 'not_found' },
   { text: 'Canvas', route: 'canvas' }
 ];
 
 import App from '../views/App';
 
-export var routes = (
+let routes = (
   <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={UserLogin} />
+    <DefaultRoute handler={HomePage} />
 
-    <Route name="404" handler={NotFound} />
+    <Route name="not_found" handler={NotFound} />
     <Route name="login" handler={UserLogin} />
     <Route name="canvas" handler={GraphCanvas} />
 

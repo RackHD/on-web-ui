@@ -8,9 +8,13 @@ import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
+import PageHelpers from 'common-web-ui/mixins/PageHelpers';
+import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
 @radium
 @mixin.decorate(DeveloperHelpers)
+@mixin.decorate(PageHelpers)
+@mixin.decorate(RouteHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,
@@ -22,7 +26,7 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
     style: null
   }
 })
-export default class <%= file %> extends Component {
+export default class HomePage extends Component {
 
   state = {}
 
@@ -32,10 +36,9 @@ export default class <%= file %> extends Component {
 
   render() {
     return (
-      <span
-          className={this.props.className}
-          style={this.props.style}>
-      </span>
+      <div className="HomePage container">
+        Welcome
+      </div>
     );
   }
 

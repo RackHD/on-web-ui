@@ -16,15 +16,15 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 @mixin.decorate(PageHelpers)
 @mixin.decorate(RouteHelpers)
 @decorate({
-  propTypes: ViewportHelpers.viewportPropTypes({
+  propTypes: {
     className: PropTypes.string,
     style: PropTypes.any
-  }),
+  },
 
-  defaultProps: ViewportHelpers.viewportDefaultProps({
+  defaultProps:{
     className: '',
     style: null
-  })
+  }
 })
 export default class <%= file %> extends Component {
 

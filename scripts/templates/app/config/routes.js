@@ -18,7 +18,7 @@ export var navigation = [
 import App from '../views/App';
 
 // See http://rackt.github.io/react-router/
-export var routes = (
+let routes = (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={UserLogin} />
     <Route name="404" handler={NotFound} />

@@ -22,7 +22,7 @@ var src = {
     path.join(__dirname, '..', 'templates', 'app', 'views', '__tests__', 'Component-test.js')
 };
 
-gulp.task('code', function (done) {
+gulp.task('view', function (done) {
   inquirer.prompt([
     { type: 'input',
       name: 'type',
