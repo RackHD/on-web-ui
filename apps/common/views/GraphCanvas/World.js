@@ -305,16 +305,20 @@ export default class GraphCanvasWorld extends Component {
 
   getSocketCenter(socketElement) {
     var element = socketElement,
-        stop = React.findDOMNode(this).parentNode,
+        stop = 'GraphCanvasNode',
         x = 0,
         y = 0;
     do {
       x += element.offsetLeft;
       y += element.offsetTop;
       element = element.offsetParent;
-    } while(element && element !== stop);
+    } while(element && element.className !== stop);
     x += socketElement.clientWidth / 2;
     y += socketElement.clientHeight / 2;
+    var node = this.graph.node(element.dataset.id),
+        pos = node.bounds.normalPosition;
+    x += pos.x;
+    y += pos.y;
     return new Vector(x, y);
   }
 
