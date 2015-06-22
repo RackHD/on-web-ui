@@ -39,6 +39,7 @@ export default class AppMenuNav extends Component {
       <div
           onClick={this.onHeaderClick}
           style={this.mergeAndPrefix({
+            color: '#000',
             padding: '10px 0',
             fontWeight: 'bold',
             textAlign: 'center',

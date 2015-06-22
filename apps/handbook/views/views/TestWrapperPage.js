@@ -26,7 +26,7 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
     style: null
   }
 })
-export default class HomePage extends Component {
+export default class TestWrapperPage extends Component {
 
   state = {}
 
@@ -36,8 +36,8 @@ export default class HomePage extends Component {
 
   render() {
     return (
-      <div className="HomePage container">
-        Welcome to the Home page.
+      <div className="TestWrapperPage container">
+        Welcome to the TestWrapper page.
       </div>
     );
   }
