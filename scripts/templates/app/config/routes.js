@@ -4,26 +4,31 @@ import React from 'react';
 import Router, { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
-import App from '../views/App';
-
+// import { MenuItem } from 'material-ui';
 import NotFound from 'common-web-ui/views/NotFound';
 import UserLogin from 'common-web-ui/views/UserLogin';
-import GraphCanvas from 'common-web-ui/views/GraphCanvas';
 
-let routes = (
+// See http://material-ui.com/#/components/left-nav
+export var navigation = [
+  { text: 'Login', route: '/' },
+  { text: 'Not Found', route: '404' }
+];
+
+// Must be imported after navigation.
+import App from '../views/App';
+
+// See http://rackt.github.io/react-router/
+export var routes = (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={UserLogin} />
-
     <Route name="404" handler={NotFound} />
     <Route name="login" handler={UserLogin} />
-    <Route name="canvas" handler={GraphCanvas} />
-
     <NotFoundRoute handler={NotFound} />
-
     <Redirect from="home" to="/" />
   </Route>
 );
 
+// Router configuration
 let params = {
   routes,
   scrollBehavior: Router.ScrollToTopBehavior

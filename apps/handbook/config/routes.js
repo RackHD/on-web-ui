@@ -4,13 +4,20 @@ import React from 'react';
 import Router, { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
-import App from '../views/App';
-
+// import { MenuItem } from 'material-ui';
 import NotFound from 'common-web-ui/views/NotFound';
 import UserLogin from 'common-web-ui/views/UserLogin';
 import GraphCanvas from 'common-web-ui/views/GraphCanvas';
 
-let routes = (
+export var navigation = [
+  { text: 'Login', route: '/' },
+  { text: 'Not Found', route: '404' },
+  { text: 'Canvas', route: 'canvas' }
+];
+
+import App from '../views/App';
+
+export var routes = (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={UserLogin} />
 

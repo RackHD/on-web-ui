@@ -4,15 +4,13 @@ import { Component } from 'react';
 
 import AppContainer from 'common-web-ui/views/AppContainer';
 
+import { navigation } from '../config/routes';
+
 export default class App extends Component {
 
   state = {
     title: this.title,
-    navigation: [
-      { text: 'Login', route: '/' },
-      { text: 'Not Found', route: '404' },
-      { text: 'Canvas', route: 'canvas' }
-    ]
+    navigation
   };
 
   render() {

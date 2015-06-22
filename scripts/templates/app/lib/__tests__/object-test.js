@@ -6,7 +6,9 @@ import <%= file %> from '../<%= file %>';
 describe('<%= file %>', function() {
 
   it('should be ok', function() {
-    export(<%= file %>.truncate('abc', 2)).to.be.ok;
+    export(<%= file %>).to.be.ok;
+    export(<%= file %>.property).to.be.ok;
+    export(<%= file %>.method()).to.be.ok;
   });
 
 });
