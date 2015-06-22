@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
+  Component } from 'react';
 import radium from 'radium';
 import decorate from '../lib/decorate';
 

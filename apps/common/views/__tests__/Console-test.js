@@ -6,7 +6,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { addons } from 'react/addons';
 var { TestUtils } = addons;
 
-import TestWrapper from 'common-web-ui/views/TestWrapper';
+import TestWrapper from '../TestWrapper';
 import Console from '../Console';
 
 describe('Console', function() {

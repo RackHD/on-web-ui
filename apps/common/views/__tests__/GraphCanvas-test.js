@@ -4,9 +4,9 @@
 
 import React from 'react';
 
-import TestWrapper from '../views/TestWrapper';
+import TestWrapper from '../TestWrapper';
 import GraphCanvas from '../GraphCanvas';
-import Vector from '../lib/Vector';
+import Vector from '../../lib/Vector';
 
 var props = {
   worldWidth: 240,

@@ -2,8 +2,8 @@
 /* global describe, it, expect, beforeEach */
 /* eslint-disable no-unused-expressions */
 
-import Rectangle from '../lib/Rectangle';
-import Graph from '../lib/Graph';
+import Rectangle from '../Rectangle';
+import Graph from '../Graph';
 
 import jsonGraph from './Graph-fixture';
 
