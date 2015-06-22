@@ -6,7 +6,7 @@ var conflict = require('gulp-conflict'),
     inquirer = require('inquirer');
 
 var src = [
-  path.join(__dirname, '..', 'templates', 'app', 'config*', '**')
+  path.join(__dirname, '..', 'templates', 'app', 'config', '**')
 ];
 
 gulp.task('config', function (done) {
