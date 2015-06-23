@@ -6,7 +6,6 @@
 $ git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
 $ cd on-web-ui
 $ npm install                   # Install Node.js modules.
-$ ./scripts/setup_project.sh    # Create config files from examples.
 $ gulp                          # Run gulp to build and start browser-sync
 ```
 
