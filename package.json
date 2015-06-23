@@ -70,6 +70,7 @@
     "karma-sourcemap-loader": "^0.3.4",
     "karma-webpack": "^1.5.1",
     "less-loader": "^2.2.0",
+    "marked": "^0.3.3",
     "merge-stream": "^0.1.7",
     "minimist": "^1.1.1",
     "mocha": "^2.2.5 ",

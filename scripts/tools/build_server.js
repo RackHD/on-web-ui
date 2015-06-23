@@ -10,6 +10,11 @@ server.set('port', (process.env.ONWEBUI_PORT || 5000));
 
 var publicPath = path.join(__dirname, '..', '..', 'build');
 
+server.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 server.use(express.static(publicPath));
 server.use(serveIndex(publicPath, {'icons': true}));
 
