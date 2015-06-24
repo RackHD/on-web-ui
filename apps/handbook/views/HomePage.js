@@ -1,3 +1,8 @@
+/**
+# Home Page
+
+Documentation home page.
+*/
 'use strict';
 
 import React, { // eslint-disable-line no-unused-vars
@@ -11,38 +16,27 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
-import marked from 'marked';
-import cod from 'cod';
-import highlight from 'highlight.js';
-import hljs from 'highlight.js/lib/languages/javascript';
+/**
+### Directory Structure SAMPLE
+```
+.
+└── {app}
+    ├── actions       # Actions modules delegate calls to stores.
+    ├── api           # API requests for application data.
+    ├── assets        # Static files to be made public.
+    ├── lib           # Reusable JavaScript code.
+    ├── mixins        # React component mixin definitions.
+    ├── views         # React views.
+    ├── stores        # Stores contain persisted application data.
+    ├── less          # Less and CSS files.
+    ├── templates     # HTML files.
+    ├── bundle.js     # Main application entry point.
+    └── config.js     # Client configuration file.
+```
+*/
 
-highlight.initHighlightingOnLoad();
-
-marked.setOptions({
-  langPrefix: 'hljs ',
-  highlight: function (code) {
-    return highlight.highlightAuto(code).value;
-  }
-});
-
-import http from 'superagent';
-let { codeServer } = window.config;
-
-function doc(cod) {
-  return [
-    <pre key={0} dangerouslySetInnerHTML={{__html: JSON.stringify(cod, null, 2)}} />,
-    <h1 key={1}>{cod.object.name} <sub>{cod.object.type}</sub> {cod.object.extends}</h1>,
-    <p key={2}>{cod.object.desc}</p>,
-    cod.method.map(function (method, index) {
-      return (
-        <div key={30 + index} className="method">
-          <h2>{method.name}</h2>
-          <p>{method.desc}</p>
-        </div>
-      );
-    })
-  ];
-}
+import FileTreeBrowser from './FileTreeBrowser';
+import FileManualViewer from './FileManualViewer';
 
 @radium
 @mixin.decorate(DeveloperHelpers)
@@ -68,89 +62,54 @@ function doc(cod) {
 */
 export default class HomePage extends Component {
 
-  state = {}
+  /**
+  @method
+    @name componentDidMount
+    @desc Called once when the component is added.
+  */
+  componentDidMount() {}
 
-  componentDidMount() {
-    this.getApps().then(body => {
-      this.setState({apps: body});
-    });
-    this.getReadMe().then(body => {
-      console.log('readme', body);
-      this.setState({readme: marked(body)});
-    });
-    this.getHandbookHomePage().then(body => {
-      this.setState({script: {
-        source: body,
-        code: marked('```javascript\n' + body + '\n```'),
-        docs: doc(cod(body, {
-          docsBegin: '/**',
-          docsEnd: '*/',
-          pretty: true
-        }))
-      }});
-    });
-  }
-
+  /**
+  @method
+    @name componentWillUnmount
+    @desc Called once when the component is removed.
+  */
   componentWillUnmount() {}
 
+  /**
+  @method
+    @name render
+    @desc Creates home page shadow dom.
+  */
   render() {
     return (
-      <div className="HomePage container">
-        Welcome to the Home page.
-        <div ref="apps">{this.state.apps}</div>
-        <div ref="readme" dangerouslySetInnerHTML={{__html: this.state.readme}} />
-        {this.state.script ? [
-          <div ref="docs" key={0}>{this.state.script.docs}</div>,
-          <div ref="code" key={1} dangerouslySetInnerHTML={{__html: this.state.script.code}} />
-        ] : null}
+      <div className="HomePage ungrid">
+        <div className="line">
+          <div className="cell" style={{width: '300px'}}>
+            <FileTreeBrowser
+                ref="files"
+                lazy={false}
+                onSelect={this.selectFile.bind(this)} />
+          </div>
+          <div className="cell">
+            <br/>
+            <br/>
+            <FileManualViewer
+                ref="viewer" />
+          </div>
+        </div>
       </div>
     );
   }
 
   /**
   @method
-    @name getApps
-    @desc Sends a HTTP request to get a list of app directories.
+    @name selectFile
+    @desc Switches which file the manual viewer is viewing.
   */
-  getApps() {
-    return new Promise(function (resolve, reject) {
-      http.get(codeServer + '/')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.text);
-        });
-    });
-  }
-
-  /**
-  @method
-    @name getReadMe
-    @desc Sends a HTTP request to get a README about apps.
-  */
-  getReadMe() {
-    return new Promise(function (resolve, reject) {
-      http.get(codeServer + '/README.md')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          console.log('readme res', res);
-          resolve(res && res.text);
-        });
-    });
-  }
-
-  /**
-  @method
-    @name getHandbookHomePage
-    @desc Sends a HTTP request to get this source file in raw text.
-  */
-  getHandbookHomePage() {
-    return new Promise(function (resolve, reject) {
-      http.get(codeServer + '/handbook/views/HomePage.js')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.text);
-        });
-    });
+  selectFile(file) {
+    console.log('got here');
+    this.refs.viewer.load(file);
   }
 
 }

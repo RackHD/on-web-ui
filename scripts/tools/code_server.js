@@ -27,6 +27,13 @@ server.use(function (req, res) {
         if (readError) {
           return res.status(500).send(readError);
         }
+        files = files.map(function (file) {
+          try {
+            var stats = fs.statSync(path.join(publicPath, req.url, file));
+            if (stats.isDirectory()) { file += '/'; }
+          } catch(err) { console.error(err); }
+          return file;
+        });
         res.status(200).send(files);
       });
     }
