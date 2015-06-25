@@ -24,7 +24,7 @@ let defaultStyles = {
   content: {
     color: emcColors.black.hexString(),
     background: emcColors.white.hexString(),
-    padding: '74px 10px 10px 10px'
+    padding: '64px 0 0 0'
   },
 
   footer: {

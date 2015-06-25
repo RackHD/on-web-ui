@@ -15,8 +15,8 @@ import http from 'superagent';
 let { codeServer } = window.config;
 
 function alpha (a, b) {
-  if(a < b) return -1;
-  if(a > b) return 1;
+  if (a < b) { return -1; }
+  if (a > b) { return 1; }
   return 0;
 }
 
@@ -38,6 +38,7 @@ The `FileTreeBrowser` component is used to generate the documentation menu.
   propTypes: {
     className: PropTypes.string,
     collapsed: PropTypes.bool,
+    css: PropTypes.object,
     lazy: PropTypes.bool,
     nested: PropTypes.bool,
     onSelect: PropTypes.func,
@@ -49,6 +50,7 @@ The `FileTreeBrowser` component is used to generate the documentation menu.
   defaultProps: {
     className: '',
     collapsed: false,
+    css: {},
     lazy: true,
     nested: false,
     onSelect: null,
@@ -63,7 +65,46 @@ export default class FileTreeBrowser extends Component {
     open: !this.props.collapsed,
     files: null,
     results: null
-  }
+  };
+
+  css = {
+    ulNested: {
+      marginLeft: '1em',
+      border: 'none'
+    },
+    liSearch: {
+      padding: 0,
+      marginBottom: 0
+    },
+    aFile: {
+      color: '#39f',
+      ':hover': {
+        color: '#369'
+      }
+    },
+    ul: {
+      maxWidth: 256,
+      fontSize: '14px',
+      marginTop: 0,
+      paddingLeft: '10px',
+      marginBottom: 0
+    },
+    li: {
+      marginBottom: 0,
+      borderBottom: '1px dotted #ddd',
+      padding: '0 0 0 10px',
+      listStyle: 'none',
+      lineHeight: '2em'
+    },
+    a: {
+      background: 'white',
+      color: '#555',
+      cursor: 'pointer',
+      ':hover': {
+        color: '#111'
+      }
+    }
+  };
 
   componentDidMount() {
     if (!this.props.lazy) { this.load(); }
@@ -71,7 +112,23 @@ export default class FileTreeBrowser extends Component {
 
   render() {
     var files = this.state.files || [],
-        dirs = [];
+        open = this.state.open || this.state.results,
+        dirs = [],
+        list;
+
+    var css = {
+      ul: [this.css.ul, this.props.css.ul],
+      li: [this.css.li, this.props.css.li],
+      a: [this.css.a, this.props.css.a]
+    };
+
+    css.aFile = css.a.concat([this.css.aFile, this.props.css.aFile]);
+
+    if (this.props.nested) {
+      css.ul = css.ul.concat([this.css.ulNested, this.props.css.ulNested]);
+    }
+
+    css.ul.push({display: open ? 'block' : 'none'});
 
     files.sort(alpha);
     files = files.filter(file => {
@@ -84,7 +141,7 @@ export default class FileTreeBrowser extends Component {
           trie = this.props.trie;
       letters.forEach(letter => {
         trie = trie[letter] = trie[letter] || {results: {}};
-        var full = this.props.path +  file;
+        var full = this.props.path + file;
         trie.results[full] = true;
       });
 
@@ -99,12 +156,13 @@ export default class FileTreeBrowser extends Component {
       var path = this.props.path ? this.props.path + dir : dir;
 
       return (
-        <li key={dir}>
-          <a href="#" onClick={this.toggleDir.bind(this, dir)}>{dir}</a>
+        <li key={dir} style={css.li}>
+          <a key={dir + '-a'} style={css.a} onClick={this.toggleDir.bind(this, dir)}>{dir}</a>
           <FileTreeBrowser
               ref={dir}
               className={this.props.className}
               collapsed={true}
+              css={this.props.css}
               lazy={this.props.lazy}
               nested={true}
               onSelect={this.props.onSelect}
@@ -117,36 +175,35 @@ export default class FileTreeBrowser extends Component {
 
     files = files.map(file => {
       return (
-        <li key={file}>
-          <a href="#" onClick={this.selectFile.bind(this, file)}>{file}</a>
+        <li key={file} style={css.li}>
+          <a key={file + '-a'} style={css.aFile} onClick={this.selectFile.bind(this, file)}>{file}</a>
         </li>
       );
     });
 
-    var open = this.state.open || this.state.results;
-
     if (open) {
-      if (!this.state.files) { return <ul><li>Loading...</li></ul>; }
-
-      if (!files.length) { return <ul><li>Empty</li></ul>; }
+      if (!this.state.files) {
+        return <ul style={css.ul}><li style={css.li}>Loading...</li></ul>;
+      }
+      if (!files.length) {
+        return <ul style={css.ul}><li style={css.li}>Empty</li></ul>;
+      }
     }
-
-    var list;
 
     if (this.state.results) {
       list = Object.keys(this.state.results).map(file => {
         return (
-          <li key={file}>
-            <a href="#" onClick={this.selectAbsoluteFile.bind(this, file)}>{file}</a>
+          <li key={file} style={css.li}>
+            <a key={file + '-a'} style={css.aFile} onClick={this.selectAbsoluteFile.bind(this, file)}>{file}</a>
           </li>
         );
-      })
+      });
     }
 
-    else { list = dirs.concat(files) }
+    else { list = dirs.concat(files); }
 
     return (
-      <ul style={{display: open ? 'block' : 'none'}}>
+      <ul style={css.ul}>
         {this.renderSearch()}
         {list}
       </ul>
@@ -155,8 +212,9 @@ export default class FileTreeBrowser extends Component {
 
   renderSearch() {
     if (this.props.nested) { return null; }
+    var css = [this.css.li, this.props.css.li, this.css.liSearch, this.props.css.liSearch];
     return (
-      <li>
+      <li style={css}>
         <TextField
             ref="search"
             floatingLabelText="Search"
@@ -175,7 +233,7 @@ export default class FileTreeBrowser extends Component {
 
   expand() {
     return this.load().then(() => {
-      this.setState({open: true})
+      this.setState({open: true});
     });
   }
 
@@ -194,15 +252,15 @@ export default class FileTreeBrowser extends Component {
     @desc Sends a HTTP request to get a list of files.
   */
   getFiles(path) {
-    path = path || ''
+    path = path || '';
     return new Promise(function (resolve, reject) {
       http.get(codeServer + '/' + path)
         .end((err, res) => {
           if (err) { return reject(err); }
           var files = [];
           if (res && res.text) {
-            try { files = JSON.parse(res.text) }
-            catch (err) {}
+            try { files = JSON.parse(res.text); }
+            catch (_err) { files = []; }
           }
           resolve(files);
         });
@@ -228,12 +286,12 @@ export default class FileTreeBrowser extends Component {
     if (this.props.onSelect) { this.props.onSelect(file); }
   }
 
-  updateSearch(event) {
+  updateSearch() {
     var search = this.refs.search.getValue().toLowerCase().split(''),
         trie = this.props.trie;
 
     search.forEach(letter => {
-        trie = trie[letter] || trie;
+      trie = trie[letter] || trie;
     });
 
     this.setState({results: trie && trie.results || null});

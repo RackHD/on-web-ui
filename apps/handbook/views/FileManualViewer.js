@@ -23,7 +23,7 @@ import {
 import marked from 'marked';
 import cod from 'cod';
 import highlight from 'highlight.js';
-import hljs from 'highlight.js/lib/languages/javascript';
+import 'highlight.js/lib/languages/javascript';
 
 highlight.initHighlightingOnLoad();
 
@@ -38,15 +38,16 @@ marked.setOptions({
 import http from 'superagent';
 let { codeServer } = window.config;
 
-function doc(cod) {
-  if (!Array.isArray(cod.method)) {
-    cod.method = [cod.method]
+function doc(info) {
+  if (!info.object) { return null; }
+  if (!Array.isArray(info.method)) {
+    info.method = [info.method];
   }
   try {
     return [
-      <h1 key={0}>{cod.object.name} <sub>{cod.object.type}</sub> {cod.object.extends}</h1>,
-      <p key={1}>{cod.object.desc}</p>,
-      cod.method.map(function (method, index) {
+      <h1 key={0}>{info.object.name} <sub>{info.object.type}</sub> {info.object.extends}</h1>,
+      <p key={1}>{info.object.desc}</p>,
+      info.method.map(function (method, index) {
         if (!method) { return null; }
         return (
           <div key={20 + index} className="method">
@@ -54,8 +55,7 @@ function doc(cod) {
             <p>{method.desc}</p>
           </div>
         );
-      })//,
-      // <pre key={3} dangerouslySetInnerHTML={{__html: JSON.stringify(cod, null, 2)}} />,
+      })
     ];
   } catch (err) {
     return err;
@@ -97,36 +97,57 @@ export default class FileManualViewer extends Component {
   }
 
   render() {
-    return (
-      <Tabs ref="tabs" initialSelectedIndex={0}>
-        <Tab label="Source Code">
-          <div ref="code" dangerouslySetInnerHTML={{__html: this.state.code}} />
+    var tabs = [];
+    if (this.state.md) {
+      tabs.push(
+        <Tab label="Markdown">
+          <div ref="md" dangerouslySetInnerHTML={{__html: this.state.md}} />
         </Tab>
-        <Tab label="API Documentation">
+      );
+    }
+    if (this.state.docs) {
+      tabs.push(
+        <Tab label="API">
           <div ref="docs">{this.state.docs}</div>
         </Tab>
-        <Tab label="Read Me">
-          <div ref="readme" dangerouslySetInnerHTML={{__html: this.state.readme}} />
+      );
+    }
+    if (this.state.js) {
+      tabs.push(
+        <Tab label="JavaScript">
+          <div ref="js" dangerouslySetInnerHTML={{__html: this.state.js}} />
         </Tab>
-      </Tabs>
+      );
+    }
+    return (
+      <div>
+        <p style={{marginTop: '-1em'}}>{this.state.file}</p>
+        <Tabs ref="tabs" initialSelectedIndex={0} style={{background: 'white', padding: 10, borderRadius: 5}}>
+          {tabs}
+        </Tabs>
+      </div>
     );
   }
 
   load(file) {
-    console.log('load', file)
+    var ext = file.split('.').pop();
     this.getFile(file).then(body => {
-      var info = cod(body, {
-        docsBegin: '/**',
-        docsEnd: '*/',
-        pretty: true
-      });
-      console.log('update', file);
-      this.setState({
-        readme: marked(info['!text'] || ''),
+      var newState = {file: file, ext: ext},
+          info;
+      if (ext === 'md') {
+        newState.md = marked(body);
+      }
+      else if (ext === 'js') {
+        info = cod(body, {docsBegin: '/**', docsEnd: '*/', pretty: false});
+        newState.md = info['!text'] && marked(info['!text']);
         // Note: three ticks breaks source highlighting. A pound sign will be append after three ticks.
-        code: marked('```javascript\n' + body.replace(/^```/mg, '```#') + '\n```'),
-        docs: doc(info)
-      });
+        newState.js = marked('```javascript\n' + body.replace(/^```/mg, '```#') + '\n```');
+        newState.docs = doc(info);
+      }
+      else {
+        newState.unknown = true;
+      }
+      this.setState(newState);
     });
   }
 

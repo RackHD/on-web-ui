@@ -85,17 +85,17 @@ export default class HomePage extends Component {
     return (
       <div className="HomePage ungrid">
         <div className="line">
-          <div className="cell" style={{width: '300px'}}>
+          <div className="cell" style={{width: 276, paddingBottom: 20}}>
             <FileTreeBrowser
                 ref="files"
                 lazy={false}
                 onSelect={this.selectFile.bind(this)} />
           </div>
-          <div className="cell">
-            <br/>
-            <br/>
-            <FileManualViewer
-                ref="viewer" />
+          <div className="cell" style={{background: '#ddd'}}>
+            <div style={{padding: '50px 10px 10px 10px'}}>
+              <FileManualViewer
+                  ref="viewer" />
+            </div>
           </div>
         </div>
       </div>
@@ -108,7 +108,6 @@ export default class HomePage extends Component {
     @desc Switches which file the manual viewer is viewing.
   */
   selectFile(file) {
-    console.log('got here');
     this.refs.viewer.load(file);
   }
 
