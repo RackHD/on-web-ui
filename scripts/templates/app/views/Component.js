@@ -19,7 +19,7 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 
   defaultProps: {
     className: '',
-    style: null
+    style: {}
   }
 })
 export default class <%= file %> extends Component {

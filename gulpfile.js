@@ -1,7 +1,9 @@
 'use strict';
 
 // NOTE: The eventemitter3 npm module is required for browserSync to function.
-process.on('uncaughtException', console.error.bind(console));
+process.on('uncaughtException', function (err) {
+  console.error(err.stack || err);
+});
 
 // Include Gulp and other build automation tools and utilities
 // See: https://github.com/gulpjs/gulp/blob/master/docs/API.md

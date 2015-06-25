@@ -50,7 +50,7 @@ import FileManualViewer from './FileManualViewer';
 
   defaultProps: {
     className: '',
-    style: null
+    style: {}
   }
 })
 /**
@@ -82,7 +82,12 @@ export default class HomePage extends Component {
     @desc Creates home page shadow dom.
   */
   render() {
-    var file = decodeURIComponent(this.props.params.doc);
+    var file =
+      this.props.params &&
+      this.props.params.doc &&
+      decodeURIComponent(this.props.params.doc) ||
+      'README.md';
+
     return (
       <div className="HomePage ungrid">
         <div className="line">

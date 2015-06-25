@@ -29,7 +29,7 @@ let { codeServer } = window.config;
   defaultProps: {
     className: '',
     params: {},
-    style: null
+    style: {}
   }
 })
 export default class GuideViewerPage extends Component {

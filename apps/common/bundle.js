@@ -10,9 +10,6 @@ import reactRouter from 'react-router';
 import reactMixin from 'react-mixin';
 import reactTapEventPlugin from 'react-tap-event-plugin';
 
-// Compiled JSX needs React in the global namespace.
-global.React = window.React = React;
-
 var vendor = {
   MaterialUI,
   moment,
@@ -142,9 +139,12 @@ var OnWebUI = {
   mixins
 };
 
+// Compiled JSX needs React in the global namespace.
+global.React = window.React = React;
+
 // Expose to the global namespace.
 global.OnWebUI = window.OnWebUI = OnWebUI;
 
-export default OnWebUI;
-
 reactTapEventPlugin();
+
+export default OnWebUI;

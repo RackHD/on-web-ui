@@ -76,7 +76,7 @@ function doc(info) {
   defaultProps: {
     className: '',
     file: 'README.md',
-    style: null
+    style: {}
   }
 })
 /**

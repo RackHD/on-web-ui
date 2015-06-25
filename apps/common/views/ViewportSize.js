@@ -19,7 +19,7 @@ import decorate from '../lib/decorate';
 
   defaultProps: ViewportHelpers.viewportDefaultProps({
     className: '',
-    style: null
+    style: {}
   })
 
 })

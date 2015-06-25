@@ -23,7 +23,7 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
   defaultProps:{
     className: '',
-    style: null
+    style: {}
   }
 })
 export default class <%= file %> extends Component {

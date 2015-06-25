@@ -55,7 +55,7 @@ The `FileTreeBrowser` component is used to generate the documentation menu.
     nested: false,
     onSelect: null,
     path: '',
-    style: null,
+    style: {},
     trie: {}
   }
 })
