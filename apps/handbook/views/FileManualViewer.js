@@ -119,12 +119,22 @@ export default class FileManualViewer extends Component {
         </Tab>
       );
     }
+    if (this.state.unknown) {
+      tabs.push(
+        <Tab label="Unknown Source">
+          <div ref="unknown" dangerouslySetInnerHTML={{__html: this.state.unknown}} />
+        </Tab>
+      );
+    }
     return (
       <div>
         <p style={{marginTop: '-1em'}}>{this.state.file}</p>
-        <Tabs ref="tabs" initialSelectedIndex={0} style={{background: 'white', padding: 10, borderRadius: 5}}>
-          {tabs}
-        </Tabs>
+        {tabs.length &&
+          <Tabs ref="tabs"
+              initialSelectedIndex={0}
+              style={{background: 'white', padding: 10, borderRadius: 5}}>
+            {tabs}
+          </Tabs> || null}
       </div>
     );
   }
@@ -132,9 +142,16 @@ export default class FileManualViewer extends Component {
   load(file) {
     var ext = file.split('.').pop();
     this.getFile(file).then(body => {
-      var newState = {file: file, ext: ext},
+      var newState = {
+            file: file,
+            ext: ext,
+            md: null,
+            js: null,
+            docs: null,
+            unknown: false
+          },
           info;
-      if (ext === 'md') {
+      if (ext === 'md' && body) {
         newState.md = marked(body);
       }
       else if (ext === 'js') {
@@ -144,8 +161,9 @@ export default class FileManualViewer extends Component {
         newState.js = marked('```javascript\n' + body.replace(/^```/mg, '```#') + '\n```');
         newState.docs = doc(info);
       }
+      // TODO: support images
       else {
-        newState.unknown = true;
+        newState.unknown = body;
       }
       this.setState(newState);
     });

@@ -69,8 +69,8 @@ export default class FileTreeBrowser extends Component {
 
   css = {
     ulNested: {
-      marginLeft: '1em',
-      border: 'none'
+      marginLeft: 0,
+      paddingLeft: 0
     },
     liSearch: {
       padding: 0,
@@ -83,6 +83,8 @@ export default class FileTreeBrowser extends Component {
       }
     },
     ul: {
+      userSelect: 'none',
+      borderTop: '1px dotted #ddd',
       maxWidth: 256,
       fontSize: '14px',
       marginTop: 0,

@@ -11,32 +11,44 @@ export var navigation = [
   { text: 'Home', route: '/' },
 
   { text: 'Guides', type: MenuItem.Types.SUBHEADER },
-  { text: 'Getting Started', route: '/getting_started' },
-  { text: 'Tutorial Application', route: '/tutorial_application' },
-  { text: 'Testing Tutorial', route: '/testing_tutorial' },
-  { text: 'Scaffolding', route: '/scaffolding' },
+  { text: 'Getting Started', route: '/guides/getting_started' },
+  { text: 'Tutorial App', route: '/guides/tutorial_app' },
+  { text: 'Testing', route: '/guides/testing' },
+  { text: 'Scaffolding', route: '/guides/scaffolding' },
+  { text: 'Code Style', route: '/guides/code_style' },
+
+  { text: 'Technologies', type: MenuItem.Types.SUBHEADER },
+  { text: 'React', type: MenuItem.Types.LINK,
+    payload: 'https://facebook.github.io/react/docs/getting-started.html' },
+  { text: 'Radium', type: MenuItem.Types.LINK,
+    payload: 'http://projects.formidablelabs.com/radium/' },
   { text: 'Material UI', type: MenuItem.Types.LINK,
     payload: 'http://material-ui.com/#/components/appbar' },
+  { text: 'BabelJS', type: MenuItem.Types.LINK,
+    payload: 'http://babeljs.io/docs/learn-es2015/#ecmascript-6-features' },
+  { text: 'webpack', type: MenuItem.Types.LINK,
+    payload: 'http://webpack.github.io/' },
+  { text: 'Gulp', type: MenuItem.Types.LINK,
+    payload: 'http://gulpjs.com/' },
+  { text: 'Slush', type: MenuItem.Types.LINK,
+    payload: 'http://slushjs.github.io/' },
+  { text: 'Karma', type: MenuItem.Types.LINK,
+    payload: 'http://karma-runner.github.io/' },
+  { text: 'BrowserSync', type: MenuItem.Types.LINK,
+    payload: 'http://www.browsersync.io/' }
 ];
 
 import App from '../views/App';
 import HomePage from '../views/HomePage';
-import GettingStartedPage from '../views/GettingStartedPage';
-import ScaffoldingPage from '../views/ScaffoldingPage';
-import TestingTutorialPage from '../views/TestingTutorialPage';
-import TutorialApplicationPage from '../views/TutorialApplicationPage';
+import GuideViewerPage from '../views/GuideViewerPage';
 
 let routes = (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={HomePage} />
-
-    <Route path="/getting_started" handler={GettingStartedPage} />
-    <Route path="/tutorial_application" handler={TutorialApplicationPage} />
-    <Route path="/testing_tutorial" handler={TestingTutorialPage} />
-    <Route path="/scaffolding" handler={ScaffoldingPage} />
-
-    <NotFoundRoute handler={NotFound} />
     <Redirect from="home" to="/" />
+    <Route path="/docs/:doc" handler={HomePage} />
+    <Route path="/guides/:guide" handler={GuideViewerPage} />
+    <NotFoundRoute handler={NotFound} />
   </Route>
 );
 

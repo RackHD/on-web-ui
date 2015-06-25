@@ -76,6 +76,12 @@ export default class HomePage extends Component {
   */
   componentWillUnmount() {}
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.guide !== nextProps.params.guide) {
+      this.load(nextProps);
+    }
+  }
+
   /**
   @method
     @name render

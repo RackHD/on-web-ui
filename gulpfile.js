@@ -26,7 +26,7 @@ require('./scripts/tasks/templates');
 require('./scripts/tasks/bundle');
 
 // build run
-require('./scripts/tasks/server');
+require('./scripts/tasks/serve');
 
 // build run dev
 require('./scripts/tasks/sync');
