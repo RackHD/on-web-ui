@@ -69,11 +69,13 @@ function doc(info) {
 @decorate({
   propTypes: {
     className: PropTypes.string,
+    file: PropTypes.string,
     style: PropTypes.any
   },
 
   defaultProps: {
     className: '',
+    file: 'README.md',
     style: null
   }
 })
@@ -87,13 +89,22 @@ function doc(info) {
 export default class FileManualViewer extends Component {
 
   state = {
-    readme: null,
+    file: null,
+    ext: null,
+    md: null,
+    js: null,
     docs: null,
-    code: null
+    unknown: false
   }
 
   componentDidMount() {
-    this.load('README.md');
+    this.load(this.props.file);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.file !== nextProps.file) {
+      this.load(nextProps.file);
+    }
   }
 
   render() {

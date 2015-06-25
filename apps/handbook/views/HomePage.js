@@ -76,18 +76,13 @@ export default class HomePage extends Component {
   */
   componentWillUnmount() {}
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.params.guide !== nextProps.params.guide) {
-      this.load(nextProps);
-    }
-  }
-
   /**
   @method
     @name render
     @desc Creates home page shadow dom.
   */
   render() {
+    var file = decodeURIComponent(this.props.params.doc);
     return (
       <div className="HomePage ungrid">
         <div className="line">
@@ -100,7 +95,8 @@ export default class HomePage extends Component {
           <div className="cell" style={{background: '#ddd'}}>
             <div style={{padding: '50px 10px 10px 10px'}}>
               <FileManualViewer
-                  ref="viewer" />
+                  ref="viewer"
+                  file={file} />
             </div>
           </div>
         </div>
@@ -114,7 +110,7 @@ export default class HomePage extends Component {
     @desc Switches which file the manual viewer is viewing.
   */
   selectFile(file) {
-    this.refs.viewer.load(file);
+    this.routeTo('docs', encodeURIComponent(file));
   }
 
 }
