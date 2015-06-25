@@ -52,8 +52,9 @@ export default class GuideViewerPage extends Component {
 
   render() {
     return (
-      <div className="GuideViewerPage container">
-        <div ref="md" dangerouslySetInnerHTML={{__html: this.state.guide}} />
+      <div className="GuideViewerPage container"
+          style={{padding: '20px'}}>
+        <div ref="guide" dangerouslySetInnerHTML={{__html: this.state.guide}} />
       </div>
     );
   }
