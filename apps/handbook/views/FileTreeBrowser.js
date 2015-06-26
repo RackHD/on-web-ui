@@ -12,7 +12,7 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 import { TextField } from 'material-ui';
 
 import http from 'superagent';
-let { codeServer } = window.config;
+import { codeServer } from '../config/index';
 
 function alpha (a, b) {
   if (a < b) { return -1; }

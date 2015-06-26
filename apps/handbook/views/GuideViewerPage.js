@@ -13,7 +13,7 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
 import marked from 'marked';
 import http from 'superagent';
-let { codeServer } = window.config;
+import { codeServer } from '../config/index';
 
 @radium
 @mixin.decorate(DeveloperHelpers)

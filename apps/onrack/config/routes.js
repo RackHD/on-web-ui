@@ -54,6 +54,9 @@ let params = {
 };
 
 // Run the application when both DOM is ready and page content is loaded
-onReady(() =>
-  Router.create(params).run(
-    Handler => React.render(<Handler />, document.body)));
+onReady(() => {
+  if (global.isTesting) { return; }
+  Router.create(params).run(Handler => {
+    React.render(<Handler />, document.body);
+  });
+});

@@ -95,7 +95,7 @@ export default class TestWrapper extends Component {
         };
     return (
       <div className="TestWrapper" style={styles}>
-        {<TestComponent ref="component" {...componentProps} />}
+        <TestComponent ref="component" {...componentProps} />
       </div>
     );
   }

@@ -17,6 +17,13 @@ module.exports = function (config) {
   preprocessors[testsEntryPath] = [ 'webpack', 'sourcemap' ];
 
   config.set({
+    plugins: [
+      'karma-mocha',
+      'karma-webpack',
+      'karma-sourcemap-loader',
+      'karma-chrome-launcher',
+      'karma-firefox-launcher'
+    ],
     autoWatch: true,
     browsers: [ 'Chrome' ],
     // captureTimeout: 60000,

@@ -39,6 +39,7 @@ describe('GraphCanvasMap', function() {
     });
   });
 
+  /* global xdescribe, xit */
   // TODO: move this test to GraphCanvasWorld-test
   xdescribe('coordinates', function() {
     beforeEach(function() {

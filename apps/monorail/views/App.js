@@ -19,7 +19,8 @@ export default class App extends Component {
           ref="container"
           className="app"
           title={this.state.title}
-          navigation={this.state.navigation} />
+          navigation={this.state.navigation}
+          children={this.props.children} />
     );
   }
 

@@ -7,12 +7,12 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import TestWrapper from 'common-web-ui/views/TestWrapper';
 import <%= file %> from '../<%= file %>';
 
-describe('<%= file %>', function() {
+describe('<%= name %> <%= file %>', function() {
 
   describe('component', function() {
     before(function(done) {
       this.wrapper = TestWrapper.testRender(<%= file %>, {
-        // props...
+        children: 'No content'
       }, (err, component) => {
         this.subject = component;
         done(err);

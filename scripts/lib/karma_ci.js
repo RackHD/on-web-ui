@@ -6,8 +6,15 @@ module.exports = function (config) {
   karmaBaseConfig(config);
 
   config.set({
+    plugins: config.plugins.concat([
+      'karma-junit-reporter'
+    ]),
     autoWatch: false,
-    browsers: [ 'Chrome' ],
-    singleRun: true
+    browsers: [ 'Chrome', 'Firefox' ],
+    singleRun: true,
+    reporters: [ 'dots', 'junit' ], // report results in this format
+    junitReporter: {
+      outputFile: 'test-results.xml'
+    }
   });
 };

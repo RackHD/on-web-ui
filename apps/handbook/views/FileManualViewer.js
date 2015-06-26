@@ -36,7 +36,7 @@ marked.setOptions({
 });
 
 import http from 'superagent';
-let { codeServer } = window.config;
+import { codeServer } from '../config/index';
 
 function doc(info) {
   if (!info.object) { return null; }

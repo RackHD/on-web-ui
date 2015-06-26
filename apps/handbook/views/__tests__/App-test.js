@@ -7,12 +7,12 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import TestWrapper from 'common-web-ui/views/TestWrapper';
 import App from '../App';
 
-describe('App', function() {
+describe('Handbook App', function() {
 
   describe('component', function() {
     before(function(done) {
       this.wrapper = TestWrapper.testRender(App, {
-        // props...
+        children: 'No content'
       }, (err, component) => {
         this.subject = component;
         done(err);

@@ -5,7 +5,6 @@
 build/
 node_modules/
 npm-debug.log
+test-results.xml
 
 apps/*/config/custom.json
-apps/monorail/config.js
-apps/onrack/config.js

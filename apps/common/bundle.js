@@ -140,10 +140,10 @@ var OnWebUI = {
 };
 
 // Compiled JSX needs React in the global namespace.
-global.React = window.React = React;
+global.React = global.React || React;
 
 // Expose to the global namespace.
-global.OnWebUI = window.OnWebUI = OnWebUI;
+global.OnWebUI = OnWebUI;
 
 reactTapEventPlugin();
 
