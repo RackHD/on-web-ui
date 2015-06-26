@@ -50,7 +50,7 @@ function doc(info) {
       info.method.map(function (method, index) {
         if (!method) { return null; }
         return (
-          <div key={20 + index} className="method">
+          <div key={'m' + index} className="method">
             <h2>{method.name}</h2>
             <p>{method.desc}</p>
           </div>
@@ -111,28 +111,28 @@ export default class FileManualViewer extends Component {
     var tabs = [];
     if (this.state.md) {
       tabs.push(
-        <Tab label="Markdown">
+        <Tab key="md" label="Markdown">
           <div ref="md" dangerouslySetInnerHTML={{__html: this.state.md}} />
         </Tab>
       );
     }
     if (this.state.docs) {
       tabs.push(
-        <Tab label="API">
+        <Tab key="docs" label="API">
           <div ref="docs">{this.state.docs}</div>
         </Tab>
       );
     }
     if (this.state.js) {
       tabs.push(
-        <Tab label="JavaScript">
+        <Tab keys="js" label="JavaScript">
           <div ref="js" dangerouslySetInnerHTML={{__html: this.state.js}} />
         </Tab>
       );
     }
     if (this.state.unknown) {
       tabs.push(
-        <Tab label="Unknown Source">
+        <Tab key="unknown" label="Unknown Source">
           <div ref="unknown" dangerouslySetInnerHTML={{__html: this.state.unknown}} />
         </Tab>
       );
