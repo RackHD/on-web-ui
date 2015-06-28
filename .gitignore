@@ -8,3 +8,4 @@ npm-debug.log
 test-results.xml
 
 apps/*/config/custom.json
+apps/tutorial
