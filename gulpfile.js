@@ -22,7 +22,6 @@ require('./scripts/tasks/clean');
 // build assets
 require('./scripts/tasks/assets');
 require('./scripts/tasks/less');
-require('./scripts/tasks/templates');
 
 // build bundle
 require('./scripts/tasks/bundle');

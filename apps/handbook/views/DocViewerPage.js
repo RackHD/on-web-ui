@@ -60,7 +60,7 @@ import FileManualViewer from './FileManualViewer';
   @name HomePage
   @desc Home page component
 */
-export default class HomePage extends Component {
+export default class DocViewerPage extends Component {
 
   /**
   @method

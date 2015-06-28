@@ -1,19 +1,5 @@
-# Apps
+## Apps directory
 
-### Directory Structure
+All folders in the `./apps/` directory are treated as separate **stand-alone** web applications. Except for the `./apps/common` folder, which goes through the  same build process, but it is meant to be a library used by other apps.
 
-```
-.
-└── {app}
-    ├── actions       # Actions modules delegate calls to stores.
-    ├── api           # API requests for application data.
-    ├── assets        # Static files to be made public.
-    ├── lib           # Reusable JavaScript code.
-    ├── mixins        # React component mixin definitions.
-    ├── views         # React views.
-    ├── stores        # Stores contain persisted application data.
-    ├── less          # Less and CSS files.
-    ├── templates     # HTML files.
-    ├── bundle.js     # Main application entry point.
-    └── config.js     # Client configuration file.
-```
+You can still share code between other apps, but the code will not be shared. Each app will be given it's own version of the code bundled. Unless it is code from the **common** app folder.

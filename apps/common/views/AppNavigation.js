@@ -36,17 +36,19 @@ export default class AppMenuNav extends Component {
 
   render() {
     var header = (
-      <div
+      <a
           onClick={this.onHeaderClick}
           style={this.mergeAndPrefix({
-            color: '#000',
+            color: '#fff',
+            display: 'block',
+            background: '#000',
             padding: '10px 0',
             fontWeight: 'bold',
             textAlign: 'center',
             borderBottom: '1px solid #ddd'
           }, this.props.brandStyle)}>
         {this.props.title}
-      </div>
+      </a>
     );
 
     return (
@@ -95,22 +97,3 @@ export default class AppMenuNav extends Component {
   }
 
 }
-
-// .AppMenuNav {
-//   color: @emc-off-white;
-//
-//   .mui-menu, .mui-left-nav-menu {
-//     background-color: black !important;
-//   }
-//
-//   .mui-left-nav-menu .mui-menu a.mui-menu-item {
-//     color: white !important;
-//   }
-//
-//   .nav-logo {
-//     padding: 10px 0;
-//     font-weight: bold;
-//     text-align: center;
-//     border-bottom: 1px solid #ddd;
-//   }
-// }

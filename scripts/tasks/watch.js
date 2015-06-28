@@ -10,22 +10,19 @@ gulp.task('watch', function(cb) {
   global.watch = true;
 
   var assets = [],
-      styles = [],
-      templates = [];
+      less = [];
 
   var apps = getFolders(path.join(__dirname, '..', '..', 'apps'));
   apps.forEach(function (appName) {
     var appDir = path.join('apps', appName);
 
     assets.push(path.join(appDir, 'assets', '**'));
-    styles.push(path.join(appDir, 'styles', '**', '*.{css,less}'));
-    templates.push(path.join(appDir, 'templates', '**', '*.*'));
+    less.push(path.join(appDir, 'less', '**', '*.{css,less}'));
   });
 
   runSequence('build', function() {
     gulp.watch(assets, ['assets']);
-    gulp.watch(styles, ['css']);
-    gulp.watch(templates, ['templates']);
+    gulp.watch(less, ['less']);
     cb();
   });
 });

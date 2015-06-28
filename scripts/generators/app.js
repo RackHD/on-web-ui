@@ -10,8 +10,7 @@ var src = [
   path.join(__dirname, '..', 'templates', 'app', 'config*', '**'),
   path.join(__dirname, '..', 'templates', 'app', 'messengers*'),
   path.join(__dirname, '..', 'templates', 'app', 'stores*'),
-  // TODO: fix this, it currently breaks because of a missing template parameter
-  // path.join(__dirname, '..', 'templates', 'app', 'views*', '**'),
+  path.join(__dirname, '..', 'templates', 'app', 'views*', 'App.js'),
   path.join(__dirname, '..', 'templates', 'app', 'bundle.js'),
   path.join(__dirname, '..', 'templates', 'app', 'README.md')
 ];
@@ -45,12 +44,13 @@ gulp.task('app', function (done) {
     if (!answers.moveon) {
       return done();
     }
+    answers.file = 'App';
     gulp.src(src)
       .pipe(template(answers))
       .pipe(conflict(target))
       .pipe(gulp.dest(target))
-      .on('end', function () { done();
-        console.log('You must create an App.js view.');
+      .on('end', function () {
+        done();
       })
       .resume();
   });

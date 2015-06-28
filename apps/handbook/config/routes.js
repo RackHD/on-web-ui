@@ -1,21 +1,15 @@
 'use strict';
 
 import React from 'react';
-import Router, { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
+import Router, { Route, NotFoundRoute, DefaultRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
 import NotFound from 'common-web-ui/views/NotFound';
 import { MenuItem } from 'material-ui';
 
 export var navigation = [
-  { text: 'Home', route: '/' },
-
-  { text: 'Guides', type: MenuItem.Types.SUBHEADER },
-  { text: 'Getting Started', route: '/guides/getting_started' },
-  { text: 'Tutorial App', route: '/guides/tutorial_app' },
-  { text: 'Testing', route: '/guides/testing' },
-  { text: 'Scaffolding', route: '/guides/scaffolding' },
-  { text: 'Code Style', route: '/guides/code_style' },
+  { text: 'API Documentation', route: '/docs' },
+  { text: 'Project Guide', route: '/guides' },
 
   { text: 'Technologies', type: MenuItem.Types.SUBHEADER },
   { text: 'React', type: MenuItem.Types.LINK,
@@ -39,14 +33,15 @@ export var navigation = [
 ];
 
 import App from '../views/App';
-import HomePage from '../views/HomePage';
+import DocViewerPage from '../views/DocViewerPage';
 import GuideViewerPage from '../views/GuideViewerPage';
 
 let routes = (
   <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={HomePage} />
-    <Redirect from="home" to="/" />
-    <Route path="/docs/:doc" handler={HomePage} />
+    <DefaultRoute handler={GuideViewerPage} />
+    <Route path="/docs" handler={DocViewerPage} />
+    <Route path="/docs/:doc" handler={DocViewerPage} />
+    <Route path="/guides" handler={GuideViewerPage} />
     <Route path="/guides/:guide" handler={GuideViewerPage} />
     <NotFoundRoute handler={NotFound} />
   </Route>
