@@ -5,7 +5,8 @@
 build/
 node_modules/
 npm-debug.log
-test-results.xml
+xunit.xml
+checkstyle-result.xml
 
 apps/*/config/custom.json
 apps/tutorial

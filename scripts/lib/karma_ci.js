@@ -14,7 +14,7 @@ module.exports = function (config) {
     singleRun: true,
     reporters: [ 'dots', 'junit' ], // report results in this format
     junitReporter: {
-      outputFile: 'test-results.xml'
+      outputFile: 'xunit.xml'
     }
   });
 };

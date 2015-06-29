@@ -1,12 +1,14 @@
 #!/bin/bash
 
-git clone . packagebuild
-pushd packagebuild
+# install node 0.12.5
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash
+. ~/.nvm/nvm.sh
+nvm install v0.12.5
+nvm use 0.12.5
 
+# install local dependencies
 rm -rf node_modules
 npm install
-# TODO: npm run apidoc
-npm prune --production
 
+# build apps
 ./node_modules/.bin/gulp build
-# TODO: ./node_modules/.bin/gulp delpy
