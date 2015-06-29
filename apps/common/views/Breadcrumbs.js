@@ -58,7 +58,7 @@ export default class Breadcrumbs extends Component {
       paddingLeft: 20,
       paddingRight: 20,
       paddingBottom: 10,
-      marginBottom: 10,
+      marginBottom: 0,
       background: '#ccc'
     };
     return (

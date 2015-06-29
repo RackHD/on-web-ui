@@ -4,34 +4,25 @@ import React from 'react';
 import Router, { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
-import { MenuItem } from 'material-ui';
+// import { MenuItem } from 'material-ui';
 import NotFound from 'common-web-ui/views/NotFound';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
-  { text: 'Dashboard', route: '/' },
-  { text: 'Objects', type: MenuItem.Types.SUBHEADER },
-  { text: 'Nodes', route: 'nodes' },
-  { text: 'Other', type: MenuItem.Types.SUBHEADER },
-  { text: 'EMC', type: MenuItem.Types.LINK, payload: 'http://emc.com' }
+  { text: 'Worfklow Editor', route: '/' },
+  { text: 'Not Found', route: '404' }
 ];
 
 // Must be imported after navigation.
 import App from '../views/App';
-
-import Node, { CreateNode } from '../views/Node';
-import Nodes from '../views/Nodes';
-import Dashboard from '../views/Dashboard';
+import WorkflowEditor from '../views/WorkflowEditor';
 
 // See http://rackt.github.io/react-router/
 let routes = (
   <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={Dashboard}/>
-    <Route name="nodes" handler={Nodes} />
-    <Route name="newNode" path="/nodes/new" handler={CreateNode} />
-    <Route name="node" path="/nodes/:nodeId" handler={Node} />
-    <NotFoundRoute handler={NotFound}/>
-    <Redirect from="dash" to="/" />
+    <DefaultRoute handler={WorkflowEditor} />
+    <NotFoundRoute handler={NotFound} />
+    <Redirect from="editor" to="/" />
   </Route>
 );
 

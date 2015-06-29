@@ -89,7 +89,7 @@ export default class DocViewerPage extends Component {
       'README.md';
 
     return (
-      <div className="HomePage ungrid">
+      <div className="DocViewerPage ungrid">
         <div className="line">
           <div className="cell" style={{width: 276, paddingBottom: 20}}>
             <FileTreeBrowser

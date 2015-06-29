@@ -2,37 +2,37 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import NodeAPI from '../messengers/NodeAPI';
+import TaskAPI from '../messengers/TaskAPI';
 
-export default class NodeStore extends Store {
+export default class TaskStore extends Store {
 
   list() {
     this.empty();
-    return NodeAPI.getNodes()
+    return TaskAPI.getTasks()
       .then(list => this.collect(list))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return NodeAPI.getNode(id)
+    return TaskAPI.getTask(id)
       .then(item => this.change(id, item))
       .catch(err => this.error(id, err));
   }
 
   create(id, data) {
-    return NodeAPI.postNode(id, data)
+    return TaskAPI.postTask(id, data)
       .then(() => this.insert(id, data))
       .catch(err => this.error(id, err));
   }
 
   update(id, data) {
-    return NodeAPI.patchNode(id, data)
+    return TaskAPI.patchTask(id, data)
       .then(() => this.change(id, data))
       .catch(err => this.error(id, err));
   }
 
   destroy(id) {
-    return NodeAPI.deleteNode(id)
+    return TaskAPI.deleteTask(id)
       .then(() => this.remove(id))
       .catch(err => this.error(id, err));
   }

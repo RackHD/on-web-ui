@@ -2,7 +2,7 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import SystemsActionsAPI from '../api/ManagedSystems/SystemsActionsAPI';
+import SystemsActionsAPI from '../messengers/SystemsActionsAPI';
 
 export default class SystemResetTypesStore extends Store {
 

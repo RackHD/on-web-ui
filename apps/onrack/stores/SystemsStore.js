@@ -2,7 +2,7 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import SystemsAPI from '../api/ManagedSystems/SystemsAPI';
+import SystemsAPI from '../messengers/SystemsAPI';
 
 export default class SystemsStore extends Store {
 

@@ -2,37 +2,37 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import NodeAPI from '../messengers/NodeAPI';
+import WorkflowAPI from '../messengers/WorkflowAPI';
 
-export default class NodeStore extends Store {
+export default class WorkflowStore extends Store {
 
   list() {
     this.empty();
-    return NodeAPI.getNodes()
+    return WorkflowAPI.getWorkflows()
       .then(list => this.collect(list))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return NodeAPI.getNode(id)
+    return WorkflowAPI.getWorkflow(id)
       .then(item => this.change(id, item))
       .catch(err => this.error(id, err));
   }
 
   create(id, data) {
-    return NodeAPI.postNode(id, data)
+    return WorkflowAPI.postWorkflow(id, data)
       .then(() => this.insert(id, data))
       .catch(err => this.error(id, err));
   }
 
   update(id, data) {
-    return NodeAPI.patchNode(id, data)
+    return WorkflowAPI.patchWorkflow(id, data)
       .then(() => this.change(id, data))
       .catch(err => this.error(id, err));
   }
 
   destroy(id) {
-    return NodeAPI.deleteNode(id)
+    return WorkflowAPI.deleteWorkflow(id)
       .then(() => this.remove(id))
       .catch(err => this.error(id, err));
   }

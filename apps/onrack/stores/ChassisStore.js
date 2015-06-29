@@ -2,7 +2,7 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import ChassisAPI from '../api/ManagedSystems/ChassisAPI';
+import ChassisAPI from '../messengers/ChassisAPI';
 
 export default class ChassisStore extends Store {
 

@@ -7,7 +7,6 @@ import onReady from 'common-web-ui/lib/onReady';
 import { MenuItem } from 'material-ui';
 import NotFound from 'common-web-ui/views/NotFound';
 import UserLogin from 'common-web-ui/views/UserLogin';
-import GraphCanvas from 'common-web-ui/views/GraphCanvas';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
@@ -23,12 +22,11 @@ export var navigation = [
 // Must be imported after navigation.
 import App from '../views/App';
 
-import { ChassisCollection, ChassisDetails } from '../views/Chassis';
-import { SystemsCollection, SystemDetails } from '../views/Systems';
+import ChassisCollection from '../views/ChassisCollection';
+import ChassisDetails from '../views/ChassisDetails';
+import SystemsCollection from '../views/SystemsCollection';
+import SystemDetails from '../views/SystemDetails';
 import Dashboard from '../views/Dashboard';
-
-import featureFlag from 'common-web-ui/lib/featureFlag';
-const devFlag = featureFlag('dev');
 
 // See http://rackt.github.io/react-router/
 let routes = (
@@ -39,9 +37,6 @@ let routes = (
     <Route name="systems" handler={SystemsCollection} />
     <Route name="system" path="/systems/:systemId" handler={SystemDetails} />
     <Route name="login" handler={UserLogin} />
-    { !devFlag.check() ? null :
-      <Route name="map" handler={GraphCanvas} />
-    }
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />
   </Route>
