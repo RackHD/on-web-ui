@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+set -x
+
 # install node 0.12.5
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash
 . ~/.nvm/nvm.sh
