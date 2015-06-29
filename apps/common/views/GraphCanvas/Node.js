@@ -166,7 +166,7 @@ export default class GraphCanvasNode extends Component {
           lastY - event.relY);
         this.moveRepeat = setInterval(() => {
           pushFrame(event, dragState);
-        }, 50);
+        }, 32);
       },
       up: (event, dragState) => {
         clearInterval(this.moveRepeat);

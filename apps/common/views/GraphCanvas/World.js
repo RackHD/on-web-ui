@@ -214,7 +214,7 @@ export default class GraphCanvasWorld extends Component {
         });
         this.moveRepeat = setInterval(() => {
           pushFrame(event, dragState);
-        }, 100);
+        }, 32);
       },
       up: (event, dragState) => {
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
