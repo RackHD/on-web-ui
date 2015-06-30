@@ -33,12 +33,17 @@ onReady(function() {
 export default class TestWrapper extends Component {
 
   static testRender(TestComponent, componentProps, done, disableAutoTheme) {
-    var testWrapper = <TestWrapper
-      disableAutoTheme={!!disableAutoTheme}
-      TestComponent={TestComponent}
-      componentProps={componentProps}
-      done={done} />;
-    return React.render(testWrapper, testContainer);
+    try {
+      var testWrapper = <TestWrapper
+        disableAutoTheme={!!disableAutoTheme}
+        TestComponent={TestComponent}
+        componentProps={componentProps}
+        done={done} />;
+      return React.render(testWrapper, testContainer);
+    } catch (err) {
+      console.log('TestWrapper error:');
+      console.error(err);
+    }
   }
 
   static testCleanup(done) {
@@ -80,24 +85,29 @@ export default class TestWrapper extends Component {
   }
 
   render() {
-    if (this.state.disabled) { return null; }
-    var { TestComponent, componentProps } = this.props,
-        styles = {
-          background: 'rgba(255, 255, 255, 0.75)',
-          minHeight: '20%',
-          position: 'absolute',
-          padding: 10,
-          zIndex: 1,
-          border: '2px dotted rgba(255, 0, 0, 0.25)',
-          width: '80%',
-          left: '10%',
-          top: '5%'
-        };
-    return (
-      <div className="TestWrapper" style={styles}>
-        <TestComponent ref="component" {...componentProps} />
-      </div>
-    );
+    try {
+      if (this.state.disabled) { return null; }
+      var { TestComponent, componentProps } = this.props,
+          styles = {
+            background: 'rgba(255, 255, 255, 0.75)',
+            minHeight: '20%',
+            position: 'absolute',
+            padding: 10,
+            zIndex: 1,
+            border: '2px dotted rgba(255, 0, 0, 0.25)',
+            width: '80%',
+            left: '10%',
+            top: '5%'
+          };
+      return (
+        <div className="TestWrapper" style={styles}>
+          <TestComponent ref="component" {...componentProps} />
+        </div>
+      );
+    } catch (err) {
+      console.log('TestWrapper-render error:');
+      console.error(err);
+    }
   }
 
 }
