@@ -58,6 +58,10 @@ export default class Lookups extends Component {
     };
   }
 
-  search(q) { return this.lookups.list(q); }
+  search(term) {
+    // TODO: fix lookups api to support text search
+    // var query = term ? {$text: {$search: term}} : '';
+    return this.lookups.list(term);
+  }
 
 }
