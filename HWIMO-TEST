@@ -14,7 +14,7 @@ rm -rf node_modules
 npm install
 
 # lint source
-./node_modules/.bin/eslint gulpfile.js karma.*conf.js scripts apps -o checkstyle-result.xml
+./node_modules/.bin/eslint gulpfile.js karma.*conf.js scripts apps -f checkstyle -o checkstyle-result.xml
 
 # run tests
 Xvfb :1 -screen 5 1024x768x8 &
