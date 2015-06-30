@@ -8,7 +8,6 @@ import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 
 import NodesGrid from './NodesGrid';
 import Chart from './Chart';
-import './Dashboard.less';
 
 @mixin.decorate(PageHelpers)
 export default class Dashboard extends Component {
@@ -17,16 +16,8 @@ export default class Dashboard extends Component {
     return (
       <div className="Dashboard">
         {this.renderBreadcrumbs('Dashboard')}
-        <div className="container">
-          <div className="row">
-            <div className="one-half column">
-              <NodesGrid />
-            </div>
-            <div className="one-half column">
-              <Chart />
-            </div>
-          </div>
-        </div>
+        <Chart />
+        <NodesGrid />
       </div>
     );
   }

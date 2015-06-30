@@ -12,6 +12,7 @@ export var navigation = [
   { text: 'Dashboard', route: '/' },
   { text: 'Objects', type: MenuItem.Types.SUBHEADER },
   { text: 'Nodes', route: 'nodes' },
+  { text: 'Lookups', route: 'lookups' },
   { text: 'Other', type: MenuItem.Types.SUBHEADER },
   { text: 'EMC', type: MenuItem.Types.LINK, payload: 'http://emc.com' }
 ];
@@ -21,6 +22,7 @@ import App from '../views/App';
 
 import Node, { CreateNode } from '../views/Node';
 import Nodes from '../views/Nodes';
+import Lookups from '../views/Lookups';
 import Dashboard from '../views/Dashboard';
 
 // See http://rackt.github.io/react-router/
@@ -30,6 +32,7 @@ let routes = (
     <Route name="nodes" handler={Nodes} />
     <Route name="newNode" path="/nodes/new" handler={CreateNode} />
     <Route name="node" path="/nodes/:nodeId" handler={Node} />
+    <Route name="lookups" path="/lookups" handler={Lookups} />
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />
   </Route>

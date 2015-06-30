@@ -15,7 +15,8 @@ export default class NodesRestAPI {
 
   get(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id).accept('json')
+      http.get(this.url + id)
+        .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
