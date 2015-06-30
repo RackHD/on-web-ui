@@ -6,39 +6,12 @@ var server = jsonServer.create();
 
 server.use(jsonServer.defaults);
 
-function attachDates(obj) {
-  obj.createdAt = Date.now() - (Math.random() * 100000 + 10000);
-  obj.updatedAt = Date.now() - (Math.random() * 10000);
-  return obj;
-}
-
 server.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
 server.use(jsonServer.router({
-  nodes: [
-    {
-      id: 1,
-      name: 'Node A'
-    },
-    {
-      id: 2,
-      name: 'Node B'
-    },
-    {
-      id: 3,
-      name: 'Node C'
-    }
-  ].map(attachDates),
-  activities: [
-    {
-      id: 1,
-      status: 'Done',
-      workflowId: 'Graph.Noop'
-    }
-  ],
   workflows: [
     {
       id: 'Graph.Noop',
