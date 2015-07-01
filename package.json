@@ -93,6 +93,6 @@
     "link": "./scripts/link_project.sh",
     "dev": "./node_modules/.bin/gulp",
     "test": "./node_modules/.bin/karma start",
-    "lint": "./node_modules/.bin/eslint gulpfile.js karma.*conf.js scripts apps"
+    "lint": "./node_modules/.bin/eslint gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib scripts/tasks scripts/test scripts/tools scripts/slushfile.js"
   }
 }

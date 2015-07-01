@@ -8,12 +8,22 @@ import {
     Tab
   } from 'material-ui';
 
+import { DragSource } from 'react-dnd';
+
 import TaskStore from '../stores/TaskStore';
 import JobStore from '../stores/JobStore';
 
 let tasks = new TaskStore();
 let jobs = new JobStore();
 
+@DragSource('JOB', { // eslint-disable-line
+  beginDrag(props) { return props; }
+}, (connect, monitor) => {
+  return {
+    connectDragSource: connect.dragSource,
+    isDragging: monitor.isDragging
+  };
+})
 export default class WorkflowsMenu extends Component {
 
   state = {

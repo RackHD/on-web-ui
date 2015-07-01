@@ -11,7 +11,7 @@ import WorkflowTasksTray from './WorkflowTasksTray';
 import WorkflowInspector from './WorkflowInspector';
 import './WorkflowEditor.less';
 
-export default class WorkflowEditor extends Component {
+export default class EditorLayout extends Component {
 
   state = {
     canvasWidth: 1000,

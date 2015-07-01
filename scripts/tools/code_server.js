@@ -27,10 +27,10 @@ server.use(function (req, res) {
         if (readError) {
           return res.status(500).send(readError);
         }
-        files = files.map(function (file) {
+        files = files.map(function (filePath) {
           try {
-            var stats = fs.statSync(path.join(publicPath, req.url, file));
-            if (stats.isDirectory()) { file += '/'; }
+            var fileStats = fs.statSync(path.join(publicPath, req.url, filePath));
+            if (fileStats.isDirectory()) { file += '/'; }
           } catch(err) { console.error(err); }
           return file;
         });
