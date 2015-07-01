@@ -3,59 +3,23 @@
 import { API } from '../config/index';
 import http from 'superagent';
 
-export default {
+export default class WorkflowsRestAPI {
 
-  getTasks() {
-    return new Promise(function (resolve, reject) {
-      http.get(API + 'tasks')
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
+  api = API;
+  entity = 'tasks';
 
-  postTasks(body) {
-    return new Promise(function (resolve, reject) {
-      http.post(API + 'tasks')
-        .accept('json')
-        .type('json')
-        .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
+  get url() { return this.getEntityUrl(this.entity); }
 
-  getTask(id) {
-    return new Promise(function (resolve, reject) {
-      http.get(API + 'tasks/' + id)
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
+  get workflowsUrl() { return this.getEntityUrl('workflows'); }
 
-  patchTask(id, body) {
-    return new Promise(function (resolve, reject) {
-      http.patch(API + 'tasks/' + id)
-        .accept('json')
-        .type('json')
-        .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
+  getEntityUrl(entity) {
+    if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
+    return this.api + entity + '/';
+  }
 
-  deleteTask(id) {
-    return new Promise(function (resolve, reject) {
-      http.del(API + 'tasks/' + id)
+  list() {
+    return new Promise((resolve, reject) => {
+      http.get(this.workflowsUrl + 'tasks/library')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -64,4 +28,4 @@ export default {
     });
   }
 
-};
+}
