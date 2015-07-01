@@ -3,59 +3,19 @@
 import { API } from '../config/index';
 import http from 'superagent';
 
-export default {
+export default class WorkflowsRestAPI {
 
-  getWorkflows() {
-    return new Promise(function (resolve, reject) {
-      http.get(API + 'workflows')
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
+  api = API;
+  entity = 'workflows';
 
-  postWorkflows(body) {
-    return new Promise(function (resolve, reject) {
-      http.post(API + 'workflows')
-        .accept('json')
-        .type('json')
-        .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
+  get url() {
+    if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
+    return this.api + this.entity + '/';
+  }
 
-  getWorkflow(id) {
-    return new Promise(function (resolve, reject) {
-      http.get(API + 'workflows/' + id)
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
-
-  patchWorkflow(id, body) {
-    return new Promise(function (resolve, reject) {
-      http.patch(API + 'workflows/' + id)
-        .accept('json')
-        .type('json')
-        .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  },
-
-  deleteWorkflow(id) {
-    return new Promise(function (resolve, reject) {
-      http.del(API + 'workflows/' + id)
+  list() {
+    return new Promise((resolve, reject) => {
+      http.get(this.url + 'library')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -64,4 +24,28 @@ export default {
     });
   }
 
-};
+  put(body) {
+    return new Promise((resolve, reject) => {
+      http.put(this.url)
+        .accept('json')
+        .type('json')
+        .send(body)
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
+  get(id) {
+    return new Promise((resolve, reject) => {
+      http.get(this.url + id)
+        .accept('json')
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
+}
