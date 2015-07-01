@@ -15,7 +15,7 @@ import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
 
 @mixin.decorate(RouteHelpers)
-export default class WorkflowsFileMenu extends Component {
+export default class WEFileMenu extends Component {
 
   state = {workflows: null};
 

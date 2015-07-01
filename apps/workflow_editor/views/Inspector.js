@@ -6,7 +6,7 @@ import {
     Paper
   } from 'material-ui';
 
-export default class WorkflowInspector extends Component {
+export default class WEInspector extends Component {
 
   state = {selected: []};
 
@@ -32,6 +32,9 @@ export default class WorkflowInspector extends Component {
         </div>
       );
     });
+    if (!selected || !selected.length) {
+      selected = 'No selected nodes.';
+    }
     return (
       <Paper className="WorkflowInspector">
         {selected}

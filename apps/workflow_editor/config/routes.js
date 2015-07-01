@@ -15,12 +15,12 @@ export var navigation = [
 
 // Must be imported after navigation.
 import App from '../views/App';
-import WorkflowEditor from '../views/WorkflowEditor';
+import WELayout from '../views/Layout';
 
 // See http://rackt.github.io/react-router/
 let routes = (
   <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={WorkflowEditor} />
+    <DefaultRoute handler={WELayout} />
     <NotFoundRoute handler={NotFound} />
     <Redirect from="editor" to="/" />
   </Route>
