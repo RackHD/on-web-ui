@@ -40,6 +40,8 @@ let defaultStyles = {
   propTypes: {
     className: PropTypes.string,
     navigation: PropTypes.array,
+    header: PropTypes.any,
+    footer: PropTypes.any,
     styles: PropTypes.object,
     title: PropTypes.string
   },
@@ -47,6 +49,8 @@ let defaultStyles = {
   defaultProps: {
     className: '',
     navigation: [],
+    header: undefined,
+    footer: undefined,
     styles: {},
     title: 'On Web UI'
   },
@@ -60,33 +64,37 @@ export default class AppContainer extends Component {
   getChildContext() { return this.muiContext(); }
 
   render() {
-    var styles = this.props.styles;
+    var styles = this.props.styles,
+        header = this.props.header,
+        footer = this.props.footer;
+
+    if (header === undefined) {
+      header = <AppHeader
+        className="header"
+        navigation={this.props.navigation}
+        style={[defaultStyles.header, styles.header]}
+        title={this.props.title} />;
+    }
+
+    if (footer === undefined) {
+      footer = <AppFooter
+          className="footer"
+          style={[defaultStyles.footer, styles.footer]} />;
+    }
 
     return (
       <div
           className={this.props.className}
           style={[defaultStyles.root, styles.root]}>
-
         <AppCanvas
             predefinedLayout={1}>
-
-          <AppHeader
-              className="header"
-              navigation={this.props.navigation}
-              style={[defaultStyles.header, styles.header]}
-              title={this.props.title} />
-
+          {header}
           <div
               className="content"
               style={[defaultStyles.content, styles.content]}>
-
             {this.props.children || <RouteHandler />}
           </div>
-
-          <AppFooter
-              className="footer"
-              style={[defaultStyles.footer, styles.footer]} />
-
+          {footer}
         </AppCanvas>
       </div>
     );

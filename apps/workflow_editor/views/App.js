@@ -4,13 +4,10 @@ import { Component } from 'react';
 
 import AppContainer from 'common-web-ui/views/AppContainer';
 
-import { navigation } from '../config/routes';
-
 export default class App extends Component {
 
   state = {
-    title: this.title,
-    navigation
+    title: this.title
   };
 
   render() {
@@ -18,9 +15,10 @@ export default class App extends Component {
       <AppContainer
           ref="container"
           className="app"
+          header={null}
           title={this.state.title}
-          navigation={this.state.navigation}
-          children={this.props.children} />
+          children={this.props.children}
+          styles={{content: {padding: 0}}} />
     );
   }
 

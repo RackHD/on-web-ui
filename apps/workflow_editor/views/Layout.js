@@ -7,6 +7,7 @@ import radium from 'radium';
 import decorate from 'common-web-ui/lib/decorate';
 
 import {
+    Dialog,
     Tabs,
     Tab
   } from 'material-ui';
@@ -16,7 +17,8 @@ import GraphCanvas from 'common-web-ui/views/GraphCanvas';
 import GraphWorkflowHelpers from '../mixins/GraphWorkflowHelpers';
 
 import WEToolbar from './Toolbar';
-import WETasksTray from './Tray';
+import WETasksLibrary from './TasksLibrary';
+import WETWorkflowsLibrary from './WorkflowsLibrary';
 import WEInspector from './Inspector';
 
 import './EditorLayout.less'; // TODO: move css into this file
@@ -43,6 +45,7 @@ export default class WELayout extends Component {
 
   componentDidMount() {
     this.updateCanvasSize();
+    setTimeout(this.updateCanvasSize.bind(this), 1000);
     var resizeTimer = null;
     this.handleResize = () => {
       clearTimeout(resizeTimer);
@@ -64,41 +67,64 @@ export default class WELayout extends Component {
   }
 
   render() {
-    var supported = window.innerWidth > 700 && window.innerHeight > 700;
+    // var supported = window.innerWidth > 800 && window.innerHeight > 600;
     // TODO: check for mobile, mobile is not currently supported.
-    if (!supported) {
-      return (
-        <div className="WorkflowEditor container">
-          Workflow Editor requires a larger viewport.
-        </div>
-      );
-    }
+    // if (!supported) {
+    //   return (
+    //     <div className="WorkflowEditor">
+    //       <p>Workflow Editor requires a larger viewport.</p>
+    //     </div>
+    //   );
+    // }
+    let standardActions = [
+      { text: 'Cancel' },
+      { text: 'Submit', onTouchTap: this._onDialogSubmit, ref: 'submit' }
+    ];
     return (
-      <div className="WorkflowEditor" ref="root">
-        <GraphCanvas
-            ref="graphCanvas"
-            initialScale={2.4}
-            viewWidth={this.state.canvasWidth}
-            viewHeight={this.state.canvasHeight} />
+      <div ref="root" className="WorkflowEditor ungrid">
+        <div className="line">
+          <div ref="canvasCell" className="cell">
+            <WEToolbar ref="toolbar" editor={this} />
+            <GraphCanvas
+              ref="graphCanvas"
+              initialScale={2.4}
+              viewWidth={this.state.canvasWidth}
+              viewHeight={this.state.canvasHeight} />
+          </div>
+          <div className="cell" style={{width: '40%', verticalAlign: 'top', borderLeft: '2px solid #eee'}}>
+            <Tabs style={{height: '100%'}}>
+              <Tab label="Inspector">
+                <WEInspector ref="inspector" editor={this} />
+              </Tab>
+              <Tab label="Tasks">
+                <WETasksLibrary ref="tasks" editor={this} />
+              </Tab>
+              <Tab label="Workflows">
+                <WETWorkflowsLibrary ref="workflows" editor={this} />
+              </Tab>
+            </Tabs>
+          </div>
+        </div>
         <div className="overlay container">
-          <WEToolbar ref="toolbar" editor={this} />
-          <Tabs style={{width: 300, clear: 'both', float: 'right'}}>
-            <Tab label="Inspector">
-              <WEInspector ref="inspector" editor={this} />
-            </Tab>
-            <Tab label="Tasks">
-              <WETasksTray ref="tray" />
-            </Tab>
-          </Tabs>
+          <Dialog
+            ref="dialog"
+            title="Dialog With Standard Actions"
+            actions={standardActions}
+            actionFocus="submit"
+            modal={this.state.modal}>
+            {'The actions in this window are created from the json that\'s passed in.'}
+          </Dialog>
         </div>
       </div>
     );
   }
 
   updateCanvasSize() {
-    var canvasElem = React.findDOMNode(this.refs.root || this),
-        canvasWidth = canvasElem.offsetWidth,
-        canvasHeight = Math.max(800, window.innerHeight - 300);
+    var canvasCell = React.findDOMNode(this.refs.canvasCell),
+        toolbarLine = React.findDOMNode(this.refs.toolbar),
+        footerSize = 38,
+        canvasWidth = canvasCell.offsetWidth,
+        canvasHeight = window.innerHeight - toolbarLine.offsetHeight - footerSize;
     if (this.state.canvasWidth !== canvasWidth) { this.setState({ canvasWidth }); }
     if (this.state.canvasHeight !== canvasHeight) { this.setState({ canvasHeight }); }
   }

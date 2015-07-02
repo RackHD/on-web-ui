@@ -7,12 +7,6 @@ import onReady from 'common-web-ui/lib/onReady';
 // import { MenuItem } from 'material-ui';
 import NotFound from 'common-web-ui/views/NotFound';
 
-// See http://material-ui.com/#/components/left-nav
-export var navigation = [
-  { text: 'Worfklow Editor', route: '/' },
-  { text: 'Not Found', route: '404' }
-];
-
 // Must be imported after navigation.
 import App from '../views/App';
 import WELayout from '../views/Layout';

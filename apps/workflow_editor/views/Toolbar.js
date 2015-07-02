@@ -21,7 +21,7 @@ export default class WEToolbar extends Component {
 
   render() {
     return (
-      <Toolbar>
+      <Toolbar style={{background: '#fff', borderBottom: '2px solid #eee'}}>
         <ToolbarGroup key={0} float="left" style={{height: 'inherit'}}>
           <WEFileMenu editor={this.props.editor} />
           <WEEditMenu editor={this.props.editor} />

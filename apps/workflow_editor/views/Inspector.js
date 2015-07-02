@@ -3,7 +3,6 @@
 import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 
 import {
-    Paper
   } from 'material-ui';
 
 export default class WEInspector extends Component {
@@ -36,9 +35,9 @@ export default class WEInspector extends Component {
       selected = 'No selected nodes.';
     }
     return (
-      <Paper className="WorkflowInspector">
+      <div className="WorkflowInspector">
         {selected}
-      </Paper>
+      </div>
     );
   }
 

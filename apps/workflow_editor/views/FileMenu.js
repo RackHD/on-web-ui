@@ -27,10 +27,7 @@ export default class WEFileMenu extends Component {
   componentWillUnmount() { this.unwatchWorkflows(); }
 
   render() {
-    var workflowMenuItems = [
-      {text: 'File', type: MenuItem.Types.SUBHEADER},
-      {text: 'New +', workflow: {}}
-    ];
+    var workflowMenuItems = [];
     if (this.state.workflows) {
       this.state.workflows.forEach(workflow => {
         workflowMenuItems.push({
@@ -39,16 +36,31 @@ export default class WEFileMenu extends Component {
         });
       });
     }
+
+    var fileMenuItems = [
+      {text: 'File', type: MenuItem.Types.SUBHEADER},
+      {text: 'New Workflow'},//, workflow: {}},
+      {text: 'Load Workflow'}//, type: MenuItem.Types.NESTED, items: workflowMenuItems}
+    ];
+
     return (
       <DropDownMenu ref="root" className="WorkflowsFileMenu"
-          menuItems={workflowMenuItems}
+          menuItems={fileMenuItems}
           onChange={this.loadWorkflow.bind(this)} />
     );
   }
 
   listWorkflows() { return workflows.list(); }
 
-  loadWorkflow(event, index, menuItem) {
+  loadWorkflow(event, selectedIndex, menuItem) {
+    if (menuItem.text === 'Load Workflow') {
+      this.props.editor.refs.dialog.show();
+    }
+    if (selectedIndex !== 0) {
+      setTimeout(() => {
+        this.refs.root._setSelectedIndex({selectedIndex: 0});
+      }, 500);
+    }
     var workflow = menuItem.workflow;
     if (!workflow) { return; }
     // if (workflow.id) {
