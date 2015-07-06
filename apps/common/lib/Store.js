@@ -4,12 +4,16 @@ import { EventEmitter } from 'events';
 
 export default class Store extends EventEmitter {
 
-  collection = {};
+  constructor(EntityClass) {
+    super();
+    this.EntityClass = EntityClass || this.EntityClass;
+    this.collection = {};
+  }
 
-     list() { throw new Error('Store: Unimplemented list method.'); }
-     read() { throw new Error('Store: Unimplemented read method.'); }
-   create() { throw new Error('Store: Unimplemented create method.'); }
-   update() { throw new Error('Store: Unimplemented update method.'); }
+  list() { throw new Error('Store: Unimplemented list method.'); }
+  read() { throw new Error('Store: Unimplemented read method.'); }
+  create() { throw new Error('Store: Unimplemented create method.'); }
+  update() { throw new Error('Store: Unimplemented update method.'); }
   destroy() { throw new Error('Store: Unimplemented destroy method.'); }
 
   all() {
@@ -60,7 +64,8 @@ export default class Store extends EventEmitter {
       console.warn(new Error('Store: Insert called with undefined data.'));
       data = this.collection[id];
     }
-    this.collection[id] = data;
+    var object = this.EntityClass ? new this.EntityClass(data) : data;
+    this.collection[id] = object;
     this.publish(id);
   }
 

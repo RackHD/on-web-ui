@@ -7,7 +7,9 @@ import radium from 'radium';
 import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
-import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';import Library from './Library';
+import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
+
+import Library from './Library';
 import LibraryItem from './LibraryItem';
 import TaskStore from '../stores/TaskStore';
 

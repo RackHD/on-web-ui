@@ -54,7 +54,7 @@ export default class WEFileMenu extends Component {
 
   loadWorkflow(event, selectedIndex, menuItem) {
     if (menuItem.text === 'Load Workflow') {
-      this.props.editor.refs.dialog.show();
+      this.props.editor.layout.refs.loadWorkflowDialog.show();
     }
     if (selectedIndex !== 0) {
       setTimeout(() => {

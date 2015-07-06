@@ -44,6 +44,7 @@ export default class WELibrary extends Component {
 
   css = {
     root: {
+      padding: 10,
       background: '#fff'
     },
     search: {
@@ -51,15 +52,13 @@ export default class WELibrary extends Component {
       marginBottom: 0
     },
     ul: {
-      maxHeight: 500,
+      maxHeight: '500px',
       overflow: 'auto',
       userSelect: 'none',
       borderTop: '1px dotted #ddd',
-      maxWidth: 256,
       fontSize: '14px',
-      marginTop: 0,
-      paddingLeft: '10px',
-      marginBottom: 0
+      margin: 0,
+      padding: 0
     }
   };
 
@@ -85,6 +84,7 @@ export default class WELibrary extends Component {
       <div className={this.props.className} style={css.root}>
         <TextField
             ref="search"
+            fullWidth={true}
             floatingLabelText="Search"
             onBlur={this.clearSearch.bind(this)}
             onChange={this.updateSearch.bind(this)} />

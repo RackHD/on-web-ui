@@ -7,32 +7,28 @@ import radium from 'radium';
 import decorate from 'common-web-ui/lib/decorate';
 
 import {
-    Dialog,
-    Tabs,
-    Tab
   } from 'material-ui';
 
 import GraphCanvas from 'common-web-ui/views/GraphCanvas';
 
-import GraphWorkflowHelpers from '../mixins/GraphWorkflowHelpers';
-
 import WEToolbar from './Toolbar';
-import WETasksLibrary from './TasksLibrary';
-import WETWorkflowsLibrary from './WorkflowsLibrary';
-import WEInspector from './Inspector';
+import WETray from './Tray';
 
-import './EditorLayout.less'; // TODO: move css into this file
+import WELoadWorkflowDialog from './dialogs/LoadWorkflow';
+
+import Editor from '../lib/Editor';
 
 @radium
-@mixin.decorate(GraphWorkflowHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,
+    css: PropTypes.object,
     styles: PropTypes.object
   },
 
   defaultProps: {
     className: '',
+    css: {},
     styles: {}
   }
 })
@@ -42,6 +38,34 @@ export default class WELayout extends Component {
     canvasWidth: 1000,
     canvasHeight: 1000
   };
+
+  css = {
+    root: {
+      minWidth: 900,
+      position: 'relative'
+    },
+
+    overlay: {
+      position: 'absolute',
+      // box-sizing: 'border-box',
+      height: 0,
+      width: '100%',
+      top: 0
+    },
+
+    tray: {
+      width: '40%',
+      verticalAlign: 'top',
+      borderLeft: '2px solid #eee'
+    }
+  }
+
+  componentWillMount() {
+    this.editor = new Editor(this);
+    this.editor.onGraphUpdate(graph => {
+      this.refs.graphCanvas.refs.world.updateGraph(graph);
+    });
+  }
 
   componentDidMount() {
     this.updateCanvasSize();
@@ -55,7 +79,7 @@ export default class WELayout extends Component {
     window.addEventListener('orientationchange', this.handleResize);
     document.body.classList.add('no-select');
     this.refs.graphCanvas.onSelect((selection) => {
-      this.refs.inspector.update(selection);
+      this.refs.tray.refs.inspector.update(selection);
     });
   }
 
@@ -67,8 +91,8 @@ export default class WELayout extends Component {
   }
 
   render() {
-    // var supported = window.innerWidth > 800 && window.innerHeight > 600;
-    // TODO: check for mobile, mobile is not currently supported.
+    // var supported = true;
+    // // TODO: check for mobile, mobile is not currently supported.
     // if (!supported) {
     //   return (
     //     <div className="WorkflowEditor">
@@ -76,44 +100,28 @@ export default class WELayout extends Component {
     //     </div>
     //   );
     // }
-    let standardActions = [
-      { text: 'Cancel' },
-      { text: 'Submit', onTouchTap: this._onDialogSubmit, ref: 'submit' }
-    ];
+    let css = {
+      root: [this.css.root, this.props.css.root, this.props.style],
+      overlay: [this.css.overlay, this.props.css.overlay],
+      tray: [this.css.tray, this.props.css.tray]
+    };
     return (
-      <div ref="root" className="WorkflowEditor ungrid">
+      <div ref="root" className="WorkflowEditor ungrid" style={css.root}>
         <div className="line">
           <div ref="canvasCell" className="cell">
-            <WEToolbar ref="toolbar" editor={this} />
+            <WEToolbar ref="toolbar" editor={this.editor} />
             <GraphCanvas
               ref="graphCanvas"
-              initialScale={2.4}
+              initialScale={1}
               viewWidth={this.state.canvasWidth}
-              viewHeight={this.state.canvasHeight} />
+              viewHeight={this.state.canvasHeight}
+              worldWidth={3000}
+              worldHeight={3000} />
           </div>
-          <div className="cell" style={{width: '40%', verticalAlign: 'top', borderLeft: '2px solid #eee'}}>
-            <Tabs style={{height: '100%'}}>
-              <Tab label="Inspector">
-                <WEInspector ref="inspector" editor={this} />
-              </Tab>
-              <Tab label="Tasks">
-                <WETasksLibrary ref="tasks" editor={this} />
-              </Tab>
-              <Tab label="Workflows">
-                <WETWorkflowsLibrary ref="workflows" editor={this} />
-              </Tab>
-            </Tabs>
-          </div>
+          <WETray ref="tray" className="cell" editor={this.editor} />
         </div>
-        <div className="overlay container">
-          <Dialog
-            ref="dialog"
-            title="Dialog With Standard Actions"
-            actions={standardActions}
-            actionFocus="submit"
-            modal={this.state.modal}>
-            {'The actions in this window are created from the json that\'s passed in.'}
-          </Dialog>
+        <div className="overlay" style={css.overlay}>
+          <WELoadWorkflowDialog ref="loadWorkflowDialog" editor={this.editor} />
         </div>
       </div>
     );

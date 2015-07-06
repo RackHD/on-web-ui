@@ -70,11 +70,11 @@ export default class GraphCanvasWorld extends Component {
   updateGraph(graph) {
     this.graph = graph || this.graph;
     this.setState({nodes: this.graph.nodes});
-    console.log(this.graph.nodes);
+    // console.log(this.graph.nodes);
     setTimeout(() => {
-      console.log(this.graph.links);
+      // console.log(this.graph.links);
       this.setState({links: this.fixLinkPositions(this.graph.links)});
-    }, 80);
+    }, 0);
   }
 
   fixLinkPositions(links) {
@@ -227,6 +227,7 @@ export default class GraphCanvasWorld extends Component {
           return (lastValue.velocity || lastValue).add(currFrame.velocity);
         });
         this.stopPhysicsScroll = false;
+        // velocitySum = velocitySum.squish(2);
         var tick = () => {
           if (Math.abs(velocitySum.x) < 0.000001 &&
               Math.abs(velocitySum.y) < 0.000001) { return; }
@@ -304,18 +305,21 @@ export default class GraphCanvasWorld extends Component {
   // Link events
 
   getSocketCenter(socketElement) {
-    var element = socketElement,
+    var nodeElement,
+        element = socketElement,
         stop = 'GraphCanvasNode',
         x = 0,
         y = 0;
     do {
       x += element.offsetLeft;
       y += element.offsetTop;
+      if (nodeElement) { break; }
+      if (element.classList.contains(stop)) { nodeElement = element; }
       element = element.offsetParent;
-    } while(element && element.className !== stop);
+    } while(element);
     x += socketElement.clientWidth / 2;
     y += socketElement.clientHeight / 2;
-    var node = this.graph.node(element.dataset.id),
+    var node = this.graph.node(nodeElement.dataset.id),
         pos = node.bounds.normalPosition;
     x += pos.x;
     y += pos.y;
@@ -387,6 +391,7 @@ export default class GraphCanvasWorld extends Component {
     if (this.props.selectionHandler) {
       this.props.selectionHandler(this.selected);
     }
+    // this.fixLinkPositions(node._graph.links);
   }
 
   unselectNode(node) {

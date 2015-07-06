@@ -25,12 +25,14 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
   propTypes: {
     className: PropTypes.string,
     css: PropTypes.object,
+    onSelect: PropTypes.func,
     style: PropTypes.any
   },
 
   defaultProps: {
     className: '',
     css: {},
+    onSelect: function () {},
     style: {}
   }
 })
@@ -42,7 +44,7 @@ export default class WELibraryItem extends Component {
     root: {
       marginBottom: 0,
       borderBottom: '1px dotted #ddd',
-      padding: '0 0 0 10px',
+      padding: 0,
       listStyle: 'none',
       lineHeight: '2em'
     },
@@ -66,9 +68,13 @@ export default class WELibraryItem extends Component {
 
     return (
       <li className={this.props.className} style={css.root}>
-        <a style={css.a}>{this.props.children}</a>
+        <a style={css.a} onClick={this.onSelect.bind(this)}>{this.props.children}</a>
       </li>
     );
+  }
+
+  onSelect(e) {
+    if (this.props.onSelect) { this.props.onSelect(e); }
   }
 
 }
