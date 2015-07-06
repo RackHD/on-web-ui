@@ -20,20 +20,26 @@ import GraphCanvasLink from './Link';
 
 @decorate({
   propTypes: {
+    enableMarks: PropTypes.bool,
+    initialGraph: PropTypes.any,
     initialElements: PropTypes.any,
     initialVectors: PropTypes.any,
     initialScale: PropTypes.number,
     initialX: PropTypes.number,
     initialY: PropTypes.number,
+    getNodeTypes: PropTypes.func,
     worldWidth: PropTypes.number,
     worldHeight: PropTypes.number
   },
   defaultProps: {
+    enableMarks: false,
+    initialGraph: new Graph(),
     initialElements: [],
     initialVectors: [],
     initialScale: 1,
     initialX: 0,
     initialY: 0,
+    getNodeTypes: null,
     worldWidth: 800,
     worldHeight: 600
   }
@@ -43,7 +49,7 @@ import GraphCanvasLink from './Link';
 @mixin.decorate(MUIStyleHelpers)
 export default class GraphCanvasWorld extends Component {
 
-  graph = new Graph();
+  graph = this.props.initialGraph;
   state = {
     position: new Vector(
       this.props.initialX,
@@ -122,7 +128,7 @@ export default class GraphCanvasWorld extends Component {
             className="GraphCanvasWorld"
             onWheel={this.scaleWorld.bind(this)}
             onMouseDown={this.translateWorld()}
-            onDoubleClick={this.touchWorld.bind(this)}
+            onDoubleClick={this.props.enableMarks && this.touchWorld.bind(this) || null}
             onContextMenu={this.drawNode()}
             style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
           <canvas className="rastors"></canvas>
@@ -153,6 +159,13 @@ export default class GraphCanvasWorld extends Component {
         </div>
       );
     } catch (err) { console.error(err.stack || err); }
+  }
+
+  getNodeTypes() {
+    if (this.props.getNodeTypes) {
+      return this.props.getNodeTypes();
+    }
+    return new Promise(resolve => resolve([]));
   }
 
   translateWorld() {

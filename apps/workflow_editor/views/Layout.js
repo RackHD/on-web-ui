@@ -2,7 +2,7 @@
 
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
-import mixin from 'react-mixin';
+// import mixin from 'react-mixin';
 import radium from 'radium';
 import decorate from 'common-web-ui/lib/decorate';
 
@@ -51,12 +51,6 @@ export default class WELayout extends Component {
       height: 0,
       width: '100%',
       top: 0
-    },
-
-    tray: {
-      width: '40%',
-      verticalAlign: 'top',
-      borderLeft: '2px solid #eee'
     }
   }
 
@@ -102,8 +96,7 @@ export default class WELayout extends Component {
     // }
     let css = {
       root: [this.css.root, this.props.css.root, this.props.style],
-      overlay: [this.css.overlay, this.props.css.overlay],
-      tray: [this.css.tray, this.props.css.tray]
+      overlay: [this.css.overlay, this.props.css.overlay]
     };
     return (
       <div ref="root" className="WorkflowEditor ungrid" style={css.root}>
@@ -112,6 +105,7 @@ export default class WELayout extends Component {
             <WEToolbar ref="toolbar" editor={this.editor} />
             <GraphCanvas
               ref="graphCanvas"
+              initialGraph={this.editor.graph}
               initialScale={1}
               viewWidth={this.state.canvasWidth}
               viewHeight={this.state.canvasHeight}

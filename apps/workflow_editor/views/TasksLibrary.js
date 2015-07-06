@@ -11,7 +11,6 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 
 import Library from './Library';
 import LibraryItem from './LibraryItem';
-import TaskStore from '../stores/TaskStore';
 
 /**
 # WETasksLibrary
@@ -38,8 +37,11 @@ import TaskStore from '../stores/TaskStore';
 })
 export default class WETasksLibrary extends Component {
 
-  taskStore = new TaskStore();
   state = {tasks: []};
+
+  componentWillMount() {
+    this.taskStore = this.props.editor.taskStore;
+  }
 
   componentDidMount() {
     this.unwatchTasks = this.taskStore.watchAll('tasks', this);

@@ -10,22 +10,26 @@ import './GraphCanvas.less';
 
 @decorate({
   propTypes: {
+    initialGraph: PropTypes.any,
     initialNodes: PropTypes.any,
     initialLinks: PropTypes.any,
     initialScale: PropTypes.number,
     initialX: PropTypes.number,
     initialY: PropTypes.number,
+    getNodeTypes: PropTypes.func,
     worldWidth: PropTypes.number,
     worldHeight: PropTypes.number,
     viewWidth: PropTypes.number,
     viewHeight: PropTypes.number
   },
   defaultProps: {
+    initialGraph: null,
     initialNodes: [],
     initialLinks: [],
     initialScale: 1,
     initialX: 0,
     initialY: 0,
+    getNodeTypes: null,
     worldWidth: 2000,
     worldHeight: 2000,
     viewWidth: 800,

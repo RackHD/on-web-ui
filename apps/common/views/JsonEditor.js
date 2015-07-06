@@ -63,7 +63,7 @@ export default class JsonEditor extends Component {
                   rows={this.props.rows}
                   cols={this.props.cols}
                   disabled={this.props.disabled}
-                  style={{width: '100%', height: 300}} />
+                  style={{width: '99%', height: 300}} />
       </div>
     );
   }

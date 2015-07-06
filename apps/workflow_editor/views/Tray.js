@@ -2,7 +2,7 @@
 
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
-import mixin from 'react-mixin';
+// import mixin from 'react-mixin';
 import radium from 'radium';
 import decorate from 'common-web-ui/lib/decorate';
 
@@ -14,7 +14,6 @@ import {
 import WEInspector from './Inspector';
 import WETasksLibrary from './TasksLibrary';
 import WETWorkflowsLibrary from './WorkflowsLibrary';
-import WEWorkflowJSON from './WorkflowJSON';
 
 @radium
 @decorate({
@@ -67,9 +66,6 @@ export default class WETray extends Component {
           </Tab>
           <Tab label="Workflows">
             <WETWorkflowsLibrary ref="workflows" editor={this.props.editor} />
-          </Tab>
-          <Tab label="JSON">
-            <WEWorkflowJSON ref="json" editor={this.props.editor} />
           </Tab>
         </Tabs>
       </div>

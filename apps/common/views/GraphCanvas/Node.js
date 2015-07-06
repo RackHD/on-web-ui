@@ -32,7 +32,6 @@ export default class GraphCanvasNode extends Component {
 
   state = {};
   removeNode = this.removeNode.bind(this);
-  toggleFlip = this.toggleFlip.bind(this);
 
   render() {
     if (!this.props.model || !this.props.model.bounds) {
@@ -68,12 +67,6 @@ export default class GraphCanvasNode extends Component {
       className += ' moving';
       zDepth = 4;
     }
-    if (this.state.flip) {
-      className += ' flip';
-    }
-    if (this.state.flipping) {
-      className += ' flipping' + this.state.flipping;
-    }
     if (this.state.selected) {
       className += ' selected';
     }
@@ -92,19 +85,13 @@ export default class GraphCanvasNode extends Component {
           <div className="header"
                onClick={this.stopEvent.bind(this)}
                onMouseDown={this.moveNode()}>
-            <a className={'left fa fa-info' + (this.state.flip ? '-circle' : '')}
-                onClick={this.toggleFlip} />
             <span className="name">{this.props.model.data && this.props.model.data.task && this.props.model.data.task.label || 'Task Node'}</span>
             <a className="right fa fa-remove"
+                onMouseDown={this.stopEvent.bind(this)}
                 onClick={this.removeNode} />
           </div>
-          <div className="flipper">
-            <div className="front">
-              {ports}
-            </div>
-            <div className="back">
-              Edit Task:
-            </div>
+          <div className="ports">
+            {ports}
           </div>
         </div>
       </Paper>
@@ -196,29 +183,11 @@ export default class GraphCanvasNode extends Component {
     });
   }
 
-  // resizeNode() {
-  //   return this.setupClickDrag({
-  //     down: (event) => event.stopPropagation(),
-  //     move: (event) => event.stopPropagation(),
-  //     up: (event) => event.stopPropagation()
-  //   });
-  // }
-
   removeNode(event) {
     event.stopPropagation();
     event.preventDefault();
     if (!window.confirm('Are you sure?')) { return; } // eslint-disable-line no-alert
     this.props.canvas.removeNode(this.props.model);
-  }
-
-  toggleFlip() {
-    if (this.state.flipping) { return; }
-    this.setState({
-      flipping: this.state.flip ? 'Back' : 'Front',
-      flip: !this.state.flip
-    });
-    // TODO: use css transition end event for this:
-    setTimeout(() => this.setState({flipping: null}), 750);
   }
 
 }

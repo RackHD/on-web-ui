@@ -11,7 +11,6 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 
 import Library from './Library';
 import LibraryItem from './LibraryItem';
-import WorkflowStore from '../stores/WorkflowStore';
 
 /**
 # WEWorkflowsLibrary
@@ -40,8 +39,11 @@ import WorkflowStore from '../stores/WorkflowStore';
 })
 export default class WEWorkflowsLibrary extends Component {
 
-  workflowStore = new WorkflowStore();
   state = {workflows: []};
+
+  componentWillMount() {
+    this.workflowStore = this.props.editor.workflowStore;
+  }
 
   componentDidMount() {
     this.unwatchWorkflows = this.workflowStore.watchAll('workflows', this);
