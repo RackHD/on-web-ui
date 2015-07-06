@@ -57,7 +57,7 @@ export default class WETray extends Component {
     };
     return (
       <div ref="root" className={this.props.className} style={css.root}>
-        <Tabs style={css.tabs}>
+        <Tabs ref="tabs" style={css.tabs}>
           <Tab label="Inspector">
             <WEInspector ref="inspector" editor={this.props.editor} />
           </Tab>
@@ -70,6 +70,18 @@ export default class WETray extends Component {
         </Tabs>
       </div>
     );
+  }
+
+  viewInspector() {
+    this.refs.tabs.setState({selectedIndex: 0});
+  }
+
+  viewTasks() {
+    this.refs.tabs.setState({selectedIndex: 1});
+  }
+
+  viewWorkflows() {
+    this.refs.tabs.setState({selectedIndex: 2});
   }
 
 }

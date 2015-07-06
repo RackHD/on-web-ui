@@ -1,18 +1,23 @@
 'use strict';
 
-import GraphNode from 'common-web-ui/lib/Graph/Node';
+// import GraphNode from 'common-web-ui/lib/Graph/Node';
 
 export default class Task {
 
-  constructor(data, editor) {
+  constructor(data) {
     Object.keys(data).forEach(prop => this[prop] = data[prop]);
-    this.editor = editor || this.editor;
   }
 
-  toGraphNode(bounds, editor) {
-    editor = editor || this.editor;
-    return new GraphNode({
+  insertGraphNode(editor, label, bounds) {
+    var taskInstance = {
+      label: label,
+      ignoreFailure: false,
+      taskName: this.injectableName,
+      taskDefinition: this
+    };
+    let node = editor.graph.add({
       graph: editor.graph,
+      data: {task: taskInstance},
       bounds: bounds,
       layer: 1,
       scale: 1,
@@ -25,6 +30,8 @@ export default class Task {
         ]}
       ]
     });
+    taskInstance._node = node;
+    return taskInstance;
   }
 
 }

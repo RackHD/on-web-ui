@@ -54,8 +54,9 @@ export default class WETasksLibrary extends Component {
 
   render() {
     var libraryTasks = this.state.tasks.map(task => {
+      let onSelect = this.loadTask.bind(this, task);
       return (
-        <LibraryItem key={task.friendlyName}>{task.friendlyName}</LibraryItem>
+        <LibraryItem key={task.friendlyName} onSelect={onSelect}>{task.friendlyName}</LibraryItem>
       );
     });
 
@@ -64,6 +65,15 @@ export default class WETasksLibrary extends Component {
         {libraryTasks}
       </Library>
     );
+  }
+
+  loadTask(task, event) {
+    if (!task) { return; }
+    event.stopPropagation();
+    event.preventDefault();
+    let label = prompt('Label');
+    task.insertGraphNode(this.props.editor, label, [1000, 1000, 1100, 1100]);
+    this.props.editor.layout.refs.graphCanvas.refs.world.updateGraph();
   }
 
 }

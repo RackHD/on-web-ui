@@ -39,8 +39,9 @@ export default class WEFileMenu extends Component {
 
     var fileMenuItems = [
       {text: 'File', type: MenuItem.Types.SUBHEADER},
-      {text: 'New Workflow'},//, workflow: {}},
-      {text: 'Load Workflow'}//, type: MenuItem.Types.NESTED, items: workflowMenuItems}
+      {text: 'New'},
+      {text: 'Save'},
+      {text: 'Load'}
     ];
 
     return (
@@ -53,27 +54,19 @@ export default class WEFileMenu extends Component {
   listWorkflows() { return workflows.list(); }
 
   loadWorkflow(event, selectedIndex, menuItem) {
-    if (menuItem.text === 'Load Workflow') {
-      this.props.editor.layout.refs.loadWorkflowDialog.show();
+    if (menuItem.text === 'New') {
+      this.props.editor.resetWorkflow();
+    }
+    if (menuItem.text === 'Save') {
+      // TODO:
+    }
+    if (menuItem.text === 'Load') {
+      this.props.editor.layout.refs.tray.viewWorkflows();
     }
     if (selectedIndex !== 0) {
       setTimeout(() => {
         this.refs.root._setSelectedIndex({selectedIndex: 0});
       }, 500);
-    }
-    var workflow = menuItem.workflow;
-    if (!workflow) { return; }
-    // if (workflow.id) {
-    //   this.routeTo('builder', workflow.id);
-    // }
-    // else {
-    //   this.routeTo('builder');
-    // }
-    if (workflow.id) {
-      this.props.editor.loadWorkflow(workflow);
-    }
-    else {
-      this.props.editor.resetWorkflow();
     }
   }
 

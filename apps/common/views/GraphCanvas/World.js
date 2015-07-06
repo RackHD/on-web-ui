@@ -76,9 +76,9 @@ export default class GraphCanvasWorld extends Component {
   updateGraph(graph) {
     this.graph = graph || this.graph;
     this.setState({nodes: this.graph.nodes});
-    // console.log(this.graph.nodes);
+    console.log(this.graph.nodes);
     setTimeout(() => {
-      // console.log(this.graph.links);
+      console.log(this.graph.links);
       this.setState({links: this.fixLinkPositions(this.graph.links)});
     }, 0);
   }
@@ -129,7 +129,7 @@ export default class GraphCanvasWorld extends Component {
             onWheel={this.scaleWorld.bind(this)}
             onMouseDown={this.translateWorld()}
             onDoubleClick={this.props.enableMarks && this.touchWorld.bind(this) || null}
-            onContextMenu={this.drawNode()}
+            onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); /*this.drawNode()(e)*/}}
             style={this.mergeAndPrefix(cssWorldSpaceTransform, cssWorldSize)}>
           <canvas className="rastors"></canvas>
           <svg
