@@ -12,6 +12,8 @@ export var navigation = [
   { text: 'Dashboard', route: '/' },
   { text: 'Objects', type: MenuItem.Types.SUBHEADER },
   { text: 'Nodes', route: 'nodes' },
+  { text: 'Templates', route: 'templates' },
+  { text: 'Profiles', route: 'profiles' },
   { text: 'Lookups', route: 'lookups' },
   { text: 'Other', type: MenuItem.Types.SUBHEADER },
   { text: 'EMC', type: MenuItem.Types.LINK, payload: 'http://emc.com' }
@@ -21,7 +23,11 @@ export var navigation = [
 import App from '../views/App';
 
 import Node, { CreateNode } from '../views/Node';
+import Profile, { CreateProfile } from '../views/Profile';
+import Template, { CreateTemplate } from '../views/Template';
 import Nodes from '../views/Nodes';
+import Profiles from '../views/Profiles';
+import Templates from '../views/Templates';
 import Lookups from '../views/Lookups';
 import Dashboard from '../views/Dashboard';
 
@@ -29,9 +35,19 @@ import Dashboard from '../views/Dashboard';
 let routes = (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={Dashboard}/>
+
     <Route name="nodes" handler={Nodes} />
     <Route name="newNode" path="/nodes/new" handler={CreateNode} />
     <Route name="node" path="/nodes/:nodeId" handler={Node} />
+
+    <Route name="profiles" handler={Profiles} />
+    <Route name="newProfile" path="/profiles/new" handler={CreateProfile} />
+    <Route name="profile" path="/profiles/:profileId" handler={Profile} />
+
+    <Route name="templates" handler={Templates} />
+    <Route name="newTemplate" path="/templates/new" handler={CreateTemplate} />
+    <Route name="template" path="/templates/:templateID" handler={Template} />
+
     <Route name="lookups" path="/lookups" handler={Lookups} />
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />

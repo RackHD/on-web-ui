@@ -11,7 +11,6 @@ import CreateNode from './CreateNode';
 export { CreateNode, EditNode };
 
 import {} from 'material-ui';
-import './Node.less';
 
 import NodeStore from '../stores/NodeStore';
 let nodes = new NodeStore();

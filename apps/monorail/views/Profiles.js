@@ -7,16 +7,16 @@ import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
 import {} from 'material-ui';
-import NodesGrid from './NodesGrid';
+import ProfilesGrid from './ProfilesGrid';
 
 @mixin.decorate(PageHelpers)
-export default class Nodes extends Component {
+export default class Profiles extends Component {
 
   render() {
     return (
-      <div className="Nodes">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Nodes')}
-        <NodesGrid />
+      <div className="Profiles">
+        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Profiles')}
+        <ProfilesGrid />
       </div>
     );
   }
