@@ -13,6 +13,13 @@ nvm use 0.12.5
 rm -rf node_modules
 npm install
 
+# HACK -- make sure material-ui is installed
+cd node_modules/material-ui
+npm install
+rm -rf node_modules/react
+npm run build
+cd ../../
+
 # lint source
 ./node_modules/.bin/eslint gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib scripts/tasks scripts/test scripts/tools scripts/slushfile.js -f checkstyle -o checkstyle-result.xml || true
 
