@@ -37,7 +37,7 @@ export default class ProfilesRestAPI {
 
   put(id, body) {
     return new Promise((resolve, reject) => {
-      http.patch(this.url + 'library/' + id)
+      http.put(this.url + 'library/' + id)
         .accept('json')
         .type('json')
         .send(body)
