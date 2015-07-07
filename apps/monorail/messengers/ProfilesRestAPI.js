@@ -39,7 +39,7 @@ export default class ProfilesRestAPI {
     return new Promise((resolve, reject) => {
       http.put(this.url + 'library/' + id)
         .accept('json')
-        .type('json')
+        .type('application/octet-stream')
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
