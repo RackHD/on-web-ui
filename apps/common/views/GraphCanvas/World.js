@@ -186,9 +186,9 @@ export default class GraphCanvasWorld extends Component {
     };
     return {
       down: (event, dragState) => {
-        if (event.shiftKey) {
-          this.drawNode(null, {shiftKey: (dragState.shiftKey = true)})(event);
-        }
+        // if (event.shiftKey) {
+        //   this.drawNode(null, {shiftKey: (dragState.shiftKey = true)})(event);
+        // }
         if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
         dragState.startTime = event.timeStamp || Date.now();
@@ -213,7 +213,7 @@ export default class GraphCanvasWorld extends Component {
         this.stopPhysicsScroll = true;
       },
       move: (event, dragState) => {
-        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
         clearInterval(this.moveRepeat);
         var scale = this.scale,
@@ -230,7 +230,7 @@ export default class GraphCanvasWorld extends Component {
         }, 32);
       },
       up: (event, dragState) => {
-        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
         clearInterval(this.moveRepeat);
         var dragDuration = (event.timeStamp || Date.now()) - dragState.startTime;

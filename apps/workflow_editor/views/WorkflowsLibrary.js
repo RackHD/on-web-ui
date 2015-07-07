@@ -58,7 +58,7 @@ export default class WEWorkflowsLibrary extends Component {
     var libraryWorkflows = this.state.workflows.map(workflow => {
       let onSelect = this.loadWorkflow.bind(this, workflow);
       return (
-        <LibraryItem key={workflow.friendlyName} onSelect={onSelect}>{workflow.friendlyName}</LibraryItem>
+        <LibraryItem key={workflow.friendlyName} onSelect={onSelect} object={workflow}>{workflow.friendlyName}</LibraryItem>
       );
     });
 

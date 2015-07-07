@@ -40,9 +40,6 @@ export default class WETray extends Component {
       width: '40%',
       verticalAlign: 'top',
       borderLeft: '2px solid #eee'
-    },
-    tabs: {
-      height: '100%'
     }
   }
 
@@ -52,12 +49,11 @@ export default class WETray extends Component {
 
   render() {
     let css = {
-      root: [this.css.root, this.props.css.root, this.props.style],
-      tabs: [this.css.tabs, this.props.css.tabs]
+      root: [this.css.root, this.props.css.root, this.props.style]
     };
     return (
       <div ref="root" className={this.props.className} style={css.root}>
-        <Tabs ref="tabs" style={css.tabs}>
+        <Tabs ref="tabs">
           <Tab label="Inspector">
             <WEInspector ref="inspector" editor={this.props.editor} />
           </Tab>
