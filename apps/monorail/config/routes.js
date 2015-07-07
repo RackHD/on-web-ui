@@ -46,7 +46,7 @@ let routes = (
 
     <Route name="templates" handler={Templates} />
     <Route name="newTemplate" path="/templates/new" handler={CreateTemplate} />
-    <Route name="template" path="/templates/:templateID" handler={Template} />
+    <Route name="template" path="/templates/:templateId" handler={Template} />
 
     <Route name="lookups" path="/lookups" handler={Lookups} />
     <NotFoundRoute handler={NotFound}/>

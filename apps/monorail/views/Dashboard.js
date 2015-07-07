@@ -7,6 +7,8 @@ import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
 import NodesGrid from './NodesGrid';
+import ProfilesGrid from './ProfilesGrid';
+import TemplatesGrid from './TemplatesGrid';
 import Chart from './Chart';
 
 @mixin.decorate(PageHelpers)
@@ -18,6 +20,8 @@ export default class Dashboard extends Component {
         {this.renderBreadcrumbs('Dashboard')}
         <Chart />
         <NodesGrid />
+        <ProfilesGrid />
+        <TemplatesGrid />
       </div>
     );
   }

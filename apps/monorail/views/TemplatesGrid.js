@@ -38,7 +38,7 @@ export default class TemplatesGrid extends Component {
         {this.renderGridToolbar({
           label: <a href="#/templates">Templates</a>,
           count: this.state.templates && this.state.templates.length || 0,
-          createButton:
+          right:
             <RaisedButton label="Create Template" primary={true} onClick={this.createTemplate.bind(this)} />
         })}
         <div className="clearfix"></div>
@@ -48,7 +48,7 @@ export default class TemplatesGrid extends Component {
             resultsPerPage: 10
           }, template => (
             {
-              ID: <a href={this.routePath('templates', template.id)}>{this.shortId(template.id)}</a>,
+              ID: <a href={this.routePath('templates', template.name)}>{this.shortId(template.id)}</a>,
               Name: template.name,
               Created: this.fromNow(template.createdAt),
               Updated: this.fromNow(template.updatedAt),
@@ -56,11 +56,7 @@ export default class TemplatesGrid extends Component {
                 <IconButton iconClassName="fa fa-edit"
                             tooltip="Edit Template"
                             touch={true}
-                            onClick={this.editTemplate.bind(this, template.id)} />,
-                <IconButton iconClassName="fa fa-remove"
-                            tooltip="Remove Template"
-                            touch={true}
-                            onClick={this.deleteTemplate.bind(this, template.id)} />
+                            onClick={this.editTemplate.bind(this, template.name)} />
               ]
             }
           ), 'No templates.')

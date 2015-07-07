@@ -37,39 +37,33 @@ export default class EditTemplate extends Component {
       this.state.template = this.props.templateRef || null;
     }
     var nameLink = this.linkObjectState('template', 'name'),
-        profileLink = this.linkObjectState('template', 'profile');
+        contentsLink = this.linkObjectState('template', 'contents');
     return (
-      <div className="EditTemplate container">
-        <div className="row">
-          <div className="one-half column">
+      <div className="EditTemplate ungrid">
+        <div className="line">
+          <div className="cell" style={{verticalAlign: 'top'}}>
             <TextField valueLink={nameLink}
                        hintText="Name"
                        floatingLabelText="Name"
                        disabled={this.state.disabled} />
+            <br/>
+            <label>Content:</label><br/>
+            <textarea valueLink={contentsLink}
+                      disabled={this.state.disabled}
+                      rows={5}
+                      cols={40}
+                      style={{width: '99%', height: 300}} />
           </div>
-          <div className="one-half column">
-            <TextField valueLink={profileLink}
-                       hintText="Profile"
-                       floatingLabelText="Profile"
-                       disabled={this.state.disabled} />
+          <div className="cell">
+            <h3>Raw JSON</h3>
+            <JsonEditor initialValue={this.state.template}
+                        updateParentState={this.updateStateFromJsonEditor.bind(this)}
+                        disabled={this.state.disabled}
+                        ref="jsonEditor" />
           </div>
         </div>
 
-        <h3>JSON Editor</h3>
-        <JsonEditor initialValue={this.state.template}
-                    updateParentState={this.updateStateFromJsonEditor.bind(this)}
-                    disabled={this.state.disabled}
-                    ref="jsonEditor" />
         <div className="buttons container">
-          <FlatButton className="button"
-                      label="Delete"
-                      onClick={this.deleteTemplate.bind(this)}
-                      disabled={this.state.disabled} />
-          <FlatButton className="button"
-                      label="Clone"
-                      onClick={this.cloneTemplate.bind(this)}
-                      disabled={true || this.state.disabled} />
-
           <div className="right">
             <FlatButton className="button"
                         label="Cancel"
@@ -95,19 +89,12 @@ export default class EditTemplate extends Component {
 
   saveTemplate() {
     this.disable();
-    templates.update(this.state.template.id, this.state.template).then(() => this.enable());
-  }
-
-  deleteTemplate() {
-    var id = this.state.template.id;
-    this.disable();
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed && templates.destroy(id).then(() => this.routeBack()));
+    templates.update(this.state.template.name, this.state.template.contents).then(() => this.enable());
   }
 
   resetTemplate() {
     this.disable();
-    templates.read(this.state.template.id)
+    templates.read(this.state.template.name)
       .then(template => this.setState({template: template, disabled: false}));
   }
 

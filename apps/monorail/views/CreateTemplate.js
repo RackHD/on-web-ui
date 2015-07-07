@@ -1,15 +1,34 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import mixin from 'react-mixin';
+import PageHelpers from 'common-web-ui/mixins/PageHelpers';
+/* eslint-enable no-unused-vars */
 
-export default class CreateTemplate extends Component {
+import EditTemplate from './EditTemplate';
+import {} from 'material-ui';
 
-  state = {};
+@mixin.decorate(PageHelpers)
+export default class Template extends Component {
+
+  state = {
+    template: null
+  };
+
+  componentDidMount() {}
+
+  componentWillUnmount() { }
 
   render() {
     return (
-      <div className="CreateTemplate container">
-        CreateTemplate, Hello World
+      <div className="Template">
+        {this.renderBreadcrumbs(
+          {href: 'dash', label: 'Dashboard'},
+          {href: 'templates', label: 'Templates'},
+          'New Template'
+        )}
+        <EditTemplate templateRef={{id: null, name: 'New Template', contents: ''}} />
       </div>
     );
   }
