@@ -101,8 +101,18 @@ export default class WELibraryItem extends Component {
 
     return (
       <li className={this.props.className} style={css.root}>
-        <a key="a0" style={css.a} onClick={this.toggle.bind(this)} className={'fa fa-search-' + (this.state.showJSON ? 'minus' : 'plus')}></a>
-        <a key="a1" style={css.a} onClick={this.onSelect.bind(this)}>{this.props.children}</a>
+        <a
+            title="View JSON data."
+            style={{display: 'inline-block', margin: '0 5px'}}
+            onClick={this.toggle.bind(this)}
+            className={'fa fa-search-' + (this.state.showJSON ? 'minus' : 'plus')} />
+        {this.props.children}
+        <a
+            title="Add this to the current workflow."
+            style={css.a}
+            onClick={this.onSelect.bind(this)}>
+          {this.props.name}
+        </a>
         {objectJSON}
       </li>
     );

@@ -39,7 +39,7 @@ import JsonEditor from 'common-web-ui/views/JsonEditor';
     style: {}
   }
 })
-export default class WEWorkflowJSON extends Component {
+export default class WEWorkflowOutline extends Component {
 
   state = {
     disabled: false,

@@ -56,9 +56,16 @@ export default class WEWorkflowsLibrary extends Component {
 
   render() {
     var libraryWorkflows = this.state.workflows.map(workflow => {
-      let onSelect = this.loadWorkflow.bind(this, workflow);
+      let onLoad = this.loadWorkflow.bind(this, workflow, true);
+      let onSelect = this.loadWorkflow.bind(this, workflow, false);
       return (
-        <LibraryItem key={workflow.friendlyName} onSelect={onSelect} object={workflow}>{workflow.friendlyName}</LibraryItem>
+        <LibraryItem key={workflow.friendlyName} onSelect={onSelect} object={workflow} name={workflow.friendlyName}>
+          <a
+              title="Load this workflow."
+              style={{display: 'inline-block', margin: '0 5px'}}
+              onClick={onLoad}
+              className="fa fa-external-link-square fa-flip-horizontal" />
+        </LibraryItem>
       );
     });
 
@@ -69,7 +76,7 @@ export default class WEWorkflowsLibrary extends Component {
     );
   }
 
-  loadWorkflow(workflow, event) {
+  loadWorkflow(workflow, newGraph, event) {
     if (!workflow) { return; }
     event.stopPropagation();
     event.preventDefault();
@@ -80,7 +87,7 @@ export default class WEWorkflowsLibrary extends Component {
     //   this.routeTo('builder', 'new');
     // }
     if (workflow.id) {
-      this.props.editor.loadWorkflow(workflow);
+      this.props.editor.loadWorkflow(workflow, newGraph);
     }
     else {
       this.props.editor.resetWorkflow();

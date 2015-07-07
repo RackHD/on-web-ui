@@ -29,8 +29,8 @@ export default class Editor extends EventEmitter {
     this.emit('graph', this.graph);
   }
 
-  loadWorkflow(workflowTemplate) {
-    var workflowGraph = this.loadWorkflowTemplate(workflowTemplate);
+  loadWorkflow(workflowTemplate, newGraph) {
+    var workflowGraph = this.loadWorkflowTemplate(workflowTemplate, newGraph);
         // graphCanvas = this.layout.refs.graphCanvas;
     this.graph = workflowGraph;
     this.emitGraphUpdate();
@@ -44,8 +44,8 @@ export default class Editor extends EventEmitter {
     // graphCanvas.refs.world.updateGraph(this.graph);
   }
 
-  loadWorkflowTemplate(workflowTemplate) {
-    var workflowGraph = new Graph(),
+  loadWorkflowTemplate(workflowTemplate, newGraph) {
+    var workflowGraph = newGraph ? new Graph() : this.graph,
         taskMap = {};
     workflowTemplate.tasks.forEach(task => {
       task._node = workflowGraph.add({

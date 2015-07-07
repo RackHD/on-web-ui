@@ -40,7 +40,7 @@ export default class WEFileMenu extends Component {
     var fileMenuItems = [
       {text: 'File', type: MenuItem.Types.SUBHEADER},
       {text: 'New'},
-      {text: 'Save'},
+      // {text: 'Save'},
       {text: 'Load'}
     ];
 
@@ -57,9 +57,9 @@ export default class WEFileMenu extends Component {
     if (menuItem.text === 'New') {
       this.props.editor.resetWorkflow();
     }
-    if (menuItem.text === 'Save') {
-      // TODO:
-    }
+    // if (menuItem.text === 'Save') {
+    //   // TODO:
+    // }
     if (menuItem.text === 'Load') {
       this.props.editor.layout.refs.tray.viewWorkflows();
     }

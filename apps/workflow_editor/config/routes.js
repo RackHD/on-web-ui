@@ -15,6 +15,7 @@ import WELayout from '../views/Layout';
 let routes = (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={WELayout} />
+    <Route path="/:workflow" handler={WELayout} />
     <NotFoundRoute handler={NotFound} />
     <Redirect from="editor" to="/" />
   </Route>

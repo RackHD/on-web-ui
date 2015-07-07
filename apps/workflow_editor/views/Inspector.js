@@ -5,7 +5,7 @@ import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 import {
   } from 'material-ui';
 
-import WEWorkflowJSON from './WorkflowJSON';
+import WEWorkflowOutline from './WorkflowOutline';
 
 export default class WEInspector extends Component {
 
@@ -46,7 +46,7 @@ export default class WEInspector extends Component {
         </div>
         <hr />
         Workflow JSON:
-        <WEWorkflowJSON ref="json" editor={this.props.editor} />
+        <WEWorkflowOutline ref="json" editor={this.props.editor} />
       </div>
     );
   }
