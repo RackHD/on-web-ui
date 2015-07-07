@@ -1,15 +1,34 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import mixin from 'react-mixin';
+import PageHelpers from 'common-web-ui/mixins/PageHelpers';
+/* eslint-enable no-unused-vars */
 
-export default class CreateProfile extends Component {
+import EditProfile from './EditProfile';
+import {} from 'material-ui';
 
-  state = {};
+@mixin.decorate(PageHelpers)
+export default class Profile extends Component {
+
+  state = {
+    template: null
+  };
+
+  componentDidMount() {}
+
+  componentWillUnmount() { }
 
   render() {
     return (
-      <div className="CreateProfile container">
-        CreateProfile, Hello World
+      <div className="Profile">
+        {this.renderBreadcrumbs(
+          {href: 'dash', label: 'Dashboard'},
+          {href: 'profiles', label: 'Profiles'},
+          'New Profile'
+        )}
+        <EditProfile templateRef={{id: null, name: 'New Profile', contents: ''}} />
       </div>
     );
   }

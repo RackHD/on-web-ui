@@ -38,7 +38,7 @@ export default class ProfilesGrid extends Component {
         {this.renderGridToolbar({
           label: <a href="#/profiles">Profiles</a>,
           count: this.state.profiles && this.state.profiles.length || 0,
-          createButton:
+          right:
             <RaisedButton label="Create Profile" primary={true} onClick={this.createProfile.bind(this)} />
         })}
         <div className="clearfix"></div>
@@ -48,7 +48,7 @@ export default class ProfilesGrid extends Component {
             resultsPerPage: 10
           }, profile => (
             {
-              ID: <a href={this.routePath('profiles', profile.id)}>{this.shortId(profile.id)}</a>,
+              ID: <a href={this.routePath('profiles', profile.name)}>{this.shortId(profile.id)}</a>,
               Name: profile.name,
               Created: this.fromNow(profile.createdAt),
               Updated: this.fromNow(profile.updatedAt),
@@ -56,11 +56,7 @@ export default class ProfilesGrid extends Component {
                 <IconButton iconClassName="fa fa-edit"
                             tooltip="Edit Profile"
                             touch={true}
-                            onClick={this.editProfile.bind(this, profile.id)} />,
-                <IconButton iconClassName="fa fa-remove"
-                            tooltip="Remove Profile"
-                            touch={true}
-                            onClick={this.deleteProfile.bind(this, profile.id)} />
+                            onClick={this.editProfile.bind(this, profile.name)} />
               ]
             }
           ), 'No profiles.')

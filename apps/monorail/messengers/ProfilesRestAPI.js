@@ -15,7 +15,7 @@ export default class ProfilesRestAPI {
 
   get(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id)
+      http.get(this.url + 'library/' + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -26,21 +26,8 @@ export default class ProfilesRestAPI {
 
   list() {
     return new Promise((resolve, reject) => {
-      http.get(this.url)
+      http.get(this.url + 'library/')
         .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  post(body) {
-    return new Promise((resolve, reject) => {
-      http.post(this.url)
-        .accept('json')
-        .type('json')
-        .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -50,21 +37,10 @@ export default class ProfilesRestAPI {
 
   patch(id, body) {
     return new Promise((resolve, reject) => {
-      http.patch(this.url + id)
+      http.patch(this.url + 'library/' + id)
         .accept('json')
         .type('json')
         .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  delete(id) {
-    return new Promise(function (resolve, reject) {
-      http.del(this.url + id)
-        .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
