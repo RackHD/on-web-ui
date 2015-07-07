@@ -37,39 +37,33 @@ export default class EditProfile extends Component {
       this.state.profile = this.props.profileRef || null;
     }
     var nameLink = this.linkObjectState('profile', 'name'),
-        profileLink = this.linkObjectState('profile', 'profile');
+        contentsLink = this.linkObjectState('profile', 'contents');
     return (
-      <div className="EditProfile container">
-        <div className="row">
-          <div className="one-half column">
+      <div className="EditProfile ungrid">
+        <div className="line">
+          <div className="cell" style={{verticalAlign: 'top'}}>
             <TextField valueLink={nameLink}
                        hintText="Name"
                        floatingLabelText="Name"
                        disabled={this.state.disabled} />
+            <br/>
+            <label>Content:</label><br/>
+            <textarea valueLink={contentsLink}
+                      disabled={this.state.disabled}
+                      rows={5}
+                      cols={40}
+                      style={{width: '99%', height: 300}} />
           </div>
-          <div className="one-half column">
-            <TextField valueLink={profileLink}
-                       hintText="Profile"
-                       floatingLabelText="Profile"
-                       disabled={this.state.disabled} />
+          <div className="cell">
+            <h3>Raw JSON</h3>
+            <JsonEditor initialValue={this.state.profile}
+                        updateParentState={this.updateStateFromJsonEditor.bind(this)}
+                        disabled={this.state.disabled}
+                        ref="jsonEditor" />
           </div>
         </div>
 
-        <h3>JSON Editor</h3>
-        <JsonEditor initialValue={this.state.profile}
-                    updateParentState={this.updateStateFromJsonEditor.bind(this)}
-                    disabled={this.state.disabled}
-                    ref="jsonEditor" />
         <div className="buttons container">
-          <FlatButton className="button"
-                      label="Delete"
-                      onClick={this.deleteProfile.bind(this)}
-                      disabled={this.state.disabled} />
-          <FlatButton className="button"
-                      label="Clone"
-                      onClick={this.cloneProfile.bind(this)}
-                      disabled={true || this.state.disabled} />
-
           <div className="right">
             <FlatButton className="button"
                         label="Cancel"
@@ -95,19 +89,12 @@ export default class EditProfile extends Component {
 
   saveProfile() {
     this.disable();
-    profiles.update(this.state.profile.id, this.state.profile).then(() => this.enable());
-  }
-
-  deleteProfile() {
-    var id = this.state.profile.id;
-    this.disable();
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed && profiles.destroy(id).then(() => this.routeBack()));
+    profiles.update(this.state.profile.name, this.state.profile.contents).then(() => this.enable());
   }
 
   resetProfile() {
     this.disable();
-    profiles.read(this.state.profile.id)
+    profiles.read(this.state.profile.name)
       .then(profile => this.setState({profile: profile, disabled: false}));
   }
 

@@ -33,10 +33,4 @@ export default class TemplateStore extends Store {
       .catch(err => this.error(id, err));
   }
 
-  // destroy(id) {
-  //   return this.templatesRestAPI.delete(id)
-  //     .then(() => this.remove(id))
-  //     .catch(err => this.error(id, err));
-  // }
-
 }

@@ -22,20 +22,14 @@ export default class ProfileStore extends Store {
   }
 
   create(id, data) {
-    return this.profilesRestAPI.post(id, data)
+    return this.profilesRestAPI.put(id, data)
       .then(() => this.insert(id, data))
       .catch(err => this.error(id, err));
   }
 
   update(id, data) {
-    return this.profilesRestAPI.patch(id, data)
+    return this.profilesRestAPI.put(id, data)
       .then(() => this.change(id, data))
-      .catch(err => this.error(id, err));
-  }
-
-  destroy(id) {
-    return this.profilesRestAPI.delete(id)
-      .then(() => this.remove(id))
       .catch(err => this.error(id, err));
   }
 
