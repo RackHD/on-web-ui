@@ -22,7 +22,7 @@ fi
 echo "Install and source NVM:"
 [ -f /usr/local/.nvm/nvm.sh ] ||
   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh |
-    NVM_DIR=/usr/local/nvm bash
+    sudo NVM_DIR=/usr/local/nvm bash
 nvm || . /usr/local/nvm/nvm.sh
 
 [ -z "$NODE_VERSION" ] && NODE_VERSION="0.12.5"
@@ -43,14 +43,14 @@ if [ -z "$JENKINS_PROVISION" ]; then
   if [ -f /on-web-ui/package.json ]; then
     echo "Update on-web-ui:"
     cd /on-web-ui
-    git pull origin master
+    sudo git pull origin master
   else
     echo "Download on-web-ui:"
     cd /
-    git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
+    sudo git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
     cd /on-web-ui
   fi
-  chmod 777 /on-web-ui
+  chmod -m 777 /on-web-ui
 else
   echo "Jenkins already checked out on-web-ui."
 fi

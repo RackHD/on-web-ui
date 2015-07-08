@@ -6,6 +6,7 @@ Vagrant.configure(2) do |config|
     ubuntu.vm.box = "ubuntu/trusty64"
     ubuntu.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box"
 
+    ubuntu.vm.network :forwarded_port, guest: 5000, host: 4444
     ubuntu.vm.network :private_network, ip: "192.168.33.10"
     ubuntu.vm.network :public_network
     ubuntu.ssh.forward_agent = true
@@ -24,7 +25,7 @@ Vagrant.configure(2) do |config|
     # vars += "VERBOSE_PROVISION=1 "
     # vars += "TEST_ON_WEB_UI=1 "
     vars += "RUN_ON_WEB_UI=1 "
-    ubuntu.vm.provision :shell, inline: vars + " ./tmp/provision.sh"
+    ubuntu.vm.provision :shell, inline: vars + " /tmp/provision.sh"
   end
 
   ## COREOS
