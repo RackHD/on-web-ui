@@ -39,33 +39,37 @@ fi
 echo "Install global npm dependencies:"
 npm install -g gulp slush karma-cli
 
-if [ -f /home/on-web-ui/package.json ]; then
-  echo "Updating on-web-ui..."
-  cd /home/on-web-ui
-  git pull origin master
+if [ -z "$JENKINS_PROVISION" ]; then
+  if [ -f /home/on-web-ui/package.json ]; then
+    echo "Update on-web-ui:"
+    cd /home/on-web-ui
+    git pull origin master
+  else
+    echo "Download on-web-ui:"
+    cd /home
+    git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
+    cd /home/on-web-ui
+  fi
 else
-  echo "Downloading on-web-ui..."
-  cd /home
-  git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
-  cd /home/on-web-ui
+  echo "Jenkins already checked out on-web-ui."
 fi
 
-echo "Installing on-web-ui..."
+echo "Install on-web-ui:"
 rm -rf node_modules
 npm install
 
 if [ -n "$TEST_ON_WEB_UI" ]; then
-  echo "Linting on-web-ui..."
+  echo "Lint on-web-ui:"
   node_modules/.bin/eslint \
     gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib \
     scripts/tasks scripts/test scripts/tools scripts/slushfile.js \
     -f checkstyle -o checkstyle-result.xml || true
 
-  echo "Testing on-web-ui..."
+  echo "Test on-web-ui:"
   karma start karama.ci.conf.js || true
 fi
 
 if [ -n "$RUN_ON_WEB_UI" ]; then
-  echo "Running on-web-ui..."
+  echo "Run on-web-ui:"
   gulp &
 fi

@@ -20,10 +20,11 @@ Vagrant.configure(2) do |config|
     ubuntu.vm.provision :file, source: "provision.sh", destination: "/tmp/provision.sh"
 
     vars = "";
+    # vars += "JENKINS_PROVISION=1 "
     # vars += "VERBOSE_PROVISION=1 "
     # vars += "TEST_ON_WEB_UI=1 "
     vars += "RUN_ON_WEB_UI=1 "
-    ubuntu.vm.provision :shell, inline: vars + " /tmp/provision.sh"
+    ubuntu.vm.provision :shell, inline: vars + " ./tmp/provision.sh"
   end
 
   ## COREOS

@@ -3,8 +3,8 @@
 set -e
 set -x
 
-VERBOSE_PROVISION=1
-TEST_ON_WEB_UI=1
-# RUN_ON_WEB_UI=1
-
-. provision.sh
+JENKINS_PROVISION=1 \
+VERBOSE_PROVISION=1 \
+TEST_ON_WEB_UI=1 \
+# RUN_ON_WEB_UI=1 \
+./provision.sh
