@@ -36,7 +36,7 @@ else
 fi
 
 echo "Install global npm dependencies:"
-sudo npm install -g gulp slush karma-cli
+npm install -g gulp slush karma-cli
 
 if [ -z "$JENKINS_PROVISION" ]; then
   if [ -f ~/on-web-ui/package.json ]; then
