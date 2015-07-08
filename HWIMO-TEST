@@ -1,10 +1,11 @@
-!/bin/bash
+#!/bin/bash
 
 set -e
 set -x
 
-JENKINS_PROVISION=1 \
-VERBOSE_PROVISION=1 \
-TEST_ON_WEB_UI=1 \
-# RUN_ON_WEB_UI=1 \
+export JENKINS_PROVISION=1
+export VERBOSE_PROVISION=1
+export TEST_ON_WEB_UI=1
+# export RUN_ON_WEB_UI=1
+
 ./provision.sh

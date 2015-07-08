@@ -9,6 +9,7 @@
 # RUN_ON_WEB_UI -- If set, run on-web-ui development server.
 
 if [ -n "$VERBOSE_PROVISION" ]; then
+  echo "Enable verbose provision:"
   set -e
   set -x
 fi
@@ -18,6 +19,7 @@ which git || sudo apt-get install -y git curl
 
 if [ -n "$TEST_ON_WEB_UI" ]; then
   echo "Install test dependencies:"
+  sudo apt-get update
   which xvfb || sudo apt-get install -y xvfb
   which firefox || sudo apt-get install -y firefox
   which chromium-browser || sudo apt-get install -y chromium-browser
