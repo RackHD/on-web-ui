@@ -31,13 +31,13 @@ if [ "v$NODE_VERSION" == "$CURRENT_NODE" ]; then
   echo "Node v$NODE_VERSION is current."
 else
   echo "Install v$NODE_VERSION:"
-  nvm install "v$NODE_VERSION"
-  nvm use "$NODE_VERSION"
-  nvm alias default "$NODE_VERSION"
+  sudo nvm install "v$NODE_VERSION"
+  sudo nvm use "$NODE_VERSION"
+  sudo nvm alias default "$NODE_VERSION"
 fi
 
 echo "Install global npm dependencies:"
-npm install -g gulp slush karma-cli
+sudo npm install -g gulp slush karma-cli
 
 if [ -z "$JENKINS_PROVISION" ]; then
   if [ -f /on-web-ui/package.json ]; then
@@ -56,21 +56,21 @@ else
 fi
 
 echo "Install on-web-ui:"
-rm -rf node_modules
-npm install
+sudo rm -rf node_modules
+sudo npm install
 
 if [ -n "$TEST_ON_WEB_UI" ]; then
   echo "Lint on-web-ui:"
-  node_modules/.bin/eslint \
+  sudo node_modules/.bin/eslint \
     gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib \
     scripts/tasks scripts/test scripts/tools scripts/slushfile.js \
     -f checkstyle -o checkstyle-result.xml || true
 
   echo "Test on-web-ui:"
-  karma start karama.ci.conf.js || true
+  sudo karma start karama.ci.conf.js || true
 fi
 
 if [ -n "$RUN_ON_WEB_UI" ]; then
   echo "Run on-web-ui:"
-  gulp &
+  sudo gulp &
 fi
