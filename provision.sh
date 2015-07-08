@@ -40,16 +40,17 @@ echo "Install global npm dependencies:"
 npm install -g gulp slush karma-cli
 
 if [ -z "$JENKINS_PROVISION" ]; then
-  if [ -f /home/on-web-ui/package.json ]; then
+  if [ -f /on-web-ui/package.json ]; then
     echo "Update on-web-ui:"
-    cd /home/on-web-ui
+    cd /on-web-ui
     git pull origin master
   else
     echo "Download on-web-ui:"
-    cd /home
+    cd /
     git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
-    cd /home/on-web-ui
+    cd /on-web-ui
   fi
+  chmod 777 /on-web-ui
 else
   echo "Jenkins already checked out on-web-ui."
 fi
