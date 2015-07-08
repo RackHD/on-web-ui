@@ -1,29 +1,10 @@
-#!/bin/bash
+!/bin/bash
 
 set -e
 set -x
 
-# install node 0.12.5
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash
-. ~/.nvm/nvm.sh
-nvm install v0.12.5
-nvm use 0.12.5
+VERBOSE_PROVISION=1
+TEST_ON_WEB_UI=1
+# RUN_ON_WEB_UI=1
 
-# install local dependencies
-rm -rf node_modules
-npm install
-
-# HACK -- make sure material-ui is installed
-cd node_modules/material-ui
-npm install || true
-rm -rf node_modules/react || true
-./node_modules/.bin/babel --stage 1 ./src --out-dir ./lib || true
-cd ../../
-
-# lint source
-./node_modules/.bin/eslint gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib scripts/tasks scripts/test scripts/tools scripts/slushfile.js -f checkstyle -o checkstyle-result.xml || true
-
-# run tests
-Xvfb :1 -screen 5 1024x768x8 &
-export DISPLAY=:1.5
-./node_modules/.bin/karma start karma.ci.conf.js
+. provision.sh

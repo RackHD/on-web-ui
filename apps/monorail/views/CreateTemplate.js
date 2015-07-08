@@ -18,7 +18,7 @@ export default class Template extends Component {
 
   componentDidMount() {}
 
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   render() {
     return (

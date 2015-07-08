@@ -1,2 +1,4 @@
 #!/bin/bash
-# TODO
+
+# Documentation for On-Web-UI is not compiled ahead of time. Please run development server using "gulp" command.
+# This will host the handbook application which contains documentation.

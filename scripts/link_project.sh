@@ -18,7 +18,7 @@ npm link
 cd ../
 npm link slush-app
 
-# HACK
 cd node_modules/material-ui
 npm install
 rm -rf node_modules/react
+cd ../../

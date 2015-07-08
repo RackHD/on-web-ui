@@ -14,7 +14,7 @@
     "gl-matrix": "^2.3.1",
     "griddle-react": "^0.2.13",
     "lodash": "^3.9.3",
-    "material-ui": "git+http://github.com/rolandpoulter/material-ui.git",
+    "material-ui": "git+http://github.com/callemall/material-ui.git",
     "moment": "^2.10.3",
     "radium": "^0.13.1",
     "react": "^0.13.3",
@@ -89,9 +89,8 @@
     "webpack-dev-server": "^1.9.0"
   },
   "scripts": {
-    "install": "npm run link",
-    "link": "./scripts/link_project.sh",
-    "dev": "./node_modules/.bin/gulp",
+    "install": ". ./scripts/link_project.sh",
+    "start": "./node_modules/.bin/gulp",
     "test": "./node_modules/.bin/karma start",
     "lint": "./node_modules/.bin/eslint gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib scripts/tasks scripts/test scripts/tools scripts/slushfile.js"
   }
