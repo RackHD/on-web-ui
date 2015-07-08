@@ -6,7 +6,7 @@ if [ -n "$VERBOSE_PROVISION" ]; then
 fi
 
 echo "Install core dependencies:"
-which git || sudo apt-get install -y git
+which git || sudo apt-get install -y git curl
 
 if [ -n "$TEST_ON_WEB_UI" ]; then
   echo "Install test dependencies:"
@@ -20,9 +20,8 @@ if [ -n "$TEST_ON_WEB_UI" ]; then
 fi
 
 echo "Install and source NVM:"
-[ -f /usr/local/.nvm/nvm.sh ] ||
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh |
-    sudo NVM_DIR=/usr/local/nvm bash
+[ -f /usr/local/nvm/nvm.sh ] ||
+  sudo bash -c 'curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | NVM_DIR=/usr/local/nvm bash'
 nvm || . /usr/local/nvm/nvm.sh
 
 [ -z "$NODE_VERSION" ] && NODE_VERSION="0.12.5"
