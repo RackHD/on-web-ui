@@ -22,3 +22,4 @@ npm link slush-app
 cd node_modules/material-ui
 npm install
 rm -rf node_modules/react
+cd ../../
