@@ -19,7 +19,7 @@ which git || sudo apt-get install -y git curl
 
 if [ -n "$TEST_ON_WEB_UI" ]; then
   echo "Install test dependencies:"
-  sudo apt-get update
+  sudo apt-get -y update || true
   which xvfb || sudo apt-get install -y xvfb
   which firefox || sudo apt-get install -y firefox
   which chromium-browser || sudo apt-get install -y chromium-browser
@@ -31,7 +31,7 @@ fi
 
 echo "Setup on-web-ui vagrant user:"
 # NOTE: This user is also used by non-vagrant envrionements.
-sudo useradd -m vagrant
+sudo useradd -m vagrant || true
 echo vagrant:pass | sudo chpasswd
 echo 'pass' | sudo -S su vagrant
 cd /home/vagrant
