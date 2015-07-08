@@ -23,7 +23,7 @@ echo "Install and source NVM:"
 [ -f /usr/local/.nvm/nvm.sh ] ||
   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh |
     NVM_DIR=/usr/local/nvm bash
-nvm || source /usr/local/nvm/nvm.sh
+nvm || . /usr/local/nvm/nvm.sh
 
 [ -z "$NODE_VERSION" ] && NODE_VERSION="0.12.5"
 CURRENT_NODE=`nvm current`
@@ -56,7 +56,10 @@ npm install
 
 if [ -n "$TEST_ON_WEB_UI" ]; then
   echo "Linting on-web-ui..."
-  node_modules/.bin/eslint gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib scripts/tasks scripts/test scripts/tools scripts/slushfile.js -f checkstyle -o checkstyle-result.xml || true
+  node_modules/.bin/eslint \
+    gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib \
+    scripts/tasks scripts/test scripts/tools scripts/slushfile.js \
+    -f checkstyle -o checkstyle-result.xml || true
 
   echo "Testing on-web-ui..."
   karma start karama.ci.conf.js || true

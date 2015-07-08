@@ -7,4 +7,4 @@ VERBOSE_PROVISION=1
 TEST_ON_WEB_UI=1
 # RUN_ON_WEB_UI=1
 
-source provision.sh
+. provision.sh
