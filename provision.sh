@@ -31,8 +31,8 @@ fi
 
 echo "Setup on-web-ui vagrant user:"
 # NOTE: This user is also used by non-vagrant envrionements.
-useradd -m vagrant
-echo vagrant:pass | chpasswd
+sudo useradd -m vagrant
+echo vagrant:pass | sudo chpasswd
 echo 'pass' | sudo -S su vagrant
 cd /home/vagrant
 
