@@ -1,5 +1,13 @@
 !/bin/bash
 
+# Flags:
+# VERBOSE_PROVISION -- If set, log commands and stderr.
+# JENKINS_PROVISION -- If set, do not checkout source code.
+# VAGRANT_PROVISION -- If set, use mounted /vagrant directory for source code.
+# NODE_VERSION -- If set, overrides the target node version.
+# TEST_ON_WEB_UI -- If set, run on-web-ui test suite.
+# RUN_ON_WEB_UI -- If set, run on-web-ui development server.
+
 if [ -n "$VERBOSE_PROVISION" ]; then
   set -e
   set -x
@@ -20,9 +28,9 @@ if [ -n "$TEST_ON_WEB_UI" ]; then
 fi
 
 echo "Install and source NVM:"
-[ -f ~/nvm/nvm.sh ] ||
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | NVM_DIR=~/nvm bash
-nvm || . ~/nvm/nvm.sh
+[ -f ~/.nvm/nvm.sh ] ||
+  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash
+nvm || . ~/.nvm/nvm.sh
 
 [ -z "$NODE_VERSION" ] && NODE_VERSION="0.12.5"
 CURRENT_NODE=`nvm current`
@@ -38,16 +46,22 @@ fi
 echo "Install global npm dependencies:"
 npm install -g gulp slush karma-cli
 
+echo "Detect on-web-ui source:"
 if [ -z "$JENKINS_PROVISION" ]; then
-  if [ -f ~/on-web-ui/package.json ]; then
-    echo "Update on-web-ui:"
-    cd ~/on-web-ui
-    git pull origin master
+  if [ -n "$VAGRANT_PROVISION" ]; then
+    echo "Vagrant automatically mounts on-web-ui."
+    cd /vagrant
   else
-    echo "Download on-web-ui:"
-    cd ~/
-    git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
-    cd ~/on-web-ui
+    if [ -f ~/on-web-ui/package.json ]; then
+      echo "Update on-web-ui:"
+      cd ~/on-web-ui
+      git pull origin master
+    else
+      echo "Download on-web-ui:"
+      cd ~/
+      git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
+      cd ~/on-web-ui
+    fi
   fi
 else
   echo "Jenkins already checked out on-web-ui."
@@ -70,5 +84,6 @@ fi
 
 if [ -n "$RUN_ON_WEB_UI" ]; then
   echo "Run on-web-ui:"
-  gulp &
+  nohup bash -c "node ./scripts/tools/code_server.js &"
+  nohup bash -c "gulp &"
 fi
