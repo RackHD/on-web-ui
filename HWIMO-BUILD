@@ -1,15 +1,7 @@
 #!/bin/bash
 
-set -e
-set -x
-
 export JENKINS_PROVISION=1
 export VERBOSE_PROVISION=1
-# export TEST_ON_WEB_UI=1
-# export RUN_ON_WEB_UI=1
 
-./provision.sh
-
-cd /home/vagrant/on-web-ui
-gulp build
-gulp deploy
+export BUILD_ON_WEB_UI=1
+sudo ./provision.sh
