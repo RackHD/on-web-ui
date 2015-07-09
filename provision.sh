@@ -4,6 +4,7 @@
 # VERBOSE_PROVISION -- If set, log commands and stderr.
 # JENKINS_PROVISION -- If set, do not checkout source code from git.
 # VAGRANT_PROVISION -- If set, copy mounted /vagrant directory for source code.
+# DOCKER_PROVISION -- If set, will only ensure node and on-web-ui code is available, then runs docker build.
 # NODE_VERSION -- If set, overrides the target node version.
 # BUILD_ON_WEB_UI -- If set, run on-web-ui build and deploy.
 # TEST_ON_WEB_UI -- If set, run on-web-ui test suite.
@@ -17,7 +18,7 @@ fi
 
 if [ -z "$DOCKER_PROVISION" ]; then
   echo "Install core dependencies:"
-  which git || apt-get install -y git curl
+  which git || apt-get install -y git curl || true
 
   if [ -n "$TEST_ON_WEB_UI" ]; then
     echo "Install test dependencies:"
@@ -95,7 +96,7 @@ else
       -f checkstyle -o checkstyle-result.xml || true
 
     echo "Test on-web-ui:"
-    karma start karama.ci.conf.js || true
+    karma start karma.ci.conf.js
   fi
 
   if [ -n "$DEPLOY_ON_WEB_UI" ]; then
@@ -103,7 +104,7 @@ else
     gulp build
 
     echo "Deploy on-web-ui:"
-    gulp deploy || true
+    gulp deploy
   fi
 
   if [ -n "$RUN_ON_WEB_UI" ]; then
