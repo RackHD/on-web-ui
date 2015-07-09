@@ -10,6 +10,7 @@ import TestWrapper from '../TestWrapper';
 import Console from '../Console';
 
 describe('Console', function() {
+  this.timeout(5000);
 
   describe('component', function() {
 

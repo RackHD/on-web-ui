@@ -8,6 +8,7 @@ import Graph from '../Graph';
 import jsonGraph from './Graph-fixture';
 
 describe('Graph', function() {
+  this.timeout(5000);
 
   beforeEach(function() {
     this.subject = new Graph({

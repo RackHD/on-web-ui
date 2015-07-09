@@ -16,6 +16,7 @@ var props = {
 };
 
 describe('GraphCanvasMap', function() {
+  this.timeout(5000);
 
   xdescribe('component', function() {
     before(function(done) {

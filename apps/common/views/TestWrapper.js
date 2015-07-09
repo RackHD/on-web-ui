@@ -21,9 +21,11 @@ onReady(function() {
     disableAutoTheme: PropTypes.bool,
     TestComponent: PropTypes.func,
     componentProps: PropTypes.object,
+    doneDelay: PropTypes.number,
     done: PropTypes.func
   },
   defaultProps: {
+    doneDelay: 16,
     disableAutoTheme: false,
     componentProps: {}
   },
@@ -80,7 +82,7 @@ export default class TestWrapper extends Component {
 
   componentDidMount() {
     if (this.props.done) {
-      this.props.done(null, this.component);
+      setTimeout(() => this.props.done(null, this.component), this.props.doneDelay);
     }
   }
 

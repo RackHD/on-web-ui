@@ -10,6 +10,7 @@ import TestWrapper from '../TestWrapper';
 import UserLogin from '../UserLogin';
 
 describe('UserLogin', function() {
+  this.timeout(5000);
 
   describe('component', function() {
     before(function(done) {
