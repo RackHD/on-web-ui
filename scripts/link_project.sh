@@ -1,28 +1,28 @@
-printf '\n\nNPM link common-web-ui:'
+printf '\n\nNPM link common-web-ui:\n\n'
 cd apps/common
 npm link
 cd ../../
 npm link common-web-ui
 
-printf '\n\nNPM link monorail-web-ui:'
+printf '\n\nNPM link monorail-web-ui:\n\n'
 cd apps/monorail
 npm link
 cd ../../
 npm link monorail-web-ui
 
-printf '\n\nNPM link onrack-web-ui:'
+printf '\n\nNPM link onrack-web-ui:\n\n'
 cd apps/onrack
 npm link
 cd ../../
 npm link onrack-web-ui
 
-printf '\n\nNPM link slush-app:'
+printf '\n\nNPM link slush-app:\n\n'
 cd scripts
 npm link
 cd ../
 npm link slush-app
 
-printf '\n\nSetup material-ui module:'
+printf '\n\nSetup material-ui module:\n\n'
 cd node_modules/material-ui
 npm install
 rm -rf node_modules/react
