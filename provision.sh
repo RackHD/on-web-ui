@@ -58,9 +58,8 @@ echo "Detect on-web-ui source:"
 if [ -z "$JENKINS_PROVISION" ]; then
   if [ -n "$VAGRANT_PROVISION" ]; then
     echo "Copy on-web-ui from vagrant mount:"
-    sudo cp -R /vagrant /tmp/on-web-ui
+    cp -R /vagrant/* /tmp/on-web-ui
     cd /tmp/on-web-ui
-    ls
   else
     if [ -f /tmp/on-web-ui/package.json ]; then
       echo "Update on-web-ui:"
@@ -79,7 +78,7 @@ fi
 
 if [ -n "$DOCKER_PROVISION" ]; then
   echo "Build docker container:"
-  docker build . -t on-web-ui
+  docker build -t on-web-ui .
 
   echo "Run docker container:"
   docker run on-web-ui

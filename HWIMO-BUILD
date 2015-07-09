@@ -4,4 +4,4 @@ export JENKINS_PROVISION=1
 export VERBOSE_PROVISION=1
 
 export BUILD_ON_WEB_UI=1
-sudo ./provision.sh
+./provision.sh
