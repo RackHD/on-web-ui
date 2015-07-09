@@ -17,7 +17,7 @@ var props = {
 
 describe('GraphCanvasMap', function() {
 
-  describe('component', function() {
+  xdescribe('component', function() {
     before(function(done) {
       var handler = (err, component) => {
         this.subject = component;
