@@ -21,10 +21,10 @@ if [ -z "$DOCKER_PROVISION" ]; then
 
   if [ -n "$TEST_ON_WEB_UI" ]; then
     echo "Install test dependencies:"
-    apt-get -y update
-    which xvfb || apt-get install -y xvfb
-    which firefox || apt-get install -y firefox
-    which chromium-browser || apt-get install -y chromium-browser
+    apt-get -y update || true
+    which xvfb || apt-get install -y xvfb || true
+    which firefox || apt-get install -y firefox || true
+    which chromium-browser || apt-get install -y chromium-browser || true
 
     echo "Enable xvfb server:"
     Xvfb :1 -screen 5 1024x768x8 &
