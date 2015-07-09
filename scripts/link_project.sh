@@ -21,4 +21,7 @@ npm link slush-app
 cd node_modules/material-ui
 npm install
 rm -rf node_modules/react
+if [ ! -f ./lib/index.js ]; then
+  ./node_modules/.bin/babel --stage 1 ./src --out-dir ./lib
+fi
 cd ../../
