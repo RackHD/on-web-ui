@@ -8,6 +8,7 @@ import TestWrapper from 'common-web-ui/views/TestWrapper';
 import App from '../App';
 
 describe('MonoRail App', function() {
+  this.timeout(5000);
 
   describe('component', function() {
     before(function(done) {
