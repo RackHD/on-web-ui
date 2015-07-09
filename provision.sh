@@ -87,6 +87,7 @@ else
   echo "Install on-web-ui:"
   rm -rf node_modules
   npm install
+  ./scripts/link_project.sh
 
   if [ -n "$TEST_ON_WEB_UI" ]; then
     echo "Lint on-web-ui:"
