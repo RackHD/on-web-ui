@@ -14,7 +14,7 @@ Vagrant.configure(2) do |config|
     # server.vm.synced_folder ".", "/vagrant"
 
     server.vm.provider :virtualbox do |vb|
-      vb.name = "on-web-ui"
+      vb.name = "on-web-ui-server"
       vb.gui = true
       vb.memory = "1024"
       vb.cpus = 1
@@ -40,7 +40,7 @@ Vagrant.configure(2) do |config|
     # server.vm.synced_folder ".", "/vagrant"
 
     test.vm.provider :virtualbox do |vb|
-      vb.name = "on-web-ui"
+      vb.name = "on-web-ui-test"
       vb.gui = true
       vb.memory = "1024"
       vb.cpus = 1
