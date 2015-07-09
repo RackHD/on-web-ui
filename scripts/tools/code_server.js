@@ -30,9 +30,9 @@ server.use(function (req, res) {
         files = files.map(function (filePath) {
           try {
             var fileStats = fs.statSync(path.join(publicPath, req.url, filePath));
-            if (fileStats.isDirectory()) { file += '/'; }
+            if (fileStats.isDirectory()) { filePath += '/'; }
           } catch(err) { console.error(err); }
-          return file;
+          return filePath;
         });
         res.status(200).send(files);
       });
