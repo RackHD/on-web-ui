@@ -49,6 +49,7 @@ export default class WEWorkflowOutline extends Component {
   componentWillMount() {
     this.setState({
       json: this.props.editor.graph.json
+      // json: this.props.editor.json
     });
   }
 

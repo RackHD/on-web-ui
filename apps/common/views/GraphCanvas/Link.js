@@ -58,7 +58,9 @@ export default class GraphCanvasLink extends Component {
         path = ['M', maxX, minY, 'Q', halfX, minY, halfX, halfY, 'T', minX, maxY].join(' ');
       }
 
-      var transform = 'translate(' + style.left + ' ' + style.top + ')';
+      var transform = 'translate(' + style.left + ' ' + style.top + ')',
+          socket = this.props.model.socketOut || this.props.model.socketIn,
+          color = socket && socket.port && socket.port.color || 'black';
       return (
         <svg className={'GraphCanvasLink ' + hover}
              width={style.width}
@@ -74,7 +76,7 @@ export default class GraphCanvasLink extends Component {
           <g transform={transform}>
             <path d={path}
                   fill="transparent"
-                  stroke="black"
+                  stroke={color}
                   strokeWidth={stroke}
                   strokeLinecap="round"
                   onMouseOver={this.onHoverCurve.bind(this)}

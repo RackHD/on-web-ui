@@ -79,6 +79,7 @@ export default class Node {
         graph: this.graph,
         node: this,
         name: port.name,
+        color: port.color,
         sockets: port.sockets
       });
       this._ports[port.name] = this.graph.port(port.id, port);

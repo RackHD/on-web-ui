@@ -5,7 +5,9 @@
 export default class Task {
 
   constructor(data) {
-    Object.keys(data).forEach(prop => this[prop] = data[prop]);
+    if (data) {
+      Object.keys(data).forEach(prop => this[prop] = data[prop]);
+    }
   }
 
   insertGraphNode(editor, label, bounds) {
@@ -17,17 +19,31 @@ export default class Task {
     };
     let node = editor.graph.add({
       graph: editor.graph,
-      data: {task: taskInstance},
+      data: {
+        task: taskInstance
+      },
       bounds: bounds,
       layer: 1,
       scale: 1,
       ports: [
-        {name: 'Flow', sockets: [
-          {type: 'Signal', dir: [-1, 0]},
-          {type: 'Failure', dir: [1, 0]},
-          {type: 'Success', dir: [1, 0]},
-          {type: 'Complete', dir: [1, 0]}
-        ]}
+        {
+          name: 'Options',
+          color: 'red',
+          sockets: [
+            {type: 'IN', dir: [-1, 0]},
+            {type: 'OUT', dir: [1, 0]}
+          ]
+        },
+        {
+          name: 'Flow',
+          color: 'blue',
+          sockets: [
+            {type: 'waitOn', dir: [-1, 0]},
+            {type: 'failed', dir: [1, 0]},
+            {type: 'succeeded', dir: [1, 0]},
+            {type: 'finished', dir: [1, 0]}
+          ]
+        }
       ]
     });
     taskInstance._node = node;

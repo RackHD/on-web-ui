@@ -48,7 +48,7 @@ export default class GraphCanvasPort extends Component {
         <div className="line">
           <div className="cell">{leftSockets}</div>
           <div className="cell">
-            <span className="name">{this.props.model.name}</span>
+            <span className="name" style={{color: this.props.model.color}}>{this.props.model.name}</span>
           </div>
           <div className="cell">{rightSockets}</div>
         </div>

@@ -5,14 +5,20 @@ import Socket from './Socket';
 
 const idPrefixCode = 'P'.charCodeAt(0);
 
+// var i = 0;
+
 export default class Port {
 
-  constructor({ id, graph, node, name, sockets }) {
+  constructor({ id, graph, node, name, color, sockets }) {
     this.id = newId(id || idPrefixCode);
     this.data = null;
     this.graph = graph || null;
     this.name = name || null;
     this.node = node || null;
+    this.color = color || 'black';
+    // RAINBOW MODE:
+    // color = [ 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet' ];
+    // this.color = color[i++ % color.length];
     this.sockets = sockets;
   }
 

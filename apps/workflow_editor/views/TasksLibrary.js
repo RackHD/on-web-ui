@@ -71,7 +71,7 @@ export default class WETasksLibrary extends Component {
     if (!task) { return; }
     event.stopPropagation();
     event.preventDefault();
-    let label = prompt('Label');
+    let label = prompt('Label'); // eslint-disable-line no-alert
     task.insertGraphNode(this.props.editor, label, [1000, 1000, 1100, 1100]);
     this.props.editor.layout.refs.graphCanvas.refs.world.updateGraph();
   }

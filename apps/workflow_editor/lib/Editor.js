@@ -50,17 +50,31 @@ export default class Editor extends EventEmitter {
     workflowTemplate.tasks.forEach(task => {
       task._node = workflowGraph.add({
         graph: workflowGraph,
-        data: {task: task},
+        data: {
+          task: task
+        },
         bounds: [900, 900, 1000, 1000],
-        layer: 0,
+        layer: 1,
         scale: 1,
         ports: [
-          {name: 'Flow', sockets: [
-            {type: 'waitOn', dir: [-1, 0]},
-            {type: 'failed', dir: [1, 0]},
-            {type: 'succeeded', dir: [1, 0]},
-            {type: 'finished', dir: [1, 0]}
-          ]}
+          {
+            name: 'Options',
+            color: 'red',
+            sockets: [
+              {type: 'IN', dir: [-1, 0]},
+              {type: 'OUT', dir: [1, 0]}
+            ]
+          },
+          {
+            name: 'Flow',
+            color: 'blue',
+            sockets: [
+              {type: 'waitOn', dir: [-1, 0]},
+              {type: 'failed', dir: [1, 0]},
+              {type: 'succeeded', dir: [1, 0]},
+              {type: 'finished', dir: [1, 0]}
+            ]
+          }
         ]
       });
       taskMap[task.label] = task;
@@ -68,8 +82,12 @@ export default class Editor extends EventEmitter {
     workflowTemplate.tasks.forEach(task => {
       if (task.waitOn) {
         Object.keys(task.waitOn).forEach(taskLabel => {
-          var state = task.waitOn[taskLabel];
-          var linkedTask = taskMap[taskLabel];
+          var state = task.waitOn[taskLabel],
+              linkedTask = taskMap[taskLabel],
+              socketOut = linkedTask._node.ports.Flow.sockets[state],
+              socketIn = task._node.ports.Flow.sockets.waitOn;
+          // debugger;
+          // console.log(state, socketOut, socketIn);
           workflowGraph.connect({
             graph: workflowGraph,
             data: {
@@ -77,8 +95,8 @@ export default class Editor extends EventEmitter {
               from: linkedTask._node.id,
               to: task._node.id
             },
-            socketOut: linkedTask._node.ports.Flow.sockets[state],
-            socketIn: task._node.ports.Flow.sockets.waitOn,
+            socketOut: socketOut,
+            socketIn: socketIn,
             layer: 0,
             scale: 1
           });

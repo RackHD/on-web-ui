@@ -38,6 +38,9 @@
   transition: box-shadow 0.5s;
   border-radius: 5px;
   background-color: transparent;
+  background-color: rgb(255, 255, 255);
+  background-color: rgba(255, 255, 255, 0.75);
+  // background: linear-gradient(to bottom, red, orange, yellow, green, blue, indigo, violet);
 
   &:hover {
     z-index: 1;
@@ -46,6 +49,7 @@
   &.active {
     background-color: rgb(127, 127, 127);
     background-color: rgba(127, 127, 127, 0.25);
+    // background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
 
     .container { visibility: hidden; }
   }
@@ -57,6 +61,7 @@
       .header {
         background-color: rgb(255, 127, 127);
         background-color: rgba(255, 127, 127, 0.75);
+        // background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
         // border-top-left-radius: 3px;
         // border-top-right-radius: 3px;
       }
@@ -74,6 +79,7 @@
       color: black;
       background-color: rgb(127, 127, 127);
       background-color: rgba(127, 127, 127, 0.75);
+      // background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
       position: absolute;
       height: 16px;
       width: 100%;
@@ -101,6 +107,8 @@
         line-height: 16px;
       }
     }
+
+    .ports {}
   }
 }
 

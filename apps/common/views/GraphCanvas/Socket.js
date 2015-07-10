@@ -41,7 +41,8 @@ export default class GraphCanvasSocket extends Component {
 
     var socketCell = (
       <div key="socket" className="cell">
-        <span className={socketClassName}
+        <span style={{color: this.props.model.port.color}}
+              className={socketClassName}
               onMouseDown={this.drawLink()} />
       </div>
     );
