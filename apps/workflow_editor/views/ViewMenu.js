@@ -8,7 +8,7 @@ import {
     MenuItem
   } from 'material-ui';
 
-export default class WEEditMenu extends Component {
+export default class WEViewMenu extends Component {
 
   state = {};
 
@@ -17,13 +17,13 @@ export default class WEEditMenu extends Component {
   componentWillUnmount() {}
 
   render() {
-    var editMenuItems = [
-      {text: 'Edit', type: MenuItem.Types.SUBHEADER},
-      {text: 'Auto Layout'}
+    var viewMenuItems = [
+      {text: 'View', type: MenuItem.Types.SUBHEADER},
+      {text: 'Go Home'}
     ];
     return (
-      <DropDownMenu ref="root" className="EditMenu"
-          menuItems={editMenuItems}
+      <DropDownMenu ref="root" className="ViewMenu"
+          menuItems={viewMenuItems}
           onChange={this.triggerEditAction.bind(this)} />
     );
   }

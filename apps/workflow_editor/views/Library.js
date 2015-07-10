@@ -52,7 +52,7 @@ export default class WELibrary extends Component {
       marginBottom: 0
     },
     ul: {
-      maxHeight: '500px',
+      maxHeight: 500,
       overflow: 'auto',
       userSelect: 'none',
       borderTop: '1px dotted #ddd',
@@ -74,7 +74,7 @@ export default class WELibrary extends Component {
     var css = {
       root: [this.css.root, this.props.css.root, this.props.style],
       search: [this.css.search, this.props.css.search],
-      ul: [this.css.ul, this.props.css.ul]
+      ul: [this.css.ul, {maxHeight: window.innerHeight - 200}, this.props.css.ul]
     };
     var empty = null;
     if (!React.Children.count(this.props.children)) {
@@ -147,10 +147,11 @@ export default class WELibrary extends Component {
   }
 
   clearSearch() {
-    setTimeout(() => {
-      this.refs.search.setValue('');
-      this.setState({filteredChildren: null});
-    }, 500);
+    return;
+    // setTimeout(() => {
+    //   this.refs.search.setValue('');
+    //   this.setState({filteredChildren: null});
+    // }, 500);
   }
 
 }

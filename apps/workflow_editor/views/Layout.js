@@ -41,7 +41,7 @@ export default class WELayout extends Component {
 
   css = {
     root: {
-      minWidth: 900,
+      minWidth: 1000,
       position: 'relative'
     },
 

@@ -10,6 +10,7 @@ import {
 
 import WEFileMenu from './FileMenu';
 import WEEditMenu from './EditMenu';
+import WEViewMenu from './ViewMenu';
 
 export default class WEToolbar extends Component {
 
@@ -25,6 +26,7 @@ export default class WEToolbar extends Component {
         <ToolbarGroup key={0} float="left" style={{height: 'inherit'}}>
           <WEFileMenu editor={this.props.editor} />
           <WEEditMenu editor={this.props.editor} />
+          <WEViewMenu editor={this.props.editor} />
         </ToolbarGroup>
       </Toolbar>
     );

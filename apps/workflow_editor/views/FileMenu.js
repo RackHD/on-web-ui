@@ -17,26 +17,13 @@ let workflows = new WorkflowStore();
 @mixin.decorate(RouteHelpers)
 export default class WEFileMenu extends Component {
 
-  state = {workflows: null};
+  state = {};
 
-  componentDidMount() {
-    this.unwatchWorkflows = workflows.watchAll('workflows', this);
-    this.listWorkflows();
-  }
+  componentDidMount() {}
 
-  componentWillUnmount() { this.unwatchWorkflows(); }
+  componentWillUnmount() {}
 
   render() {
-    var workflowMenuItems = [];
-    if (this.state.workflows) {
-      this.state.workflows.forEach(workflow => {
-        workflowMenuItems.push({
-          text: workflow.id,
-          workflow: workflow
-        });
-      });
-    }
-
     var fileMenuItems = [
       {text: 'File', type: MenuItem.Types.SUBHEADER},
       {text: 'New'},
@@ -45,7 +32,7 @@ export default class WEFileMenu extends Component {
     ];
 
     return (
-      <DropDownMenu ref="root" className="WorkflowsFileMenu"
+      <DropDownMenu ref="root" className="FileMenu"
           menuItems={fileMenuItems}
           onChange={this.loadWorkflow.bind(this)} />
     );

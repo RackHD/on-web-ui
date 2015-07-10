@@ -12,8 +12,6 @@ import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 import {
   } from 'material-ui';
 
-import JsonEditor from 'common-web-ui/views/JsonEditor';
-
 /**
 # WEWorkflowJSON
 
@@ -41,32 +39,18 @@ import JsonEditor from 'common-web-ui/views/JsonEditor';
 })
 export default class WEWorkflowOutline extends Component {
 
-  state = {
-    disabled: false,
-    json: ''
-  };
+  state = {};
 
-  componentWillMount() {
-    this.setState({
-      json: this.props.editor.graph.json
-      // json: this.props.editor.json
-    });
-  }
+  componentWillMount() {}
 
   componentWillUnmount() {}
 
   render() {
     return (
-      <JsonEditor
-          initialValue={this.state.json}
-          updateParentState={this.updateStateFromJsonEditor.bind(this)}
-          disabled={this.state.disabled}
-          ref="root" />
+      <div>
+        Hello World
+      </div>
     );
-  }
-
-  updateStateFromJsonEditor(json) {
-    this.setState({ json });
   }
 
 }
