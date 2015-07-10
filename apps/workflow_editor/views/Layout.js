@@ -59,6 +59,15 @@ export default class WELayout extends Component {
     this.editor.onGraphUpdate(graph => {
       this.refs.graphCanvas.refs.world.updateGraph(graph);
     });
+    if (this.props.params && this.props.params.workflow) {
+      let workflowName = decodeURIComponent(this.props.params.workflow);
+      this.editor.workflowStore.list().then(() => {
+        let workflow = this.editor.workflowStore.collection[workflowName];
+        if (workflow) {
+          this.editor.loadWorkflow(workflow, true);
+        }
+      });
+    }
   }
 
   componentDidMount() {

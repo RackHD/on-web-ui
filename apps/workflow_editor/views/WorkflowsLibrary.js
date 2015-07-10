@@ -8,6 +8,7 @@ import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
+import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
 import Library from './Library';
 import LibraryItem from './LibraryItem';
@@ -24,6 +25,7 @@ import LibraryItem from './LibraryItem';
 
 @radium
 @mixin.decorate(DeveloperHelpers)
+@mixin.decorate(RouteHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,
@@ -77,21 +79,18 @@ export default class WEWorkflowsLibrary extends Component {
   }
 
   loadWorkflow(workflow, newGraph, event) {
-    if (!workflow) { return; }
+    if (!workflow) { return null; }
     event.stopPropagation();
     event.preventDefault();
-    // if (workflow.id) {
-    //   this.routeTo('builder', workflow.id);
-    // }
-    // else {
-    //   this.routeTo('builder', 'new');
-    // }
     if (workflow.id) {
-      this.props.editor.loadWorkflow(workflow, newGraph);
+      if (newGraph) {
+        return this.props.editor.loadWorkflow(workflow, newGraph);
+      }
+      else {
+        return this.routeTo(encodeURIComponent(workflow.id));
+      }
     }
-    else {
-      this.props.editor.resetWorkflow();
-    }
+    return this.props.editor.resetWorkflow();
   }
 
 }
