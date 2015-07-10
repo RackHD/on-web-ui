@@ -3,8 +3,8 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
-import decorate from '../../lib/decorate';
-import MUIStyleHelpers from '../../mixins/MUIStyleHelpers';
+import decorate from 'common-web-ui/lib/decorate';
+import MUIStyleHelpers from 'common-web-ui/mixins/MUIStyleHelpers';
 import CoordinateHelpers from '../../mixins/CoordinateHelpers';
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
@@ -239,8 +239,8 @@ export default class GraphCanvasWorld extends Component {
         var velocitySum = dragState.frames.reduce(function (lastValue, currFrame) {
           return (lastValue.velocity || lastValue).add(currFrame.velocity);
         });
+        velocitySum = velocitySum.squish(dragState.frames.length / 2);
         this.stopPhysicsScroll = false;
-        // velocitySum = velocitySum.squish(2);
         var tick = () => {
           if (Math.abs(velocitySum.x) < 0.000001 &&
               Math.abs(velocitySum.y) < 0.000001) { return; }

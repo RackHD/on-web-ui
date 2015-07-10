@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
-import decorate from '../../lib/decorate';
+import decorate from 'common-web-ui/lib/decorate';
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
@@ -165,6 +165,7 @@ export default class GraphCanvasNode extends Component {
         var velocitySum = dragState.frames.reduce(function (lastValue, currFrame) {
           return (lastValue.velocity || lastValue).add(currFrame.velocity);
         });
+        velocitySum = velocitySum.squish(dragState.frames.length / 2);
         this.stopPhysicsMove = false;
         var tick = () => {
           if (Math.abs(velocitySum.x) < 0.000001 &&

@@ -2,8 +2,10 @@
 
 import { EventEmitter } from 'events';
 
-import Rectangle from 'common-web-ui/lib/Rectangle';
-import Graph from 'common-web-ui/lib/Graph';
+import cloneDeep from 'lodash/lang/cloneDeep';
+
+import Rectangle from 'graph-canvas-web-ui/lib/Rectangle';
+import Graph from 'graph-canvas-web-ui/lib/Graph';
 
 import TaskStore from '../stores/TaskStore';
 import WorkflowStore from '../stores/WorkflowStore';
@@ -17,6 +19,7 @@ export default class Editor extends EventEmitter {
     super();
     this.graph = new Graph();
     this.layout = layout;
+    this.workflow = new Workflow({});
     this.taskStore = new TaskStore(Task);
     this.workflowStore = new WorkflowStore(Workflow);
   }
@@ -30,18 +33,17 @@ export default class Editor extends EventEmitter {
   }
 
   loadWorkflow(workflowTemplate, newGraph) {
+    workflowTemplate = cloneDeep(workflowTemplate);
     var workflowGraph = this.loadWorkflowTemplate(workflowTemplate, newGraph);
-        // graphCanvas = this.layout.refs.graphCanvas;
     this.graph = workflowGraph;
+    this.workflow = new Workflow(workflowTemplate);
+    this.workflow.insertGraphNode(this, workflowTemplate.friendlyName, [700, 800, 800, 900]);
     this.emitGraphUpdate();
-    // graphCanvas.refs.world.updateGraph(this.graph);
   }
 
   resetWorkflow() {
     this.graph = new Graph();
     this.emitGraphUpdate();
-    // var graphCanvas = this.layout.refs.graphCanvas;
-    // graphCanvas.refs.world.updateGraph(this.graph);
   }
 
   loadWorkflowTemplate(workflowTemplate, newGraph) {
@@ -86,8 +88,6 @@ export default class Editor extends EventEmitter {
               linkedTask = taskMap[taskLabel],
               socketOut = linkedTask._node.ports.Flow.sockets[state],
               socketIn = task._node.ports.Flow.sockets.waitOn;
-          // debugger;
-          // console.log(state, socketOut, socketIn);
           workflowGraph.connect({
             graph: workflowGraph,
             data: {

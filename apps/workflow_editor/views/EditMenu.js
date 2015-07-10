@@ -19,7 +19,7 @@ export default class WEEditMenu extends Component {
   render() {
     var workflowMenuItems = [
       {text: 'Edit', type: MenuItem.Types.SUBHEADER},
-      {text: 'View JSON Source'}
+      {text: 'Auto-position Graph'}
     ];
     return (
       <DropDownMenu ref="root" className="WorkflowsFileMenu"

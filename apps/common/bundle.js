@@ -31,13 +31,6 @@ import DataTableToolbar from './views/DataTableToolbar';
 import EMCTab from './views/EMCTab';
 import EntityGrid from './views/EntityGrid';
 import ErrorNotification from './views/ErrorNotification';
-import GraphCanvas from './views/GraphCanvas';
-import GraphCanvasGrid from './views/GraphCanvas/Grid';
-import GraphCanvasLink from './views/GraphCanvas/Link';
-import GraphCanvasNode from './views/GraphCanvas/Node';
-import GraphCanvasPort from './views/GraphCanvas/Port';
-import GraphCanvasSocket from './views/GraphCanvas/Socket';
-import GraphCanvasWorld from './views/GraphCanvas/World';
 import JsonEditor from './views/JsonEditor';
 import NotFound from './views/NotFound';
 import TestWrapper from './views/TestWrapper';
@@ -56,13 +49,6 @@ var views = {
   EMCTab,
   EntityGrid,
   ErrorNotification,
-  GraphCanvas,
-  GraphCanvasGrid,
-  GraphCanvasLink,
-  GraphCanvasNode,
-  GraphCanvasPort,
-  GraphCanvasSocket,
-  GraphCanvasWorld,
   JsonEditor,
   NotFound,
   TestWrapper,
@@ -73,41 +59,21 @@ var views = {
 import decorate from './lib/decorate';
 import emcColors from './lib/emcColors';
 import featureFlag from './lib/featureFlag';
-import Graph from './lib/Graph';
-import GraphLink from './lib/Graph/Link';
-import GraphId from './lib/Graph/newId';
-import GraphNode from './lib/Graph/Node';
-import GraphPort from './lib/Graph/Port';
-import GraphSocket from './lib/Graph/Socket';
-import Matrix from './lib/Matrix';
 import Messenger from './lib/Messenger';
 import onReady from './lib/onReady';
-import Rectangle from './lib/Rectangle';
 import Store from './lib/Store';
-import Vector from './lib/Vector';
 
 var lib = {
   decorate,
   emcColors,
   featureFlag,
-  Graph,
-  GraphLink,
-  GraphId,
-  GraphNode,
-  GraphPort,
-  GraphSocket,
-  Matrix,
   Messenger,
   onReady,
-  Rectangle,
-  Store,
-  Vector
+  Store
 };
 
-import CoordinateHelpers from './mixins/CoordinateHelpers';
 import DeveloperHelpers from './mixins/DeveloperHelpers';
 import DialogHelpers from './mixins/DialogHelpers';
-import DragEventHelpers from './mixins/DragEventHelpers';
 import EditorHelpers from './mixins/EditorHelpers';
 import FormatHelpers from './mixins/FormatHelpers';
 import GridHelpers from './mixins/GridHelpers';
@@ -118,10 +84,8 @@ import RouteHelpers from './mixins/RouteHelpers';
 import ViewportHelpers from './mixins/ViewportHelpers';
 
 var mixins = {
-  CoordinateHelpers,
   DeveloperHelpers,
   DialogHelpers,
-  DragEventHelpers,
   EditorHelpers,
   FormatHelpers,
   GridHelpers,

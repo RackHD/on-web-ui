@@ -1,12 +1,10 @@
 'use strict';
 
+import merge from 'lodash/object/merge';
+
 export default class Workflow {
 
-  constructor(data) {
-    if (data) {
-      Object.keys(data).forEach(prop => this[prop] = data[prop]);
-    }
-  }
+  constructor(data) { merge(this, data); }
 
   insertGraphNode(editor, label, bounds) {
     var workflowInstance = {

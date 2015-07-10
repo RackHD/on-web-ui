@@ -1,14 +1,11 @@
 'use strict';
 
-// import GraphNode from 'common-web-ui/lib/Graph/Node';
+// import GraphNode from 'graph-canvas-web-ui/lib/Graph/Node';
+import merge from 'lodash/object/merge';
 
 export default class Task {
 
-  constructor(data) {
-    if (data) {
-      Object.keys(data).forEach(prop => this[prop] = data[prop]);
-    }
-  }
+  constructor(data) { merge(this, data); }
 
   insertGraphNode(editor, label, bounds) {
     var taskInstance = {
