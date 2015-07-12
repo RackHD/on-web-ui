@@ -20,6 +20,7 @@ export default class Editor extends EventEmitter {
     this.graph = new Graph();
     this.layout = layout;
     this.workflow = new Workflow({});
+    this.tasks = [];
     this.taskStore = new TaskStore(Task);
     this.workflowStore = new WorkflowStore(Workflow);
   }
@@ -37,7 +38,7 @@ export default class Editor extends EventEmitter {
     var workflowGraph = this.loadWorkflowTemplate(workflowTemplate, newGraph);
     this.graph = workflowGraph;
     this.workflow = new Workflow(workflowTemplate);
-    this.workflow.insertGraphNode(this, workflowTemplate.friendlyName, [700, 800, 800, 900]);
+    this.workflow.insertGraphNode(this, workflowTemplate.friendlyName, [1100, 1200, 1200, 1300]);
     this.emitGraphUpdate();
   }
 
@@ -49,13 +50,14 @@ export default class Editor extends EventEmitter {
   loadWorkflowTemplate(workflowTemplate, newGraph) {
     var workflowGraph = newGraph ? new Graph() : this.graph,
         taskMap = {};
+    this.tasks = [];
     workflowTemplate.tasks.forEach(task => {
       task._node = workflowGraph.add({
         graph: workflowGraph,
         data: {
           task: task
         },
-        bounds: [900, 900, 1000, 1000],
+        bounds: [1300, 1300, 1400, 1400],
         layer: 1,
         scale: 1,
         ports: [
@@ -80,6 +82,7 @@ export default class Editor extends EventEmitter {
         ]
       });
       taskMap[task.label] = task;
+      this.tasks.push(task);
     });
     workflowTemplate.tasks.forEach(task => {
       if (task.waitOn) {

@@ -41,16 +41,50 @@ export default class WEWorkflowOutline extends Component {
 
   state = {};
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.props.editor.onGraphUpdate(() => {
+      this.forceUpdate();
+    });
+  }
 
   componentWillUnmount() {}
 
   render() {
+    console.log('outline', this.props.editor);
+    var tasks = this.props.editor.tasks;
+    if (tasks) {
+      tasks = tasks.map(task => {
+        return (
+          <div onClick={this.selectNode.bind(this, task)}>
+            {task.label}
+            <br/>options:<br/>
+            {JSON.stringify(task.options) || 'undefined'}
+            <br/>properties:<br/>
+            {JSON.stringify(task.properties) || 'undefined'}
+            <br/>waitOn:<br/>
+            {JSON.stringify(task.waitOn) || 'undefined'}
+            <br/><br/>
+          </div>
+        );
+      });
+    }
     return (
       <div>
-        Hello World
+        <div>
+          {this.props.editor.workflow.id || '(Unamed Workflow)'}
+        </div>
+        <div>
+          <h3>Tasks</h3>
+          {tasks || '(No tasks)'}
+        </div>
       </div>
     );
+  }
+
+  selectNode(task, e) {
+    e.stopPropagation();
+    e.preventDefault();
+    this.props.editor.layout.refs.graphCanvas.selectNode(task._node, e.shiftKey);
   }
 
 }

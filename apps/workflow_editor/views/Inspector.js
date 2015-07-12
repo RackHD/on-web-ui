@@ -39,6 +39,7 @@ export default class WEInspector extends Component {
     return (
       <div className="WorkflowInspector" style={{padding: 10}}>
         <WEWorkflowOutline ref="json" editor={this.props.editor} />
+        <hr />
         <div className="selected">
           {selected}
         </div>

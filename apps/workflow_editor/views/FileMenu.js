@@ -27,7 +27,7 @@ export default class WEFileMenu extends Component {
     var fileMenuItems = [
       {text: 'File', type: MenuItem.Types.SUBHEADER},
       {text: 'New'},
-      // {text: 'Save'},
+      {text: 'Clone'},
       {text: 'Load'}
     ];
 

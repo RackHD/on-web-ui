@@ -81,6 +81,7 @@ export default class WELayout extends Component {
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleResize);
     document.body.classList.add('no-select');
+
     this.refs.graphCanvas.onSelect((selection) => {
       this.refs.tray.refs.inspector.update(selection);
     });

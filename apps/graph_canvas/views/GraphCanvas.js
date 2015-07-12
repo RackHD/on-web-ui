@@ -56,6 +56,10 @@ export default class GraphCanvas extends Component {
     } catch (err) { console.error(err.stack || err); }
   }
 
+  selectNode(node, shiftKey) {
+    this.refs.world.selectNode(node, shiftKey);
+  }
+
   onSelect(callback) {
     this.selectionCallbacks = this.selectionCallbacks || [];
     this.selectionCallbacks.push(callback);

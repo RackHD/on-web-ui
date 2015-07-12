@@ -19,7 +19,8 @@ export default class WEEditMenu extends Component {
   render() {
     var editMenuItems = [
       {text: 'Edit', type: MenuItem.Types.SUBHEADER},
-      {text: 'Auto Layout'}
+      {text: 'Auto Layout'},
+      {text: 'Delete Selected'}
     ];
     return (
       <DropDownMenu ref="root" className="EditMenu"

@@ -19,6 +19,7 @@ export default class WEViewMenu extends Component {
   render() {
     var viewMenuItems = [
       {text: 'View', type: MenuItem.Types.SUBHEADER},
+      {text: 'View Selected'},
       {text: 'Go Home'}
     ];
     return (

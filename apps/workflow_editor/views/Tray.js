@@ -38,6 +38,8 @@ export default class WETray extends Component {
   css = {
     root: {
       width: '40%',
+      background: 'white',
+      minWidth: 300,
       verticalAlign: 'top',
       borderLeft: '2px solid #eee'
     }
@@ -53,7 +55,7 @@ export default class WETray extends Component {
     };
     return (
       <div ref="root" className={this.props.className} style={css.root}>
-        <Tabs ref="tabs">
+        <Tabs ref="tabs" contentContainerStyle={{maxHeight: window.innerHeight - 86, overflow: 'auto'}}>
           <Tab label="Inspector">
             <WEInspector ref="inspector" editor={this.props.editor} />
           </Tab>
