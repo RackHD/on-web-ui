@@ -30,6 +30,14 @@ export default class Editor extends EventEmitter {
     this.workflowTemplateStore = new WorkflowTemplateStore(WorkflowTemplate);
   }
 
+  getTaskDefinitionByName(name) {
+    return this.taskDefinitionStore.collection[name];
+  }
+
+  getWorkflowTemplateByName(name) {
+    return this.workflowTemplateStore.collection[name];
+  }
+
   onGraphUpdate(handler) {
     this.on('graph', handler);
   }

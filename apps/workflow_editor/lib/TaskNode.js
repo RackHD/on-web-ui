@@ -2,7 +2,7 @@
 
 export default class TaskNode {
 
-  constructor(editor, taskDefinition, { label, ignoreFailure }) {
+  constructor(editor, taskDefinition, { label, ignoreFailure, waitOn }) {
     this.editor = editor;
     this.taskDefinition = taskDefinition;
     this.node = null;
@@ -11,6 +11,7 @@ export default class TaskNode {
       _node: null,
       label,
       ignoreFailure,
+      waitOn,
       taskName: taskDefinition.injectableName,
       taskDefinition
     };
