@@ -57,15 +57,7 @@ export default class WELayout extends Component {
     this.editor.onGraphUpdate(graph => {
       this.refs.graphCanvas.refs.world.updateGraph(graph);
     });
-    if (this.props.params && this.props.params.workflow) {
-      let workflowName = decodeURIComponent(this.props.params.workflow);
-      this.editor.workflowTemplateStore.list().then(() => {
-        let workflowTemplate = this.editor.getWorkflowTemplateByName(workflowName);
-        if (workflowTemplate) {
-          this.editor.loadWorkflow(workflowTemplate, true);
-        }
-      });
-    }
+    this.loadWorkflowFromParams();
   }
 
   componentDidMount() {
@@ -90,6 +82,11 @@ export default class WELayout extends Component {
     window.removeEventListener('orientationchange', this.handleResize);
     this.handleResize = null;
     document.body.classList.remove('no-select');
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // TODO: fix this
+    // this.loadWorkflowFromParams(nextProps);
   }
 
   render() {
@@ -135,6 +132,19 @@ export default class WELayout extends Component {
         canvasHeight = window.innerHeight - toolbarLine.offsetHeight - footerSize;
     if (this.state.canvasWidth !== canvasWidth) { this.setState({ canvasWidth }); }
     if (this.state.canvasHeight !== canvasHeight) { this.setState({ canvasHeight }); }
+  }
+
+  loadWorkflowFromParams(props) {
+    props = props || this.props;
+    if (props.params && props.params.workflow) {
+      let workflowName = decodeURIComponent(props.params.workflow);
+      this.editor.workflowTemplateStore.list().then(() => {
+        let workflowTemplate = this.editor.getWorkflowTemplateByName(workflowName);
+        if (workflowTemplate) {
+          this.editor.loadWorkflow(workflowTemplate, true);
+        }
+      });
+    }
   }
 
 }

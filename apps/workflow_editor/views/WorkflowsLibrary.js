@@ -87,7 +87,9 @@ export default class WEWorkflowsLibrary extends Component {
     event.preventDefault();
     if (workflowTemplate.id) {
       if (newGraph) {
-        this.props.editor.loadWorkflow(workflowTemplate, newGraph);
+        try {
+          this.props.editor.loadWorkflow(workflowTemplate, newGraph);
+        } catch (err) { console.error(err); }
         return this.routeTo(encodeURIComponent(workflowTemplate.id));
       }
       else {

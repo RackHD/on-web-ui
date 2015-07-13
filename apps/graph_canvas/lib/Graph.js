@@ -8,6 +8,7 @@ export default class Graph {
 
   constructor(bounds) {
     this.cache = {
+      groups: {},
       nodes: {},
       ports: {},
       sockets: {},
@@ -34,6 +35,7 @@ export default class Graph {
     }
     this.bounds = new Rectangle(object.bounds);
     var cache = object.cache;
+    // TODO: GROUPS
     this.cache.nodes = {};
     cache.nodes.forEach(node => Node.fromJSON(node, {graph: this}));
     this.cache.links = {};
@@ -43,6 +45,7 @@ export default class Graph {
   get json() {
     return {
       cache: {
+        // TODO: GROUPS
         nodes: this.nodes.map(node => node.json),
         links: this.links.map(link => link.json)
       },
@@ -57,6 +60,10 @@ export default class Graph {
   }
 
   // Cache collections
+
+  get groups() {
+    return Object.keys(this.cache.groups).map(this.group.bind(this));
+  }
 
   get nodes() {
     return Object.keys(this.cache.nodes).map(this.node.bind(this));
@@ -173,6 +180,10 @@ export default class Graph {
     if (def !== null) { this.cache[name][id] = def; }
     else { delete this.cache[name][id]; }
     return def;
+  }
+
+  graph(id, def) {
+    return this.entity('groups', id, def);
   }
 
   node(id, def) {

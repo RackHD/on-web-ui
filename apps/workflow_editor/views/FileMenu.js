@@ -36,7 +36,10 @@ export default class WEFileMenu extends Component {
   }
 
   triggerFileAction(e, selectedIndex, menuItem) {
-    console.log(menuItem);
+    if (menuItem.text === 'New') {
+      this.props.editor.resetWorkflow();
+      this.routeTo('');
+    }
     if (selectedIndex !== 0) {
       setTimeout(() => {
         this.refs.root._setSelectedIndex({selectedIndex: 0});

@@ -105,8 +105,10 @@ export default class WELibrary extends Component {
     this.trie = {};
 
     React.Children.forEach(this.props.children, child => {
-      var name = child.key || child.props.children,
-          words = name.toLowerCase().split(/\s+/);
+      var name = //child.key || child.props.children ||
+                 child.props.object && child.props.object.friendlyName,
+          words = name && name.toLowerCase().split(/\s+/) || [];
+      // if (!name) {debugger;}
 
       words.forEach(word => {
         var letters = word.split(''),

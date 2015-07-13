@@ -57,16 +57,21 @@ export default class WEWorkflowOutline extends Component {
         let definition = task.taskDefinition ||
           this.props.editor.getTaskDefinitionByName(task.taskName) ||
           {};
+        console.log(task, definition);
         return (
           <div onClick={this.selectNode.bind(this, task)}>
             {task.label}
-            <br/>options:<br/>
-            {JSON.stringify(definition.options) || 'undefined'}
-            <br/>properties:<br/>
-            {JSON.stringify(definition.properties) || 'undefined'}
-            <br/>waitOn:<br/>
-            {JSON.stringify(task.waitOn) || 'undefined'}
-            <br/><br/>
+            <div style={{padding: 20}}>
+              <br/>implementsTask:<br/>
+              {JSON.stringify(definition.implementsTask) || 'undefined'}
+              <br/>options:<br/>
+              {JSON.stringify(definition.options) || 'undefined'}
+              <br/>properties:<br/>
+              {JSON.stringify(definition.properties) || 'undefined'}
+              <br/>waitOn:<br/>
+              {JSON.stringify(task.waitOn) || 'undefined'}
+              <br/><br/>
+            </div>
           </div>
         );
       });
