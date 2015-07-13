@@ -81,12 +81,14 @@ export default class WELibrary extends Component {
     }
     return (
       <div className={this.props.className} style={css.root}>
-        <div style={css.search}><TextField
-            ref="search"
-            fullWidth={true}
-            floatingLabelText="Search"
-            onBlur={this.clearSearch.bind(this)}
-            onChange={this.updateSearch.bind(this)} /></div>
+        <div style={css.search}>
+          <TextField
+              ref="search"
+              fullWidth={true}
+              floatingLabelText="Search"
+              onBlur={this.clearSearch.bind(this)}
+              onChange={this.updateSearch.bind(this)} />
+          </div>
         <ul ref="list" style={css.ul}>
           {this.state.filteredChildren || empty || this.props.children}
         </ul>

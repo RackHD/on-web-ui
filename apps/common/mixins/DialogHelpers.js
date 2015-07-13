@@ -1,11 +1,16 @@
 'use strict';
 
+import ConfirmDialog from '../views/dialogs/Confirm';
+
 export default {
 
   confirmDialog(message, callback) {
-    // TODO: do not use prompt
-    var confirmed = window.confirm(message); // eslint-disable-line no-alert
-    callback(confirmed);
+    var confirmProps = {
+      callback: callback,
+      children: message,
+      title: 'Confirm:'
+    };
+    ConfirmDialog.create(confirmProps);
   }
 
 };

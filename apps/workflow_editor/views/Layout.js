@@ -14,8 +14,6 @@ import GraphCanvas from 'graph-canvas-web-ui/views/GraphCanvas';
 import WEToolbar from './Toolbar';
 import WETray from './Tray';
 
-import WELoadWorkflowDialog from './dialogs/LoadWorkflow';
-
 import Editor from '../lib/Editor';
 
 @radium
@@ -124,9 +122,7 @@ export default class WELayout extends Component {
           </div>
           <WETray ref="tray" className="cell" editor={this.editor} />
         </div>
-        <div className="overlay" style={css.overlay}>
-          <WELoadWorkflowDialog ref="loadWorkflowDialog" editor={this.editor} />
-        </div>
+        <div ref="overlay" className="overlay" style={css.overlay}></div>
       </div>
     );
   }

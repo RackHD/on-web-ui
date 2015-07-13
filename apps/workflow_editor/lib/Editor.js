@@ -10,8 +10,8 @@ import Graph from 'graph-canvas-web-ui/lib/Graph';
 import TaskStore from '../stores/TaskStore';
 import WorkflowStore from '../stores/WorkflowStore';
 
-import Task from './Task';
-import Workflow from './Workflow';
+import TaskNode from './TaskNode';
+import WorkflowGraph from './WorkflowGraph';
 
 export default class Editor extends EventEmitter {
 
@@ -19,10 +19,10 @@ export default class Editor extends EventEmitter {
     super();
     this.graph = new Graph();
     this.layout = layout;
-    this.workflow = new Workflow({});
+    this.workflow = new WorkflowGraph({});
     this.tasks = [];
-    this.taskStore = new TaskStore(Task);
-    this.workflowStore = new WorkflowStore(Workflow);
+    this.taskStore = new TaskStore(TaskNode);
+    this.workflowStore = new WorkflowStore(WorkflowGraph);
   }
 
   onGraphUpdate(handler) {
@@ -37,7 +37,7 @@ export default class Editor extends EventEmitter {
     workflowTemplate = cloneDeep(workflowTemplate);
     var workflowGraph = this.loadWorkflowTemplate(workflowTemplate, newGraph);
     this.graph = workflowGraph;
-    this.workflow = new Workflow(workflowTemplate);
+    this.workflow = new WorkflowGraph(workflowTemplate);
     this.workflow.insertGraphNode(this, workflowTemplate.friendlyName, [1100, 1200, 1200, 1300]);
     this.emitGraphUpdate();
   }

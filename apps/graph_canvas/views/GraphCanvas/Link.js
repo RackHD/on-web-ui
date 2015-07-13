@@ -5,6 +5,8 @@ import React, { Component, PropTypes } from 'react';
 import decorate from 'common-web-ui/lib/decorate';
 /* eslint-enable no-unused-vars */
 
+import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
+
 @decorate({
   propTypes: {
     active: PropTypes.bool,
@@ -102,8 +104,16 @@ export default class GraphCanvasLink extends Component {
     var e = event.nativeEvent || event;
     e.stopPropagation();
     e.preventDefault();
-    if (!window.confirm('Are you sure?')) { return; } // eslint-disable-line no-alert
-    this.props.canvas.removeLink(this.props.model);
+    var confirmProps = {
+      callback: (ok) => {
+        if (ok) {
+          this.props.canvas.removeLink(this.props.model);
+        }
+      },
+      children: 'Are you sure you want to delete this link?',
+      title: 'Confirm Delete:'
+    };
+    ConfirmDialog.create(confirmProps);
   }
 
 }

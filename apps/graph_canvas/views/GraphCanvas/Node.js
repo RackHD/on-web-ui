@@ -12,6 +12,8 @@ import {
   } from 'material-ui';
 import GraphCanvasPort from './Port.js';
 
+import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
+
 @decorate({
   propTypes: {
     active: PropTypes.bool,
@@ -187,8 +189,16 @@ export default class GraphCanvasNode extends Component {
   removeNode(event) {
     event.stopPropagation();
     event.preventDefault();
-    if (!window.confirm('Are you sure?')) { return; } // eslint-disable-line no-alert
-    this.props.canvas.removeNode(this.props.model);
+    var confirmProps = {
+      callback: (ok) => {
+        if (ok) {
+          this.props.canvas.removeNode(this.props.model);
+        }
+      },
+      children: 'Are you sure you want to delete this node?',
+      title: 'Confirm Delete:'
+    };
+    ConfirmDialog.create(confirmProps);
   }
 
 }
