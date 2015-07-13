@@ -10,6 +10,9 @@ import Graph from 'graph-canvas-web-ui/lib/Graph';
 import TaskDefinitionStore from '../stores/TaskDefinitionStore';
 import WorkflowTemplateStore from '../stores/WorkflowTemplateStore';
 
+import TaskDefinition from './TaskDefinition';
+import WorkflowTemplate from './WorkflowTemplate';
+
 import TaskNode from './TaskNode';
 import WorkflowGraph from './WorkflowGraph';
 
@@ -20,11 +23,11 @@ export default class Editor extends EventEmitter {
     this.graph = new Graph();
     this.layout = layout;
 
-    this.workflowGraph = new WorkflowGraph({});
+    this.workflowGraph = new WorkflowGraph(this);
     this.taskNodes = [];
 
-    this.taskDefinitionStore = new TaskDefinitionStore(TaskNode);
-    this.workflowTemplateStore = new WorkflowTemplateStore(WorkflowGraph);
+    this.taskDefinitionStore = new TaskDefinitionStore(TaskDefinition);
+    this.workflowTemplateStore = new WorkflowTemplateStore(WorkflowTemplate);
   }
 
   onGraphUpdate(handler) {
@@ -39,8 +42,8 @@ export default class Editor extends EventEmitter {
     workflowTemplate = cloneDeep(workflowTemplate);
     var workflowGraph = this.loadWorkflowTemplate(workflowTemplate, newGraph);
     this.graph = workflowGraph;
-    this.workflow = new WorkflowGraph(workflowTemplate);
-    this.workflow.insertGraphNode(this, workflowTemplate.friendlyName, [1100, 1200, 1200, 1300]);
+    this.workflowGraph = new WorkflowGraph(this, workflowTemplate, workflowTemplate.friendlyName);
+    this.workflowGraph.addGraphCanvasNode([1100, 1200, 1200, 1300]);
     this.emitGraphUpdate();
   }
 
@@ -62,26 +65,7 @@ export default class Editor extends EventEmitter {
         bounds: [1300, 1300, 1400, 1400],
         layer: 1,
         scale: 1,
-        ports: [
-          {
-            name: 'Options',
-            color: 'red',
-            sockets: [
-              {type: 'IN', dir: [-1, 0]},
-              {type: 'OUT', dir: [1, 0]}
-            ]
-          },
-          {
-            name: 'Flow',
-            color: 'blue',
-            sockets: [
-              {type: 'waitOn', dir: [-1, 0]},
-              {type: 'failed', dir: [1, 0]},
-              {type: 'succeeded', dir: [1, 0]},
-              {type: 'finished', dir: [1, 0]}
-            ]
-          }
-        ]
+        ports: TaskNode.prototype.gcPorts
       });
       taskMap[task.label] = task;
       this.tasks.push(task);

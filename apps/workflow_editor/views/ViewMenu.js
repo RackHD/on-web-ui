@@ -25,11 +25,11 @@ export default class WEViewMenu extends Component {
     return (
       <DropDownMenu ref="root" className="ViewMenu"
           menuItems={viewMenuItems}
-          onChange={this.triggerEditAction.bind(this)} />
+          onChange={this.triggerViewAction.bind(this)} />
     );
   }
 
-  triggerEditAction(e, selectedIndex, menuItem) {
+  triggerViewAction(e, selectedIndex, menuItem) {
     console.log(menuItem);
     if (selectedIndex !== 0) {
       setTimeout(() => {

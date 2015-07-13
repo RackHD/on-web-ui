@@ -1,39 +1,48 @@
 'use strict';
 
-import merge from 'lodash/object/merge';
+export default class WorkflowGraph {
 
-export default class Workflow {
+  constructor(editor, workflowTemplate, label) {
+    workflowTemplate = workflowTemplate || {};
 
-  constructor(data) { merge(this, data); }
+    this.editor = editor;
+    this.node = null;
+    this.workflowTemplate = workflowTemplate;
 
-  insertGraphNode(editor, label, bounds) {
-    var workflowInstance = {
+    this.instance = {
+      _node: null,
       label: label,
-      ignoreFailure: false,
-      taskName: this.injectableName,
-      taskDefinition: this
+      workflowTemplate: workflowTemplate
     };
-    let node = editor.graph.add({
-      graph: editor.graph,
-      data: {
-        task: workflowInstance
-      },
+  }
+
+  get name() {
+    return this.instance.label || this.workflowTemplate.friendlyName;
+  }
+
+  get gcPorts() {
+    return [
+      {
+        name: 'Options',
+        color: 'red',
+        sockets: [
+          {type: 'IN', dir: [-1, 0]},
+          {type: 'OUT', dir: [1, 0]}
+        ]
+      }
+    ];
+  }
+
+  addGraphCanvasNode(bounds) {
+    this.node = this.editor.graph.add({
+      graph: this.editor.graph,
+      data: { task: this.instance },
       bounds: bounds,
       layer: 1,
       scale: 1,
-      ports: [
-        {
-          name: 'Options',
-          color: 'red',
-          sockets: [
-            {type: 'IN', dir: [-1, 0]},
-            {type: 'OUT', dir: [1, 0]}
-          ]
-        }
-      ]
+      ports: this.gcPorts
     });
-    workflowInstance._node = node;
-    return workflowInstance;
+    this.instance._node = this.node;
   }
 
 }

@@ -59,8 +59,8 @@ export default class WELayout extends Component {
     });
     if (this.props.params && this.props.params.workflow) {
       let workflowName = decodeURIComponent(this.props.params.workflow);
-      this.editor.workflowTemplatesStore.list().then(() => {
-        let workflowTemplate = this.editor.workflowTemplatesStore.collection[workflowName];
+      this.editor.workflowTemplateStore.list().then(() => {
+        let workflowTemplate = this.editor.workflowTemplateStore.collection[workflowName];
         if (workflowTemplate) {
           this.editor.loadWorkflow(workflowTemplate, true);
         }

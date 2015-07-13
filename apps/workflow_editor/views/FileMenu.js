@@ -31,8 +31,17 @@ export default class WEFileMenu extends Component {
     return (
       <DropDownMenu ref="root" className="FileMenu"
           menuItems={fileMenuItems}
-          onChange={this.loadWorkflow.bind(this)} />
+          onChange={this.triggerFileAction.bind(this)} />
     );
+  }
+
+  triggerFileAction(e, selectedIndex, menuItem) {
+    console.log(menuItem);
+    if (selectedIndex !== 0) {
+      setTimeout(() => {
+        this.refs.root._setSelectedIndex({selectedIndex: 0});
+      }, 500);
+    }
   }
 
 }

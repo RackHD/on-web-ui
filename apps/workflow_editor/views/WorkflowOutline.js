@@ -71,7 +71,7 @@ export default class WEWorkflowOutline extends Component {
     return (
       <div>
         <div>
-          {this.props.editor.workflow.id || '(Unamed Workflow)'}
+          {this.props.editor.workflowGraph.name || '(Unknown)'}
         </div>
         <div>
           <h3>Tasks</h3>
