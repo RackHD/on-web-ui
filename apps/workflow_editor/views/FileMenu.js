@@ -11,9 +11,6 @@ import {
     MenuItem
   } from 'material-ui';
 
-import WorkflowStore from '../stores/WorkflowStore';
-let workflows = new WorkflowStore();
-
 @mixin.decorate(RouteHelpers)
 export default class WEFileMenu extends Component {
 
@@ -36,25 +33,6 @@ export default class WEFileMenu extends Component {
           menuItems={fileMenuItems}
           onChange={this.loadWorkflow.bind(this)} />
     );
-  }
-
-  listWorkflows() { return workflows.list(); }
-
-  loadWorkflow(event, selectedIndex, menuItem) {
-    if (menuItem.text === 'New') {
-      this.props.editor.resetWorkflow();
-    }
-    // if (menuItem.text === 'Save') {
-    //   // TODO:
-    // }
-    if (menuItem.text === 'Load') {
-      this.props.editor.layout.refs.tray.viewWorkflows();
-    }
-    if (selectedIndex !== 0) {
-      setTimeout(() => {
-        this.refs.root._setSelectedIndex({selectedIndex: 0});
-      }, 500);
-    }
   }
 
 }

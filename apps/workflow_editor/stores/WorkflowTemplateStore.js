@@ -4,7 +4,7 @@ import Store from 'common-web-ui/lib/Store';
 
 import WorkflowsRestAPI from '../messengers/WorkflowsRestAPI';
 
-export default class WorkflowStore extends Store {
+export default class WorkflowTemplateStore extends Store {
 
   workflowsRestAPI = new WorkflowsRestAPI();
 

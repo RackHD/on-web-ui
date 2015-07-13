@@ -41,15 +41,15 @@ import LibraryItem from './LibraryItem';
 })
 export default class WEWorkflowsLibrary extends Component {
 
-  state = {workflows: []};
+  state = {workflowTemplates: []};
 
   componentWillMount() {
-    this.workflowStore = this.props.editor.workflowStore;
+    this.workflowTemplateStore = this.props.editor.workflowTemplateStore;
   }
 
   componentDidMount() {
-    this.unwatchWorkflows = this.workflowStore.watchAll('workflows', this);
-    this.workflowStore.list();
+    this.unwatchWorkflows = this.workflowTemplateStore.watchAll('workflowTemplates', this);
+    this.workflowTemplateStore.list();
   }
 
   componentWillUnmount() {
@@ -57,11 +57,14 @@ export default class WEWorkflowsLibrary extends Component {
   }
 
   render() {
-    var libraryWorkflows = this.state.workflows.map(workflow => {
-      let onLoad = this.loadWorkflow.bind(this, workflow, true);
-      let onSelect = this.loadWorkflow.bind(this, workflow, false);
+    var libraryWorkflows = this.state.workflowTemplates.map(workflowTemplate => {
+      let onLoad = this.loadWorkflow.bind(this, workflowTemplate, true);
+      let onSelect = this.loadWorkflow.bind(this, workflowTemplate, false);
       return (
-        <LibraryItem key={workflow.friendlyName} onSelect={onSelect} object={workflow} name={workflow.friendlyName}>
+        <LibraryItem key={workflowTemplate.friendlyName}
+            onSelect={onSelect}
+            object={workflowTemplate}
+            name={workflowTemplate.friendlyName}>
           <a
               title="Load this workflow."
               style={{display: 'inline-block', margin: '0 5px'}}
@@ -78,16 +81,17 @@ export default class WEWorkflowsLibrary extends Component {
     );
   }
 
-  loadWorkflow(workflow, newGraph, event) {
-    if (!workflow) { return null; }
+  loadWorkflow(workflowTemplate, newGraph, event) {
+    if (!workflowTemplate) { return null; }
     event.stopPropagation();
     event.preventDefault();
-    if (workflow.id) {
+    if (workflowTemplate.id) {
       if (newGraph) {
-        return this.props.editor.loadWorkflow(workflow, newGraph);
+        this.props.editor.loadWorkflow(workflowTemplate, newGraph);
+        return this.routeTo(encodeURIComponent(workflowTemplate.id));
       }
       else {
-        return this.routeTo(encodeURIComponent(workflow.id));
+        return this.props.editor.loadWorkflow(workflowTemplate, newGraph);
       }
     }
     return this.props.editor.resetWorkflow();

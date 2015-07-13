@@ -39,15 +39,15 @@ import LibraryItem from './LibraryItem';
 })
 export default class WETasksLibrary extends Component {
 
-  state = {tasks: []};
+  state = {taskDefinitions: []};
 
   componentWillMount() {
-    this.taskStore = this.props.editor.taskStore;
+    this.taskDefinitionStore = this.props.editor.taskDefinitionStore;
   }
 
   componentDidMount() {
-    this.unwatchTasks = this.taskStore.watchAll('tasks', this);
-    this.taskStore.list();
+    this.unwatchTasks = this.taskDefinitionStore.watchAll('taskDefinitions', this);
+    this.taskDefinitionStore.list();
   }
 
   componentWillUnmount() {
@@ -55,10 +55,13 @@ export default class WETasksLibrary extends Component {
   }
 
   render() {
-    var libraryTasks = this.state.tasks.map(task => {
-      let onSelect = this.loadTask.bind(this, task);
+    var libraryTasks = this.state.taskDefinitions.map(taskDefinition => {
+      let onSelect = this.loadTask.bind(this, taskDefinition);
       return (
-        <LibraryItem key={task.friendlyName} onSelect={onSelect} object={task} name={task.friendlyName}></LibraryItem>
+        <LibraryItem key={taskDefinition.friendlyName}
+            onSelect={onSelect}
+            object={taskDefinition}
+            name={taskDefinition.friendlyName}></LibraryItem>
       );
     });
 
@@ -69,14 +72,14 @@ export default class WETasksLibrary extends Component {
     );
   }
 
-  loadTask(task, event) {
-    if (!task) { return; }
+  loadTask(taskDefinition, event) {
+    if (!taskDefinition) { return; }
     event.stopPropagation();
     event.preventDefault();
     var promptProps = {
       callback: (label) => {
         if (label) {
-          task.insertGraphNode(this.props.editor, label, [1000, 1000, 1100, 1100]);
+          taskDefinition.insertGraphNode(this.props.editor, label, [1000, 1000, 1100, 1100]);
           this.props.editor.layout.refs.graphCanvas.refs.world.updateGraph();
         }
       },
