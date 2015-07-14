@@ -84,6 +84,7 @@ export default class GraphCanvasWorld extends Component {
   }
 
   fixLinkPositions(links) {
+    links = links || this.graph.links;
     var getSocketPosition = (link, k) => {
       var socket = link['socket' + k],
           port = socket.port,
@@ -95,6 +96,7 @@ export default class GraphCanvasWorld extends Component {
         React.findDOMNode(socketRef).querySelector('.GraphCanvasSocketIcon')
       );
     };
+    console.log('fix links', links.length);
     links.forEach(link => {
       var a = getSocketPosition(link, 'Out'),
           b = getSocketPosition(link, 'In');
@@ -320,9 +322,12 @@ export default class GraphCanvasWorld extends Component {
   getSocketCenter(socketElement) {
     var nodeElement,
         element = socketElement,
+        // HACK: get ports element of socket.
+        ports = socketElement.parentNode.parentNode.parentNode
+                  .parentNode.parentNode.parentNode.parentNode,
         stop = 'GraphCanvasNode',
         x = 0,
-        y = 0;
+        y = 0 - ports.scrollTop;
     do {
       x += element.offsetLeft;
       y += element.offsetTop;
@@ -482,6 +487,7 @@ export default class GraphCanvasWorld extends Component {
     this.setState({links: this.graph.links});
   }
 
+  // TODO: move into new component
   // marks
 
   touchWorld(event) {

@@ -28,6 +28,22 @@ export default class TaskNode {
         ]
       },
       {
+        name: 'Options2',
+        color: 'red',
+        sockets: [
+          {type: 'IN', dir: [-1, 0]},
+          {type: 'OUT', dir: [1, 0]}
+        ]
+      },
+      {
+        name: 'Options3',
+        color: 'red',
+        sockets: [
+          {type: 'IN', dir: [-1, 0]},
+          {type: 'OUT', dir: [1, 0]}
+        ]
+      },
+      {
         name: 'Flow',
         color: 'blue',
         sockets: [

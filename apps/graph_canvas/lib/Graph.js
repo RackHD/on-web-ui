@@ -3,6 +3,7 @@
 import Rectangle from './Rectangle';
 import Link from './Graph/Link';
 import Node from './Graph/Node';
+import Group from './Graph/Group';
 
 export default class Graph {
 
@@ -35,9 +36,10 @@ export default class Graph {
     }
     this.bounds = new Rectangle(object.bounds);
     var cache = object.cache;
-    // TODO: GROUPS
     this.cache.nodes = {};
     cache.nodes.forEach(node => Node.fromJSON(node, {graph: this}));
+    this.cache.groups = {};
+    cache.groups.forEach(group => Group.fromJSON(group, {graph: this}));
     this.cache.links = {};
     cache.links.forEach(link => Link.fromJSON(link, {graph: this}));
   }
@@ -45,7 +47,7 @@ export default class Graph {
   get json() {
     return {
       cache: {
-        // TODO: GROUPS
+        groups: this.groups.map(group => group.json),
         nodes: this.nodes.map(node => node.json),
         links: this.links.map(link => link.json)
       },
@@ -82,6 +84,19 @@ export default class Graph {
   }
 
   // Graph interface
+
+  addGroup(group) {
+    group = new Group(group || {graph: this});
+    group.cache(this);
+    return group;
+  }
+
+  removeGroup(group) {
+    if (!(group instanceof Group)) {
+      throw new Error('Graph: unable to remove invalid group object.');
+    }
+    group.uncache(this);
+  }
 
   add(node) {
     node = new Node(node || {graph: this});

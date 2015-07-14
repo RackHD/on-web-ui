@@ -92,12 +92,17 @@ export default class GraphCanvasNode extends Component {
                 onMouseDown={this.stopEvent.bind(this)}
                 onClick={this.removeNode} />
           </div>
-          <div className="ports">
+          <div className="ports" style={{height: style.height - 16, overflow: 'auto'}} onScroll={this.onScroll.bind(this)}>
             {ports}
           </div>
         </div>
       </Paper>
     );
+  }
+
+  onScroll() {
+    console.log('scroll ports');
+    this.props.canvas.setState({links: this.props.canvas.fixLinkPositions()});
   }
 
   stopEvent(event) {

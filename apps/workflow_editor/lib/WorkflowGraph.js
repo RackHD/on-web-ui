@@ -45,4 +45,10 @@ export default class WorkflowGraph {
     this.instance._node = this.node;
   }
 
+  addGraphCanvasGroup(bounds) {
+    this.group = this.editor.graph.addGroup({
+
+    });
+  }
+
 }
