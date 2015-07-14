@@ -10,7 +10,7 @@ import DragEventHelpers from '../../mixins/DragEventHelpers';
 import {
     Paper
   } from 'material-ui';
-import GraphCanvasPort from './Port.js';
+import GraphCanvasPort from './Node/Port.js';
 
 import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 

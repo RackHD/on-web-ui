@@ -5,18 +5,19 @@ import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
 import MUIStyleHelpers from 'common-web-ui/mixins/MUIStyleHelpers';
-import CoordinateHelpers from '../../mixins/CoordinateHelpers';
-import DragEventHelpers from '../../mixins/DragEventHelpers';
+import CoordinateHelpers from '../mixins/CoordinateHelpers';
+import DragEventHelpers from '../mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
-import Vector from '../../lib/Vector';
-import Rectangle from '../../lib/Rectangle';
-import Graph from '../../lib/Graph';
-import Node from '../../lib/Graph/Node';
-import Link from '../../lib/Graph/Link';
-import GraphCanvasGrid from './Grid';
-import GraphCanvasNode from './Node';
-import GraphCanvasLink from './Link';
+import Vector from '../lib/Vector';
+import Rectangle from '../lib/Rectangle';
+import Graph from '../lib/Graph';
+import Node from '../lib/Graph/Node';
+import Link from '../lib/Graph/Link';
+
+import GraphCanvasGrid from './layers/Grid';
+import GraphCanvasNode from './elements/Node';
+import GraphCanvasLink from './elements/Link';
 
 @decorate({
   propTypes: {
@@ -485,54 +486,6 @@ export default class GraphCanvasWorld extends Component {
   removeLink(link) {
     this.graph.disconnect(link);
     this.setState({links: this.graph.links});
-  }
-
-  // TODO: move into new component
-  // marks
-
-  touchWorld(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    var mark = this.getEventCoords(event);
-    this.setState(function(currentState) {
-      return {marks: currentState.marks.concat([mark])};
-    });
-  }
-
-  get marks() {
-    return this.state.marks;
-  }
-
-  get markVectors() {
-    return this.marks.map(mark => {
-      return <rect
-        x={mark.x - 1.45}
-        y={mark.y - 1.45}
-        width={3}
-        height={3}
-        fill="rgba(0, 0, 0, 0.5)" />;
-    });
-  }
-
-  get markElements() {
-    return this.marks.map(mark => {
-      return <div style={{
-        position: 'absolute',
-        top: mark.y - 5.25,
-        left: mark.x - 5.25,
-        width: 10,
-        height: 10,
-        opacity: 0.5,
-        borderRadius: 5,
-        background: 'red'
-      }} onClick={this.removeMark.bind(this, mark)} />;
-    });
-  }
-
-  removeMark(mark, event) {
-    event.stopPropagation();
-    event.preventDefault();
-    this.setState({marks: this.marks.filter(m => m !== mark)});
   }
 
 }

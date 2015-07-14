@@ -9,7 +9,7 @@ import decorate from 'common-web-ui/lib/decorate';
 import {
   } from 'material-ui';
 
-import GraphCanvas from 'graph-canvas-web-ui/views/GraphCanvas';
+import GraphCanvas from 'graph-canvas-web-ui/views/Viewport';
 
 import WEToolbar from './Toolbar';
 import WETray from './Tray';

@@ -5,7 +5,7 @@ import React, { Component, PropTypes } from 'react';
 import decorate from 'common-web-ui/lib/decorate';
 /* eslint-enable no-unused-vars */
 
-import GraphCanvasWorld from './GraphCanvas/World';
+import GraphCanvasWorld from './World';
 import './GraphCanvas.less';
 
 @decorate({
