@@ -9,11 +9,6 @@ import decorate from 'common-web-ui/lib/decorate';
 import GCElementsLayer from './layers/Elements';
 import GCVectorsLayer from './layers/Vectors';
 
-// import GCGroupsManager from './managers/Groups';
-import GCLinksManager from './managers/Links';
-import GCMarksManager from './managers/Marks';
-import GCNodesManager from './managers/Nodes';
-
 @radium
 @decorate({
   propTypes: {
@@ -72,11 +67,6 @@ export default class GCWorld extends Component {
             {this.state.elements}
             {this.props.children}
           </GCElementsLayer>
-
-          {/*<GCGroupsManager ref="groups" />*/}
-          <GCLinksManager ref="links" />
-          <GCNodesManager ref="nodes" />
-          {this.graphCanvas.props.enableMarks && <GCMarksManager ref="marks" />}
         </div>
       );
     } catch (err) {
@@ -94,8 +84,8 @@ export default class GCWorld extends Component {
   }
 
   touchWorld(event) {
-    if (this.refs.marks) {
-      this.refs.marks.markWorld(event);
+    if (this.graphCanvas.refs.marks) {
+      this.graphCanvas.refs.marks.markWorld(event);
     }
   }
 
