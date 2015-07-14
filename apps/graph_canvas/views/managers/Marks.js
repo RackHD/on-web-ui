@@ -6,18 +6,16 @@ import decorate from 'common-web-ui/lib/decorate';
 
 @decorate({
   propTypes: {
-    initialMarks: PropTypes.array,
-    world: PropTypes.any
+    initialMarks: PropTypes.array
   },
   defaultProps: {
-    initialMarks: [],
-    world: null
+    initialMarks: []
   },
   contextTypes: {
     graphCanvas: PropTypes.any
   }
 })
-export default class GCMarksLayer extends Component {
+export default class GCMarksManager extends Component {
 
   get graphCanvas() {
     return this.context.graphCanvas;
@@ -44,6 +42,7 @@ export default class GCMarksLayer extends Component {
     return this.marks.map(mark => {
       return (
         <rect
+            key={mark.x + '-' + mark.y}
             x={mark.x - 1.45}
             y={mark.y - 1.45}
             width={3}
@@ -55,16 +54,19 @@ export default class GCMarksLayer extends Component {
 
   get markElements() {
     return this.marks.map(mark => {
-      return <div style={{
-        position: 'absolute',
-        top: mark.y - 5.25,
-        left: mark.x - 5.25,
-        width: 10,
-        height: 10,
-        opacity: 0.5,
-        borderRadius: 5,
-        background: 'rgba(0, 0, 0, 0.5)'
-      }} onClick={this.removeMark.bind(this, mark)} />;
+      return <div
+          key={mark.x + '-' + mark.y}
+          style={{
+            position: 'absolute',
+            top: mark.y - 5.25,
+            left: mark.x - 5.25,
+            width: 10,
+            height: 10,
+            opacity: 0.5,
+            borderRadius: 5,
+            background: 'rgba(0, 0, 0, 0.5)'
+          }}
+          onClick={this.removeMark.bind(this, mark)} />;
     });
   }
 
