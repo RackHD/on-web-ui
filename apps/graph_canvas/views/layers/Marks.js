@@ -12,13 +12,18 @@ import decorate from 'common-web-ui/lib/decorate';
   defaultProps: {
     initialMarks: [],
     world: null
+  },
+  contextTypes: {
+    graphCanvas: PropTypes.any
   }
 })
 export default class GCMarksLayer extends Component {
 
-  state = {
-    marks: this.props.initialMarks
-  };
+  get graphCanvas() {
+    return this.context.graphCanvas;
+  }
+
+  marks = this.graphCanvas.props.initialMarks;
 
   render() {
     return null;
@@ -27,14 +32,12 @@ export default class GCMarksLayer extends Component {
   markWorld(event) {
     event.stopPropagation();
     event.preventDefault();
-    var mark = this.getEventCoords(event);
-    this.setState(function(currentState) {
-      return {marks: currentState.marks.concat([mark])};
-    });
-  }
 
-  get marks() {
-    return this.state.marks;
+    var mark = this.graphCanvas.getEventCoords(event),
+        marks = this.marks.concat([mark]);
+
+    this.marks = marks;
+    this.graphCanvas.setState({ marks });
   }
 
   get markVectors() {
@@ -45,7 +48,7 @@ export default class GCMarksLayer extends Component {
             y={mark.y - 1.45}
             width={3}
             height={3}
-            fill="rgba(0, 0, 0, 0.5)" />
+            fill="red" />
       );
     });
   }
@@ -60,7 +63,7 @@ export default class GCMarksLayer extends Component {
         height: 10,
         opacity: 0.5,
         borderRadius: 5,
-        background: 'red'
+        background: 'rgba(0, 0, 0, 0.5)'
       }} onClick={this.removeMark.bind(this, mark)} />;
     });
   }
@@ -68,9 +71,11 @@ export default class GCMarksLayer extends Component {
   removeMark(mark, event) {
     event.stopPropagation();
     event.preventDefault();
-    this.setState({
-      marks: this.marks.filter(m => m !== mark)
-    });
+
+    var marks = this.marks.filter(m => m !== mark);
+
+    this.marks = marks;
+    this.graphCanvas.setState({ marks });
   }
 
 }

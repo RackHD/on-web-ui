@@ -9,7 +9,7 @@ import decorate from 'common-web-ui/lib/decorate';
 import {
   } from 'material-ui';
 
-import GraphCanvas from 'graph-canvas-web-ui/views/Viewport';
+import GraphCanvas from 'graph-canvas-web-ui/views/GraphCanvas';
 
 import WEToolbar from './Toolbar';
 import WETray from './Tray';
@@ -55,7 +55,7 @@ export default class WELayout extends Component {
   componentWillMount() {
     this.editor = new Editor(this);
     this.editor.onGraphUpdate(graph => {
-      this.refs.graphCanvas.refs.world.updateGraph(graph);
+      this.refs.graphCanvas.updateGraph(graph);
     });
     this.loadWorkflowFromParams();
   }

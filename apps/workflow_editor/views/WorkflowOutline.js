@@ -50,14 +50,14 @@ export default class WEWorkflowOutline extends Component {
   componentWillUnmount() {}
 
   render() {
-    console.log('outline', this.props.editor);
+    // console.log('outline', this.props.editor);
     var tasks = this.props.editor.tasks;
     if (tasks) {
       tasks = tasks.map(task => {
         let definition = task.taskDefinition ||
           this.props.editor.getTaskDefinitionByName(task.taskName) ||
           {};
-        console.log(task, definition);
+        // console.log(task, definition);
         return (
           <div onClick={this.selectNode.bind(this, task)}>
             {task.label}

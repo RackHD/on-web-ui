@@ -1,73 +1,191 @@
 'use strict';
 
-/* eslint-disable no-unused-vars */
-import React, { Component, PropTypes } from 'react';
+import React, // eslint-disable-line no-unused-vars
+  { Component, PropTypes } from 'react';
+
+import radium from 'radium';
+import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
-/* eslint-enable no-unused-vars */
 
-import GraphCanvasWorld from './World';
-import './GraphCanvas.less';
+import DragEventHelpers from '../mixins/DragEventHelpers';
 
+import Vector from '../lib/Vector';
+
+/**
+# GCViewport
+
+@object
+  @type class
+  @extends React.Component
+  @name GCViewport
+  @desc
+*/
+
+@radium
+@mixin.decorate(DragEventHelpers)
 @decorate({
   propTypes: {
-    initialGraph: PropTypes.any,
-    initialNodes: PropTypes.any,
-    initialLinks: PropTypes.any,
-    initialScale: PropTypes.number,
-    initialX: PropTypes.number,
-    initialY: PropTypes.number,
-    getNodeTypes: PropTypes.func,
-    worldWidth: PropTypes.number,
-    worldHeight: PropTypes.number,
-    viewWidth: PropTypes.number,
-    viewHeight: PropTypes.number
+    className: PropTypes.string,
+    css: PropTypes.object,
+    style: PropTypes.object
   },
   defaultProps: {
-    initialGraph: null,
-    initialNodes: [],
-    initialLinks: [],
-    initialScale: 1,
-    initialX: 0,
-    initialY: 0,
-    getNodeTypes: null,
-    worldWidth: 2000,
-    worldHeight: 2000,
-    viewWidth: 800,
-    viewHeight: 600
+    className: 'GraphCanvasViewport',
+    css: {},
+    style: {}
+  },
+  contextTypes: {
+    graphCanvas: PropTypes.any
   }
 })
-export default class GraphCanvas extends Component {
+export default class GCViewport extends Component {
 
+  get graphCanvas() {
+    return this.context.graphCanvas;
+  }
+
+  state = {};
+
+  css = {
+    root: {
+      position: 'relative',
+      width: 'inherit',
+      height: 'inherit',
+      cursor: 'crosshair'//,
+      // overflow: 'hidden'
+    }
+  };
+
+  /**
+  @method
+    @name render
+    @desc
+  */
   render() {
     try {
       var props = this.props,
-          cssViewSize = {
-            width: props.viewWidth,
-            height: props.viewHeight
-          };
+          css = [this.css.root, props.css.root, props.style];
       return (
-        <div className="GraphCanvas" style={cssViewSize}>
-          <div className="GraphCanvasView" ref="view">
-            <GraphCanvasWorld ref="world"
-                selectionHandler={this.selectionHandler.bind(this)} {...props} />
-          </div>
+        <div
+            className={props.className}
+            onWheel={this.scaleWorld.bind(this)}
+            onMouseDown={this.translateWorld()}
+            style={css}>
+          {this.props.children}
         </div>
       );
-    } catch (err) { console.error(err.stack || err); }
+    } catch (err) {
+      console.error(err.stack || err);
+    }
   }
 
-  selectNode(node, shiftKey) {
-    this.refs.world.selectNode(node, shiftKey);
+  translateWorld() {
+    return this.setupClickDrag(this.translateWorldListeners);
   }
 
-  onSelect(callback) {
-    this.selectionCallbacks = this.selectionCallbacks || [];
-    this.selectionCallbacks.push(callback);
+  get translateWorldListeners() {
+    var pushFrame = (event, dragState) => {
+      dragState.frames = dragState.frames || [];
+      var index = dragState.frames.length,
+          frame = {position: this.graphCanvas.position, time: event.timeStamp || Date.now()},
+          lastFrame = dragState.frames[index - 1] || frame,
+          timeLapse = (frame.time - lastFrame.time) || 1;
+      frame.velocity = frame.position.sub(lastFrame.position).squish(timeLapse).finite();
+      frame.duration = timeLapse;
+      dragState.frames.push(frame);
+      if (dragState.frames.length >= 12) { dragState.frames.shift(); }
+    };
+    return {
+      down: (event, dragState) => {
+        // if (event.shiftKey) {
+        //   this.drawNode(null, {shiftKey: (dragState.shiftKey = true)})(event);
+        // }
+        // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        event.stopPropagation();
+        dragState.startTime = event.timeStamp || Date.now();
+        dragState.start = new Vector(this.graphCanvas.position);
+        // var max = Infinity
+        // dragState.min = new Vector(-1000, -1000);
+        // dragState.max = new Vector(1000, 1000);
+        pushFrame(event, dragState);
+        // TODO: fix these clamps
+        // var scale = this.state.scale;
+        // dragState.min = new Vector(
+          // (this.worldBoundingBox.left / 2) - (this.screenSize.x / 2 / scale),
+          // (this.worldBoundingBox.top / 2) - (this.screenSize.y / 2 / scale)
+        // );
+        // dragState.max = new Vector(
+          // (this.worldBoundingBox.right / 2) + (this.screenSize.x / 2 / scale),
+          // (this.worldBoundingBox.bottom / 2) + (this.screenSize.y / 2 / scale)
+        // );
+        // console.log(this.worldBoundingBox.toArray());
+        // console.log(dragState.start.toArray());
+        // console.log(dragState.min.toArray(), dragState.max.toArray());
+        clearTimeout(this.physicsScrollTimer);
+        this.stopPhysicsScroll = true;
+      },
+      move: (event, dragState) => {
+        // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        event.stopPropagation();
+        clearInterval(this.moveRepeat);
+        var scale = this.graphCanvas.scale,
+            start = dragState.start;//,
+            // min = dragState.min,
+            // max = dragState.max;
+        pushFrame(event, dragState);
+        this.graphCanvas.updatePosition({
+          // x: Math.min(max.x, Math.max(min.x, start.x - (event.diffX / scale))),
+          // y: Math.min(max.y, Math.max(min.y, start.y - (event.diffY / scale)))
+          x: start.x - (event.diffX / scale),
+          y: start.y - (event.diffY / scale)
+        });
+        this.moveRepeat = setInterval(() => {
+          pushFrame(event, dragState);
+        }, 32);
+      },
+      up: (event, dragState) => {
+        // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        event.stopPropagation();
+        clearInterval(this.moveRepeat);
+        // var dragDuration = (event.timeStamp || Date.now()) - dragState.startTime;
+        // if (dragDuration < 150) { this.unselectAllNodes(); }
+        pushFrame(event, dragState);
+        var velocitySum = dragState.frames.reduce(function (lastValue, currFrame) {
+          return (lastValue.velocity || lastValue).add(currFrame.velocity);
+        });
+        velocitySum = velocitySum.squish(dragState.frames.length / 2);
+        this.stopPhysicsScroll = false;
+        var tick = () => {
+          if (Math.abs(velocitySum.x) < 0.000001 &&
+              Math.abs(velocitySum.y) < 0.000001) { return; }
+          let position = this.graphCanvas.position;
+          this.graphCanvas.updatePosition({
+            x: position.x + velocitySum.x,
+            y: position.y + velocitySum.y
+          });
+          velocitySum = velocitySum.scale(0.95);
+          if (!this.stopPhysicsScroll) {
+            this.physicsScrollTimer = setTimeout(tick, 16);
+          }
+        };
+        tick();
+      }
+    };
   }
 
-  selectionHandler(selection) {
-    this.selectionCallbacks = this.selectionCallbacks || [];
-    this.selectionCallbacks.forEach(callback => callback.call(this, selection));
+  scaleWorld(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.offsetEventXY(event);
+    var scale = this.graphCanvas.scale,
+        force = Math.max(0.05, scale / 5);
+    if (event.deltaY < 0) {
+      scale = Math.max(0.2, scale - force);
+    }
+    else {
+      scale = Math.min(8, scale + force);
+    }
+    this.graphCanvas.updateScale(scale);
   }
 
 }
