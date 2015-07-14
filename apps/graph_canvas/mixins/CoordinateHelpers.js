@@ -36,7 +36,7 @@ export default {
     var s = this.scale;
     return new Matrix().
       identity().
-      translate(this.viewSize.div([2, 2]).sub(this.worldSize.div([2, 2]))).
+      translate(this.viewSize.squish(2).sub(this.worldSize.squish(2))).
       scale([s, s]).
       translate(this.position.negate());
   },

@@ -139,6 +139,13 @@ export default class GraphCanvas extends Component {
     };
   }
 
+  get cssWorldSize() {
+    return {
+      width: this.props.worldWidth,
+      height: this.props.worldHeight
+    };
+  }
+
   get elements() {
     var elements = [];
     if (this.refs.world) {

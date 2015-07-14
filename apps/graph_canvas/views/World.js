@@ -58,7 +58,7 @@ export default class GCWorld extends Component {
         <div
             className={this.props.className}
             onDoubleClick={this.touchWorld.bind(this)}
-            style={[cssWorldSpaceTransform, cssWorldSize]}>
+            style={[cssWorldSize, cssWorldSpaceTransform]}>
 
           <GCVectorsLayer ref="vectors">
             {this.state.vectors}
@@ -79,6 +79,9 @@ export default class GCWorld extends Component {
   get cssWorldSpaceTransform() {
     return {
       transform: this.graphCanvas.worldSpaceTransform.toCSS3Transform()
+      // transformOrigin: 'center center 0',
+      // transformStyle: 'flat',
+      // transformBox: 'border-box'
     };
   }
 

@@ -84,10 +84,10 @@ export default class WELayout extends Component {
     document.body.classList.remove('no-select');
   }
 
-  componentWillReceiveProps(nextProps) {
+  // componentWillReceiveProps(nextProps) {
     // TODO: fix this
     // this.loadWorkflowFromParams(nextProps);
-  }
+  // }
 
   render() {
     // var supported = true;
