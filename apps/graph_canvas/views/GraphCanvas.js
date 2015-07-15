@@ -13,7 +13,7 @@ import CoordinateHelpers from '../mixins/CoordinateHelpers';
 
 import Graph from '../lib/Graph';
 import Vector from '../lib/Vector';
-// import Rectangle from '../lib/Rectangle';
+import Rectangle from '../lib/Rectangle';
 
 import GCViewport from './Viewport';
 import GCWorld from './World';
@@ -22,6 +22,10 @@ import GCWorld from './World';
 import GCLinksManager from './managers/Links';
 import GCMarksManager from './managers/Marks';
 import GCNodesManager from './managers/Nodes';
+
+import './GraphCanvas.less';
+import GraphCanvasNode from './elements/Node';
+import GraphCanvasLink from './elements/Link';
 
 /**
 # GraphCanvas
@@ -167,6 +171,9 @@ export default class GraphCanvas extends Component {
     var elements = [],
         world = this.refs.world;
     if (world) {
+      elements = elements.concat(this.state.nodes.map(node => {
+        return <GraphCanvasNode ref={node.id} key={node.id} canvas={this} model={node} />;
+      }));
       if (this.refs.marks) {
         elements = elements.concat(this.refs.marks.markElements);
       }
@@ -178,6 +185,9 @@ export default class GraphCanvas extends Component {
     var vectors = [],
         world = this.refs.world;
     if (world) {
+      vectors = vectors.concat(this.state.links.map(link => {
+        return <GraphCanvasLink ref={link.id} key={link.id} canvas={this} model={link} />;
+      }));
       if (this.refs.marks) {
         vectors = vectors.concat(this.refs.marks.markVectors);
       }
@@ -196,60 +206,60 @@ export default class GraphCanvas extends Component {
   }
 
   updateGraph(graph) {
-    // this.graph = graph || this.graph;
-    // this.setState({nodes: this.graph.nodes});
-    // console.log(this.graph.nodes);
-    // setTimeout(() => {
-    //   console.log(this.graph.links);
-    //   this.setState({links: this.fixLinkPositions(this.graph.links)});
-    // }, 0);
+    this.graph = graph || this.graph;
+    this.setState({nodes: this.graph.nodes});
+    console.log(this.graph.nodes);
+    setTimeout(() => {
+      console.log(this.graph.links);
+      this.setState({links: this.fixLinkPositions(this.graph.links)});
+    }, 0);
   }
 
   fixLinkPositions(links) {
-    // links = links || this.graph.links;
-    // var getSocketPosition = (link, k) => {
-    //   var socket = link['socket' + k],
-    //       port = socket.port,
-    //       node = port.node;
-    //   var nodeRef = this.refs[node.id],
-    //       portRef = nodeRef.refs[port.name],
-    //       socketRef = portRef.refs[socket.type];
-    //   return this.getSocketCenter(
-    //     React.findDOMNode(socketRef).querySelector('.GraphCanvasSocketIcon')
-    //   );
-    // };
-    // console.log('fix links', links.length);
-    // links.forEach(link => {
-    //   var a = getSocketPosition(link, 'Out'),
-    //       b = getSocketPosition(link, 'In');
-    //   link.data.bounds = new Rectangle(a.x, a.y, b.x, b.y);
-    // });
-    // return links;
+    links = links || this.graph.links;
+    var getSocketPosition = (link, k) => {
+      var socket = link['socket' + k],
+          port = socket.port,
+          node = port.node;
+      var nodeRef = this.refs[node.id],
+          portRef = nodeRef.refs[port.name],
+          socketRef = portRef.refs[socket.type];
+      return this.getSocketCenter(
+        React.findDOMNode(socketRef).querySelector('.GraphCanvasSocketIcon')
+      );
+    };
+    console.log('fix links', links.length);
+    links.forEach(link => {
+      var a = getSocketPosition(link, 'Out'),
+          b = getSocketPosition(link, 'In');
+      link.data.bounds = new Rectangle(a.x, a.y, b.x, b.y);
+    });
+    return links;
   }
 
   getSocketCenter(socketElement) {
-    // var nodeElement,
-    //     element = socketElement,
-    //     // HACK: get ports element of socket.
-    //     ports = socketElement.parentNode.parentNode.parentNode
-    //               .parentNode.parentNode.parentNode.parentNode,
-    //     stop = 'GraphCanvasNode',
-    //     x = 0,
-    //     y = 0 - ports.scrollTop;
-    // do {
-    //   x += element.offsetLeft;
-    //   y += element.offsetTop;
-    //   if (nodeElement) { break; }
-    //   if (element.classList.contains(stop)) { nodeElement = element; }
-    //   element = element.offsetParent;
-    // } while(element);
-    // x += socketElement.clientWidth / 2;
-    // y += socketElement.clientHeight / 2;
-    // var node = this.graph.node(nodeElement.dataset.id),
-    //     pos = node.bounds.normalPosition;
-    // x += pos.x;
-    // y += pos.y;
-    // return new Vector(x, y);
+    var nodeElement,
+        element = socketElement,
+        // HACK: get ports element of socket.
+        ports = socketElement.parentNode.parentNode.parentNode
+                  .parentNode.parentNode.parentNode.parentNode,
+        stop = 'GraphCanvasNode',
+        x = 0,
+        y = 0 - ports.scrollTop;
+    do {
+      x += element.offsetLeft;
+      y += element.offsetTop;
+      if (nodeElement) { break; }
+      if (element.classList.contains(stop)) { nodeElement = element; }
+      element = element.offsetParent;
+    } while(element);
+    x += socketElement.clientWidth / 2;
+    y += socketElement.clientHeight / 2;
+    var node = this.graph.node(nodeElement.dataset.id),
+        pos = node.bounds.normalPosition;
+    x += pos.x;
+    y += pos.y;
+    return new Vector(x, y);
   }
 
   selectNode(node, shiftKey) {

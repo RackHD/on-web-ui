@@ -17,9 +17,16 @@ import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
     active: false,
     canvas: null,
     model: null
+  },
+  contextTypes: {
+    graphCanvas: PropTypes.any
   }
 })
 export default class GraphCanvasLink extends Component {
+
+  get graphCanvas() {
+    return this.context.graphCanvas;
+  }
 
   state = {hover: false};
   removeLink = this.removeLink.bind(this);
@@ -60,31 +67,36 @@ export default class GraphCanvasLink extends Component {
         path = ['M', maxX, minY, 'Q', halfX, minY, halfX, halfY, 'T', minX, maxY].join(' ');
       }
 
-      var transform = 'translate(' + style.left + ' ' + style.top + ')',
+      var //transform = 'translate(' + style.left + ' ' + style.top + ')',
           socket = this.props.model.socketOut || this.props.model.socketIn,
           color = socket && socket.port && socket.port.color || 'black';
+
+      // style={{overflow: 'visible'}}
+      // <g transform={transform}>
       return (
-        <svg className={'GraphCanvasLink ' + hover}
-             width={style.width}
-             height={style.height}
-             data-id={props.model.id}
-             onDoubleClick={this.removeLink}
-             viewBox={[
-               minX - gutter, minY - gutter,
-               maxX + gutter, maxY + gutter
-             ].join(' ')}
-             preserveAspectRatio="none"
-             xmlns="http://www.w3.org/2000/svg">
-          <g transform={transform}>
-            <path d={path}
-                  fill="transparent"
-                  stroke={color}
-                  strokeWidth={stroke}
-                  strokeLinecap="round"
-                  onMouseOver={this.onHoverCurve.bind(this)}
-                  onMouseMove={this.onHoverCurve.bind(this)}
-                  onMouseOut={this.onLeaveCurve.bind(this)} />
-          </g>
+        <svg
+            className={'GraphCanvasLink ' + hover}
+            width={style.width}
+            height={style.height}
+            data-id={props.model.id}
+            x={style.left}
+            y={style.top}
+            onDoubleClick={this.removeLink}
+            viewBox={[
+              minX - gutter, minY - gutter,
+              maxX + gutter, maxY + gutter
+            ].join(' ')}
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg">
+          <path
+              d={path}
+              fill="transparent"
+              stroke={color}
+              strokeWidth={stroke}
+              strokeLinecap="round"
+              onMouseOver={this.onHoverCurve.bind(this)}
+              onMouseMove={this.onHoverCurve.bind(this)}
+              onMouseOut={this.onLeaveCurve.bind(this)} />
         </svg>
       );
     } catch (err) {
@@ -107,7 +119,7 @@ export default class GraphCanvasLink extends Component {
     var confirmProps = {
       callback: (ok) => {
         if (ok) {
-          this.props.canvas.removeLink(this.props.model);
+          this.graphCanvas.refs.links.removeLink(this.props.model);
         }
       },
       children: 'Are you sure you want to delete this link?',

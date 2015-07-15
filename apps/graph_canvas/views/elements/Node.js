@@ -25,12 +25,19 @@ import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
     canvas: null,
     model: null
   },
-  childContextTypes: {
-    muiTheme: PropTypes.object
+  // childContextTypes: {
+  //   muiTheme: PropTypes.object
+  // },
+  contextTypes: {
+    graphCanvas: PropTypes.any
   }
 })
 @mixin.decorate(DragEventHelpers)
 export default class GraphCanvasNode extends Component {
+
+  get graphCanvas() {
+    return this.context.graphCanvas;
+  }
 
   state = {};
   removeNode = this.removeNode.bind(this);
@@ -74,7 +81,7 @@ export default class GraphCanvasNode extends Component {
     }
     var ports = [];
     this.props.model.forEachPort(port => {
-      ports.push(<GraphCanvasPort key={port.name} ref={port.name} canvas={this.props.canvas} model={port} />);
+      ports.push(<GraphCanvasPort key={port.name} ref={port.name} canvas={this.graphCanvas} model={port} />);
     });
     return (
       <Paper className={className}
@@ -101,8 +108,8 @@ export default class GraphCanvasNode extends Component {
   }
 
   onScroll() {
-    console.log('scroll ports');
-    this.props.canvas.setState({links: this.props.canvas.fixLinkPositions()});
+    // console.log('scroll ports');
+    // this.graphCanvas.setState({links: this.graphCanvas.fixLinkPositions()});
   }
 
   stopEvent(event) {
@@ -112,7 +119,7 @@ export default class GraphCanvasNode extends Component {
 
   selectNode(event) {
     this.stopEvent(event);
-    this.props.canvas.selectNode(this.props.model, event.shiftKey);
+    this.graphCanvas.refs.nodes.selectNode(this.props.model, event.shiftKey);
   }
 
   moveNode() {
@@ -130,7 +137,8 @@ export default class GraphCanvasNode extends Component {
       dragState.frames.push(frame);
       if (dragState.frames.length >= 12) { dragState.frames.shift(); }
     };
-    return this.props.canvas.setupClickDrag({
+    // debugger;
+    return this.graphCanvas.refs.viewport.setupClickDrag({
       down: (event, dragState) => {
         this.setState({moving: true});
         event.stopPropagation();
@@ -197,7 +205,7 @@ export default class GraphCanvasNode extends Component {
     var confirmProps = {
       callback: (ok) => {
         if (ok) {
-          this.props.canvas.removeNode(this.props.model);
+          this.graphCanvas.refs.nodes.removeNode(this.props.model);
         }
       },
       children: 'Are you sure you want to delete this node?',

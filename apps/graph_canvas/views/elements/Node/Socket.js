@@ -18,10 +18,17 @@ import {
   defaultProps: {
     canvas: null,
     model: null
+  },
+  contextTypes: {
+    graphCanvas: PropTypes.any
   }
 })
 @mixin.decorate(DragEventHelpers)
 export default class GraphCanvasSocket extends Component {
+
+  get graphCanvas() {
+    return this.context.graphCanvas;
+  }
 
   state = {};
 
@@ -71,10 +78,10 @@ export default class GraphCanvasSocket extends Component {
   }
 
   drawLink() {
-    return this.props.canvas.setupClickDrag({
-      down: (event, dragState, e) => this.props.canvas.drawLinkStart(event, dragState, e),
-      move: (event, dragState, e) => this.props.canvas.drawLinkContinue(event, dragState, e),
-      up: (event, dragState, e) => this.props.canvas.drawLinkFinish(event, dragState, e)
+    return this.graphCanvas.refs.viewport.setupClickDrag({
+      down: (event, dragState, e) => this.graphCanvas.refs.links.drawLinkStart(event, dragState, e),
+      move: (event, dragState, e) => this.graphCanvas.refs.links.drawLinkContinue(event, dragState, e),
+      up: (event, dragState, e) => this.graphCanvas.refs.links.drawLinkFinish(event, dragState, e)
     });
   }
 
