@@ -1,12 +1,22 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+import React, // eslint-disable-line no-unused-vars
+  { Component, PropTypes } from 'react';
 
-import {
-  } from 'material-ui';
+import decorate from 'common-web-ui/lib/decorate';
+
+import {} from 'material-ui';
 
 import WEWorkflowOutline from './WorkflowOutline';
 
+@decorate({
+  propTypes: {},
+  defaultProps: {},
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
+  }
+})
 export default class WEInspector extends Component {
 
   state = {selected: []};
@@ -38,7 +48,7 @@ export default class WEInspector extends Component {
     }
     return (
       <div className="WorkflowInspector" style={{padding: 10}}>
-        <WEWorkflowOutline ref="json" editor={this.props.editor} />
+        <WEWorkflowOutline ref="json" />
         <hr />
         <div className="selected">
           {selected}

@@ -29,6 +29,11 @@ import WETWorkflowsLibrary from './WorkflowsLibrary';
     css: {},
     editor: null,
     styles: {}
+  },
+
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
   }
 })
 export default class WETray extends Component {
@@ -57,13 +62,13 @@ export default class WETray extends Component {
       <div ref="root" className={this.props.className} style={css.root}>
         <Tabs ref="tabs" contentContainerStyle={{maxHeight: window.innerHeight - 86, overflow: 'auto'}}>
           <Tab label="Inspector">
-            <WEInspector ref="inspector" editor={this.props.editor} />
+            <WEInspector ref="inspector" />
           </Tab>
           <Tab label="Tasks">
-            <WETasksLibrary ref="tasks" editor={this.props.editor} />
+            <WETasksLibrary ref="tasks" />
           </Tab>
           <Tab label="Workflows">
-            <WETWorkflowsLibrary ref="workflows" editor={this.props.editor} />
+            <WETWorkflowsLibrary ref="workflows" />
           </Tab>
         </Tabs>
       </div>

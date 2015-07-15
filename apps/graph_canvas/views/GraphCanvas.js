@@ -188,7 +188,7 @@ export default class GraphCanvas extends Component {
         return <GCLinkElement ref={link.id} key={link.id} model={link} />;
       }));
       if (this.refs.links.activeLink) {
-        vectors.push(<GCLinkElement active={true} ref={this.refs.links.activeLink.id} key={this.refs.links.activeLink.id} model={this.refs.links.activeLink} />)
+        vectors.push(<GCLinkElement active={true} ref={this.refs.links.activeLink.id} key={this.refs.links.activeLink.id} model={this.refs.links.activeLink} />);
       }
       if (this.refs.marks) {
         vectors = vectors.concat(this.refs.marks.markVectors);

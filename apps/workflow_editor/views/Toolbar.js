@@ -1,7 +1,9 @@
 'use strict';
 
 import React, // eslint-disable-line no-unused-vars
-  { Component } from 'react';
+  { Component, PropTypes } from 'react';
+
+import decorate from 'common-web-ui/lib/decorate';
 
 import {
     Toolbar,
@@ -12,6 +14,14 @@ import WEFileMenu from './FileMenu';
 import WEEditMenu from './EditMenu';
 import WEViewMenu from './ViewMenu';
 
+@decorate({
+  propTypes: {},
+  defaultProps: {},
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
+  }
+})
 export default class WEToolbar extends Component {
 
   state = {};
@@ -24,9 +34,9 @@ export default class WEToolbar extends Component {
     return (
       <Toolbar style={{background: '#fff', borderBottom: '2px solid #eee'}}>
         <ToolbarGroup key={0} float="left" style={{height: 'inherit'}}>
-          <WEFileMenu editor={this.props.editor} />
-          <WEEditMenu editor={this.props.editor} />
-          <WEViewMenu editor={this.props.editor} />
+          <WEFileMenu ref="file" />
+          <WEEditMenu ref="edit" />
+          <WEViewMenu ref="view" />
         </ToolbarGroup>
       </Toolbar>
     );

@@ -1,13 +1,23 @@
 'use strict';
 
 import React, // eslint-disable-line no-unused-vars
-  { Component } from 'react';
+  { Component, PropTypes } from 'react';
+
+import decorate from 'common-web-ui/lib/decorate';
 
 import {
     DropDownMenu,
     MenuItem
   } from 'material-ui';
 
+@decorate({
+  propTypes: {},
+  defaultProps: {},
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
+  }
+})
 export default class WEViewMenu extends Component {
 
   state = {};
@@ -23,7 +33,8 @@ export default class WEViewMenu extends Component {
       {text: 'Go Home'}
     ];
     return (
-      <DropDownMenu ref="root" className="ViewMenu"
+      <DropDownMenu ref="root"
+          className="ViewMenu"
           menuItems={viewMenuItems}
           onChange={this.triggerViewAction.bind(this)} />
     );

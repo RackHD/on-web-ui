@@ -1,8 +1,11 @@
 'use strict';
 
-/* eslint-disable no-unused-vars */
-import React, { Component } from 'react';
+import React, // eslint-disable-line no-unused-vars
+  { Component, PropTypes } from 'react';
+
 import mixin from 'react-mixin';
+import decorate from 'common-web-ui/lib/decorate';
+
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
 
@@ -12,7 +15,19 @@ import {
   } from 'material-ui';
 
 @mixin.decorate(RouteHelpers)
+@decorate({
+  propTypes: {},
+  defaultProps: {},
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
+  }
+})
 export default class WEFileMenu extends Component {
+
+  get weLayout() {
+    return this.context.weLayout;
+  }
 
   state = {};
 
@@ -29,7 +44,8 @@ export default class WEFileMenu extends Component {
     ];
 
     return (
-      <DropDownMenu ref="root" className="FileMenu"
+      <DropDownMenu ref="root"
+          className="FileMenu"
           menuItems={fileMenuItems}
           onChange={this.triggerFileAction.bind(this)} />
     );
@@ -37,7 +53,7 @@ export default class WEFileMenu extends Component {
 
   triggerFileAction(e, selectedIndex, menuItem) {
     if (menuItem.text === 'New') {
-      this.props.editor.resetWorkflow();
+      this.context.editor.resetWorkflow();
       this.routeTo('');
     }
     if (selectedIndex !== 0) {

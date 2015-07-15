@@ -2,7 +2,7 @@
 
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
-// import mixin from 'react-mixin';
+
 import radium from 'radium';
 import decorate from 'common-web-ui/lib/decorate';
 
@@ -28,9 +28,16 @@ import Editor from '../lib/Editor';
     className: '',
     css: {},
     styles: {}
+  },
+
+  childContextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
   }
 })
 export default class WELayout extends Component {
+
+  editor = new Editor(this);
 
   state = {
     canvasWidth: 1000,
@@ -52,8 +59,14 @@ export default class WELayout extends Component {
     }
   }
 
+  getChildContext() {
+    return {
+      layout: this,
+      editor: this.editor
+    };
+  }
+
   componentWillMount() {
-    this.editor = new Editor(this);
     this.editor.onGraphUpdate(graph => {
       this.refs.graphCanvas.updateGraph(graph);
     });
@@ -107,7 +120,7 @@ export default class WELayout extends Component {
       <div ref="root" className="WorkflowEditor ungrid" style={css.root}>
         <div className="line">
           <div ref="canvasCell" className="cell">
-            <WEToolbar ref="toolbar" editor={this.editor} />
+            <WEToolbar ref="toolbar" />
             <GraphCanvas
               ref="graphCanvas"
               initialGraph={this.editor.graph}
@@ -117,7 +130,7 @@ export default class WELayout extends Component {
               worldWidth={3000}
               worldHeight={3000} />
           </div>
-          <WETray ref="tray" className="cell" editor={this.editor} />
+          <WETray ref="tray" className="cell" />
         </div>
         <div ref="overlay" className="overlay" style={css.overlay}></div>
       </div>

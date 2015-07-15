@@ -35,6 +35,11 @@ import LibraryItem from './LibraryItem';
   defaultProps: {
     className: '',
     style: {}
+  },
+
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
   }
 })
 export default class WETasksLibrary extends Component {
@@ -42,7 +47,7 @@ export default class WETasksLibrary extends Component {
   state = {taskDefinitions: []};
 
   componentWillMount() {
-    this.taskDefinitionStore = this.props.editor.taskDefinitionStore;
+    this.taskDefinitionStore = this.context.editor.taskDefinitionStore;
   }
 
   componentDidMount() {
@@ -81,14 +86,14 @@ export default class WETasksLibrary extends Component {
         if (label) {
           let taskNode = taskDefinition.toTaskNode(this, taskDefinition, { label });
           taskNode.addGraphCanvasNode([1000, 1000, 1100, 1100]);
-          this.props.editor.layout.refs.graphCanvas.refs.world.updateGraph();
+          this.context.layout.refs.graphCanvas.refs.world.updateGraph();
         }
       },
       children: 'Please label your task.',
       title: 'Define Task Label:'
     };
     PromptDialog.create(promptProps,
-      React.findDOMNode(this.props.editor.layout.refs.overlay));
+      React.findDOMNode(this.context.layout.refs.overlay));
   }
 
 }

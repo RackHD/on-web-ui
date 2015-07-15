@@ -37,6 +37,11 @@ import LibraryItem from './LibraryItem';
     className: '',
     editor: null,
     style: {}
+  },
+
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
   }
 })
 export default class WEWorkflowsLibrary extends Component {
@@ -44,7 +49,7 @@ export default class WEWorkflowsLibrary extends Component {
   state = {workflowTemplates: []};
 
   componentWillMount() {
-    this.workflowTemplateStore = this.props.editor.workflowTemplateStore;
+    this.workflowTemplateStore = this.context.editor.workflowTemplateStore;
   }
 
   componentDidMount() {
@@ -88,15 +93,15 @@ export default class WEWorkflowsLibrary extends Component {
     if (workflowTemplate.id) {
       if (newGraph) {
         try {
-          this.props.editor.loadWorkflow(workflowTemplate, newGraph);
+          this.context.editor.loadWorkflow(workflowTemplate, newGraph);
         } catch (err) { console.error(err); }
         return this.routeTo(encodeURIComponent(workflowTemplate.id));
       }
       else {
-        return this.props.editor.loadWorkflow(workflowTemplate, newGraph);
+        return this.context.editor.loadWorkflow(workflowTemplate, newGraph);
       }
     }
-    return this.props.editor.resetWorkflow();
+    return this.context.editor.resetWorkflow();
   }
 
 }

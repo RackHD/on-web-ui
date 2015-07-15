@@ -150,7 +150,6 @@ export default class WELibrary extends Component {
   }
 
   clearSearch() {
-    return;
     // setTimeout(() => {
     //   this.refs.search.setValue('');
     //   this.setState({filteredChildren: null});
