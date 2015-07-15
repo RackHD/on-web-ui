@@ -10,19 +10,17 @@ import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 @decorate({
   propTypes: {
     active: PropTypes.bool,
-    canvas: PropTypes.any,
     model: PropTypes.any
   },
   defaultProps: {
     active: false,
-    canvas: null,
     model: null
   },
   contextTypes: {
     graphCanvas: PropTypes.any
   }
 })
-export default class GraphCanvasLink extends Component {
+export default class GCLinkElement extends Component {
 
   get graphCanvas() {
     return this.context.graphCanvas;

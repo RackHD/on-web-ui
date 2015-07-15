@@ -30,7 +30,7 @@ import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
   }
 })
 @mixin.decorate(DragEventHelpers)
-export default class GraphCanvasGroup extends Component {
+export default class GCGroupElement extends Component {
 
   state = {};
   removeGroup = this.removeGroup.bind(this);
@@ -74,7 +74,7 @@ export default class GraphCanvasGroup extends Component {
     }
     var ports = [];
     this.props.model.forEachPort(port => {
-      ports.push(<GraphCanvasPort key={port.name} ref={port.name} canvas={this.props.canvas} model={port} />);
+      ports.push(<GraphCanvasPort key={port.name} ref={port.name} model={port} />);
     });
     return (
       <Paper className={className}

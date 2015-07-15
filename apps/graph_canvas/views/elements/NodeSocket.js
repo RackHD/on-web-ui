@@ -4,7 +4,7 @@
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
-import DragEventHelpers from '../../../mixins/DragEventHelpers';
+import DragEventHelpers from '../../mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
@@ -24,7 +24,7 @@ import {
   }
 })
 @mixin.decorate(DragEventHelpers)
-export default class GraphCanvasSocket extends Component {
+export default class GCNodeSocketElement extends Component {
 
   get graphCanvas() {
     return this.context.graphCanvas;

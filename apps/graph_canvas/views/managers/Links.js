@@ -8,7 +8,7 @@ import decorate from 'common-web-ui/lib/decorate';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 
-import Vector from '../../lib/Vector';
+// import Vector from '../../lib/Vector';
 import Rectangle from '../../lib/Rectangle';
 
 import Link from '../../lib/Graph/Link';
@@ -24,48 +24,34 @@ import Link from '../../lib/Graph/Link';
 @mixin.decorate(DragEventHelpers)
 export default class GCLinksManager extends Component {
 
-  graph = this.context.graphCanvas.props.initialGraph;
+  get graphCanvas() {
+    return this.context.graphCanvas;
+  }
 
-  state = {
-    position: new Vector(
-      this.context.graphCanvas.props.initialX,
-      this.context.graphCanvas.props.initialY
-    ),
-    scale: this.context.graphCanvas.props.initialScale,
-    marks: [],
-    activeNode: null,
-    activeLink: null,
-    nodes: [],
-    links: []
-  };
-  rawNodes = [];
-  rawLinks = [];
+  links = this.graphCanvas.props.initialLinks;
+  activeLink = null;
 
   render() {
-    // var activeLink = this.state.activeLink &&
-    //       <GraphCanvasLink ref={this.state.activeLink.id} active={true} canvas={this} model={this.state.activeLink} />,
-    //     links = this.state.links.map(link =>
-    //       <GraphCanvasLink ref={link.id} key={link.id} canvas={this} model={link} />),
     return null;
   }
 
   drawLinkStart(event, dragState, e) {
     event.stopPropagation();
-    dragState.fromNode = this.delegatesTo(e.target, 'GraphCanvasNode');
-    var dom = this.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
+    dragState.fromNode = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasNode');
+    var dom = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
         start;
     if (dom) {
-      start = this.getSocketCenter(dom);
+      start = this.graphCanvas.getSocketCenter(dom);
     }
     else {
-      dom = React.findDOMNode(this);
-      start = this.getEventCoords(event, dom);
+      dom = React.findDOMNode(this.graphCanvas.refs.world);
+      start = this.graphCanvas.getEventCoords(event, dom);
     }
     dragState.link = new Link({
       data: {
         bounds: new Rectangle(start),
         fromNode: dragState.fromNode,
-        fromSocket: this.delegatesTo(e.target, 'GraphCanvasSocket')
+        fromSocket: this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocket')
       },
       layer: 1,
       scale: 1
@@ -73,29 +59,28 @@ export default class GCLinksManager extends Component {
   }
 
   drawLinkContinue(event, dragState, e) {
-    if (this.state.activeNode) { return; }
     event.stopPropagation();
     var dom = this.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
         end;
     if (dom) {
-      end = this.getSocketCenter(dom);
+      end = this.graphCanvas.getSocketCenter(dom);
     } else {
-      dom = React.findDOMNode(this);
-      end = this.getEventCoords(event, dom);
+      dom = React.findDOMNode(this.graphCanvas.refs.world);
+      end = this.graphCanvas.getEventCoords(event, dom);
     }
     dragState.link.data.bounds.max = end;
-    this.setState({activeLink: dragState.link});
+    this.activeLink = dragState.link;
   }
 
   drawLinkFinish(event, dragState, e) {
     event.stopPropagation();
-    var isTargetNode = this.delegatesTo(e.target, 'GraphCanvasNode');
+    var isTargetNode = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasNode');
     dragState.link.data.toNode = isTargetNode;
-    dragState.link.data.toSocket = this.delegatesTo(e.target, 'GraphCanvasSocket');
+    dragState.link.data.toSocket = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocket');
     if (dragState.link && isTargetNode && isTargetNode !== dragState.fromNode) {
       this.addLink(dragState.link);
     }
-    this.setState({activeLink: null});
+    this.activeLink = null;
   }
 
   addLink(link) {
@@ -108,13 +93,13 @@ export default class GCLinksManager extends Component {
     link.data.to = nodeIdB;
     link.socketOut = socketIdA;
     link.socketIn = socketIdB;
-    this.graph.connect(link);
-    this.setState({links: this.graph.links});
+    this.graphCanvas.graph.connect(link);
+    this.graphCanvas.setState({links: this.graphCanvas.graph.links});
   }
 
   removeLink(link) {
-    this.graph.disconnect(link);
-    this.setState({links: this.graph.links});
+    this.graphCanvas.graph.disconnect(link);
+    this.graphCanvas.setState({links: this.graphCanvas.graph.links});
   }
 
 }

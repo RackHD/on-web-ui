@@ -10,30 +10,25 @@ import DragEventHelpers from '../../mixins/DragEventHelpers';
 import {
     Paper
   } from 'material-ui';
-import GraphCanvasPort from './Node/Port.js';
+import GCNodePortElement from './NodePort.js';
 
 import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 
 @decorate({
   propTypes: {
     active: PropTypes.bool,
-    canvas: PropTypes.any,
     model: PropTypes.any
   },
   defaultProps: {
     active: false,
-    canvas: null,
     model: null
   },
-  // childContextTypes: {
-  //   muiTheme: PropTypes.object
-  // },
   contextTypes: {
     graphCanvas: PropTypes.any
   }
 })
 @mixin.decorate(DragEventHelpers)
-export default class GraphCanvasNode extends Component {
+export default class GCNodeElement extends Component {
 
   get graphCanvas() {
     return this.context.graphCanvas;
@@ -81,7 +76,7 @@ export default class GraphCanvasNode extends Component {
     }
     var ports = [];
     this.props.model.forEachPort(port => {
-      ports.push(<GraphCanvasPort key={port.name} ref={port.name} canvas={this.graphCanvas} model={port} />);
+      ports.push(<GCNodePortElement key={port.name} ref={port.name} model={port} />);
     });
     return (
       <Paper className={className}
@@ -109,7 +104,7 @@ export default class GraphCanvasNode extends Component {
 
   onScroll() {
     // console.log('scroll ports');
-    // this.graphCanvas.setState({links: this.graphCanvas.fixLinkPositions()});
+    this.graphCanvas.setState({links: this.graphCanvas.fixLinkPositions()});
   }
 
   stopEvent(event) {
@@ -162,7 +157,7 @@ export default class GraphCanvasNode extends Component {
           y: event.relY
         };
         pushFrame(event, dragState);
-        this.props.canvas.moveNode(
+        this.graphCanvas.refs.nodes.moveNode(
           this.props.model.id,
           lastX - event.relX,
           lastY - event.relY);
@@ -185,7 +180,7 @@ export default class GraphCanvasNode extends Component {
         var tick = () => {
           if (Math.abs(velocitySum.x) < 0.000001 &&
               Math.abs(velocitySum.y) < 0.000001) { return; }
-          this.props.canvas.moveNode(
+          this.graphCanvas.refs.nodes.moveNode(
             this.props.model.id,
             velocitySum.x,
             velocitySum.y);

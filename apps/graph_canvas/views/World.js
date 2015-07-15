@@ -50,6 +50,14 @@ export default class GCWorld extends Component {
   render() {
     // onDoubleClick={this.props.enableMarks && this.touchWorld.bind(this) || null}
     // onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); /*this.drawNode()(e)*/}}
+    var children = [],
+        vectors = this.state.vectors,
+        elements = this.state.elements;
+    React.Children.forEach(this.props.children, child => {
+      // TODO: detect vector, child.isVector is placeholder
+      if (child.isVector) { vectors.push(child); }
+      else { children.push(child); }
+    });
     try {
       var cssWorldSpaceTransform = this.cssWorldSpaceTransform,
           cssWorldSize = this.graphCanvas.cssWorldSize;
@@ -60,12 +68,12 @@ export default class GCWorld extends Component {
             style={[cssWorldSize, cssWorldSpaceTransform]}>
 
           <GCVectorsLayer ref="vectors">
-            {this.state.vectors}
+            {vectors}
           </GCVectorsLayer>
 
           <GCElementsLayer ref="elements">
-            {this.state.elements}
-            {this.props.children}
+            {elements}
+            {children}
           </GCElementsLayer>
         </div>
       );

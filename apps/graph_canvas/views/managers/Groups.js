@@ -24,28 +24,14 @@ import Group from '../../lib/Graph/Group';
 @mixin.decorate(DragEventHelpers)
 export default class GCGroupsManager extends Component {
 
-  graph = this.context.graphCanvas.props.initialGraph;
+  get graphCanvas() {
+    return this.context.graphCanvas;
+  }
 
-  state = {
-    position: new Vector(
-      this.context.graphCanvas.props.initialX,
-      this.context.graphCanvas.props.initialY
-    ),
-    scale: this.context.graphCanvas.props.initialScale,
-    marks: [],
-    activeGroup: null,
-    activeLink: null,
-    groups: [],
-    links: []
-  };
-  rawGroups = [];
-  rawLinks = [];
+  groups = this.graphCanvas.props.initialGroups;
+  activeGroup = null;
 
   render() {
-    // var activeGroup = this.state.activeGroup &&
-    //       <GraphCanvasGroup ref={this.state.activeGroup.id} active={true} canvas={this} model={this.state.activeGroup} />,
-    //     groups = this.state.groups.map(group =>
-    //       <GraphCanvasGroup ref={group.id} key={group.id} canvas={this} model={group} />);
     return null;
   }
 
@@ -82,7 +68,7 @@ export default class GCGroupsManager extends Component {
         event.stopPropagation();
         var group = dragState.group;
         this.setState({activeGroup: null});
-        this.graph.add(dragState.group);
+        this.graphCanvas.graph.add(dragState.group);
         this.addGroup(group);
       }
     });

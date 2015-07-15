@@ -4,12 +4,12 @@
 import React, { Component, PropTypes } from 'react';
 import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
-import DragEventHelpers from '../../../mixins/DragEventHelpers';
+import DragEventHelpers from '../../mixins/DragEventHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
   } from 'material-ui';
-import GraphCanvasSocket from './Socket';
+import GCNodeSocketElement from './NodeSocket';
 
 @decorate({
   propTypes: {
@@ -25,7 +25,7 @@ import GraphCanvasSocket from './Socket';
   }
 })
 @mixin.decorate(DragEventHelpers)
-export default class GraphCanvasPort extends Component {
+export default class GCNodePortElement extends Component {
 
   get graphCanvas() {
     return this.context.graphCanvas;
@@ -37,8 +37,8 @@ export default class GraphCanvasPort extends Component {
     var leftSockets = [],
         rightSockets = [];
     this.props.model.forEachSocket(socket => {
-      var element = <GraphCanvasSocket
-        key={socket.type} ref={socket.type} canvas={this.graphCanvas} model={socket} />;
+      var element = <GCNodeSocketElement
+        key={socket.type} ref={socket.type} model={socket} />;
       if (socket.dir.x === -1) {
         leftSockets.push(element);
       }

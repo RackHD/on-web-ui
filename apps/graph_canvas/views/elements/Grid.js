@@ -25,7 +25,7 @@ import decorate from 'common-web-ui/lib/decorate';
     graphCanvas: PropTypes.any
   }
 })
-export default class GCGridLayer extends Component {
+export default class GCGridElement extends Component {
 
   get graphCanvas() {
     return this.context.graphCanvas;

@@ -18,14 +18,14 @@ import Rectangle from '../lib/Rectangle';
 import GCViewport from './Viewport';
 import GCWorld from './World';
 
-// import GCGroupsManager from './managers/Groups';
+import GCGroupsManager from './managers/Groups';
 import GCLinksManager from './managers/Links';
 import GCMarksManager from './managers/Marks';
 import GCNodesManager from './managers/Nodes';
 
 import './GraphCanvas.less';
-import GraphCanvasNode from './elements/Node';
-import GraphCanvasLink from './elements/Link';
+import GCNodeElement from './elements/Node';
+import GCLinkElement from './elements/Link';
 
 /**
 # GraphCanvas
@@ -87,6 +87,8 @@ export default class GraphCanvas extends Component {
   }
 
   graph = this.props.initialGraph;
+  history = []; // TODO: keep track of each action as a separate mutation for undo/redo
+  selected = [];
 
   state = {
     groups: this.props.initialGroups,
@@ -102,10 +104,7 @@ export default class GraphCanvas extends Component {
 
   css = {
     root: {
-      // position: 'relative',
       overflow: 'hidden'
-      // width: '100%',
-      // height: '100%'
     }
   };
 
@@ -142,7 +141,7 @@ export default class GraphCanvas extends Component {
             </GCWorld>
           </GCViewport>
 
-          {/*<GCGroupsManager ref="groups" />*/}
+          <GCGroupsManager ref="groups" />
           <GCLinksManager ref="links" />
           <GCNodesManager ref="nodes" />
           {this.props.enableMarks && <GCMarksManager ref="marks" />}
@@ -172,7 +171,7 @@ export default class GraphCanvas extends Component {
         world = this.refs.world;
     if (world) {
       elements = elements.concat(this.state.nodes.map(node => {
-        return <GraphCanvasNode ref={node.id} key={node.id} canvas={this} model={node} />;
+        return <GCNodeElement ref={node.id} key={node.id} model={node} />;
       }));
       if (this.refs.marks) {
         elements = elements.concat(this.refs.marks.markElements);
@@ -186,8 +185,11 @@ export default class GraphCanvas extends Component {
         world = this.refs.world;
     if (world) {
       vectors = vectors.concat(this.state.links.map(link => {
-        return <GraphCanvasLink ref={link.id} key={link.id} canvas={this} model={link} />;
+        return <GCLinkElement ref={link.id} key={link.id} model={link} />;
       }));
+      if (this.refs.links.activeLink) {
+        vectors.push(<GCLinkElement active={true} ref={this.refs.links.activeLink.id} key={this.refs.links.activeLink.id} model={this.refs.links.activeLink} />)
+      }
       if (this.refs.marks) {
         vectors = vectors.concat(this.refs.marks.markVectors);
       }
@@ -196,12 +198,12 @@ export default class GraphCanvas extends Component {
   }
 
   updatePosition(position) {
-    this.state.position = position;
+    // this.state.position = position;
     this.setState({ position });
   }
 
   updateScale(scale) {
-    this.state.scale = scale;
+    // this.state.scale = scale;
     this.setState({ scale });
   }
 
