@@ -5,7 +5,9 @@ import React, // eslint-disable-line no-unused-vars
 
 import decorate from 'common-web-ui/lib/decorate';
 
-import {} from 'material-ui';
+import {
+    RaisedButton
+  } from 'material-ui';
 
 import WEWorkflowOutline from './WorkflowOutline';
 
@@ -21,7 +23,11 @@ export default class WEInspector extends Component {
 
   state = {selected: []};
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.context.editor.onGraphUpdate(() => {
+      this.forceUpdate();
+    });
+  }
 
   componentWillUnmount() {}
 
@@ -29,30 +35,48 @@ export default class WEInspector extends Component {
     this.setState({ selected });
   }
 
+  get currentWorkflow() {
+    return this.context.editor.workflowGraph.workflowTemplate;
+  }
+
   render() {
     var selected = this.state.selected || [];
-    selected = selected.map(function (node) {
-      var task = null;
-      if (node.data.task) {
-        task = node.data.task.label;
-      }
-      return (
-        <div className="task" key={node.id} ref={node.id}>
-          {node.id}
-          <div>{task}</div>
-        </div>
-      );
-    });
+    // selected = selected.map(function (node) {
+    //   var task = null;
+    //   if (node.data.task) {
+    //     task = node.data.task.label;
+    //   }
+    //   return (
+    //     <div className="task" key={node.id} ref={node.id}>
+    //       {node.id}
+    //       <div>{task}</div>
+    //     </div>
+    //   );
+    // });
     if (!selected || !selected.length) {
       selected = 'No selected nodes.';
     }
     return (
       <div className="WorkflowInspector" style={{padding: 10}}>
-        <WEWorkflowOutline ref="json" />
-        <hr />
-        <div className="selected">
-          {selected}
-        </div>
+        <p style={{color: '#bbb', float: 'left'}}>
+          {selected.length} selected items.
+        </p>
+        <RaisedButton
+            disabled={!!selected.length}
+            style={{float: 'right'}}
+            primary={true}
+            label="Remove Selected" />
+        <hr style={{
+          clear: 'both',
+          display: 'block',
+          height: '1px',
+          border: 0,
+          borderTop: '1px solid #ddd',
+          margin: 0,
+          padding: 0
+        }} />
+        <WEWorkflowOutline ref="outline"
+            model={this.currentWorkflow}/>
       </div>
     );
   }

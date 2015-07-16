@@ -61,7 +61,7 @@ import GCLinkElement from './elements/Link';
   defaultProps: {
     className: 'GraphCanvas',
     css: {},
-    enableMarks: true,
+    enableMarks: false,
     initialGraph: new Graph(),
     initialGroups: [],
     initialLinks: [],

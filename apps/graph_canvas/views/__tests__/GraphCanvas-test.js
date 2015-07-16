@@ -9,16 +9,19 @@ import GraphCanvas from '../GraphCanvas';
 import Vector from '../../lib/Vector';
 
 var props = {
+  initialX: 0,
+  initialY: 0,
+  initialScale: 1,
   worldWidth: 240,
   worldHeight: 200,
   viewWidth: 120,
   viewHeight: 100
 };
 
-describe('GraphCanvasMap', function() {
+describe('GraphCanvas', function() {
   this.timeout(5000);
 
-  xdescribe('component', function() {
+  describe('component', function() {
     before(function(done) {
       var handler = (err, component) => {
         this.subject = component;
@@ -40,9 +43,7 @@ describe('GraphCanvasMap', function() {
     });
   });
 
-  /* global xdescribe, xit */
-  // TODO: move this test to GraphCanvasWorld-test
-  xdescribe('coordinates', function() {
+  describe('coordinates', function() {
     beforeEach(function() {
       this.subject = new GraphCanvas(props);
     });
@@ -65,11 +66,10 @@ describe('GraphCanvasMap', function() {
       this.subject.position.y.should.equal(0);
     });
 
-    xit('should be able to convert betwen world space and screen space', function() {
+    it('should be able to convert betwen world space and screen space', function() {
       var a = new Vector(5, 5),
           w = this.subject.worldSpaceTransform,
           v = this.subject.viewSpaceTransform;
-      // debugger;
       var b = a.transform(w),
           c = a.transform(v);
       b.x.should.equal(-55);

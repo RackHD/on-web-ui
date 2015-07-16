@@ -9,8 +9,20 @@ import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 
+import JsonInspector from 'react-json-inspector';
+import InteractiveSelection from 'react-json-inspector/example/interactive-selection';
+let InteractiveSelectionFactory = React.createFactory(InteractiveSelection);
+
 import {
+    List,
+    ListItem,
+    FontIcon,
+    IconButton,
+    // TextField,
+    Checkbox
   } from 'material-ui';
+
+import WETaskOutline from './TaskOutline';
 
 /**
 # WEWorkflowJSON
@@ -27,13 +39,13 @@ import {
 @decorate({
   propTypes: {
     className: PropTypes.string,
-    editor: PropTypes.object,
+    model: PropTypes.object,
     style: PropTypes.any
   },
 
   defaultProps: {
-    className: '',
-    editor: null,
+    className: 'WorkflowOutline',
+    model: null,
     style: {}
   },
 
@@ -44,60 +56,140 @@ import {
 })
 export default class WEWorkflowOutline extends Component {
 
-  state = {};
+  state = {
+    model: this.props.model
+  };
 
-  componentWillMount() {
-    this.context.editor.onGraphUpdate(() => {
-      this.forceUpdate();
-    });
-  }
+  componentWillMount() {}
 
   componentWillUnmount() {}
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({model: nextProps.model});
+  }
+
   render() {
-    // console.log('outline', this.context.editor);
-    var tasks = this.context.editor.tasks;
-    if (tasks) {
+    let workflow = this.props.model;
+
+    // let optionsMapper = (object, list, hash) => {
+    //   if (!object || typeof object !== 'object') {
+    //     return null;
+    //   }
+    //   hash = hash || '';
+    //   Object.keys(object).forEach(key => {
+    //     let value = object[key];
+    //     let subOptions = optionsMapper(value, [], hash + key + '-');
+    //     list.push(
+    //       <ListItem key={hash + key} ref={hash + key}
+    //           primaryText={subOptions && [
+    //             <TextField
+    //                 onTouchTap={this.stopEvent}
+    //                 floatingLabelText="Property Name"
+    //                 value={key} />,
+    //             <IconButton iconClassName="fa fa-remove" tooltip="Remove Property"/>
+    //           ]}
+    //           onTouchTap={subOptions && this.toggleListItem.bind(this, hash + key) || null}>
+    //         {subOptions || [
+    //           <TextField
+    //               onTouchTap={this.stopEvent}
+    //               floatingLabelText={key}
+    //               value={value} />,
+    //           <IconButton iconClassName="fa fa-remove" tooltip="Remove Property"/>
+    //         ]}
+    //       </ListItem>
+    //     );
+    //   });
+    //   list.push(
+    //     <ListItem key={hash + 'NEW'}
+    //         primaryText={[
+    //           <TextField
+    //             onTouchTap={this.stopEvent}
+    //             floatingLabelText="Property Name" />,
+    //           <IconButton iconClassName="fa fa-plus" tooltip="Add Property"/>
+    //         ]} />
+    //   );
+    //   return list;
+    // };
+
+    // let options = optionsMapper(workflow.options, []);
+    let options = (
+      <ListItem>
+        <div style={{background: 'white'}}>
+          <JsonInspector
+              search={false}
+              isExpanded={() => true}
+              interactiveLabel={InteractiveSelectionFactory}
+              data={workflow.options || {}} />
+        </div>
+      </ListItem>
+    );
+
+    let tasks = workflow.tasks;
+    if (tasks && tasks.length) {
       tasks = tasks.map((task, i) => {
-        let definition = task.taskDefinition ||
-          this.context.editor.getTaskDefinitionByName(task.taskName) ||
-          {};
-        // console.log(task, definition);
         return (
-          <div key={i} onClick={this.selectNode.bind(this, task)}>
-            {task.label}
-            <div style={{padding: 20}}>
-              <br/>implementsTask:<br/>
-              {JSON.stringify(definition.implementsTask) || 'undefined'}
-              <br/>options:<br/>
-              {JSON.stringify(definition.options) || 'undefined'}
-              <br/>properties:<br/>
-              {JSON.stringify(definition.properties) || 'undefined'}
-              <br/>waitOn:<br/>
-              {JSON.stringify(task.waitOn) || 'undefined'}
-              <br/><br/>
-            </div>
-          </div>
+          <ListItem key={i}>
+            <WETaskOutline model={task} />
+          </ListItem>
         );
       });
     }
+    else {
+      tasks = (
+        <ListItem>No Tasks.</ListItem>
+      );
+    }
     return (
-      <div>
-        <div>
-          {this.context.editor.workflowGraph.name || '(Unknown)'}
-        </div>
-        <div>
-          <h3>Tasks</h3>
-          {tasks || '(No tasks)'}
-        </div>
+      <div className={this.props.className}>
+        <List
+            subheader="Workflow:">
+          <ListItem
+              leftCheckbox={<Checkbox onCheck={this.selectWorkflow.bind(this)}/>}
+              rightIconButton={
+                <IconButton
+                    iconClassName="fa fa-at"
+                    tooltip="Workflow Name"
+                    tooltipPosition="top-left" />
+              }>
+            {this.context.editor.workflowGraph.name || '(Unknown)'}
+          </ListItem>
+          <ListItem
+              ref="options"
+              primaryText="Options"
+              onTouchTap={this.toggleListItem.bind(this, 'options')}
+              leftIcon={<FontIcon className="fa fa-info-circle" />}>
+            {options}
+          </ListItem>
+          <ListItem
+              ref="tasks"
+              primaryText="Tasks"
+              onTouchTap={this.toggleListItem.bind(this, 'tasks')}
+              leftIcon={<FontIcon className="fa fa-tasks" />}>
+            {tasks}
+          </ListItem>
+        </List>
+
       </div>
     );
   }
 
-  selectNode(task, e) {
+  stopEvent(e) {
     e.stopPropagation();
     e.preventDefault();
-    this.context.layout.refs.graphCanvas.selectNode(task._node, e.shiftKey);
+  }
+
+  toggleListItem(name, e) {
+    this.stopEvent(e);
+    var listItem = this.refs[name];
+    listItem.setState({open: !listItem.state.open});
+  }
+
+  selectWorkflow(e, toggled) {
+    // this.stopEvent(e);
+    console.log(toggled);
+    // if (toggled) {
+    //   this.context.layout.refs.graphCanvas.selectNode(this.props.model._node, e.shiftKey);
+    // }
   }
 
 }

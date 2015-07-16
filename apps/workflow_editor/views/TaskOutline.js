@@ -10,6 +10,12 @@ import decorate from 'common-web-ui/lib/decorate';
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 
 import {
+    List,
+    ListItem,
+    // FontIcon,
+    IconButton,
+    Checkbox,
+    Toggle
   } from 'material-ui';
 
 /**
@@ -28,12 +34,14 @@ import {
   propTypes: {
     className: PropTypes.string,
     editor: PropTypes.object,
+    model: PropTypes.object,
     style: PropTypes.any
   },
 
   defaultProps: {
     className: '',
     editor: null,
+    model: null,
     style: {}
   },
 
@@ -42,62 +50,65 @@ import {
     editor: PropTypes.any
   }
 })
-export default class WEWorkflowOutline extends Component {
+export default class WETaskOutline extends Component {
 
   state = {};
 
-  componentWillMount() {
-    this.context.editor.onGraphUpdate(() => {
-      this.forceUpdate();
-    });
-  }
+  componentWillMount() {}
 
   componentWillUnmount() {}
 
   render() {
-    // console.log('outline', this.context.editor);
-    var tasks = this.context.editor.tasks;
-    if (tasks) {
-      tasks = tasks.map((task, i) => {
-        let definition = task.taskDefinition ||
-          this.context.editor.getTaskDefinitionByName(task.taskName) ||
-          {};
-        // console.log(task, definition);
-        return (
-          <div key={i} onClick={this.selectNode.bind(this, task)}>
-            {task.label}
-            <div style={{padding: 20}}>
-              <br/>implementsTask:<br/>
-              {JSON.stringify(definition.implementsTask) || 'undefined'}
-              <br/>options:<br/>
-              {JSON.stringify(definition.options) || 'undefined'}
-              <br/>properties:<br/>
-              {JSON.stringify(definition.properties) || 'undefined'}
-              <br/>waitOn:<br/>
-              {JSON.stringify(task.waitOn) || 'undefined'}
-              <br/><br/>
-            </div>
-          </div>
-        );
-      });
-    }
+    let task = this.props.model;
+
+    let definition =
+      task.taskDefinition ||
+      this.context.editor.getTaskDefinitionByName(task.taskName) ||
+      {};
+
+    console.log(task, definition);
+    // <br/>implementsTask:<br/>
+    // {JSON.stringify(definition.implementsTask) || 'undefined'}
+    // <br/>options:<br/>
+    // {JSON.stringify(definition.options) || 'undefined'}
+    // <br/>properties:<br/>
+    // {JSON.stringify(definition.properties) || 'undefined'}
+    // <br/>waitOn:<br/>
+    // {JSON.stringify(task.waitOn) || 'undefined'}
+    // <br/><br/>
+
     return (
-      <div>
-        <div>
-          {this.context.editor.workflowGraph.name || '(Unknown)'}
-        </div>
-        <div>
-          <h3>Tasks</h3>
-          {tasks || '(No tasks)'}
-        </div>
-      </div>
+      <List
+          subheader={this.props.showSubHeader ? 'Task:' : ''}>
+        <ListItem
+            leftCheckbox={<Checkbox onCheck={this.selectTask.bind(this)}/>}
+            rightIconButton={
+              <IconButton
+                  iconClassName="fa fa-at"
+                  tooltip="Task Label"
+                  tooltipPosition="top-left" />
+            }>
+          {task.label}
+        </ListItem>
+        <ListItem
+            primaryText="Ignore Failure"
+            rightToggle={<Toggle />}>
+        </ListItem>
+      </List>
     );
   }
 
-  selectNode(task, e) {
+  selectTask(e, toggled) {
+    // this.stopEvent(e);
+    console.log(toggled);
+    // if (toggled) {
+    //   this.context.layout.refs.graphCanvas.selectNode(this.props.model._node, e.shiftKey);
+    // }
+  }
+
+  stopEvent(e) {
     e.stopPropagation();
     e.preventDefault();
-    this.context.layout.refs.graphCanvas.selectNode(task._node, e.shiftKey);
   }
 
 }
