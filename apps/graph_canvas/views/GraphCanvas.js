@@ -24,8 +24,17 @@ import GCMarksManager from './managers/Marks';
 import GCNodesManager from './managers/Nodes';
 
 import './GraphCanvas.less';
-import GCNodeElement from './elements/Node';
+import GCGroupElement from './elements/Group';
 import GCLinkElement from './elements/Link';
+import GCNodeElement from './elements/Node';
+import GCNodePortElement from './elements/NodePort';
+import GCNodeSocketElement from './elements/NodeSocket';
+
+export { GCGroupElement as GCGroup };
+export { GCLinkElement as GCLink };
+export { GCNodeElement as GCNode };
+export { GCNodePortElement as GCPort };
+export { GCNodeSocketElement as GCSocket };
 
 /**
 # GraphCanvas
@@ -129,22 +138,31 @@ export default class GraphCanvas extends Component {
   */
   render() {
     try {
-      var props = this.props,
+      let props = this.props,
           css = [this.css.root, this.cssViewSize, props.css.root, props.style];
+
+      React.Children.forEach(props.children, child => {
+        // NOTE: Context seems to be based on lexical scope, this will ensure Graph Canvas
+        //       children have a graphCanvas in their context which is required for GC elements.
+        if (child && child._context) {
+          child._context.graphCanvas = this;
+        }
+      });
+
       return (
         <div className={props.className} style={css}>
-          <GCViewport ref="viewport">
-            <GCWorld ref="world"
-                elements={this.elements}
-                vectors={this.vectors}>
-              {this.props.children}
-            </GCWorld>
-          </GCViewport>
-
           <GCGroupsManager ref="groups" />
           <GCLinksManager ref="links" />
           <GCNodesManager ref="nodes" />
           {this.props.enableMarks && <GCMarksManager ref="marks" />}
+
+          <GCViewport ref="viewport">
+            <GCWorld ref="world"
+                elements={this.elements}
+                vectors={this.vectors}>
+              {props.children}
+            </GCWorld>
+          </GCViewport>
         </div>
       );
     } catch (err) {

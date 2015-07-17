@@ -34,6 +34,10 @@ export default class GCNodeElement extends Component {
     return this.context.graphCanvas;
   }
 
+  get nodesManager() {
+    return this.graphCanvas.refs.nodes;
+  }
+
   state = {};
   removeNode = this.removeNode.bind(this);
 

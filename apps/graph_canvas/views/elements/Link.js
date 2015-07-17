@@ -22,6 +22,8 @@ import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 })
 export default class GCLinkElement extends Component {
 
+  static isVector = true;
+
   get graphCanvas() {
     return this.context.graphCanvas;
   }

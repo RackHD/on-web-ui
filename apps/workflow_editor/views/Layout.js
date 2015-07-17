@@ -122,13 +122,13 @@ export default class WELayout extends Component {
           <div ref="canvasCell" className="cell">
             <WEToolbar ref="toolbar" />
             <GraphCanvas
-              ref="graphCanvas"
-              initialGraph={this.editor.graph}
-              initialScale={1}
-              viewWidth={this.state.canvasWidth}
-              viewHeight={this.state.canvasHeight}
-              worldWidth={3000}
-              worldHeight={3000} />
+                ref="graphCanvas"
+                initialGraph={this.editor.graph}
+                initialScale={1}
+                viewWidth={this.state.canvasWidth}
+                viewHeight={this.state.canvasHeight}
+                worldWidth={3000}
+                worldHeight={3000} />
           </div>
           <WETray ref="tray" className="cell" />
         </div>
