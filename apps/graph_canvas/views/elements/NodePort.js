@@ -31,7 +31,6 @@ import GCNodeSocketElement from './NodeSocket';
     className: PropTypes.string,
     css: PropTypes.object,
     id: PropTypes.string,
-    initialBounds: PropTypes.any,
     initialColor: PropTypes.string,
     initialName: PropTypes.string,
     initialSockets: PropTypes.array,
@@ -41,7 +40,6 @@ import GCNodeSocketElement from './NodeSocket';
     className: 'GCNodePortElement',
     css: {},
     id: null,
-    initialBounds: [0, 0, 200, 200],
     initialColor: 'black',
     initialName: 'port',
     initialSockets: [],
@@ -60,7 +58,6 @@ export default class GCNodePortElement extends Component {
   constructor(props) {
     super(props);
     this.props.id = this.props.id || generateId('port');
-    this.state.sockets = this.state.sockets.concat(this.filterSocketsFromChildren());
   }
 
   state = {
@@ -75,7 +72,18 @@ export default class GCNodePortElement extends Component {
         className = 'ungrid ' + this.props.className,
         leftSockets = [],
         rightSockets = [];
-    this.state.sockets.forEach(socket => {
+    console.log(this.props.children, this.state.sockets);
+    var newSockets = [];
+    var children = React.Children.map(this.props.children, child => {
+      if (child.type.isSocket) {
+        newSockets.push(child);
+        return null;
+      }
+      else {
+        return child;
+      }
+    });
+    this.state.sockets.concat(newSockets).forEach(socket => {
       if (socket.props.dir[0] === -1) {
         leftSockets.push(socket);
       }
@@ -97,7 +105,7 @@ export default class GCNodePortElement extends Component {
           </div>
           <div className="cell">{rightSockets}</div>
         </div>
-        {this.props.children}
+        {children}
       </div>
     );
   }
@@ -132,18 +140,6 @@ export default class GCNodePortElement extends Component {
     return rawSockets.map(rawSocket => {
       return <GCNodeSocketElement {...rawSocket} />;
     });
-  }
-
-  filterSocketsFromChildren() {
-    var newSockets = [];
-    this.props.children = React.Children.map(this.props.children, child => {
-      if (child.type.isSocket) {
-        newSockets.push(child);
-        return null;
-      }
-      return child;
-    });
-    return newSockets;
   }
 
 }

@@ -123,6 +123,7 @@ export default class GCGroupElement extends Component {
 
   css = {
     content: {
+      position: 'relative',
       overflow: 'hidden',
       boxSizing: 'border-box',
       borderBottomLeftRadius: 10,
@@ -158,6 +159,7 @@ export default class GCGroupElement extends Component {
       color: 'inherit'
     },
     resize: {
+      clear: 'both',
       float: 'right',
       color: 'inherit',
       padding: '20px 10px 10px 20px',
@@ -168,6 +170,7 @@ export default class GCGroupElement extends Component {
       transition: 'opacity 0.4s ease-out'
     },
     root: {
+      position: 'absolute', top: 0, left: 0,
       boxSizing: 'border-box',
       border: '3px solid rgba(255, 255, 255, 0.6)',
       borderRadius: 14,

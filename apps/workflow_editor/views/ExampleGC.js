@@ -11,7 +11,7 @@ import {
 
 import GraphCanvas, {
     GCGroup,
-    // GCLink,
+    GCLink,
     GCNode,
     GCPort,
     GCSocket
@@ -47,38 +47,6 @@ export default class WELayout extends Component {
   }
 
   render() {
-    // debugger;
-    /*
-    <GCNode
-        name="b">
-      <GCPort
-          name="options"
-          color="green">
-        <GCSocket
-            name="in"
-            dir={[-1, 0]} />
-        <GCSocket
-            name="out"
-            dir={[1, 0]} />
-      </GCPort>
-    </GCNode>
-    <GCNode
-        name="c">
-      <GCPort
-          name="options"
-          color="blue">
-        <GCSocket
-            name="in"
-            dir={[-1, 0]} />
-      </GCPort>
-    </GCNode>
-    <GCLink
-        from="a.options.out"
-        to="b.options.in" />
-    <GCLink
-        from="b.options.out"
-        to="c.options.in" />
-    */
     return (
       <div ref="root">
         <GraphCanvas
@@ -90,23 +58,58 @@ export default class WELayout extends Component {
             worldHeight={1000}>
           <GCGroup
               initialBounds={[250, 250, 1250, 750]}
-              initialColor="grey"
+              initialColor="darkblue"
               initialName="abc">
             <GCNode
-                initialBounds={[100, 100, 300, 300]}
-                initialColor="#444"
+                initialBounds={[50, 50, 250, 250]}
+                initialColor="#222"
                 initialName="a">
               <GCPort
-                  initialBounds={[100, 100, 300, 300]}
-                  initialColor="red"
+                  initialColor="darkred"
                   initialName="options">
                 <GCSocket
                     dir={[1, 0]}
-                    initialColor="red"
+                    initialColor="pink"
                     initialName="out" />
               </GCPort>
             </GCNode>
+            <GCNode
+                initialBounds={[300, 50, 500, 250]}
+                initialColor="#666"
+                initialName="b">
+              <GCPort
+                  initialColor="darkgreen"
+                  initialName="options">
+                <GCSocket
+                    dir={[-1, 0]}
+                    initialColor="lightgreen"
+                    initialName="in" />
+                <GCSocket
+                    dir={[1, 0]}
+                    initialColor="lightgreen"
+                    initialName="out" />
+              </GCPort>
+            </GCNode>
+            <GCNode
+                initialBounds={[550, 50, 750, 250]}
+                initialColor="#aaa"
+                initialName="c">
+              <GCPort
+                  initialColor="blue"
+                  initialName="options">
+                <GCSocket
+                    dir={[-1, 0]}
+                    initialColor="lightblue"
+                    initialName="in" />
+              </GCPort>
+            </GCNode>
+            <GCLink
+                from="a.options.out"
+                to="b.options.in" />
           </GCGroup>
+          <GCLink
+              from="b.options.out"
+              to="c.options.in" />
         </GraphCanvas>
       </div>
     );

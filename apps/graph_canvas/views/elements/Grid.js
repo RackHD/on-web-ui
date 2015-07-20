@@ -62,8 +62,8 @@ export default class GCGridElement extends Component {
           xmlns="http://www.w3.org/2000/svg">
         <g>
           <defs>
-            <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10 10 10 Z" fill="none" stroke="#ddd" strokeWidth="0.25"/>
+            <pattern id="smallGrid" width="25" height="25" patternUnits="userSpaceOnUse">
+              <path d="M 25 0 L 0 0 0 25 25 25 Z" fill="none" stroke="#ddd" strokeWidth="0.25"/>
             </pattern>
             <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
               <rect width="100" height="100" x="0" y="0" fill="url(#smallGrid)"/>

@@ -44,6 +44,8 @@ import generateId from '../../lib/generateId';
 })
 export default class GCNodeSocketElement extends Component {
 
+  static isSocket = true;
+
   get graphCanvas() {
     return this.context.graphCanvas;
   }
@@ -52,7 +54,7 @@ export default class GCNodeSocketElement extends Component {
     return this.graphCanvas.refs.viewport;
   }
 
-  get linkManager() {
+  get linksManager() {
     return this.graphCanvas.refs.links;
   }
 
