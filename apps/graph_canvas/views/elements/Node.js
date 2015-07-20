@@ -1,132 +1,294 @@
 'use strict';
 
-/* eslint-disable no-unused-vars */
-import React, { Component, PropTypes } from 'react';
+import React, // eslint-disable-line no-unused-vars
+  { Component, PropTypes } from 'react';
+
+import radium from 'radium';
 import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
-import DragEventHelpers from '../../mixins/DragEventHelpers';
-/* eslint-enable no-unused-vars */
+import Color from 'color';
 
-import {
-    Paper
-  } from 'material-ui';
-import GCNodePortElement from './NodePort.js';
+import DragEventHelpers from '../../mixins/DragEventHelpers';
+
+import {} from 'material-ui';
 
 import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 
+import Rectangle from '../../lib/Rectangle';
+import Vector from '../../lib/Vector';
+
+@radium
+@mixin.decorate(DragEventHelpers)
 @decorate({
   propTypes: {
-    active: PropTypes.bool,
-    model: PropTypes.any
+    className: PropTypes.string,
+    css: PropTypes.object,
+    initialBounds: PropTypes.any,
+    initialColor: PropTypes.string,
+    initialName: PropTypes.string,
+    style: PropTypes.object
   },
   defaultProps: {
-    active: false,
-    model: null
+    className: 'GCNodeElement',
+    css: {},
+    initialBounds: [0, 0, 750, 500],
+    initialColor: 'grey',
+    initialName: '(Unamed Node)',
+    style: {}
   },
   contextTypes: {
-    graphCanvas: PropTypes.any
+    graphCanvas: PropTypes.any,
+    graphCanvasOwner: PropTypes.any
   }
 })
-@mixin.decorate(DragEventHelpers)
 export default class GCNodeElement extends Component {
 
-  get graphCanvas() {
-    return this.context.graphCanvas;
-  }
+  get graphCanvas() { return this.context.graphCanvas; }
 
-  get nodesManager() {
-    return this.graphCanvas.refs.nodes;
-  }
+  get graphCanvasViewport() { return this.graphCanvas.refs.viewport; }
 
-  state = {};
-  removeNode = this.removeNode.bind(this);
+  get nodesManager() { return this.graphCanvas.refs.nodes; }
+
+  // TODO: this causes an infinite loop
+  // componentDidMount() { this.nodesManager.register(this); }
+
+  state = {
+    name: this.props.initialName,
+    color: this.props.initialColor,
+    bounds: new Rectangle(this.props.initialBounds),
+    hover: false,
+    moving: false,
+    resizing: false,
+    removed: false,
+    selected: false
+  };
 
   render() {
-    if (!this.props.model || !this.props.model.bounds) {
-      console.error(new Error('Invalid node').stack);
-      console.log(this.props);
-      return null;
-    }
-    var className = 'GraphCanvasNode',
-        zDepth = 2,
-        bounds = this.props.model.bounds,
-        style = bounds.getCSSTransform();
-    style.transition =
-    style.borderRadius =
-    style.backgroundColor = null;
-    if (this.props.active) {
-      className += ' active';
-    }
-    else {
-      style.width = Math.max(100, style.width);
-      style.height = Math.max(100, style.height);
-      if (bounds.min.x > bounds.max.x) {
-        bounds.min.x = bounds.max.x + style.width;
-      } else {
-        bounds.max.x = bounds.min.x + style.width;
-      }
-      if (bounds.min.y > bounds.max.y) {
-        bounds.min.y = bounds.max.y + style.height;
-      } else {
-        bounds.max.y = bounds.min.y + style.height;
-      }
-    }
-    if (this.state.moving) {
-      className += ' moving';
-      zDepth = 4;
-    }
-    if (this.state.selected) {
-      className += ' selected';
-    }
-    var ports = [];
-    this.props.model.forEachPort(port => {
-      ports.push(<GCNodePortElement key={port.name} ref={port.name} model={port} />);
-    });
+    if (this.state.removed) { return null; }
+
+    let props = this.props;
+    let css = this.preparedCSS;
+
+    this.prepareChildren();
+
     return (
-      <Paper className={className}
-             rounded={false}
-             zDepth={zDepth}
-             style={style}
-             data-id={this.props.model.id}
-             onClick={this.selectNode.bind(this)}>
-        <div className="container">
-          <div className="header"
-               onClick={this.stopEvent.bind(this)}
-               onMouseDown={this.moveNode()}>
-            <span className="name">{this.props.model.data && this.props.model.data.task && this.props.model.data.task.label || 'Task Node'}</span>
-            <a className="right fa fa-remove"
-                onMouseDown={this.stopEvent.bind(this)}
-                onClick={this.removeNode} />
-          </div>
-          <div className="ports" style={{height: style.height - 16, overflow: 'auto'}} onScroll={this.onScroll.bind(this)}>
-            {ports}
-          </div>
+      <div
+          onMouseOver={this.setHoverState.bind(this, true, 1000)}
+          onMouseOut={this.setHoverState.bind(this, false, 250)}
+          className={props.className}
+          style={css.root}>
+        <div
+            onTouchTap={this.toggleSelected.bind(this)}
+            onMouseDown={this.moveNode.bind(this)}
+            style={css.header}>
+          <input
+              key="nameInput"
+              type="text"
+              value={this.state.name}
+              style={css.inputs.concat([{width: (this.state.name.length + 1) + 'ex'}])}
+              onChange={this.handleNameChange.bind(this)}
+              onMouseDown={this.stopEventPropagation}
+              onTouchTap={this.stopEventPropagation} />
+          <a
+              style={css.remove}
+              onMouseDown={this.stopEventPropagation}
+              onTouchTap={this.removeNode.bind(this)}
+              className="fa fa-remove"
+              title="Remove" />
+          <input
+              key="colorInput"
+              type="text"
+              value={this.state.color}
+              style={css.inputs.concat([{float: 'right', width: (this.state.color.length + 1) + 'ex'}])}
+              onChange={this.handleColorChange.bind(this)}
+              onMouseDown={this.stopEventPropagation}
+              onTouchTap={this.stopEventPropagation} />
+
         </div>
-      </Paper>
+        <div
+            onTouchTap={this.toggleSelected.bind(this)}
+            style={css.content}>
+          {props.children}
+        </div>
+        <a
+            style={css.resize}
+            onMouseOver={this.setHoverState.bind(this, true, 100)}
+            onMouseOut={this.setHoverState.bind(this, false, 1000)}
+            onMouseDown={this.resizeNode.bind(this)}
+            className="fa fa-arrows-alt"
+            title="Resize" />
+      </div>
     );
   }
 
-  onScroll() {
-    // console.log('scroll ports');
-    this.graphCanvas.setState({links: this.graphCanvas.fixLinkPositions()});
+  css = {
+    content: {
+      overflow: 'hidden',
+      boxSizing: 'border-box',
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+      borderStyle: 'dotted',
+      borderWidth: '0 2px 2px'
+    },
+    header: {
+      cursor: 'move',
+      overflow: 'hidden',
+      boxSizing: 'border-box',
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+      padding: 10,
+      height: 39
+    },
+    inputs: {
+      color: 'inherit',
+      background: 'transparent',
+      border: 'none',
+      padding: 5,
+      marginTop: -5,
+      marginRight: '1ex',
+      transition: 'all 0.4s ease-out',
+      ':focus': {
+        color: 'black',
+        background: 'white',
+        outline: 'inset 2px rgba(127, 127, 127, 0.5)'
+      }
+    },
+    remove: {
+      float: 'right',
+      color: 'inherit'
+    },
+    resize: {
+      float: 'right',
+      color: 'inherit',
+      padding: '20px 10px 10px 20px',
+      marginTop: -22,
+      marginRight: -24,
+      cursor: 'nwse-resize',
+      opacity: 0,
+      transition: 'opacity 0.4s ease-out'
+    },
+    root: {
+      boxSizing: 'border-box',
+      border: '3px solid rgba(255, 255, 255, 0.6)',
+      borderRadius: 14,
+      transition: 'border 0.4s ease-out'
+    }
+  };
+
+  get preparedCSS() {
+    let props = this.props,
+        bounds = this.state.bounds,
+        color,
+        text;
+
+    try {
+      color = new Color(this.state.color);
+      text = color.clone();
+    } catch (err) {
+      color = new Color(props.initialColor);
+      text = color.clone();
+    }
+
+    if (color.dark()) { text.lighten(0.75); }
+    else { text.darken(0.75); }
+
+    return {
+      content: [
+        this.css.content,
+        {
+          height: bounds.height - this.css.header.height - 6,
+          borderColor: color.rgbString(),
+          backgroundColor: color.clone().alpha(0.25).lighten(0.25).rgbaString()
+        },
+        props.css.content
+      ],
+      header: [
+        this.css.header,
+        {
+          borderBottom: '1px solid ' + text.rgbString(),
+          backgroundColor: color.rgbString(),
+          color: text.rgbString()
+        },
+        props.css.header
+      ],
+      inputs: [
+        this.css.inputs,
+        props.css.inputs
+      ],
+      remove: [
+        this.css.remove,
+        props.css.remove
+      ],
+      resize: [
+        this.css.resize,
+        this.state.hover ? {opacity: 1} : null,
+        props.css.resize
+      ],
+      root: [
+        this.css.root,
+        bounds.getCSSTransform(),
+        this.state.selected ? {border: '3px solid red'} : null,
+        props.css.root,
+        props.style
+      ]
+    };
   }
 
-  stopEvent(event) {
-    event.preventDefault();
-    event.stopPropagation();
+  prepareChildren() {
+    React.Children.forEach(this.props.children, child => {
+      if (child && child._context) {
+        child._context.parentGCNode = this;
+      }
+      return child;
+    });
   }
 
-  selectNode(event) {
-    this.stopEvent(event);
-    this.graphCanvas.refs.nodes.selectNode(this.props.model, event.shiftKey);
+  stopEventPropagation(e) { e.stopPropagation(); }
+
+  // renameNode() {}
+
+  // selectNode() { this.setState({selected: true}); }
+
+  // unselectNode() { this.setState({selected: false}); }
+
+  toggleSelected() { this.setState({selected: !this.state.selected}); }
+
+  handleNameChange(event) {
+    this.setState({name: event.target.value});
   }
 
-  moveNode() {
+  handleColorChange(event) {
+    this.setState({color: event.target.value});
+  }
+
+  setHoverState(bool, sleep, e) {
+    if (e) { e.stopPropagation(); }
+    clearTimeout(this.hoverTimer);
+    this.hoverTimer = setTimeout(() => this.setState({hover: bool}), sleep || 0);
+  }
+
+  removeNode(e) {
+    e.stopPropagation();
+    // e.preventDefault();
+    var confirmProps = {
+      callback: (ok) => {
+        if (ok) {
+          this.setState({removed: true});
+          this.nodesManager.removeNode(this);
+        }
+      },
+      children: 'Are you sure you want to delete this node?',
+      title: 'Confirm Delete:'
+    };
+    ConfirmDialog.create(confirmProps);
+  }
+
+  moveNode(e) {
     var pushFrame = (event, dragState) => {
       dragState.frames = dragState.frames || [];
       var index = dragState.frames.length,
           frame = {
-            position: this.props.model.bounds.position,
+            position: this.state.bounds.position,
             time: event.timeStamp || Date.now()
           },
           lastFrame = dragState.frames[index - 1] || frame,
@@ -136,8 +298,7 @@ export default class GCNodeElement extends Component {
       dragState.frames.push(frame);
       if (dragState.frames.length >= 12) { dragState.frames.shift(); }
     };
-    // debugger;
-    return this.graphCanvas.refs.viewport.setupClickDrag({
+    return this.graphCanvasViewport.setupClickDrag({
       down: (event, dragState) => {
         this.setState({moving: true});
         event.stopPropagation();
@@ -161,10 +322,12 @@ export default class GCNodeElement extends Component {
           y: event.relY
         };
         pushFrame(event, dragState);
-        this.graphCanvas.refs.nodes.moveNode(
-          this.props.model.id,
-          lastX - event.relX,
-          lastY - event.relY);
+        var displace = new Vector(lastX - event.relX, lastY - event.relY).squish(this.graphCanvas.scale).negate();
+        this.setState({bounds: this.state.bounds.clone().translate(displace)});
+        // this.graphCanvas.refs.nodes.moveNode(
+        //   this.props.model.id,
+        //   lastX - event.relX,
+        //   lastY - event.relY);
         this.moveRepeat = setInterval(() => {
           pushFrame(event, dragState);
         }, 32);
@@ -174,7 +337,7 @@ export default class GCNodeElement extends Component {
         this.setState({moving: false});
         event.stopPropagation();
         var duration = (event.timeStamp || Date.now()) - dragState.start;
-        if (duration < 100) { this.selectNode(event); }
+        if (duration < 100) { return; }
         pushFrame(event, dragState);
         var velocitySum = dragState.frames.reduce(function (lastValue, currFrame) {
           return (lastValue.velocity || lastValue).add(currFrame.velocity);
@@ -184,10 +347,13 @@ export default class GCNodeElement extends Component {
         var tick = () => {
           if (Math.abs(velocitySum.x) < 0.000001 &&
               Math.abs(velocitySum.y) < 0.000001) { return; }
-          this.graphCanvas.refs.nodes.moveNode(
-            this.props.model.id,
-            velocitySum.x,
-            velocitySum.y);
+          // this.graphCanvas.refs.nodes.moveNode(
+          //   this.props.model.id,
+          //   velocitySum.x,
+          //   velocitySum.y);
+          this.setState({
+            bounds: this.state.bounds.clone().translate(velocitySum.squish(this.graphCanvas.scale).negate())
+          });
           velocitySum = velocitySum.scale(0.95);
           if (!this.stopPhysicsMove) {
             this.physicsMoveTimer = setTimeout(tick, 16);
@@ -195,22 +361,42 @@ export default class GCNodeElement extends Component {
         };
         tick();
       }
-    });
+    })(e);
   }
 
-  removeNode(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    var confirmProps = {
-      callback: (ok) => {
-        if (ok) {
-          this.graphCanvas.refs.nodes.removeNode(this.props.model);
-        }
+  resizeNode(e) {
+    return this.graphCanvasViewport.setupClickDrag({
+      down: (event, dragState) => {
+        this.setState({resizing: true});
+        event.stopPropagation();
+        dragState.start = event.timeStamp || Date.now();
+        dragState.nextMove = -1;
+        dragState.lastMove = {
+          x: event.relX,
+          y: event.relY
+        };
+        clearTimeout(this.physicsMoveTimer);
+        this.stopPhysicsMove = true;
       },
-      children: 'Are you sure you want to delete this node?',
-      title: 'Confirm Delete:'
-    };
-    ConfirmDialog.create(confirmProps);
+      move: (event, dragState) => {
+        clearInterval(this.moveRepeat);
+        event.stopPropagation();
+        var lastX = dragState.lastMove.x,
+            lastY = dragState.lastMove.y;
+        dragState.lastMove = {
+          x: event.relX,
+          y: event.relY
+        };
+        var displace = new Vector(lastX - event.relX, lastY - event.relY).squish(this.graphCanvas.scale).negate(),
+            bounds = this.state.bounds.clone();
+        bounds.max = bounds.max.add(displace);
+        this.setState({ bounds });
+      },
+      up: (event) => {
+        this.setState({resizing: false});
+        event.stopPropagation();
+      }
+    })(e);
   }
 
 }

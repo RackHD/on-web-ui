@@ -6,6 +6,7 @@ import React, // eslint-disable-line no-unused-vars
 import radium from 'radium';
 import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
+
 import Color from 'color';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
@@ -45,9 +46,9 @@ export default class GCGroupElement extends Component {
 
   get graphCanvas() { return this.context.graphCanvas; }
 
-  get groupsManager() { return this.graphCanvas.refs.groups; }
-
   get graphCanvasViewport() { return this.graphCanvas.refs.viewport; }
+
+  get groupsManager() { return this.graphCanvas.refs.groups; }
 
   componentDidMount() { this.groupsManager.register(this); }
 
@@ -122,6 +123,7 @@ export default class GCGroupElement extends Component {
 
   css = {
     content: {
+      overflow: 'hidden',
       boxSizing: 'border-box',
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
@@ -130,6 +132,7 @@ export default class GCGroupElement extends Component {
     },
     header: {
       cursor: 'move',
+      overflow: 'hidden',
       boxSizing: 'border-box',
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
@@ -193,6 +196,7 @@ export default class GCGroupElement extends Component {
       content: [
         this.css.content,
         {
+          overflow: this.state.selected ? 'visible' : 'hidden',
           height: bounds.height - this.css.header.height - 6,
           borderColor: color.rgbString(),
           backgroundColor: color.clone().alpha(0.25).lighten(0.25).rgbaString()

@@ -93,15 +93,17 @@ export default class WELayout extends Component {
               initialColor="grey"
               initialName="abc">
             <GCNode
-                color="#444"
-                initialBounds={[300, 300, 400, 400]}
-                name="a">
+                initialBounds={[100, 100, 300, 300]}
+                initialColor="#444"
+                initialName="a">
               <GCPort
-                  name="options"
-                  color="red">
+                  initialBounds={[100, 100, 300, 300]}
+                  initialColor="red"
+                  initialName="options">
                 <GCSocket
-                    name="out"
-                    dir={[1, 0]} />
+                    dir={[1, 0]}
+                    initialColor="red"
+                    initialName="out" />
               </GCPort>
             </GCNode>
           </GCGroup>
@@ -111,7 +113,7 @@ export default class WELayout extends Component {
   }
 
   updateCanvasSize() {
-    var canvasWidth = window.innerWidth - 50,
+    var canvasWidth = window.innerWidth - 0,
         canvasHeight = window.innerHeight - 50;
     if (this.state.canvasWidth !== canvasWidth) { this.setState({ canvasWidth }); }
     if (this.state.canvasHeight !== canvasHeight) { this.setState({ canvasHeight }); }
