@@ -31,6 +31,10 @@ export default class GCGroupsManager extends Component {
   // groups = this.graphCanvas.props.initialGroups;
   // // activeGroup = null;
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   render() {
     return null;
   }

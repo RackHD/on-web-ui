@@ -31,6 +31,10 @@ export default class GCGridElement extends Component {
     return this.context.graphCanvas;
   }
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   render() {
     var props = this.props,
         bounds = props.bounds,

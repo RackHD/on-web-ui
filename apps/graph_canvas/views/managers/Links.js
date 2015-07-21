@@ -29,6 +29,10 @@ export default class GCLinksManager extends Component {
 
   // links = this.graphCanvas.props.initialLinks;
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   render() {
     return null;
   }
@@ -47,54 +51,37 @@ export default class GCLinksManager extends Component {
 
 
   getSocketCenter(socketElement) {
-    // debugger;
-    var //nodeElement,
-        element = socketElement,
+    var element = socketElement,
         bounds = [],
-        // HACK: get ports element of socket.
-        // ports = socketElement.parentNode.parentNode.parentNode
-        //           .parentNode.parentNode.parentNode.parentNode,
-        // stop = 'GCNodeElement',
         c = null,
         x = 0,
-        y = 0;// - ports.scrollTop;
+        y = 0;
+    // HACK: get ports element of socket.
+    // var ports = socketElement.parentNode.parentNode.parentNode
+    //               .parentNode.parentNode.parentNode.parentNode;
+    // y -= ports.scrollTop;
     do {
       if (element.dataset && element.dataset.id) {
         c = this.graphCanvas.lookup(element.dataset.id);
-        // console.log('c',c);
-        if (c && c.state.bounds) {
-          bounds.push(c.state.bounds);
-        }
+        if (c && c.id && c.id.indexOf('group') === 0) { break; }
+        if (c && c.state && c.state.bounds) { bounds.push(c.state.bounds); }
       }
-      // else {
-        x += element.offsetLeft;
-        y += element.offsetTop;
-      // }
-      // if (nodeElement) { break; }
-      // if (element.classList.contains(stop)) { nodeElement = element; }
+      x += element.offsetLeft;
+      y += element.offsetTop;
+      if (c && c.id && c.id.indexOf('node') === 0) { break; }
       element = element.offsetParent;
-      // debugger;
     } while(element);
     bounds.forEach(b => {
-      let p = b.normalPosition;
+      let p = b.position;
       x += p.x;
       y += p.y;
     });
     x += socketElement.clientWidth / 2;
     y += socketElement.clientHeight / 2;
-    x += 13;
-    y += 11;
-    // var node = this.graph.node(nodeElement.dataset.id),
-    //     pos = node.bounds.normalPosition;
-    // console.log(nodeElement.dataset);
-    // var node = this.lookup(nodeElement.dataset.id),
-        // pos = node.state.bounds.normalPosition;
-    // x += pos.x;
-    // y += pos.y;
-    // var b = socketElement.getBoundingClientRect();
-    // debugger;
+    // HACK: position seems to be off, not sure why yet.
+    x += 7.5;
+    y += 7.5;
     return new Vector(x, y);
-    // return new Vector(b.left, b.top);
   }
 
 }

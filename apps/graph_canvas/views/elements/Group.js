@@ -9,8 +9,10 @@ import decorate from 'common-web-ui/lib/decorate';
 import {} from 'material-ui';
 
 import generateId from '../../lib/generateId';
-
 import Rectangle from '../../lib/Rectangle';
+
+import GCElementsLayer from '../layers/Elements';
+import GCVectorsLayer from '../layers/Vectors';
 
 import Panel from './Panel';
 
@@ -57,43 +59,60 @@ export default class GCGroupElement extends Component {
 
   // componentDidMount() { this.groupsManager.register(this); }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    let state = this.state;
+    return (state.bounds !== nextState.bounds);
+  }
+
   state = {
-    name: this.props.initialName,
-    color: this.props.initialColor,
-    bounds: new Rectangle(this.props.initialBounds),
-    removed: false
+    bounds: new Rectangle(this.props.initialBounds)
   };
 
   render() {
-    if (this.state.removed) { return null; }
+    console.log('RENDER GROUP');
 
-    this.prepareChildren();
-
-    // let vectors = [];
-
-    // this.props.children = React.Children.map(this.props.children, child => {
-    //   if (!child) { return null; }
-    //   if (child.type.GCTypeEnum && child.type.GCTypeEnum.vector) {
-    //     if (vectors.indexOf(child) === -1) {
-    //       vectors.push(child);
-    //       return null;
-    //     }
-    //   }
-    //   return child;
-    // });
+    let vectors = [],
+        elements = this.prepareChildren(vectors),
+        vectorsBounds = this.state.bounds.clone(),
+        elementsWidth = vectorsBounds.width - 10;
+    // NOTE: 10,49 comes from Panel.js it is based on padding, borders, and the height of the header.
+    vectorsBounds.max = vectorsBounds.max.sub([10, 49]);
 
     return (
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
           onRemovePanel={this.onRemovePanel.bind(this)}
-          onUpdateBounds={null} />
+          onUpdateBoundsSize={this.onUpdateBounds.bind(this)}>
+        <GCVectorsLayer ref="vectors" bounds={vectorsBounds}>
+          {vectors}
+        </GCVectorsLayer>
+        <GCElementsLayer ref="elements" width={elementsWidth}>
+          {elements}
+        </GCElementsLayer>
+      </Panel>
     );
   }
 
-  prepareChildren() {
+  prepareChildren(vectors) {
     React.Children.forEach(this.props.children, child => {
       if (child && child._context) {
-        child._context.parentGCGroup = this;
+        child._context.parentGCPanel = this;
+      }
+      return child;
+    });
+    return this.hoistVectorChildren(this, vectors);
+  }
+
+  hoistVectorChildren(component, vectors) {
+    return React.Children.map(component.props.children, child => {
+      if (!child) { return null; }
+      let gcTypeEnum = child.type.GCTypeEnum;
+      if (gcTypeEnum && gcTypeEnum.vector) {
+        if (vectors.indexOf(child) === -1) { vectors.push(child); }
+        return null;
+      }
+      if (!gcTypeEnum || !gcTypeEnum.group) {
+        child.props.children = this.hoistVectorChildren(child, vectors);
       }
       return child;
     });
@@ -101,6 +120,10 @@ export default class GCGroupElement extends Component {
 
   onRemovePanel() {
     this.groupsManager.removePanel(this);
+  }
+
+  onUpdateBounds(bounds) {
+    this.setState({ bounds });
   }
 
 }

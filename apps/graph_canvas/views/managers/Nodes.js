@@ -30,10 +30,14 @@ export default class GCNodesManager extends Component {
 
   // nodes = this.graphCanvas.props.initialNodes;
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   render() {
     return null;
   }
-  
+
   // register(node) {
   //   var nodes = this.nodes;
   //

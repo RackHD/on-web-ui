@@ -47,6 +47,10 @@ export default class GCWorld extends Component {
     });
   }
 
+  shouldComponentUpdate() {
+    return true;
+  }
+
   render() {
     let vectors = this.state.vectors,
         elements = this.state.elements;

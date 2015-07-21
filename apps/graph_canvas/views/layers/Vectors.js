@@ -7,6 +7,7 @@ import radium from 'radium';
 import decorate from 'common-web-ui/lib/decorate';
 
 import Vector from '../../lib/Vector';
+import Rectangle from '../../lib/Rectangle';
 
 import GCGridElement from '../elements/Grid';
 
@@ -36,26 +37,45 @@ export default class GCVectorsLayer extends Component {
     return this.context.graphCanvas;
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      bounds: nextProps.bounds,
+      grid: nextProps.grid
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    let state = this.state;
+    return (
+      state.bounds !== nextState.bounds || !nextState.bounds,
+      state.grid !== nextState.grid
+    );
+  }
+
+  state = {
+    bounds: this.props.bounds,
+    grid: this.props.grid
+  }
+
   render() {
     try {
       let props = this.props,
-          bounds = props.bounds,
+          bounds = this.state.bounds,
           size = this.graphCanvas.worldSize,
           cssSize = this.graphCanvas.cssWorldSize,
           boundingBox = this.graphCanvas.worldBoundingBox,
-
           grid = null;
-      if (props.grid) {
-        grid = <GCGridElement {...props.grid} />;
+      if (this.state.grid) {
+        grid = <GCGridElement {...this.state.grid} />;
       }
       if (bounds) {
         size = new Vector(bounds.width, bounds.height);
         cssSize = {width: size.x, height: size.y};
-        boundingBox = bounds;
+        boundingBox = new Rectangle(0, 0, size.x, size.y);
       }
       return (
         <svg
-            className={this.props.className}
+            className={props.className}
             width={size.x}
             height={size.y}
             style={[cssSize, {
@@ -68,7 +88,7 @@ export default class GCVectorsLayer extends Component {
             preserveAspectRatio="none"
             xmlns="http://www.w3.org/2000/svg">
           {grid}
-          {this.props.children}
+          {props.children}
         </svg>
       );
     } catch (err) {

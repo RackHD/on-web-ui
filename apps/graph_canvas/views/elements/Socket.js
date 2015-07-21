@@ -69,12 +69,21 @@ export default class GCSocketElement extends Component {
     this.graphCanvas.unregister(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    let state = this.state;
+    return (
+      state.color !== nextState.color ||
+      state.name !== nextState.name
+    );
+  }
+
   state = {
     color: new Color(this.props.color),
     name: this.props.initialName
   };
 
   render() {
+    console.log('RENDER SOCKET');
     var css = this.preparedCSS;
 
     var typeCell = (

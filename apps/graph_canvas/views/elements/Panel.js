@@ -20,9 +20,6 @@ import generateId from '../../lib/generateId';
 import Rectangle from '../../lib/Rectangle';
 import Vector from '../../lib/Vector';
 
-import GCElementsLayer from '../layers/Elements';
-import GCVectorsLayer from '../layers/Vectors';
-
 @radium
 @mixin.decorate(DragEventHelpers)
 @decorate({
@@ -33,6 +30,8 @@ import GCVectorsLayer from '../layers/Vectors';
     initialColor: PropTypes.string,
     initialId: PropTypes.string,
     initialName: PropTypes.string,
+    onRemovePanel: PropTypes.func,
+    onUpdateBoundsSize: PropTypes.func,
     style: PropTypes.object
   },
   defaultProps: {
@@ -42,6 +41,8 @@ import GCVectorsLayer from '../layers/Vectors';
     initialColor: 'grey',
     initialId: null,
     initialName: '(Unamed)',
+    onRemovePanel: null,
+    onUpdateBoundsSize: null,
     style: {}
   },
   contextTypes: {
@@ -67,6 +68,20 @@ export default class GCPanelElement extends Component {
     this.graphCanvas.unregister(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    let state = this.state;
+    return (
+      state.name !== nextState.name ||
+      state.color !== nextState.color ||
+      state.bounds !== nextState.bounds ||
+      state.hover !== nextState.hover ||
+      state.moving !== nextState.moving ||
+      state.resizing !== nextState.resizing ||
+      state.removed !== nextState.removed ||
+      state.selected !== nextState.selected
+    );
+  }
+
   state = {
     name: this.props.initialName,
     color: this.props.initialColor,
@@ -79,13 +94,11 @@ export default class GCPanelElement extends Component {
   };
 
   render() {
+    console.log('RENDER PANEL');
     if (this.state.removed) { return null; }
 
     let props = this.props;
     let css = this.preparedCSS;
-
-    let vectors = [],
-        elements = this.prepareChildren(vectors);
 
     let id = this.id;
 
@@ -127,12 +140,7 @@ export default class GCPanelElement extends Component {
         <div
             onClick={this.toggleSelected.bind(this)}
             style={css.content}>
-          <GCVectorsLayer ref="vectors" bounds={this.state.bounds}>
-            {vectors}
-          </GCVectorsLayer>
-          <GCElementsLayer ref="elements" width={this.state.bounds.width}>
-            {elements}
-          </GCElementsLayer>
+          {props.children}
         </div>
         <a
             style={css.resize}
@@ -196,7 +204,9 @@ export default class GCPanelElement extends Component {
     root: {
       position: 'absolute', top: 0, left: 0,
       boxSizing: 'border-box',
-      border: '3px solid rgba(255, 255, 255, 0.6)',
+      borderColor: 'rgba(255, 255, 255, 0.6)',
+      borderStyle: 'solid',
+      borderWidth: '3px',
       borderRadius: 14,
       transition: 'border 0.4s ease-out'
     }
@@ -255,35 +265,11 @@ export default class GCPanelElement extends Component {
       root: [
         this.css.root,
         bounds.getCSSTransform(),
-        this.state.selected ? {border: '3px solid red'} : null,
+        this.state.selected ? {borderColor: 'red'} : null,
         props.css.root,
         props.style
       ]
     };
-  }
-
-  prepareChildren(vectors) {
-    React.Children.forEach(this.props.children, child => {
-      if (child && child._context) {
-        child._context.parentGCPanel = this;
-      }
-      return child;
-    });
-    return this.hoistVectorChildren(this, vectors);
-  }
-  hoistVectorChildren(component, vectors) {
-    return React.Children.map(component.props.children, child => {
-      if (!child) { return null; }
-      let gcTypeEnum = child.type.GCTypeEnum;
-      if (gcTypeEnum && gcTypeEnum.vector) {
-        if (vectors.indexOf(child) === -1) { vectors.push(child); }
-        return null;
-      }
-      if (!gcTypeEnum || !gcTypeEnum.group) {
-        child.props.children = this.hoistVectorChildren(child, vectors);
-      }
-      return child;
-    });
   }
 
   stopEventPropagation(e) { e.stopPropagation(); }
@@ -443,13 +429,22 @@ export default class GCPanelElement extends Component {
         var displace = new Vector(lastX - event.relX, lastY - event.relY).squish(this.graphCanvas.scale).negate(),
             bounds = this.state.bounds.clone();
         bounds.max = bounds.max.add(displace);
-        this.setState({ bounds });
+        this.updateBoundsSize(bounds);
       },
       up: (event) => {
         this.setState({resizing: false});
         event.stopPropagation();
       }
     })(e);
+  }
+
+  updateBoundsSize(bounds) {
+    this.setState({ bounds });
+    if (this.props.onUpdateBoundsSize) {
+      // HACK: without the timeout resizing a group is very slow.
+      clearTimeout(this.onUpdateBoundsSizeTimer);
+      this.onUpdateBoundsSizeTimer = setTimeout(() => this.props.onUpdateBoundsSize(bounds), 100);
+    }
   }
 
 }

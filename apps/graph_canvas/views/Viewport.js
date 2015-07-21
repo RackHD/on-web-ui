@@ -44,6 +44,10 @@ export default class GCViewport extends Component {
     return this.context.graphCanvas;
   }
 
+  shouldComponentUpdate() {
+    return true;
+  }
+
   state = {};
 
   css = {

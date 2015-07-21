@@ -63,23 +63,23 @@ export default class GCNodeElement extends Component {
     // this.nodesManager.register(this);
   // }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    let state = this.state;
+    return (state.bounds !== nextState.bounds);
+  }
+
   state = {
-    name: this.props.initialName,
-    color: this.props.initialColor,
-    bounds: new Rectangle(this.props.initialBounds),
-    removed: false
+    bounds: new Rectangle(this.props.initialBounds)
   };
 
   render() {
-    if (this.state.removed) { return null; }
-
+    console.log('RENDER NODE');
     this.prepareChildren();
 
     return (
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
-          onRemovePanel={this.onRemovePanel.bind(this)}
-          onUpdateBounds={null} />
+          onRemovePanel={this.onRemovePanel.bind(this)} />
     );
   }
 

@@ -44,28 +44,22 @@ export default class GCLinkElement extends Component {
     this.graphCanvas.unregister(this);
   }
 
+  componentDidMount() {
+    this.updateBounds();
+  }
+
   state = {
+    bounds: null,
     hover: false
   }
 
   render() {
     try {
-      // debugger;
-      var fromSocket = this.graphCanvas.lookup(this.props.from),
-          fromSocketElement = React.findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
-          fromVector = this.linksManager.getSocketCenter(fromSocketElement);
-
-      var toSocket = this.graphCanvas.lookup(this.props.to),
-          toSocketElement = React.findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon'),
-          toVector = this.linksManager.getSocketCenter(toSocketElement);
-
-      var bounds = new Rectangle(fromVector.x, fromVector.y, toVector.x, toVector.y);
-      // console.log('LINK', bounds);
-      return this.renderVector(bounds);
-    } catch (err) {
-      console.warn(err);
-      setTimeout(() => this.forceUpdate(), 500);
-    }
+      if (this.state.bounds) {
+        console.log('RENDER LINK');
+        return this.renderVector(this.state.bounds);
+      }
+    } catch (err) { console.error(err.stack || err); }
     return null;
   }
 
@@ -157,12 +151,39 @@ export default class GCLinkElement extends Component {
     }
   }
 
+  updateBounds(_retry, _err) {
+    if (_retry > 3) { throw _err; }
+    _retry = _retry || 0;
+    try {
+      var fromSocket = this.graphCanvas.lookup(this.props.from),
+          fromSocketElement = React.findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
+          fromVector = this.linksManager.getSocketCenter(fromSocketElement);
+
+      var toSocket = this.graphCanvas.lookup(this.props.to),
+          toSocketElement = React.findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon'),
+          toVector = this.linksManager.getSocketCenter(toSocketElement);
+
+      this.setState({
+        bounds: new Rectangle(fromVector.x, fromVector.y, toVector.x, toVector.y)
+      });
+    } catch (err) {
+      if (err.gcIsSafe) {
+        console.warn(err.message);
+        setTimeout(() => this.updateBounds(_retry + 1, err), 500);
+      }
+      else {
+        console.error(err);
+      }
+    }
+  }
+
   onHoverCurve() {
-    // this.setState({hover: true});
+    this.setState({hover: true});
+    this.updateBounds();
   }
 
   onLeaveCurve() {
-    // this.setState({hover: false});
+    this.setState({hover: false});
   }
 
   removeLink(event) {

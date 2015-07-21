@@ -62,6 +62,16 @@ export default class GCPortElement extends Component {
     this.graphCanvas.unregister(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    let state = this.state;
+    return (
+      state.bounds !== nextState.bounds ||
+      state.color !== nextState.color ||
+      state.name !== nextState.name ||
+      state.sockets !== nextState.sockets
+    );
+  }
+
   state = {
     bounds: new Rectangle(this.props.initialBounds),
     color: new Color(this.props.initialColor),
@@ -70,6 +80,7 @@ export default class GCPortElement extends Component {
   };
 
   render() {
+    console.log('RENDER PORT');
     let css = this.preparedCSS,
         className = 'ungrid ' + this.props.className,
         leftSockets = [],

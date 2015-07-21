@@ -22,7 +22,7 @@ import GraphCanvas, {
   propTypes: {},
   defaultProps: {}
 })
-export default class WELayout extends Component {
+export default class WEExampleGC extends Component {
 
   componentWillMount() {}
 
@@ -57,17 +57,21 @@ export default class WELayout extends Component {
             worldWidth={1500}
             worldHeight={1000}>
           <GCGroup
+              key="group-1"
               initialBounds={[250, 250, 1250, 750]}
               initialColor="darkblue"
               initialName="abc">
             <GCNode
+                key="node-a"
                 initialBounds={[50, 50, 250, 250]}
                 initialColor="#222"
                 initialName="a">
               <GCPort
+                  key="port-options-a"
                   initialColor="darkred"
                   initialName="options">
                 <GCSocket
+                    key="socket-options-a-out"
                     dir={[1, 0]}
                     initialColor="pink"
                     initialId="out1"
@@ -75,18 +79,22 @@ export default class WELayout extends Component {
               </GCPort>
             </GCNode>
             <GCNode
+                key="node-b"
                 initialBounds={[300, 50, 500, 250]}
                 initialColor="#666"
                 initialName="b">
               <GCPort
+                  key="port-options-b"
                   initialColor="darkgreen"
                   initialName="options">
                 <GCSocket
+                    key="socket-options-b-in"
                     dir={[-1, 0]}
                     initialColor="lightgreen"
                     initialId="in1"
                     initialName="in" />
                 <GCSocket
+                    key="socket-options-b-out"
                     dir={[1, 0]}
                     initialColor="lightgreen"
                     initialId="out2"
@@ -94,13 +102,16 @@ export default class WELayout extends Component {
               </GCPort>
             </GCNode>
             <GCNode
+                key="node-c"
                 initialBounds={[550, 50, 750, 250]}
                 initialColor="#aaa"
                 initialName="c">
               <GCPort
+                  key="port-options-c"
                   initialColor="blue"
                   initialName="options">
                 <GCSocket
+                    key="socket-options-c-in"
                     dir={[-1, 0]}
                     initialColor="lightblue"
                     initialId="in2"
@@ -108,9 +119,11 @@ export default class WELayout extends Component {
               </GCPort>
             </GCNode>
             <GCLink
+                key="link-a"
                 from="out1"
                 to="in1" />
             <GCLink
+                key="link-b"
                 from="out2"
                 to="in2" />
           </GCGroup>

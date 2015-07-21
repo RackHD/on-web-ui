@@ -23,6 +23,10 @@ export default class GCMarksManager extends Component {
 
   marks = this.graphCanvas.props.initialMarks;
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   render() {
     return null;
   }

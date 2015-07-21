@@ -34,6 +34,11 @@ export default class GCElementsLayer extends Component {
     this.setState({width: nextProps.width});
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    let state = this.state;
+    return (state.width !== nextState.width || !nextState.width);
+  }
+
   state = {
     width: this.props.width
   }
@@ -41,7 +46,7 @@ export default class GCElementsLayer extends Component {
   render() {
     try {
       let props = this.props,
-          width = this.state.width || this.graphCanvas.worldSize;
+          width = this.state.width || this.graphCanvas.worldSize.x;
       return (
         <div
             className={props.className}

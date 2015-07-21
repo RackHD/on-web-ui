@@ -91,6 +91,19 @@ export default class GraphCanvas extends Component {
   history = []; // TODO: keep track of each action as a separate mutation for undo/redo
   selected = [];
 
+  shouldComponentUpdate(nextProps, nextState) {
+    let props = this.props,
+        state = this.state;
+    return (
+      props.viewHeight !== nextProps.viewHeight ||
+      props.viewWidth !== nextProps.viewWidth ||
+      props.worldHeight !== nextProps.worldHeight ||
+      props.worldWidth !== nextProps.worldWidth ||
+      state.position !== nextState.position ||
+      state.scale !== nextState.scale
+    );
+  }
+
   state = {
     position: new Vector(
       this.props.initialX,
@@ -146,8 +159,8 @@ export default class GraphCanvas extends Component {
 
           <GCViewport ref="viewport">
             <GCWorld ref="world"
-                initialElements={this.elements}
-                initialVectors={this.vectors}>
+                elements={this.elements}
+                vectors={this.vectors}>
               {props.children}
             </GCWorld>
           </GCViewport>
@@ -250,7 +263,9 @@ export default class GraphCanvas extends Component {
     // debugger;
     let obj = this.index[id];
     if (!obj) {
-      throw new Error('GraphCanvas: Unable to find element with id: ' + id);
+      let err = new Error('GraphCanvas: Unable to find element with id: ' + id);
+      err.gcIsSafe = true;
+      throw err;
     }
     if (obj.matches) {
       if (obj.matches.length === 1) { return obj.matches[0]; }
