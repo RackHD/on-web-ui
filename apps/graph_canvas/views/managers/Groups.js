@@ -28,24 +28,24 @@ export default class GCGroupsManager extends Component {
     return this.context.graphCanvas;
   }
 
-  groups = this.graphCanvas.props.initialGroups;
-  // activeGroup = null;
+  // groups = this.graphCanvas.props.initialGroups;
+  // // activeGroup = null;
 
   render() {
     return null;
   }
 
-  register(group) {
-    var groups = this.groups;
-
-    if (this.groups.indexOf(group) === -1) {
-      groups = this.groups = groups.concat([group]);
-    }
-
-    this.graphCanvas.setState({ groups });
-  }
-
-  removeGroup() {}
+  // register(group) {
+  //   var groups = this.groups;
+  //
+  //   if (this.groups.indexOf(group) === -1) {
+  //     groups = this.groups = groups.concat([group]);
+  //   }
+  //
+  //   this.graphCanvas.setState({ groups });
+  // }
+  //
+  // removeGroup() {}
 
   // drawGroup() {
   //   return this.setupClickDrag({

@@ -27,14 +27,15 @@ import generateId from '../../lib/generateId';
     css: PropTypes.object,
     id: PropTypes.string,
     initialColor: PropTypes.string,
+    initialId: PropTypes.string,
     initialName: PropTypes.string,
     style: PropTypes.any
   },
   defaultProps: {
-    className: 'GCNodeSocketElement',
+    className: 'GCSocketElement',
     css: {},
-    id: null,
     initialColor: 'black',
+    initialId: null,
     initialName: 'port',
     style: null
   },
@@ -42,9 +43,9 @@ import generateId from '../../lib/generateId';
     graphCanvas: PropTypes.any
   }
 })
-export default class GCNodeSocketElement extends Component {
+export default class GCSocketElement extends Component {
 
-  static isSocket = true;
+  static GCTypeEnum = {element: true, socket: true};
 
   get graphCanvas() {
     return this.context.graphCanvas;
@@ -58,9 +59,14 @@ export default class GCNodeSocketElement extends Component {
     return this.graphCanvas.refs.links;
   }
 
-  constructor(props) {
-    super(props);
-    this.props.id = this.props.id || generateId('socket');
+  id = this.props.initialId || generateId('socket');
+
+  componentWillMount() {
+    this.graphCanvas.register(this);
+  }
+
+  componentWillUnmount() {
+    this.graphCanvas.unregister(this);
   }
 
   state = {
@@ -105,7 +111,7 @@ export default class GCNodeSocketElement extends Component {
 
     return (
       <div className="GraphCanvasSocket ungrid"
-           data-id={this.props.id}>
+           data-id={this.id}>
         <div className="line">
           {cells}
         </div>

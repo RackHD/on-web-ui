@@ -11,12 +11,14 @@ import decorate from 'common-web-ui/lib/decorate';
   propTypes: {
     className: PropTypes.string,
     css: PropTypes.object,
-    style: PropTypes.object
+    style: PropTypes.object,
+    width: PropTypes.any
   },
   defaultProps: {
     className: 'GraphCanvasElementsLayer',
     css: {},
-    style: {}
+    style: {},
+    width: 'auto'
   },
   contextTypes: {
     graphCanvas: PropTypes.any
@@ -28,21 +30,30 @@ export default class GCElementsLayer extends Component {
     return this.context.graphCanvas;
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({width: nextProps.width});
+  }
+
+  state = {
+    width: this.props.width
+  }
+
   render() {
     try {
-      var worldSize = this.graphCanvas.worldSize;
+      let props = this.props,
+          width = this.state.width || this.graphCanvas.worldSize;
       return (
         <div
-            className={this.props.className}
+            className={props.className}
             style={{
-              width: worldSize.x,
+              width: width,
               height: 0,
               overflow: 'visible',
               position: 'absolute',
               left: 0,
               top: 0
             }}>
-          {this.props.children}
+          {props.children}
         </div>
       );
     } catch (err) {

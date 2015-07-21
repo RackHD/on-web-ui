@@ -70,6 +70,7 @@ export default class WELayout extends Component {
                 <GCSocket
                     dir={[1, 0]}
                     initialColor="pink"
+                    initialId="out1"
                     initialName="out" />
               </GCPort>
             </GCNode>
@@ -83,10 +84,12 @@ export default class WELayout extends Component {
                 <GCSocket
                     dir={[-1, 0]}
                     initialColor="lightgreen"
+                    initialId="in1"
                     initialName="in" />
                 <GCSocket
                     dir={[1, 0]}
                     initialColor="lightgreen"
+                    initialId="out2"
                     initialName="out" />
               </GCPort>
             </GCNode>
@@ -100,16 +103,17 @@ export default class WELayout extends Component {
                 <GCSocket
                     dir={[-1, 0]}
                     initialColor="lightblue"
-                    initialName="in" />
+                    initialId="in2"
+                    initialName="In" />
               </GCPort>
             </GCNode>
             <GCLink
-                from="a.options.out"
-                to="b.options.in" />
+                from="out1"
+                to="in1" />
+            <GCLink
+                from="out2"
+                to="in2" />
           </GCGroup>
-          <GCLink
-              from="b.options.out"
-              to="c.options.in" />
         </GraphCanvas>
       </div>
     );

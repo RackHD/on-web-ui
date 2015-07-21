@@ -11,9 +11,11 @@ import decorate from 'common-web-ui/lib/decorate';
 
 import CoordinateHelpers from '../mixins/CoordinateHelpers';
 
-import Graph from '../lib/Graph';
+import generateId from '../lib/generateId';
+
+// import Graph from '../lib/Graph';
 import Vector from '../lib/Vector';
-import Rectangle from '../lib/Rectangle';
+// import Rectangle from '../lib/Rectangle';
 
 import GCViewport from './Viewport';
 import GCWorld from './World';
@@ -27,14 +29,14 @@ import './GraphCanvas.less';
 import GCGroupElement from './elements/Group';
 import GCLinkElement from './elements/Link';
 import GCNodeElement from './elements/Node';
-import GCNodePortElement from './elements/NodePort';
-import GCNodeSocketElement from './elements/NodeSocket';
+import GCPortElement from './elements/Port';
+import GCSocketElement from './elements/Socket';
 
 export { GCGroupElement as GCGroup };
 export { GCLinkElement as GCLink };
 export { GCNodeElement as GCNode };
-export { GCNodePortElement as GCPort };
-export { GCNodeSocketElement as GCSocket };
+export { GCPortElement as GCPort };
+export { GCSocketElement as GCSocket };
 
 /**
 # GraphCanvas
@@ -53,11 +55,6 @@ export { GCNodeSocketElement as GCSocket };
     className: PropTypes.string,
     css: PropTypes.object,
     enableMarks: PropTypes.bool,
-    initialGraph: PropTypes.any,
-    initialGroups: PropTypes.any,
-    initialLinks: PropTypes.any,
-    initialMarks: PropTypes.any,
-    initialNodes: PropTypes.any,
     initialScale: PropTypes.number,
     initialX: PropTypes.number,
     initialY: PropTypes.number,
@@ -71,11 +68,6 @@ export { GCNodeSocketElement as GCSocket };
     className: 'GraphCanvas',
     css: {},
     enableMarks: false,
-    initialGraph: new Graph(),
-    initialGroups: [],
-    initialLinks: [],
-    initialMarks: [],
-    initialNodes: [],
     initialScale: 1,
     initialX: 0,
     initialY: 0,
@@ -95,15 +87,11 @@ export default class GraphCanvas extends Component {
     return this;
   }
 
-  graph = this.props.initialGraph;
+  index = {};
   history = []; // TODO: keep track of each action as a separate mutation for undo/redo
   selected = [];
 
   state = {
-    groups: this.props.initialGroups,
-    links: this.props.initialLinks,
-    marks: this.props.initialMarks,
-    nodes: this.props.initialNodes,
     position: new Vector(
       this.props.initialX,
       this.props.initialY
@@ -158,8 +146,8 @@ export default class GraphCanvas extends Component {
 
           <GCViewport ref="viewport">
             <GCWorld ref="world"
-                elements={this.elements}
-                vectors={this.vectors}>
+                initialElements={this.elements}
+                initialVectors={this.vectors}>
               {props.children}
             </GCWorld>
           </GCViewport>
@@ -188,9 +176,6 @@ export default class GraphCanvas extends Component {
     var elements = [],
         world = this.refs.world;
     if (world) {
-      elements = elements.concat(this.state.nodes.map(node => {
-        return <GCNodeElement ref={node.id} key={node.id} model={node} />;
-      }));
       if (this.refs.marks) {
         elements = elements.concat(this.refs.marks.markElements);
       }
@@ -202,12 +187,6 @@ export default class GraphCanvas extends Component {
     var vectors = [],
         world = this.refs.world;
     if (world) {
-      vectors = vectors.concat(this.state.links.map(link => {
-        return <GCLinkElement ref={link.id} key={link.id} model={link} />;
-      }));
-      if (this.refs.links.activeLink) {
-        vectors.push(<GCLinkElement active={true} ref={this.refs.links.activeLink.id} key={this.refs.links.activeLink.id} model={this.refs.links.activeLink} />);
-      }
       if (this.refs.marks) {
         vectors = vectors.concat(this.refs.marks.markVectors);
       }
@@ -216,71 +195,44 @@ export default class GraphCanvas extends Component {
   }
 
   updatePosition(position) {
-    // this.state.position = position;
     this.setState({ position });
   }
 
   updateScale(scale) {
-    // this.state.scale = scale;
     this.setState({ scale });
   }
 
-  updateGraph(graph) {
-    this.graph = graph || this.graph;
-    this.setState({nodes: this.graph.nodes});
-    console.log(this.graph.nodes);
-    setTimeout(() => {
-      console.log(this.graph.links);
-      this.setState({links: this.fixLinkPositions(this.graph.links)});
-    }, 0);
-  }
-
-  fixLinkPositions(links) {
-    links = links || this.graph.links;
-    var getSocketPosition = (link, k) => {
-      var socket = link['socket' + k],
-          port = socket.port,
-          node = port.node;
-      var nodeRef = this.refs[node.id],
-          portRef = nodeRef.refs[port.name],
-          socketRef = portRef.refs[socket.type];
-      return this.getSocketCenter(
-        React.findDOMNode(socketRef).querySelector('.GraphCanvasSocketIcon')
-      );
-    };
-    console.log('fix links', links.length);
-    links.forEach(link => {
-      var a = getSocketPosition(link, 'Out'),
-          b = getSocketPosition(link, 'In');
-      link.data.bounds = new Rectangle(a.x, a.y, b.x, b.y);
-    });
-    return links;
-  }
-
-  getSocketCenter(socketElement) {
-    var nodeElement,
-        element = socketElement,
-        // HACK: get ports element of socket.
-        ports = socketElement.parentNode.parentNode.parentNode
-                  .parentNode.parentNode.parentNode.parentNode,
-        stop = 'GraphCanvasNode',
-        x = 0,
-        y = 0 - ports.scrollTop;
-    do {
-      x += element.offsetLeft;
-      y += element.offsetTop;
-      if (nodeElement) { break; }
-      if (element.classList.contains(stop)) { nodeElement = element; }
-      element = element.offsetParent;
-    } while(element);
-    x += socketElement.clientWidth / 2;
-    y += socketElement.clientHeight / 2;
-    var node = this.graph.node(nodeElement.dataset.id),
-        pos = node.bounds.normalPosition;
-    x += pos.x;
-    y += pos.y;
-    return new Vector(x, y);
-  }
+  // updateGraph(graph) {
+  //   this.graph = graph || this.graph;
+  //   this.setState({nodes: this.graph.nodes});
+  //   console.log(this.graph.nodes);
+  //   setTimeout(() => {
+  //     console.log(this.graph.links);
+  //     this.setState({links: this.fixLinkPositions(this.graph.links)});
+  //   }, 0);
+  // }
+  //
+  // fixLinkPositions(links) {
+  //   links = links || this.graph.links;
+  //   var getSocketPosition = (link, k) => {
+  //     var socket = link['socket' + k],
+  //         port = socket.port,
+  //         node = port.node;
+  //     var nodeRef = this.refs[node.id],
+  //         portRef = nodeRef.refs[port.name],
+  //         socketRef = portRef.refs[socket.type];
+  //     return this.getSocketCenter(
+  //       React.findDOMNode(socketRef).querySelector('.GraphCanvasSocketIcon')
+  //     );
+  //   };
+  //   console.log('fix links', links.length);
+  //   links.forEach(link => {
+  //     var a = getSocketPosition(link, 'Out'),
+  //         b = getSocketPosition(link, 'In');
+  //     link.data.bounds = new Rectangle(a.x, a.y, b.x, b.y);
+  //   });
+  //   return links;
+  // }
 
   selectNode(node, shiftKey) {
     this.refs.world.selectNode(node, shiftKey);
@@ -292,6 +244,42 @@ export default class GraphCanvas extends Component {
 
   selectionHandler(selection) {
     this.events.emit('selection', selection);
+  }
+
+  lookup(id) {
+    // debugger;
+    let obj = this.index[id];
+    if (!obj) {
+      throw new Error('GraphCanvas: Unable to find element with id: ' + id);
+    }
+    if (obj.matches) {
+      if (obj.matches.length === 1) { return obj.matches[0]; }
+      return obj.matches;
+    }
+  }
+
+  register(child) {
+    // debugger;
+    let id = child.id = child.id || generateId();
+    let obj = this.index[id] = (this.index[id] || {matches: []});
+    if (obj.matches.indexOf(child) === -1) {
+      obj.matches.push(child);
+    }
+  }
+
+  unregister(child) {
+    // debugger;
+    let id = child.id;
+    if (!id) {
+      throw new Error('GraphCanvas: Cannot unregister invalid child without id.');
+    }
+    let obj = this.index[id];
+    if (obj && obj.matches) {
+      let index = obj.matches.indexOf(child);
+      if (index !== -1) {
+        obj.matches.splice(index, 1);
+      }
+    }
   }
 
 }

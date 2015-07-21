@@ -28,22 +28,23 @@ export default class GCNodesManager extends Component {
     return this.context.graphCanvas;
   }
 
-  nodes = this.graphCanvas.props.initialNodes;
+  // nodes = this.graphCanvas.props.initialNodes;
 
   render() {
     return null;
   }
-
-  register(node) {
-    var nodes = this.nodes;
-
-    if (this.nodes.indexOf(node) === -1) {
-      nodes = this.nodes = nodes.concat([node]);
-    }
-
-    this.graphCanvas.setState({ nodes });
-  }
-
-  removeNode() {}
+  
+  // register(node) {
+  //   var nodes = this.nodes;
+  //
+  //   // debugger;
+  //   if (this.nodes.indexOf(node) === -1) {
+  //     nodes = this.nodes = nodes.concat([node]);
+  //   }
+  //
+  //   this.graphCanvas.setState({ nodes });
+  // }
+  //
+  // removeNode() {}
 
 }

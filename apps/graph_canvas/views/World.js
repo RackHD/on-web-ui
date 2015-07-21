@@ -48,26 +48,10 @@ export default class GCWorld extends Component {
   }
 
   render() {
-    // onDoubleClick={this.props.enableMarks && this.touchWorld.bind(this) || null}
-    // onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); /*this.drawNode()(e)*/}}
-    let props = this.props;
-
     let vectors = this.state.vectors,
         elements = this.state.elements;
 
-    React.Children.forEach(props.children, child => {
-      if (!child) { return; }
-      if (child.type.isVector) {
-        if (vectors.indexOf(child) === -1) {
-          vectors.push(child);
-        }
-      }
-      else {
-        if (elements.indexOf(child) === -1) {
-          elements.push(child);
-        }
-      }
-    });
+    elements = elements.concat(this.hoistVectorChildren(this, vectors));
 
     try {
       var cssWorldSpaceTransform = this.cssWorldSpaceTransform,
@@ -78,11 +62,11 @@ export default class GCWorld extends Component {
             onDoubleClick={this.touchWorld.bind(this)}
             style={[cssWorldSize, cssWorldSpaceTransform]}>
 
-          <GCVectorsLayer ref="vectors">
+          <GCVectorsLayer ref="vectors" grid={{}}>
             {vectors}
           </GCVectorsLayer>
 
-          <GCElementsLayer ref="elements">
+          <GCElementsLayer ref="elements" width={null}>
             {elements}
           </GCElementsLayer>
         </div>
@@ -99,6 +83,21 @@ export default class GCWorld extends Component {
       // transformStyle: 'flat',
       // transformBox: 'border-box'
     };
+  }
+
+  hoistVectorChildren(component, vectors) {
+    return React.Children.map(component.props.children, child => {
+      if (!child) { return null; }
+      let gcTypeEnum = child.type.GCTypeEnum;
+      if (gcTypeEnum && gcTypeEnum.vector) {
+        if (vectors.indexOf(child) === -1) { vectors.push(child); }
+        return null;
+      }
+      if (!gcTypeEnum || !gcTypeEnum.group) {
+        child.props.children = this.hoistVectorChildren(child, vectors);
+      }
+      return child;
+    });
   }
 
   touchWorld(event) {

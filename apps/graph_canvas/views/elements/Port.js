@@ -13,16 +13,11 @@ import DragEventHelpers from '../../mixins/DragEventHelpers';
 
 import {} from 'material-ui';
 
-// import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
-
 import Rectangle from '../../lib/Rectangle';
-// import Vector from '../../lib/Vector';
 
 import generateId from '../../lib/generateId';
 
-// import {
-//   } from 'material-ui';
-import GCNodeSocketElement from './NodeSocket';
+import GCSocketElement from './Socket';
 
 @radium
 @mixin.decorate(DragEventHelpers)
@@ -30,18 +25,18 @@ import GCNodeSocketElement from './NodeSocket';
   propTypes: {
     className: PropTypes.string,
     css: PropTypes.object,
-    id: PropTypes.string,
     initialColor: PropTypes.string,
     initialName: PropTypes.string,
+    initialId: PropTypes.string,
     initialSockets: PropTypes.array,
     style: PropTypes.any
   },
   defaultProps: {
-    className: 'GCNodePortElement',
+    className: 'GCPortElement',
     css: {},
-    id: null,
     initialColor: 'black',
     initialName: 'port',
+    initialId: null,
     initialSockets: [],
     style: null
   },
@@ -49,15 +44,22 @@ import GCNodeSocketElement from './NodeSocket';
     graphCanvas: PropTypes.any
   }
 })
-export default class GCNodePortElement extends Component {
+export default class GCPortElement extends Component {
+
+  static GCTypeEnum = {element: true, port: true};
 
   get graphCanvas() {
     return this.context.graphCanvas;
   }
 
-  constructor(props) {
-    super(props);
-    this.props.id = this.props.id || generateId('port');
+  id = this.props.initialId || generateId('port');
+
+  componentWillMount() {
+    this.graphCanvas.register(this);
+  }
+
+  componentWillUnmount() {
+    this.graphCanvas.unregister(this);
   }
 
   state = {
@@ -72,10 +74,10 @@ export default class GCNodePortElement extends Component {
         className = 'ungrid ' + this.props.className,
         leftSockets = [],
         rightSockets = [];
-    console.log(this.props.children, this.state.sockets);
+    // console.log(this.props.children, this.state.sockets);
     var newSockets = [];
     var children = React.Children.map(this.props.children, child => {
-      if (child.type.isSocket) {
+      if (child.type.GCTypeEnum && child.type.GCTypeEnum.socket) {
         newSockets.push(child);
         return null;
       }
@@ -96,7 +98,7 @@ export default class GCNodePortElement extends Component {
     });
     return (
       <div className={className}
-           data-id={this.props.id}
+           data-id={this.id}
            style={css.root}>
         <div className="line">
           <div className="cell">{leftSockets}</div>
@@ -138,7 +140,7 @@ export default class GCNodePortElement extends Component {
 
   mapRawSockets(rawSockets) {
     return rawSockets.map(rawSocket => {
-      return <GCNodeSocketElement {...rawSocket} />;
+      return <GCSocketElement {...rawSocket} />;
     });
   }
 
