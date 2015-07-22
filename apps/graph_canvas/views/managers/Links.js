@@ -37,18 +37,13 @@ export default class GCLinksManager extends Component {
     return null;
   }
 
-  // register(link) {
-  //   var links = this.links;
-  //
-  //   if (this.links.indexOf(link) === -1) {
-  //     links = this.links = links.concat([link]);
-  //   }
-  //
-  //   this.graphCanvas.setState({ links });
-  // }
-  //
-  // removeLink() {}
+  register(link) {
+    this.graphCanvas.associateLink(link);
+  }
 
+  unregister(link) {
+    this.graphCanvas.forgetLinkAssociation(link);
+  }
 
   getSocketCenter(socketElement) {
     var element = socketElement,
@@ -56,10 +51,6 @@ export default class GCLinksManager extends Component {
         c = null,
         x = 0,
         y = 0;
-    // HACK: get ports element of socket.
-    // var ports = socketElement.parentNode.parentNode.parentNode
-    //               .parentNode.parentNode.parentNode.parentNode;
-    // y -= ports.scrollTop;
     do {
       if (element.dataset && element.dataset.id) {
         c = this.graphCanvas.lookup(element.dataset.id);
@@ -68,7 +59,16 @@ export default class GCLinksManager extends Component {
       }
       x += element.offsetLeft;
       y += element.offsetTop;
-      if (c && c.id && c.id.indexOf('node') === 0) { break; }
+      if (c && c.id && c.id.indexOf('node') === 0) {
+        try {
+          // HACK: get ports element of socket.
+          c = React.findDOMNode(c).childNodes[1].firstChild;
+          // y -= Math.max(c.scrollTop,  (c.scrollHeight - c.offsetHeight - 15));
+          y -= c.scrollTop;
+        }
+        catch (err) { console.error(err.stack || err); }
+        break;
+      }
       element = element.offsetParent;
     } while(element);
     bounds.forEach(b => {

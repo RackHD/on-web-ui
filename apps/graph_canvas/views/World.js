@@ -90,14 +90,17 @@ export default class GCWorld extends Component {
   }
 
   hoistVectorChildren(component, vectors) {
+    if (!component || !component.props) {
+      return component;
+    }
     return React.Children.map(component.props.children, child => {
       if (!child) { return null; }
-      let gcTypeEnum = child.type.GCTypeEnum;
+      let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
       if (gcTypeEnum && gcTypeEnum.vector) {
         if (vectors.indexOf(child) === -1) { vectors.push(child); }
         return null;
       }
-      if (!gcTypeEnum || !gcTypeEnum.group) {
+      if (child && child.props && (!gcTypeEnum || !gcTypeEnum.group)) {
         child.props.children = this.hoistVectorChildren(child, vectors);
       }
       return child;

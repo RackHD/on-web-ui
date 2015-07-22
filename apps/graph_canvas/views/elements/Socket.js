@@ -40,7 +40,8 @@ import generateId from '../../lib/generateId';
     style: null
   },
   contextTypes: {
-    graphCanvas: PropTypes.any
+    graphCanvas: PropTypes.any,
+    parentGCPort: PropTypes.any
   }
 })
 export default class GCSocketElement extends Component {

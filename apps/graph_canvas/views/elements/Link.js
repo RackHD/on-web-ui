@@ -45,6 +45,7 @@ export default class GCLinkElement extends Component {
   }
 
   componentDidMount() {
+    this.linksManager.register(this);
     this.updateBounds();
   }
 
@@ -102,7 +103,7 @@ export default class GCLinkElement extends Component {
       // NOTE: example is rendering links in the element space and not the vector space so positioning is off.
 
       // TODO
-      var transform = 'translate(' + style.left + 'px, ' + style.top + 'px)';
+      // var transform = 'translate(' + style.left + 'px, ' + style.top + 'px)';
       // var socket = this.props.model.socketOut || this.props.model.socketIn;
       // var color = socket && socket.port && socket.port.color || 'black';
       var color = 'black';
@@ -193,7 +194,7 @@ export default class GCLinkElement extends Component {
     var confirmProps = {
       callback: (ok) => {
         if (ok) {
-          this.graphCanvas.refs.links.removeLink(this.props.model);
+          this.linksManager.unregister(this.props.model);
         }
       },
       children: 'Are you sure you want to delete this link?',

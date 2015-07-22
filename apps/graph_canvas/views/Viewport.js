@@ -160,8 +160,8 @@ export default class GCViewport extends Component {
         velocitySum = velocitySum.squish(dragState.frames.length / 2);
         this.stopPhysicsScroll = false;
         var tick = () => {
-          if (Math.abs(velocitySum.x) < 0.000001 &&
-              Math.abs(velocitySum.y) < 0.000001) { return; }
+          if (Math.abs(velocitySum.x) < 0.0001 &&
+              Math.abs(velocitySum.y) < 0.0001) { return; }
           let position = this.graphCanvas.position;
           this.graphCanvas.updatePosition({
             x: position.x + velocitySum.x,

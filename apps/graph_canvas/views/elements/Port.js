@@ -37,11 +37,11 @@ import GCSocketElement from './Socket';
     initialColor: 'black',
     initialName: 'port',
     initialId: null,
-    initialSockets: [],
     style: null
   },
   contextTypes: {
-    graphCanvas: PropTypes.any
+    graphCanvas: PropTypes.any,
+    parentGCNode: PropTypes.any
   }
 })
 export default class GCPortElement extends Component {
@@ -67,16 +67,14 @@ export default class GCPortElement extends Component {
     return (
       state.bounds !== nextState.bounds ||
       state.color !== nextState.color ||
-      state.name !== nextState.name ||
-      state.sockets !== nextState.sockets
+      state.name !== nextState.name
     );
   }
 
   state = {
     bounds: new Rectangle(this.props.initialBounds),
     color: new Color(this.props.initialColor),
-    name: this.props.initialName,
-    sockets: this.mapRawSockets(this.props.initialSockets)
+    name: this.props.initialName
   };
 
   render() {
@@ -86,17 +84,21 @@ export default class GCPortElement extends Component {
         leftSockets = [],
         rightSockets = [];
     // console.log(this.props.children, this.state.sockets);
-    var newSockets = [];
+    var sockets = [];
     var children = React.Children.map(this.props.children, child => {
-      if (child.type.GCTypeEnum && child.type.GCTypeEnum.socket) {
-        newSockets.push(child);
+      if (child && child._context) {
+        child._context.parentGCPort = this;
+      }
+      let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
+      if (gcTypeEnum.socket) {
+        sockets.push(child);
         return null;
       }
       else {
         return child;
       }
     });
-    this.state.sockets.concat(newSockets).forEach(socket => {
+    sockets.forEach(socket => {
       if (socket.props.dir[0] === -1) {
         leftSockets.push(socket);
       }
@@ -147,12 +149,6 @@ export default class GCPortElement extends Component {
       ],
       root: [this.css.root, props.css.root, props.style]
     };
-  }
-
-  mapRawSockets(rawSockets) {
-    return rawSockets.map(rawSocket => {
-      return <GCSocketElement {...rawSocket} />;
-    });
   }
 
 }

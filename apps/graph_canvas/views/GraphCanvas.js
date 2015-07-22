@@ -87,8 +87,12 @@ export default class GraphCanvas extends Component {
     return this;
   }
 
-  index = {};
-  history = []; // TODO: keep track of each action as a separate mutation for undo/redo
+  index = {_links_: {}};
+
+  // TODO: keep track of each action as a separate mutation for undo/redo
+  history = [];
+
+  // TODO: keep track of all selected items
   selected = [];
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -269,6 +273,7 @@ export default class GraphCanvas extends Component {
     }
     if (obj.matches) {
       if (obj.matches.length === 1) { return obj.matches[0]; }
+      console.warn('GraphCanvas lookup returned multitple elements for an id.');
       return obj.matches;
     }
   }
@@ -295,6 +300,62 @@ export default class GraphCanvas extends Component {
         obj.matches.splice(index, 1);
       }
     }
+  }
+
+  lookupLinks(id) {
+    // debugger;
+    let scope = this.index._links_ = this.index._links_ || {},
+        subindex = scope[id],
+        links = {};
+    Object.keys(subindex || {}).forEach(otherEnd => {
+      otherEnd = subindex[otherEnd];
+      Object.keys(otherEnd || {}).forEach(linkId => {
+        links[linkId] = otherEnd[linkId];
+      });
+    });
+    return Object.keys(links).map(linkId => links[linkId]);
+  }
+
+  associate(scope, a, b, id, value) {
+    a = a.id || a;
+    b = b.id || b;
+    scope[a] = scope[a] || {};
+    scope[a][b] = scope[a][b] || {};
+    if (value) { scope[a][b][id] = value; }
+    else { delete scope[a][b][id]; }
+  }
+
+  associateLink(link, value=link) {
+    // debugger;
+    let scope = this.index._links_ = this.index._links_ || {};
+
+    let to = link.props.to;
+    let toSocket = this.lookup(to);
+    let toPort = toSocket.context.parentGCPort;
+    let toNode = toPort.context.parentGCNode;
+    let toGroup = toNode.context.parentGCGroup;
+
+    let from = link.props.from;
+    let fromSocket = this.lookup(from);
+    let fromPort = fromSocket.context.parentGCPort;
+    let fromNode = fromPort.context.parentGCNode;
+    let fromGroup = fromNode.context.parentGCGroup;
+
+    this.associate(scope, fromSocket, toSocket, link.id, value);
+    this.associate(scope, toSocket, fromSocket, link.id, value);
+
+    this.associate(scope, fromPort, toPort, link.id, value);
+    this.associate(scope, toPort, fromPort, link.id, value);
+
+    this.associate(scope, fromNode, toNode, link.id, value);
+    this.associate(scope, toNode, fromNode, link.id, value);
+
+    this.associate(scope, fromGroup, toGroup, link.id, value);
+    this.associate(scope, toGroup, fromGroup, link.id, value);
+  }
+
+  forgetLinkAssociation(link) {
+    this.associateLink(link, null);
   }
 
 }

@@ -31,7 +31,7 @@ import Vector from '../../lib/Vector';
     initialId: PropTypes.string,
     initialName: PropTypes.string,
     onRemovePanel: PropTypes.func,
-    onUpdateBoundsSize: PropTypes.func,
+    onUpdateBounds: PropTypes.func,
     style: PropTypes.object
   },
   defaultProps: {
@@ -42,12 +42,14 @@ import Vector from '../../lib/Vector';
     initialId: null,
     initialName: '(Unamed)',
     onRemovePanel: null,
-    onUpdateBoundsSize: null,
+    onUpdateBounds: null,
     style: {}
   },
   contextTypes: {
     graphCanvas: PropTypes.any,
-    graphCanvasOwner: PropTypes.any
+    // graphCanvasOwner: PropTypes.any,
+    parentGCNode: PropTypes.any,
+    parentGCGroup: PropTypes.any
   }
 })
 export default class GCPanelElement extends Component {
@@ -361,7 +363,8 @@ export default class GCPanelElement extends Component {
         };
         pushFrame(event, dragState);
         var displace = new Vector(lastX - event.relX, lastY - event.relY).squish(this.graphCanvas.scale).negate();
-        this.setState({bounds: this.state.bounds.clone().translate(displace)});
+        this.updateBounds(this.state.bounds.clone().translate(displace));
+        // this.setState({bounds: this.state.bounds.clone().translate(displace)});
         // this.graphCanvas.refs.nodes.moveNode(
         //   this.props.model.id,
         //   lastX - event.relX,
@@ -384,15 +387,16 @@ export default class GCPanelElement extends Component {
         velocitySum = velocitySum.squish(dragState.frames.length / 2);
         this.stopPhysicsMove = false;
         var tick = () => {
-          if (Math.abs(velocitySum.x) < 0.000001 &&
-              Math.abs(velocitySum.y) < 0.000001) { return; }
+          if (Math.abs(velocitySum.x) < 0.001 &&
+              Math.abs(velocitySum.y) < 0.001) { return; }
           // this.graphCanvas.refs.nodes.moveNode(
           //   this.props.model.id,
           //   velocitySum.x,
           //   velocitySum.y);
-          this.setState({
-            bounds: this.state.bounds.clone().translate(velocitySum.squish(this.graphCanvas.scale).negate())
-          });
+          // this.setState({
+          //   bounds: this.state.bounds.clone().translate(velocitySum.squish(this.graphCanvas.scale).negate())
+          // });
+          this.updateBounds(this.state.bounds.clone().translate(velocitySum.squish(this.graphCanvas.scale).negate()));
           velocitySum = velocitySum.scale(0.95);
           if (!this.stopPhysicsMove) {
             this.physicsMoveTimer = setTimeout(tick, 16);
@@ -429,7 +433,7 @@ export default class GCPanelElement extends Component {
         var displace = new Vector(lastX - event.relX, lastY - event.relY).squish(this.graphCanvas.scale).negate(),
             bounds = this.state.bounds.clone();
         bounds.max = bounds.max.add(displace);
-        this.updateBoundsSize(bounds);
+        this.updateBounds(bounds);
       },
       up: (event) => {
         this.setState({resizing: false});
@@ -438,12 +442,13 @@ export default class GCPanelElement extends Component {
     })(e);
   }
 
-  updateBoundsSize(bounds) {
+  updateBounds(bounds) {
     this.setState({ bounds });
-    if (this.props.onUpdateBoundsSize) {
+    if (this.props.onUpdateBounds) {
       // HACK: without the timeout resizing a group is very slow.
-      clearTimeout(this.onUpdateBoundsSizeTimer);
-      this.onUpdateBoundsSizeTimer = setTimeout(() => this.props.onUpdateBoundsSize(bounds), 100);
+      // clearTimeout(this.onUpdateBoundsTimer);
+      // this.onUpdateBoundsTimer = setTimeout(() =>
+      this.props.onUpdateBounds(bounds);//, 16);
     }
   }
 

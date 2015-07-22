@@ -37,8 +37,8 @@ import Panel from './Panel';
     style: {}
   },
   contextTypes: {
-    graphCanvas: PropTypes.any,
-    graphCanvasOwner: PropTypes.any
+    graphCanvas: PropTypes.any
+    // graphCanvasOwner: PropTypes.any
   }
 })
 export default class GCGroupElement extends Component {
@@ -82,7 +82,7 @@ export default class GCGroupElement extends Component {
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
           onRemovePanel={this.onRemovePanel.bind(this)}
-          onUpdateBoundsSize={this.onUpdateBounds.bind(this)}>
+          onUpdateBounds={this.onUpdateBounds.bind(this)}>
         <GCVectorsLayer ref="vectors" bounds={vectorsBounds}>
           {vectors}
         </GCVectorsLayer>
@@ -96,7 +96,7 @@ export default class GCGroupElement extends Component {
   prepareChildren(vectors) {
     React.Children.forEach(this.props.children, child => {
       if (child && child._context) {
-        child._context.parentGCPanel = this;
+        child._context.parentGCGroup = this;
       }
       return child;
     });
@@ -104,14 +104,17 @@ export default class GCGroupElement extends Component {
   }
 
   hoistVectorChildren(component, vectors) {
+    if (!component || !component.props) {
+      return component;
+    }
     return React.Children.map(component.props.children, child => {
       if (!child) { return null; }
-      let gcTypeEnum = child.type.GCTypeEnum;
+      let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
       if (gcTypeEnum && gcTypeEnum.vector) {
         if (vectors.indexOf(child) === -1) { vectors.push(child); }
         return null;
       }
-      if (!gcTypeEnum || !gcTypeEnum.group) {
+      if (child && child.props && (!gcTypeEnum || !gcTypeEnum.group)) {
         child.props.children = this.hoistVectorChildren(child, vectors);
       }
       return child;

@@ -36,7 +36,8 @@ import Panel from './Panel';
   },
   contextTypes: {
     graphCanvas: PropTypes.any,
-    graphCanvasOwner: PropTypes.any
+    // graphCanvasOwner: PropTypes.any,
+    parentGCGroup: PropTypes.any
   }
 })
 export default class GCNodeElement extends Component {
@@ -76,10 +77,25 @@ export default class GCNodeElement extends Component {
     console.log('RENDER NODE');
     this.prepareChildren();
 
+    let portsBounds = this.state.bounds.clone();
+    // NOTE: 10,49 comes from Panel.js it is based on padding, borders, and the height of the header.
+    portsBounds.max = portsBounds.max.sub([10, 49]);
+
     return (
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
-          onRemovePanel={this.onRemovePanel.bind(this)} />
+          onRemovePanel={this.onRemovePanel.bind(this)}
+          onUpdateBounds={this.onUpdateBounds.bind(this)}>
+        <div ref="ports"
+            onScroll={this.updateLinks.bind(this)}
+            style={{
+              width: portsBounds.width,
+              height: portsBounds.height,
+              overflow: 'auto'
+            }}>
+          {this.props.children}
+        </div>
+      </Panel>
     );
   }
 
@@ -94,6 +110,16 @@ export default class GCNodeElement extends Component {
 
   onRemovePanel() {
     this.nodesManager.removePanel(this);
+  }
+
+  onUpdateBounds(bounds) {
+    this.setState({ bounds });
+    this.updateLinks();
+  }
+
+  updateLinks() {
+    let links = this.graphCanvas.lookupLinks(this.id);
+    links.forEach(link => link.updateBounds());
   }
 
 }
