@@ -77,6 +77,16 @@ export default class WEExampleGC extends Component {
                     initialId="out1"
                     initialName="out" />
               </GCPort>
+              <GCPort
+                  key="port-control-a"
+                  initialColor="yellow"
+                  initialName="control">
+                <GCSocket
+                    key="socket-control-a-out"
+                    dir={[1, 0]}
+                    initialColor="brown"
+                    initialName="out" />
+              </GCPort>
             </GCNode>
             <GCNode
                 key="node-b"
@@ -100,14 +110,37 @@ export default class WEExampleGC extends Component {
                     initialId="out2"
                     initialName="out" />
               </GCPort>
+              <GCPort
+                  key="port-control-a"
+                  initialColor="yellow"
+                  initialName="control">
+                <GCSocket
+                    key="socket-control-b-in"
+                    dir={[-1, 0]}
+                    initialColor="brown"
+                    initialName="in" />
+                <GCSocket
+                    key="socket-control-b-out"
+                    dir={[1, 0]}
+                    initialColor="brown"
+                    initialName="out" />
+              </GCPort>
             </GCNode>
             <GCNode
                 key="node-c"
                 initialBounds={[550, 50, 750, 250]}
                 initialColor="#aaa"
                 initialName="c">
-              0
-              <br/>
+              <GCPort
+                  key="port-control-c"
+                  initialColor="yellow"
+                  initialName="control">
+                <GCSocket
+                    key="socket-control-c-in"
+                    dir={[-1, 0]}
+                    initialColor="brown"
+                    initialName="in" />
+              </GCPort>
               1
               <br/>
               2
@@ -162,11 +195,13 @@ export default class WEExampleGC extends Component {
             <GCLink
                 key="link-a"
                 from="out1"
-                to="in1" />
+                to="in1"
+                initialColor="cyan" />
             <GCLink
                 key="link-b"
                 from="out2"
-                to="in2" />
+                to="in2"
+                initialColor="blue" />
           </GCGroup>
         </GraphCanvas>
       </div>

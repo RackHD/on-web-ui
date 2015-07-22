@@ -352,6 +352,11 @@ export default class GraphCanvas extends Component {
 
     this.associate(scope, fromGroup, toGroup, link.id, value);
     this.associate(scope, toGroup, fromGroup, link.id, value);
+
+    setTimeout(() => {
+      fromSocket.forceUpdate();
+      toSocket.forceUpdate();
+    }, 0);
   }
 
   forgetLinkAssociation(link) {

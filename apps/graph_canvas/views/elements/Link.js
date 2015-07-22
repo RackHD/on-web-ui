@@ -13,9 +13,15 @@ import Rectangle from '../../lib/Rectangle';
 
 @decorate({
   propTypes: {
+    from: PropTypes.string,
+    to: PropTypes.string,
+    initialColor: PropTypes.string,
     initialId: PropTypes.string
   },
   defaultProps: {
+    from: null,
+    to: null,
+    initialColor: 'black',
     initialId: null
   },
   contextTypes: {
@@ -106,7 +112,7 @@ export default class GCLinkElement extends Component {
       // var transform = 'translate(' + style.left + 'px, ' + style.top + 'px)';
       // var socket = this.props.model.socketOut || this.props.model.socketIn;
       // var color = socket && socket.port && socket.port.color || 'black';
-      var color = 'black';
+      var color = this.props.initialColor;
 
       // style={{overflow: 'visible'}}
       // <g transform={transform}>

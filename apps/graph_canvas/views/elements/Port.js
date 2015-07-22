@@ -17,8 +17,6 @@ import Rectangle from '../../lib/Rectangle';
 
 import generateId from '../../lib/generateId';
 
-import GCSocketElement from './Socket';
-
 @radium
 @mixin.decorate(DragEventHelpers)
 @decorate({
@@ -41,7 +39,8 @@ import GCSocketElement from './Socket';
   },
   contextTypes: {
     graphCanvas: PropTypes.any,
-    parentGCNode: PropTypes.any
+    parentGCNode: PropTypes.any,
+    parentGCGroup: PropTypes.any
   }
 })
 export default class GCPortElement extends Component {
@@ -50,6 +49,10 @@ export default class GCPortElement extends Component {
 
   get graphCanvas() {
     return this.context.graphCanvas;
+  }
+
+  get parentNode() {
+    return this.context.parentGCNode || this.context.parentGCGroup;
   }
 
   id = this.props.initialId || generateId('port');
@@ -127,14 +130,16 @@ export default class GCPortElement extends Component {
 
   css = {
     name: {
-      fontSize: '0.7em',
-      lineHeight: '16px'
+      fontSize: '12px',
+      lineHeight: '18px'
     },
     root: {
+      boxSizing: 'border-box',
       clear: 'both',
-      minHeight: 16,
+      minHeight: 22,
+      padding: '2px 0',
       textAlign: 'center',
-      borderBottom: '1px dotted #ccc'
+      borderBottom: '2px dotted #ccc'
     }
   }
 

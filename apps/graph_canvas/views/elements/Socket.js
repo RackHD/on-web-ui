@@ -60,6 +60,10 @@ export default class GCSocketElement extends Component {
     return this.graphCanvas.refs.links;
   }
 
+  get parentPort() {
+    return this.context.parentGCPort;
+  }
+
   id = this.props.initialId || generateId('socket');
 
   componentWillMount() {
@@ -79,7 +83,7 @@ export default class GCSocketElement extends Component {
   }
 
   state = {
-    color: new Color(this.props.color),
+    color: new Color(this.props.initialColor),
     name: this.props.initialName
   };
 
@@ -93,8 +97,7 @@ export default class GCSocketElement extends Component {
 
     var socketClassName = 'GraphCanvasSocketIcon socket fa ';
 
-    // var links = model.links;
-    var links = [];
+    var links = this.graphCanvas.lookupLinks(this.id);
     socketClassName += (links.length) ?
       'fa-dot-circle-o' : 'fa-circle-o';
 
@@ -130,16 +133,14 @@ export default class GCSocketElement extends Component {
   }
 
   css = {
-    socket: {
-      padding: 4,
-      width: 8,
-      height: 8
-    },
+    socket: {},
     type: {
-      fontSize: '4px',
-      lineHeight: '8px'
+      fontSize: '8px',
+      lineHeight: '10px'
     },
-    root: null
+    root: {
+      boxSizing: 'border-box'
+    }
   };
 
   get preparedCSS() {
@@ -151,7 +152,11 @@ export default class GCSocketElement extends Component {
         {color: color.hexString()},
         props.css.socket
       ],
-      type: [this.css.type, props.css.type],
+      type: [
+        this.css.type,
+        {color: color.hexString()},
+        props.css.type
+      ],
       root: [this.css.root, props.css.root, props.style]
     };
   }
@@ -161,6 +166,8 @@ export default class GCSocketElement extends Component {
       down: (event, dragState, e) => this.linksManager.drawLinkStart(event, dragState, e),
       move: (event, dragState, e) => this.linksManager.drawLinkContinue(event, dragState, e),
       up: (event, dragState, e) => this.linksManager.drawLinkFinish(event, dragState, e)
+    }, {
+      fromSocket: this
     })(_event);
   }
 

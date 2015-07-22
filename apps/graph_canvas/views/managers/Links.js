@@ -12,6 +12,7 @@ import Vector from '../../lib/Vector';
 
 // import Link from '../../lib/Graph/Link';
 // import GraphCanvasLink from '../elements/Link';
+import GCPartialLinkElement from '../elements/PartialLink';
 
 @decorate({
   propTypes: {},
@@ -79,9 +80,57 @@ export default class GCLinksManager extends Component {
     x += socketElement.clientWidth / 2;
     y += socketElement.clientHeight / 2;
     // HACK: position seems to be off, not sure why yet.
-    x += 7.5;
-    y += 7.5;
+    x += 5;
+    y += 3;
     return new Vector(x, y);
+  }
+
+  drawLinkStart(event, dragState, e) {
+    event.stopPropagation();
+    dragState.fromNode = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasNode');
+    var dom = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
+        start;
+    if (dom) {
+      start = this.graphCanvas.getSocketCenter(dom);
+    }
+    else {
+      dom = React.findDOMNode(this.graphCanvas.refs.world);
+      start = this.graphCanvas.getEventCoords(event, dom);
+    }
+    dragState.link = new Link({
+      data: {
+        bounds: new Rectangle(start),
+        fromNode: dragState.fromNode,
+        fromSocket: this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocket')
+      },
+      layer: 1,
+      scale: 1
+    });
+  }
+
+  drawLinkContinue(event, dragState, e) {
+    event.stopPropagation();
+    var dom = this.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
+        end;
+    if (dom) {
+      end = this.graphCanvas.getSocketCenter(dom);
+    } else {
+      dom = React.findDOMNode(this.graphCanvas.refs.world);
+      end = this.graphCanvas.getEventCoords(event, dom);
+    }
+    dragState.link.data.bounds.max = end;
+    this.activeLink = dragState.link;
+  }
+
+  drawLinkFinish(event, dragState, e) {
+    event.stopPropagation();
+    var isTargetNode = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasNode');
+    dragState.link.data.toNode = isTargetNode;
+    dragState.link.data.toSocket = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocket');
+    if (dragState.link && isTargetNode && isTargetNode !== dragState.fromNode) {
+      this.addLink(dragState.link);
+    }
+    this.activeLink = null;
   }
 
 }
