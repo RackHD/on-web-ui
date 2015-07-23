@@ -163,7 +163,6 @@ export default class GraphCanvas extends Component {
 
           <GCViewport ref="viewport">
             <GCWorld ref="world">
-              {/*<elements={this.elements} vectors={this.vectors}>*/}
               {props.children}
             </GCWorld>
           </GCViewport>
@@ -188,27 +187,27 @@ export default class GraphCanvas extends Component {
     };
   }
 
-  // get elements() {
-  //   var elements = [],
-  //       world = this.refs.world;
-  //   if (world) {
-  //     if (this.refs.marks) {
-  //       elements = elements.concat(this.refs.marks.markElements);
-  //     }
-  //   }
-  //   return elements;
-  // }
+  get elements() {
+    var elements = [],
+        world = this.refs.world;
+    if (world) {
+      if (this.refs.marks) {
+        elements = elements.concat(this.refs.marks.markElements);
+      }
+    }
+    return elements;
+  }
 
-  // get vectors() {
-  //   var vectors = [],
-  //       world = this.refs.world;
-  //   if (world) {
-  //     if (this.refs.marks) {
-  //       vectors = vectors.concat(this.refs.marks.markVectors);
-  //     }
-  //   }
-  //   return vectors;
-  // }
+  get vectors() {
+    var vectors = [],
+        world = this.refs.world;
+    if (world) {
+      if (this.refs.marks) {
+        vectors = vectors.concat(this.refs.marks.markVectors);
+      }
+    }
+    return vectors;
+  }
 
   updatePosition(position) {
     this.setState({ position });

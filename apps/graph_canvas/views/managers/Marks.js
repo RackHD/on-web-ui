@@ -21,7 +21,7 @@ export default class GCMarksManager extends Component {
     return this.context.graphCanvas;
   }
 
-  marks = this.graphCanvas.props.initialMarks;
+  marks = [];
 
   shouldComponentUpdate() {
     return false;
@@ -29,6 +29,10 @@ export default class GCMarksManager extends Component {
 
   render() {
     return null;
+  }
+
+  updateWorld() {
+    this.graphCanvas.refs.world.forceUpdate();
   }
 
   markWorld(event) {
@@ -39,7 +43,7 @@ export default class GCMarksManager extends Component {
         marks = this.marks.concat([mark]);
 
     this.marks = marks;
-    this.graphCanvas.setState({ marks });
+    this.updateWorld();
   }
 
   get markVectors() {
@@ -81,7 +85,7 @@ export default class GCMarksManager extends Component {
     var marks = this.marks.filter(m => m !== mark);
 
     this.marks = marks;
-    this.graphCanvas.setState({ marks });
+    this.updateWorld();
   }
 
 }

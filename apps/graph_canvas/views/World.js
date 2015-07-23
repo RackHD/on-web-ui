@@ -52,8 +52,11 @@ export default class GCWorld extends Component {
   }
 
   render() {
-    let vectors = this.state.vectors.slice(0),
-        elements = this.state.elements.slice(0),
+    let graphVectors = this.graphCanvas.vectors,
+        graphElements = this.graphCanvas.elements;
+
+    let vectors = graphVectors.concat(this.state.vectors),
+        elements = graphElements.concat(this.state.elements),
         children = this.prepareChildren(this, vectors, elements);
 
     try {

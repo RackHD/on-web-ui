@@ -5,7 +5,6 @@ import { EventEmitter } from 'events';
 import cloneDeep from 'lodash/lang/cloneDeep';
 
 import Rectangle from 'graph-canvas-web-ui/lib/Rectangle';
-import Graph from 'graph-canvas-web-ui/lib/Graph';
 
 import TaskDefinitionStore from '../stores/TaskDefinitionStore';
 import WorkflowTemplateStore from '../stores/WorkflowTemplateStore';
@@ -20,7 +19,6 @@ export default class Editor extends EventEmitter {
 
   constructor(layout) {
     super();
-    this.graph = new Graph();
     this.layout = layout;
 
     this.workflowGraph = new WorkflowGraph(this);
@@ -39,11 +37,11 @@ export default class Editor extends EventEmitter {
   }
 
   onGraphUpdate(handler) {
-    this.on('graph', handler);
+    this.on('graphUpdate', handler);
   }
 
   emitGraphUpdate() {
-    this.emit('graph', this.graph);
+    this.emit('graphUpdate');
   }
 
   loadWorkflow(workflowTemplate, newGraph) {

@@ -51,6 +51,7 @@ export default class WEExampleGC extends Component {
       <div ref="root">
         <GraphCanvas
             ref="graphCanvas"
+            enableMarks={true}
             initialScale={1}
             viewWidth={this.state.canvasWidth}
             viewHeight={this.state.canvasHeight}
