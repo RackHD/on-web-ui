@@ -40,16 +40,6 @@ export default class GCWorld extends Component {
     elements: this.props.elements
   }
 
-  // componentDidMount() {
-  //   setTimeout(() => {
-  //     console.log('got here');
-  //     this.setState({
-  //       vectors: this.state.vectors.concat(['123']),
-  //       elements: this.state.elements.concat(['ABC'])
-  //     });
-  //   }, 1000);
-  // }
-
   // componentWillReceiveProps(nextProps) {
   //   this.setState({
   //     vectors: nextProps.vectors,
@@ -65,8 +55,6 @@ export default class GCWorld extends Component {
     let vectors = this.state.vectors.slice(0),
         elements = this.state.elements.slice(0),
         children = this.prepareChildren(this, vectors, elements);
-
-    // console.log('and here', elements);
 
     try {
       var cssWorldSpaceTransform = this.cssWorldSpaceTransform,
@@ -144,8 +132,23 @@ export default class GCWorld extends Component {
     }
   }
 
-  removeChild() {
-    // TODO:
+  removeChild(component) {
+    let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
+    if (!gcTypeEnum) {
+      throw new Error('GraphCanvas: Cannot remove a child that is not a valid element type.');
+    }
+    if (gcTypeEnum.vector) {
+      this.setState(prevState => {
+        let vectors = prevState.vectors.filter(c => c !== component);
+        return { vectors };
+      });
+    }
+    else {
+      this.setState(prevState => {
+        let elements = prevState.elements.filter(c => c !== component);
+        return { elements };
+      });
+    }
   }
 
   touchWorld(event) {

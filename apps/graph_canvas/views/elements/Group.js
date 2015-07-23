@@ -58,25 +58,14 @@ export default class GCGroupElement extends Component {
   id = this.props.initialId || generateId('group');
 
   // componentDidMount() { this.groupsManager.register(this); }
-  // componentDidMount() {
-  //   setTimeout(() => {
-  //     console.log('got here');
-  //     this.setState({
-  //       vectors: this.state.vectors.concat(['123']),
-  //       elements: this.state.elements.concat(['ABC'])
-  //     });
-  //   }, 1000);
-  // }
 
   shouldComponentUpdate(nextProps, nextState) {
     let state = this.state;
-    let result = (
+    return (
       state.bounds !== nextState.bounds ||
       state.vectors !== nextState.vectors ||
       state.elements !== nextState.elements
     );
-    // console.log('UPDATE GROUP?', result);
-    return result;
   }
 
   state = {
@@ -95,10 +84,6 @@ export default class GCGroupElement extends Component {
         elementsWidth = vectorsBounds.width - 10;
     // NOTE: 10,49 comes from Panel.js it is based on padding, borders, and the height of the header.
     vectorsBounds.max = vectorsBounds.max.sub([10, 49]);
-
-    // console.log('VECTORS LENGTH', vectors.length);
-    // console.log('ELEMENTS LENGTH', elements.length);
-    // debugger;
 
     return (
       <Panel ref="panel" {...this.props}
@@ -146,16 +131,11 @@ export default class GCGroupElement extends Component {
   }
 
   appendChild(component) {
-    // debugger;
-    // TODO:
-    // component._context.parentGCGroup = this;
-    // console.log('APPEND CHILD');
     let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
     if (!gcTypeEnum) {
       throw new Error('GraphCanvas: Cannot append a child that is not a valid element type.');
     }
     if (gcTypeEnum.vector) {
-      // console.log('VECTOR');
       this.setState(prevState => {
         let vectors = prevState.vectors.concat([component]);
         return { vectors };
@@ -169,8 +149,23 @@ export default class GCGroupElement extends Component {
     }
   }
 
-  removeChild() {
-    // TODO
+  removeChild(component) {
+    let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
+    if (!gcTypeEnum) {
+      throw new Error('GraphCanvas: Cannot remove a child that is not a valid element type.');
+    }
+    if (gcTypeEnum.vector) {
+      this.setState(prevState => {
+        let vectors = prevState.vectors.filter(c => c !== component);
+        return { vectors };
+      });
+    }
+    else {
+      this.setState(prevState => {
+        let elements = prevState.elements.filter(c => c !== component);
+        return { elements };
+      });
+    }
   }
 
   onRemovePanel() {

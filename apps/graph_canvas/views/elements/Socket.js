@@ -99,7 +99,7 @@ export default class GCSocketElement extends Component {
     var socketClassName = 'GraphCanvasSocketIcon socket fa ';
 
     var links = this.graphCanvas.lookupLinks(this.id);
-    socketClassName += (links.length) ?
+    socketClassName += (links.length && (links[0] || links[1])) ?
       'fa-dot-circle-o' : 'fa-circle-o';
 
     var socketCell = (

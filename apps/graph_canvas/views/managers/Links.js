@@ -73,6 +73,7 @@ export default class GCLinksManager extends Component {
           c = React.findDOMNode(c).childNodes[1].firstChild;
           // y -= Math.max(c.scrollTop,  (c.scrollHeight - c.offsetHeight - 15));
           y -= c.scrollTop;
+          x -= c.scrollLeft;
         }
         catch (err) { console.error(err.stack || err); }
         break;
@@ -105,34 +106,15 @@ export default class GCLinksManager extends Component {
 
   drawLinkStart(event, dragState, e) {
     event.stopPropagation();
-    // dragState.fromNode = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasNode');
-    // var dom = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
-    //     start;
-    // if (dom) {
-    //   start = this.graphCanvas.getSocketCenter(dom);
-    // }
-    // else {
-    //   dom = React.findDOMNode(this.graphCanvas.refs.world);
-    //   start = this.graphCanvas.getEventCoords(event, dom);
-    // }
-    // dragState.link = new Link({
-    //   data: {
-    //     bounds: new Rectangle(start),
-    //     fromNode: dragState.fromNode,
-    //     fromSocket: this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocket')
-    //   },
-    //   layer: 1,
-    //   scale: 1
-    // });
+    let fromPort = dragState.fromSocket.parentPort,
+        fromGroup = fromPort.parentGroup || fromPort.parentNode.parentGroup;
     React.withContext({
-      graphCanvas: this.graphCanvas
+      graphCanvas: this.graphCanvas,
+      parentGCGroup: fromGroup
     }, () => {
-      let fromPort = dragState.fromSocket.parentPort,
-          fromGroup = fromPort.parentGroup || fromPort.parentNode.parentGroup;
       dragState.parentComponent = fromGroup || this.graphCanvasWorld;
       dragState.fromId = dragState.fromSocket.id;
       let end = this.detectSocketFromEvent(event, dragState, e.target);
-      console.log('GOT HERE', end);
       dragState.link = <GCLinkElement
           key={generateId('key')}
           from={dragState.fromSocket.id}
@@ -141,40 +123,15 @@ export default class GCLinksManager extends Component {
           initialColor={dragState.fromSocket.state.color.rgbaString()}
           initialId={generateId('link')} />;
       dragState.parentComponent.appendChild(dragState.link);
+      dragState.originalLink = dragState.link;
     });
   }
 
   drawLinkContinue(event, dragState, e) {
     event.stopPropagation();
-    // var dom = this.delegatesTo(e.target, 'GraphCanvasSocketIcon'),
-    //     end;
-    // if (dom) {
-    //   end = this.graphCanvas.getSocketCenter(dom);
-    // } else {
-    //   dom = React.findDOMNode(this.graphCanvas.refs.world);
-    //   end = this.graphCanvas.getEventCoords(event, dom);
-    // }
-    // dragState.link.data.bounds.max = end;
-    // this.activeLink = dragState.link;
-
-    // console.log("MOVE");
-    // console.log(dragState.ref, dragState.parentComponent.refs, dragState.originalLink);
-    // try {
-    //   console.log(this.refs, dragState.parentComponent.vectors.refs, dragState.parentComponent.elements.refs);
-    // } catch (err) {}
-    // // dragState.link = dragState.parentComponent.refs[dragState.ref];
-
-    // console.log(dragState.link);
-    // debugger;
-    // return;
     dragState.link = this.graphCanvas.lookup(dragState.link.id || dragState.link.props.initialId);
-    // console.log('MOVE', dragState.link);
     if (dragState.link) {
-      // console.log('UPDATE LINK END');
-      // console.log(dragState.link, dragState.link.setProps);
-      // console.log('UPDATE NEW LINK BOUNDS');
       let end = this.detectSocketFromEvent(event, dragState, e.target);
-      // console.log('AND HERE', end);
       dragState.link.setState({
         isPartial: typeof end !== 'string',
         to: end
@@ -185,14 +142,7 @@ export default class GCLinksManager extends Component {
 
   drawLinkFinish(event, dragState) {
     event.stopPropagation();
-    // var isTargetNode = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasNode');
-    // dragState.link.data.toNode = isTargetNode;
-    // dragState.link.data.toSocket = this.graphCanvas.refs.viewport.delegatesTo(e.target, 'GraphCanvasSocket');
-    // if (dragState.link && isTargetNode && isTargetNode !== dragState.fromNode) {
-    //   this.addLink(dragState.link);
-    // }
-    // this.activeLink = null;
-    if (dragState.link && dragState.link.props.isPartial) {
+    if (dragState.link && dragState.link.state.isPartial) {
       dragState.parentComponent.removeChild(dragState.originalLink);
     }
   }

@@ -203,8 +203,9 @@ export default class GCPanelElement extends Component {
       marginTop: -22,
       marginRight: -24,
       cursor: 'nwse-resize',
-      opacity: 0,
-      transition: 'opacity 0.4s ease-out'
+      visibility: 'hidden',
+      // opacity: 0,
+      // transition: 'opacity 0.4s ease-out'
     },
     root: {
       position: 'absolute', top: 0, left: 0,
@@ -264,7 +265,7 @@ export default class GCPanelElement extends Component {
       ],
       resize: [
         this.css.resize,
-        this.state.hover ? {opacity: 1} : null,
+        this.state.hover ? {/*opacity: 1*/visibility: 'visible'} : null,
         props.css.resize
       ],
       root: [
@@ -303,6 +304,8 @@ export default class GCPanelElement extends Component {
   setHoverState(bool, sleep, e) {
     if (e) { e.stopPropagation(); }
     clearTimeout(this.hoverTimer);
+    // TODO: remove if hover toggles opacity, this causes bugs in chrome
+    sleep = 100;
     this.hoverTimer = setTimeout(() => this.setState({hover: bool}), sleep || 0);
   }
 

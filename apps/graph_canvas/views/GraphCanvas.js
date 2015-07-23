@@ -263,7 +263,6 @@ export default class GraphCanvas extends Component {
   }
 
   lookup(id) {
-    // debugger;
     let obj = this.index[id];
     if (!obj) {
       let err = new Error('GraphCanvas: Unable to find element with id: ' + id);
@@ -324,8 +323,9 @@ export default class GraphCanvas extends Component {
     else { delete scope[a][b][id]; }
   }
 
-  associateLink(link, value=link) {
-    // debugger;
+  associateLink(link, value) {
+    if (value === undefined) { value = link; }
+
     let scope = this.index._links_ = this.index._links_ || {};
 
     let to = link.state.to;

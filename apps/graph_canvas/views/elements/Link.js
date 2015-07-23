@@ -38,14 +38,25 @@ export default class GCLinkElement extends Component {
     return this.context.graphCanvas;
   }
 
+  get graphCanvasWorld() {
+    return this.graphCanvas.refs.world;
+  }
+
   get linksManager() {
     return this.graphCanvas.refs.links;
+  }
+
+  get parentComponent() {
+    return this.parentGroup || this.graphCanvasWorld;
+  }
+
+  get parentGroup() {
+    return this.context.parentGCGroup;
   }
 
   id = this.props.initialId || generateId('link');
 
   componentWillMount() {
-    console.log('LINK WILL MOUNT');
     this.graphCanvas.register(this);
   }
 
@@ -54,38 +65,17 @@ export default class GCLinkElement extends Component {
   }
 
   componentDidMount() {
-    console.log('LINK DID MOUNT');
-    if (!this.props.isPartial) {
+    if (!this.state.isPartial) {
       this.linksManager.register(this);
     }
     this.updateBounds();
   }
 
   componentDidUpdate() {
-    if (!this.props.isPartial) {
+    if (!this.state.isPartial && !this.state.removed) {
       this.linksManager.register(this);
     }
   }
-
-  // componentWillReceiveProps(nextProps) {
-    // let update = false;
-    // if (nextProps.from || nextProps.to) {
-    //   this.props.from = nextProps.from || this.props.from;
-    //   this.props.to = nextProps.to || this.props.to;
-    //   update = true;
-    // }
-    // if (!nextProps.isPartial && this.props.isPartial) {
-    //   this.linksManager.register(this);
-    //   update = true;
-    // }
-    // this.props.isPartial = nextProps.isPartial || this.props.isPartial;
-    // if (update) { this.updateBounds(); }
-    // this.setState({
-    //   from: nextProps.from,
-    //   to: nextProps.to,
-    //   isPartial: nextProps.isPartial
-    // });
-  // }
 
   shouldComponentUpdate() {
     return true;
@@ -96,12 +86,13 @@ export default class GCLinkElement extends Component {
     to: this.props.to,
     isPartial: this.props.isPartial,
     bounds: null,
-    hover: false
+    hover: false,
+    removed: false
   }
 
   render() {
     try {
-      if (this.state.bounds) {
+      if (!this.state.removed && this.state.bounds) {
         console.log('RENDER LINK');
         return this.renderVector(this.state.bounds);
       }
@@ -200,14 +191,13 @@ export default class GCLinkElement extends Component {
   updateBounds(_retry, _err) {
     if (_retry > 3) { throw _err; }
     _retry = _retry || 0;
+
     try {
       var fromSocket = this.graphCanvas.lookup(this.state.from),
           fromSocketElement = React.findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
           fromVector = this.linksManager.getSocketCenter(fromSocketElement);
 
       var toSocket, toSocketElement, toVector;
-
-      console.log('UPDATE BOUNDS', this.state.to);
 
       if (this.state.isPartial) {
         toVector = new Vector(this.state.to);
@@ -219,9 +209,10 @@ export default class GCLinkElement extends Component {
       }
 
       let bounds = new Rectangle(fromVector.x, fromVector.y, toVector.x, toVector.y);
-      // console.log(bounds.toString());
       this.setState({ bounds });
-    } catch (err) {
+    }
+
+    catch (err) {
       if (err.gcIsSafe) {
         console.warn(err.message);
         setTimeout(() => this.updateBounds(_retry + 1, err), 500);
@@ -248,7 +239,13 @@ export default class GCLinkElement extends Component {
     var confirmProps = {
       callback: (ok) => {
         if (ok) {
-          this.linksManager.unregister(this.props.model);
+          this.graphCanvas.unregister(this);
+          this.linksManager.unregister(this);
+          let fromSocket = this.graphCanvas.lookup(this.state.from),
+              toSocket = this.graphCanvas.lookup(this.state.to);
+          fromSocket.forceUpdate();
+          toSocket.forceUpdate();
+          this.setState({removed: true});
         }
       },
       children: 'Are you sure you want to delete this link?',
