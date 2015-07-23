@@ -36,6 +36,8 @@ export default class GCGridElement extends Component {
   }
 
   render() {
+    // console.log('RENDER GRID');
+
     var props = this.props,
         bounds = props.bounds,
         worldBoundingBox;

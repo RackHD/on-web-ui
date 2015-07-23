@@ -162,9 +162,8 @@ export default class GraphCanvas extends Component {
           {this.props.enableMarks && <GCMarksManager ref="marks" />}
 
           <GCViewport ref="viewport">
-            <GCWorld ref="world"
-                elements={this.elements}
-                vectors={this.vectors}>
+            <GCWorld ref="world">
+              {/*<elements={this.elements} vectors={this.vectors}>*/}
               {props.children}
             </GCWorld>
           </GCViewport>
@@ -189,27 +188,27 @@ export default class GraphCanvas extends Component {
     };
   }
 
-  get elements() {
-    var elements = [],
-        world = this.refs.world;
-    if (world) {
-      if (this.refs.marks) {
-        elements = elements.concat(this.refs.marks.markElements);
-      }
-    }
-    return elements;
-  }
+  // get elements() {
+  //   var elements = [],
+  //       world = this.refs.world;
+  //   if (world) {
+  //     if (this.refs.marks) {
+  //       elements = elements.concat(this.refs.marks.markElements);
+  //     }
+  //   }
+  //   return elements;
+  // }
 
-  get vectors() {
-    var vectors = [],
-        world = this.refs.world;
-    if (world) {
-      if (this.refs.marks) {
-        vectors = vectors.concat(this.refs.marks.markVectors);
-      }
-    }
-    return vectors;
-  }
+  // get vectors() {
+  //   var vectors = [],
+  //       world = this.refs.world;
+  //   if (world) {
+  //     if (this.refs.marks) {
+  //       vectors = vectors.concat(this.refs.marks.markVectors);
+  //     }
+  //   }
+  //   return vectors;
+  // }
 
   updatePosition(position) {
     this.setState({ position });
@@ -329,13 +328,13 @@ export default class GraphCanvas extends Component {
     // debugger;
     let scope = this.index._links_ = this.index._links_ || {};
 
-    let to = link.props.to;
+    let to = link.state.to;
     let toSocket = this.lookup(to);
     let toPort = toSocket.context.parentGCPort;
     let toNode = toPort.context.parentGCNode;
     let toGroup = toNode.context.parentGCGroup;
 
-    let from = link.props.from;
+    let from = link.state.from;
     let fromSocket = this.lookup(from);
     let fromPort = fromSocket.context.parentGCPort;
     let fromNode = fromPort.context.parentGCNode;

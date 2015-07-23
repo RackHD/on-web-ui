@@ -71,8 +71,10 @@ export default class GCPanelElement extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let state = this.state;
+    let state = this.state,
+        props = this.props;
     return (
+      props.children !== nextProps.children ||
       state.name !== nextState.name ||
       state.color !== nextState.color ||
       state.bounds !== nextState.bounds ||
@@ -96,7 +98,8 @@ export default class GCPanelElement extends Component {
   };
 
   render() {
-    console.log('RENDER PANEL');
+    // console.log('RENDER PANEL');
+
     if (this.state.removed) { return null; }
 
     let props = this.props;

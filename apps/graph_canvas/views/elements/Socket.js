@@ -88,7 +88,8 @@ export default class GCSocketElement extends Component {
   };
 
   render() {
-    console.log('RENDER SOCKET');
+    // console.log('RENDER SOCKET');
+
     var css = this.preparedCSS;
 
     var typeCell = (

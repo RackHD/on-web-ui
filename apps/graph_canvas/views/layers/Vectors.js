@@ -20,6 +20,7 @@ import GCGridElement from '../elements/Grid';
     grid: PropTypes.object,
     style: PropTypes.object
   },
+
   defaultProps: {
     bounds: null,
     className: 'GraphCanvasVectorsLayer',
@@ -27,6 +28,7 @@ import GCGridElement from '../elements/Grid';
     grid: null,
     style: {}
   },
+
   contextTypes: {
     graphCanvas: PropTypes.any
   }
@@ -38,6 +40,7 @@ export default class GCVectorsLayer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // console.log('NEW PROPS FOR VECTORS');
     this.setState({
       bounds: nextProps.bounds,
       grid: nextProps.grid
@@ -45,11 +48,19 @@ export default class GCVectorsLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let state = this.state;
-    return (
-      state.bounds !== nextState.bounds || !nextState.bounds,
+    let state = this.state,
+        props = this.props;
+    if (!state.bounds && !nextState.bounds) {
+      // console.log('YES!!!');
+      return true;
+    }
+    let result = (
+      props.children !== nextProps.children ||
+      state.bounds !== nextState.bounds || //!nextState.bounds ||
       state.grid !== nextState.grid
     );
+    // console.log('UPDATE VECTORS?', result);
+    return result;
   }
 
   state = {
@@ -58,6 +69,8 @@ export default class GCVectorsLayer extends Component {
   }
 
   render() {
+    // console.log('RENDER VECTORS');
+
     try {
       let props = this.props,
           bounds = this.state.bounds,
@@ -65,14 +78,17 @@ export default class GCVectorsLayer extends Component {
           cssSize = this.graphCanvas.cssWorldSize,
           boundingBox = this.graphCanvas.worldBoundingBox,
           grid = null;
+
       if (this.state.grid) {
         grid = <GCGridElement {...this.state.grid} />;
       }
+
       if (bounds) {
         size = new Vector(bounds.width, bounds.height);
         cssSize = {width: size.x, height: size.y};
         boundingBox = new Rectangle(0, 0, size.x, size.y);
       }
+
       return (
         <svg
             className={props.className}
@@ -91,7 +107,9 @@ export default class GCVectorsLayer extends Component {
           {props.children}
         </svg>
       );
-    } catch (err) {
+    }
+
+    catch (err) {
       console.error(err.stack || err);
     }
   }

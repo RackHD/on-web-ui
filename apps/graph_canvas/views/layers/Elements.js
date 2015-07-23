@@ -14,12 +14,14 @@ import decorate from 'common-web-ui/lib/decorate';
     style: PropTypes.object,
     width: PropTypes.any
   },
+
   defaultProps: {
     className: 'GraphCanvasElementsLayer',
     css: {},
     style: {},
     width: 'auto'
   },
+
   contextTypes: {
     graphCanvas: PropTypes.any
   }
@@ -31,12 +33,23 @@ export default class GCElementsLayer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({width: nextProps.width});
+    // console.log('NEW PROPS FOR ELEMENTS');
+    this.setState({
+      width: nextProps.width
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let state = this.state;
-    return (state.width !== nextState.width || !nextState.width);
+    let state = this.state,
+        props = this.props;
+    // console.log('UPDATE ELEMENTS?');
+    if (!state.width || !nextState.width) {
+      return true;
+    }
+    return (
+      props.children !== nextProps.children ||
+      state.width !== nextState.width
+    );
   }
 
   state = {
@@ -44,9 +57,12 @@ export default class GCElementsLayer extends Component {
   }
 
   render() {
+    // console.log('RENDER ELEMENTS');
+
     try {
       let props = this.props,
           width = this.state.width || this.graphCanvas.worldSize.x;
+
       return (
         <div
             className={props.className}
@@ -61,7 +77,9 @@ export default class GCElementsLayer extends Component {
           {props.children}
         </div>
       );
-    } catch (err) {
+    }
+
+    catch (err) {
       console.error(err.stack || err);
     }
   }

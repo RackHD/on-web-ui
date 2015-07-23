@@ -48,7 +48,11 @@ export default class GCNodeElement extends Component {
 
   get graphCanvasViewport() { return this.graphCanvas.refs.viewport; }
 
+  get graphCanvasWorld() { return this.graphCanvas.refs.world; }
+
   get nodesManager() { return this.graphCanvas.refs.nodes; }
+
+  get parentGroup() { return this.context.parentGCGroup; }
 
   id = this.props.initialId || generateId('node');
 
@@ -74,7 +78,8 @@ export default class GCNodeElement extends Component {
   };
 
   render() {
-    console.log('RENDER NODE');
+    // console.log('RENDER NODE');
+
     this.prepareChildren();
 
     let portsBounds = this.state.bounds.clone();

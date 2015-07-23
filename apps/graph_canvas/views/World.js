@@ -40,22 +40,33 @@ export default class GCWorld extends Component {
     elements: this.props.elements
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      vectors: nextProps.vectors,
-      elements: nextProps.elements
-    });
-  }
+  // componentDidMount() {
+  //   setTimeout(() => {
+  //     console.log('got here');
+  //     this.setState({
+  //       vectors: this.state.vectors.concat(['123']),
+  //       elements: this.state.elements.concat(['ABC'])
+  //     });
+  //   }, 1000);
+  // }
+
+  // componentWillReceiveProps(nextProps) {
+  //   this.setState({
+  //     vectors: nextProps.vectors,
+  //     elements: nextProps.elements
+  //   });
+  // }
 
   shouldComponentUpdate() {
     return true;
   }
 
   render() {
-    let vectors = this.state.vectors,
-        elements = this.state.elements;
+    let vectors = this.state.vectors.slice(0),
+        elements = this.state.elements.slice(0),
+        children = this.prepareChildren(this, vectors, elements);
 
-    elements = elements.concat(this.hoistVectorChildren(this, vectors));
+    // console.log('and here', elements);
 
     try {
       var cssWorldSpaceTransform = this.cssWorldSpaceTransform,
@@ -66,13 +77,15 @@ export default class GCWorld extends Component {
             onDoubleClick={this.touchWorld.bind(this)}
             style={[cssWorldSize, cssWorldSpaceTransform]}>
 
-          <GCVectorsLayer ref="vectors" grid={{}}>
+          <GCVectorsLayer ref="vectors" key="vectors" grid={{}}>
             {vectors}
           </GCVectorsLayer>
 
-          <GCElementsLayer ref="elements" width={null}>
+          <GCElementsLayer ref="elements" key="elements" width={null}>
             {elements}
           </GCElementsLayer>
+
+          {children}
         </div>
       );
     } catch (err) {
@@ -89,22 +102,50 @@ export default class GCWorld extends Component {
     };
   }
 
-  hoistVectorChildren(component, vectors) {
+  prepareChildren(component, vectors, elements) {
     if (!component || !component.props) {
       return component;
     }
     return React.Children.map(component.props.children, child => {
       if (!child) { return null; }
       let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
-      if (gcTypeEnum && gcTypeEnum.vector) {
-        if (vectors.indexOf(child) === -1) { vectors.push(child); }
+      if (gcTypeEnum) {
+        if (gcTypeEnum.vector) {
+          if (vectors.indexOf(child) === -1) { vectors.push(child); }
+        }
+        else {
+          if (elements.indexOf(child) === -1) { elements.push(child); }
+        }
         return null;
       }
-      if (child && child.props && (!gcTypeEnum || !gcTypeEnum.group)) {
-        child.props.children = this.hoistVectorChildren(child, vectors);
+      if (child && child.props) {
+        child.props.children = this.prepareChildren(child, vectors, elements);
       }
       return child;
     });
+  }
+
+  appendChild(component) {
+    let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
+    if (!gcTypeEnum) {
+      throw new Error('GraphCanvas: Cannot append a child that is not a valid element type.');
+    }
+    if (gcTypeEnum.vector) {
+      this.setState(prevState => {
+        let vectors = prevState.vectors.concat([component]);
+        return { vectors };
+      });
+    }
+    else {
+      this.setState(prevState => {
+        let elements = prevState.elements.concat([component]);
+        return { elements };
+      });
+    }
+  }
+
+  removeChild() {
+    // TODO:
   }
 
   touchWorld(event) {

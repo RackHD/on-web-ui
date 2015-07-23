@@ -1,26 +1,28 @@
 'use strict';
 
-/* eslint-disable no-unused-vars */
-import React, { Component, PropTypes } from 'react';
+import React, // eslint-disable-line no-unused-vars
+  { Component, PropTypes } from 'react';
 import decorate from 'common-web-ui/lib/decorate';
-/* eslint-enable no-unused-vars */
-
-import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 
 import generateId from '../../lib/generateId';
 
+import Vector from '../../lib/Vector';
 import Rectangle from '../../lib/Rectangle';
+
+import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 
 @decorate({
   propTypes: {
     from: PropTypes.string,
-    to: PropTypes.string,
+    to: PropTypes.any,
+    isPartial: PropTypes.bool,
     initialColor: PropTypes.string,
     initialId: PropTypes.string
   },
   defaultProps: {
     from: null,
     to: null,
+    isPartial: false,
     initialColor: 'black',
     initialId: null
   },
@@ -43,6 +45,7 @@ export default class GCLinkElement extends Component {
   id = this.props.initialId || generateId('link');
 
   componentWillMount() {
+    console.log('LINK WILL MOUNT');
     this.graphCanvas.register(this);
   }
 
@@ -51,11 +54,47 @@ export default class GCLinkElement extends Component {
   }
 
   componentDidMount() {
-    this.linksManager.register(this);
+    console.log('LINK DID MOUNT');
+    if (!this.props.isPartial) {
+      this.linksManager.register(this);
+    }
     this.updateBounds();
   }
 
+  componentDidUpdate() {
+    if (!this.props.isPartial) {
+      this.linksManager.register(this);
+    }
+  }
+
+  // componentWillReceiveProps(nextProps) {
+    // let update = false;
+    // if (nextProps.from || nextProps.to) {
+    //   this.props.from = nextProps.from || this.props.from;
+    //   this.props.to = nextProps.to || this.props.to;
+    //   update = true;
+    // }
+    // if (!nextProps.isPartial && this.props.isPartial) {
+    //   this.linksManager.register(this);
+    //   update = true;
+    // }
+    // this.props.isPartial = nextProps.isPartial || this.props.isPartial;
+    // if (update) { this.updateBounds(); }
+    // this.setState({
+    //   from: nextProps.from,
+    //   to: nextProps.to,
+    //   isPartial: nextProps.isPartial
+    // });
+  // }
+
+  shouldComponentUpdate() {
+    return true;
+  }
+
   state = {
+    from: this.props.from,
+    to: this.props.to,
+    isPartial: this.props.isPartial,
     bounds: null,
     hover: false
   }
@@ -162,17 +201,26 @@ export default class GCLinkElement extends Component {
     if (_retry > 3) { throw _err; }
     _retry = _retry || 0;
     try {
-      var fromSocket = this.graphCanvas.lookup(this.props.from),
+      var fromSocket = this.graphCanvas.lookup(this.state.from),
           fromSocketElement = React.findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
           fromVector = this.linksManager.getSocketCenter(fromSocketElement);
 
-      var toSocket = this.graphCanvas.lookup(this.props.to),
-          toSocketElement = React.findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon'),
-          toVector = this.linksManager.getSocketCenter(toSocketElement);
+      var toSocket, toSocketElement, toVector;
 
-      this.setState({
-        bounds: new Rectangle(fromVector.x, fromVector.y, toVector.x, toVector.y)
-      });
+      console.log('UPDATE BOUNDS', this.state.to);
+
+      if (this.state.isPartial) {
+        toVector = new Vector(this.state.to);
+      }
+      else {
+        toSocket = this.graphCanvas.lookup(this.state.to);
+        toSocketElement = React.findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon');
+        toVector = this.linksManager.getSocketCenter(toSocketElement);
+      }
+
+      let bounds = new Rectangle(fromVector.x, fromVector.y, toVector.x, toVector.y);
+      // console.log(bounds.toString());
+      this.setState({ bounds });
     } catch (err) {
       if (err.gcIsSafe) {
         console.warn(err.message);

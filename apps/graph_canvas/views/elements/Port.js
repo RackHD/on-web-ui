@@ -52,7 +52,15 @@ export default class GCPortElement extends Component {
   }
 
   get parentNode() {
-    return this.context.parentGCNode || this.context.parentGCGroup;
+    return this.context.parentGCNode;
+  }
+
+  get parentGroup() {
+    return this.context.parentGCGroup;
+  }
+
+  get parentElement() {
+    return this.parentNode || this.parentGroup;
   }
 
   id = this.props.initialId || generateId('port');
@@ -81,13 +89,17 @@ export default class GCPortElement extends Component {
   };
 
   render() {
-    console.log('RENDER PORT');
+    // console.log('RENDER PORT');
+
     let css = this.preparedCSS,
         className = 'ungrid ' + this.props.className,
         leftSockets = [],
         rightSockets = [];
+
     // console.log(this.props.children, this.state.sockets);
+
     var sockets = [];
+
     var children = React.Children.map(this.props.children, child => {
       if (child && child._context) {
         child._context.parentGCPort = this;
@@ -101,6 +113,7 @@ export default class GCPortElement extends Component {
         return child;
       }
     });
+
     sockets.forEach(socket => {
       if (socket.props.dir[0] === -1) {
         leftSockets.push(socket);
@@ -112,6 +125,7 @@ export default class GCPortElement extends Component {
         console.error(new Error('Invalid socket dir').stack);
       }
     });
+
     return (
       <div className={className}
            data-id={this.id}

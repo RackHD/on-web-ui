@@ -58,67 +58,119 @@ export default class GCGroupElement extends Component {
   id = this.props.initialId || generateId('group');
 
   // componentDidMount() { this.groupsManager.register(this); }
+  // componentDidMount() {
+  //   setTimeout(() => {
+  //     console.log('got here');
+  //     this.setState({
+  //       vectors: this.state.vectors.concat(['123']),
+  //       elements: this.state.elements.concat(['ABC'])
+  //     });
+  //   }, 1000);
+  // }
 
   shouldComponentUpdate(nextProps, nextState) {
     let state = this.state;
-    return (state.bounds !== nextState.bounds);
+    let result = (
+      state.bounds !== nextState.bounds ||
+      state.vectors !== nextState.vectors ||
+      state.elements !== nextState.elements
+    );
+    // console.log('UPDATE GROUP?', result);
+    return result;
   }
 
   state = {
-    bounds: new Rectangle(this.props.initialBounds)
+    bounds: new Rectangle(this.props.initialBounds),
+    vectors: [],
+    elements: []
   };
 
   render() {
-    console.log('RENDER GROUP');
+    // console.log('RENDER GROUP');
 
-    let vectors = [],
-        elements = this.prepareChildren(vectors),
+    let vectors = this.state.vectors.slice(0),
+        elements = this.state.elements.slice(0),
+        children = this.prepareChildren(this, vectors, elements),
         vectorsBounds = this.state.bounds.clone(),
         elementsWidth = vectorsBounds.width - 10;
     // NOTE: 10,49 comes from Panel.js it is based on padding, borders, and the height of the header.
     vectorsBounds.max = vectorsBounds.max.sub([10, 49]);
+
+    // console.log('VECTORS LENGTH', vectors.length);
+    // console.log('ELEMENTS LENGTH', elements.length);
+    // debugger;
 
     return (
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
           onRemovePanel={this.onRemovePanel.bind(this)}
           onUpdateBounds={this.onUpdateBounds.bind(this)}>
-        <GCVectorsLayer ref="vectors" bounds={vectorsBounds}>
+
+        <GCVectorsLayer ref="vectors" key="vectors" bounds={vectorsBounds}>
           {vectors}
         </GCVectorsLayer>
-        <GCElementsLayer ref="elements" width={elementsWidth}>
+
+        <GCElementsLayer ref="elements" key="elements" width={elementsWidth}>
           {elements}
         </GCElementsLayer>
+
+        {children}
       </Panel>
     );
   }
 
-  prepareChildren(vectors) {
-    React.Children.forEach(this.props.children, child => {
-      if (child && child._context) {
-        child._context.parentGCGroup = this;
-      }
-      return child;
-    });
-    return this.hoistVectorChildren(this, vectors);
-  }
-
-  hoistVectorChildren(component, vectors) {
+  prepareChildren(component, vectors, elements) {
     if (!component || !component.props) {
       return component;
     }
     return React.Children.map(component.props.children, child => {
       if (!child) { return null; }
+      if (child._context) {
+        child._context.parentGCGroup = this;
+      }
       let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
-      if (gcTypeEnum && gcTypeEnum.vector) {
-        if (vectors.indexOf(child) === -1) { vectors.push(child); }
+      if (gcTypeEnum) {
+        if (gcTypeEnum.vector) {
+          if (vectors.indexOf(child) === -1) { vectors.push(child); }
+        }
+        else {
+          if (elements.indexOf(child) === -1) { elements.push(child); }
+        }
         return null;
       }
-      if (child && child.props && (!gcTypeEnum || !gcTypeEnum.group)) {
-        child.props.children = this.hoistVectorChildren(child, vectors);
+      if (child && child.props) {
+        child.props.children = this.prepareChildren(child, vectors, elements);
       }
       return child;
     });
+  }
+
+  appendChild(component) {
+    // debugger;
+    // TODO:
+    // component._context.parentGCGroup = this;
+    // console.log('APPEND CHILD');
+    let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
+    if (!gcTypeEnum) {
+      throw new Error('GraphCanvas: Cannot append a child that is not a valid element type.');
+    }
+    if (gcTypeEnum.vector) {
+      // console.log('VECTOR');
+      this.setState(prevState => {
+        let vectors = prevState.vectors.concat([component]);
+        return { vectors };
+      });
+    }
+    else {
+      this.setState(prevState => {
+        let elements = prevState.elements.concat([component]);
+        return { elements };
+      });
+    }
+  }
+
+  removeChild() {
+    // TODO
   }
 
   onRemovePanel() {
