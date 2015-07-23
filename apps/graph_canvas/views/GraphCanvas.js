@@ -363,3 +363,7 @@ export default class GraphCanvas extends Component {
   }
 
 }
+
+// RAINBOW MODE:
+// color = [ 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet' ];
+// this.color = color[i++ % color.length];
