@@ -56,19 +56,22 @@ export default class GCPanelElement extends Component {
 
   static GCTypeEnum = {element: true, panel: true};
 
+  static id() { return generateId('panel'); }
+
   get graphCanvas() { return this.context.graphCanvas; }
 
   get graphCanvasViewport() { return this.graphCanvas.refs.viewport; }
 
-  id = this.props.initialId || generateId('panel');
+  id = this.props.initialId || this.constructor.id();
 
-  componentWillMount() {
-    this.graphCanvas.register(this);
-  }
+  // TODO: allow this to be registered under a panels list
+  // componentWillMount() {
+  //   this.graphCanvas.register(this);
+  // }
 
-  componentWillUnmount() {
-    this.graphCanvas.unregister(this);
-  }
+  // componentWillUnmount() {
+  //   this.graphCanvas.unregister(this);
+  // }
 
   shouldComponentUpdate(nextProps, nextState) {
     let state = this.state,
@@ -203,7 +206,7 @@ export default class GCPanelElement extends Component {
       marginTop: -22,
       marginRight: -24,
       cursor: 'nwse-resize',
-      visibility: 'hidden',
+      visibility: 'hidden'//,
       // opacity: 0,
       // transition: 'opacity 0.4s ease-out'
     },

@@ -39,9 +39,9 @@ export default class GCGroupsManager extends Component {
     return null;
   }
 
-  register(group) {}
+  register(group) {} // eslint-disable-line no-unused-vars
 
-  unregister(group) {}
+  unregister(group) {} // eslint-disable-line no-unused-vars
 
   // drawGroup() {
   //   return this.setupClickDrag({

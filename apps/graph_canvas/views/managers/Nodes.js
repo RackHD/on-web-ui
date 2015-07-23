@@ -35,8 +35,8 @@ export default class GCNodesManager extends Component {
     return null;
   }
 
-  register(node) {}
+  register(node) {} // eslint-disable-line no-unused-vars
 
-  unregister(node) {}
+  unregister(node) {} // eslint-disable-line no-unused-vars
 
 }

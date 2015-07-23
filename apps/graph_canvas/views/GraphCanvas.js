@@ -25,7 +25,8 @@ import GCLinksManager from './managers/Links';
 import GCMarksManager from './managers/Marks';
 import GCNodesManager from './managers/Nodes';
 
-// import './GraphCanvas.less';
+// NOTE: needed for path hover
+import './_GraphCanvasLegacy.less';
 import GCGroupElement from './elements/Group';
 import GCLinkElement from './elements/Link';
 import GCNodeElement from './elements/Node';

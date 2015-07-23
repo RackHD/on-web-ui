@@ -45,19 +45,29 @@ export default class GCGroupElement extends Component {
 
   static GCTypeEnum = {element: true, group: true};
 
+  static id() { return generateId('group'); }
+
   get graphCanvas() { return this.context.graphCanvas; }
 
   get graphCanvasViewport() { return this.graphCanvas.refs.viewport; }
 
-  // get groupsManager() { return this.graphCanvas.refs.groups; }
+  get groupsManager() { return this.graphCanvas.refs.groups; }
 
   // get nodesManager() { return this.graphCanvas.refs.nodes; }
 
   // get linkManager() { return this.graphCanvas.refs.links; }
 
-  id = this.props.initialId || generateId('group');
+  id = this.props.initialId || this.constructor.id();
 
-  // componentDidMount() { this.groupsManager.register(this); }
+  componentWillMount() {
+    this.graphCanvas.register(this);
+  }
+
+  componentWillUnmount() {
+    this.graphCanvas.unregister(this);
+  }
+
+  componentDidMount() { this.groupsManager.register(this); }
 
   shouldComponentUpdate(nextProps, nextState) {
     let state = this.state;
@@ -169,7 +179,7 @@ export default class GCGroupElement extends Component {
   }
 
   onRemovePanel() {
-    this.graphCanvas.unregister(this)
+    this.graphCanvas.unregister(this);
     this.groupsManager.unregister(this);
     // TODO: unregister child elements and links
     // TODO: actually remove from this.parentComponent

@@ -2,7 +2,7 @@
 
 import { EventEmitter } from 'events';
 
-import cloneDeep from 'lodash/lang/cloneDeep';
+// import cloneDeep from 'lodash/lang/cloneDeep';
 
 import Rectangle from 'graph-canvas-web-ui/lib/Rectangle';
 
@@ -44,61 +44,61 @@ export default class Editor extends EventEmitter {
     this.emit('graphUpdate');
   }
 
-  loadWorkflow(workflowTemplate, newGraph) {
-    workflowTemplate = cloneDeep(workflowTemplate);
-    var workflowGraph = this.loadWorkflowTemplate(workflowTemplate, newGraph);
-    this.graph = workflowGraph;
-    this.workflowGraph = new WorkflowGraph(this, workflowTemplate, workflowTemplate.friendlyName);
-    this.workflowGraph.addGraphCanvasNode([1100, 1200, 1200, 1300]);
-    this.emitGraphUpdate();
-  }
+  // loadWorkflow(workflowTemplate, newGraph) {
+  //   workflowTemplate = cloneDeep(workflowTemplate);
+  //   var workflowGraph = this.loadWorkflowTemplate(workflowTemplate, newGraph);
+  //   this.graph = workflowGraph;
+  //   this.workflowGraph = new WorkflowGraph(this, workflowTemplate, workflowTemplate.friendlyName);
+  //   this.workflowGraph.addGraphCanvasNode([1100, 1200, 1200, 1300]);
+  //   this.emitGraphUpdate();
+  // }
 
-  resetWorkflow() {
-    this.emitGraphUpdate();
-  }
+  // resetWorkflow() {
+  //   this.emitGraphUpdate();
+  // }
 
-  loadWorkflowTemplate(workflowTemplate, newGraph) {
-    var taskMap = {};
-    this.tasks = [];
-    workflowTemplate.tasks.forEach(task => {
-      task._node = workflowGraph.add({
-        graph: workflowGraph,
-        data: {
-          task: task
-        },
-        bounds: [1300, 1300, 1400, 1400],
-        layer: 1,
-        scale: 1,
-        ports: TaskNode.prototype.gcPorts
-      });
-      taskMap[task.label] = task;
-      this.tasks.push(task);
-    });
-    workflowTemplate.tasks.forEach(task => {
-      if (task.waitOn) {
-        Object.keys(task.waitOn).forEach(taskLabel => {
-          var state = task.waitOn[taskLabel],
-              linkedTask = taskMap[taskLabel],
-              socketOut = linkedTask._node.ports.Flow.sockets[state],
-              socketIn = task._node.ports.Flow.sockets.waitOn;
-          workflowGraph.connect({
-            graph: workflowGraph,
-            data: {
-              bounds: new Rectangle([1000, 1000, 1000, 1000]),
-              from: linkedTask._node.id,
-              to: task._node.id
-            },
-            socketOut: socketOut,
-            socketIn: socketIn,
-            layer: 0,
-            scale: 1
-          });
-        });
-      }
-    });
-    this.organizeWorkflowTemplateWithTaskMap(workflowTemplate, taskMap);
-    return workflowGraph;
-  }
+  // loadWorkflowTemplate(workflowTemplate, newGraph) {
+  //   var taskMap = {};
+  //   this.tasks = [];
+  //   workflowTemplate.tasks.forEach(task => {
+  //     task._node = workflowGraph.add({
+  //       graph: workflowGraph,
+  //       data: {
+  //         task: task
+  //       },
+  //       bounds: [1300, 1300, 1400, 1400],
+  //       layer: 1,
+  //       scale: 1,
+  //       ports: TaskNode.prototype.gcPorts
+  //     });
+  //     taskMap[task.label] = task;
+  //     this.tasks.push(task);
+  //   });
+  //   workflowTemplate.tasks.forEach(task => {
+  //     if (task.waitOn) {
+  //       Object.keys(task.waitOn).forEach(taskLabel => {
+  //         var state = task.waitOn[taskLabel],
+  //             linkedTask = taskMap[taskLabel],
+  //             socketOut = linkedTask._node.ports.Flow.sockets[state],
+  //             socketIn = task._node.ports.Flow.sockets.waitOn;
+  //         workflowGraph.connect({
+  //           graph: workflowGraph,
+  //           data: {
+  //             bounds: new Rectangle([1000, 1000, 1000, 1000]),
+  //             from: linkedTask._node.id,
+  //             to: task._node.id
+  //           },
+  //           socketOut: socketOut,
+  //           socketIn: socketIn,
+  //           layer: 0,
+  //           scale: 1
+  //         });
+  //       });
+  //     }
+  //   });
+  //   this.organizeWorkflowTemplateWithTaskMap(workflowTemplate, taskMap);
+  //   return workflowGraph;
+  // }
 
   organizeWorkflowTemplateWithTaskMap(workflowTemplate, taskMap) {
     var columns = [workflowTemplate.tasks.filter(task => !task.waitOn)];

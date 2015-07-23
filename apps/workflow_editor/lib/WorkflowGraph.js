@@ -45,7 +45,7 @@ export default class WorkflowGraph {
     this.instance._node = this.node;
   }
 
-  addGraphCanvasGroup(bounds) {
+  addGraphCanvasGroup(bounds) { // eslint-disable-line no-unused-vars
     this.group = this.editor.graph.addGroup({
 
     });

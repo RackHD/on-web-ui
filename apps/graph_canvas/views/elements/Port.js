@@ -47,6 +47,8 @@ export default class GCPortElement extends Component {
 
   static GCTypeEnum = {element: true, port: true};
 
+  static id() { return generateId('port'); }
+
   get graphCanvas() {
     return this.context.graphCanvas;
   }
@@ -63,7 +65,7 @@ export default class GCPortElement extends Component {
     return this.parentNode || this.parentGroup;
   }
 
-  id = this.props.initialId || generateId('port');
+  id = this.props.initialId || this.constructor.id();
 
   componentWillMount() {
     this.graphCanvas.register(this);
@@ -105,7 +107,7 @@ export default class GCPortElement extends Component {
         child._context.parentGCPort = this;
       }
       let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
-      if (gcTypeEnum.socket) {
+      if (gcTypeEnum && gcTypeEnum.socket) {
         sockets.push(child);
         return null;
       }

@@ -26,6 +26,7 @@ import generateId from '../../lib/generateId';
     className: PropTypes.string,
     css: PropTypes.object,
     id: PropTypes.string,
+    dir: PropTypes.array,
     initialColor: PropTypes.string,
     initialId: PropTypes.string,
     initialName: PropTypes.string,
@@ -34,6 +35,7 @@ import generateId from '../../lib/generateId';
   defaultProps: {
     className: 'GCSocketElement',
     css: {},
+    dir: [1, 0],
     initialColor: 'black',
     initialId: null,
     initialName: 'port',
@@ -47,6 +49,8 @@ import generateId from '../../lib/generateId';
 export default class GCSocketElement extends Component {
 
   static GCTypeEnum = {element: true, socket: true};
+
+  static id() { return generateId('socket'); }
 
   get graphCanvas() {
     return this.context.graphCanvas;
@@ -64,7 +68,7 @@ export default class GCSocketElement extends Component {
     return this.context.parentGCPort;
   }
 
-  id = this.props.initialId || generateId('socket');
+  id = this.props.initialId || this.constructor.id();
 
   componentWillMount() {
     this.graphCanvas.register(this);

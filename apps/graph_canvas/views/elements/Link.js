@@ -34,6 +34,8 @@ export default class GCLinkElement extends Component {
 
   static GCTypeEnum = {vector: true, link: true};
 
+  static id() { return generateId('link'); }
+
   get graphCanvas() {
     return this.context.graphCanvas;
   }
@@ -54,7 +56,7 @@ export default class GCLinkElement extends Component {
     return this.context.parentGCGroup;
   }
 
-  id = this.props.initialId || generateId('link');
+  id = this.props.initialId || this.constructor.id();
 
   componentWillMount() {
     this.graphCanvas.register(this);

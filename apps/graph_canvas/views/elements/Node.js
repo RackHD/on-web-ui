@@ -28,7 +28,7 @@ import Panel from './Panel';
   defaultProps: {
     className: 'GCNodeElement',
     css: {},
-    initialBounds: [0, 0, 750, 500],
+    initialBounds: [50, 50, 350, 350],
     initialColor: 'grey',
     initialId: null,
     initialName: '(Unamed Node)',
@@ -44,6 +44,8 @@ export default class GCNodeElement extends Component {
 
   static GCTypeEnum = {element: true, node: true};
 
+  static id() { return generateId('node'); }
+
   get graphCanvas() { return this.context.graphCanvas; }
 
   get graphCanvasViewport() { return this.graphCanvas.refs.viewport; }
@@ -58,19 +60,19 @@ export default class GCNodeElement extends Component {
     return this.parentGroup || this.graphCanvasWorld;
   }
 
-  id = this.props.initialId || generateId('node');
+  id = this.props.initialId || this.constructor.id();
 
-  // componentWillMount() {
-  //   this.graphCanvas.register(this);
-  // }
+  componentWillMount() {
+    this.graphCanvas.register(this);
+  }
 
-  // componentWillUnmount() {
-  //   this.graphCanvas.unregister(this);
-  // }
+  componentWillUnmount() {
+    this.graphCanvas.unregister(this);
+  }
 
-  // componentDidMount() {
-    // this.nodesManager.register(this);
-  // }
+  componentDidMount() {
+    this.nodesManager.register(this);
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     let state = this.state;

@@ -24,9 +24,9 @@ export default class WEInspector extends Component {
   state = {selected: []};
 
   componentDidMount() {
-    this.context.editor.onGraphUpdate(() => {
-      this.forceUpdate();
-    });
+    // this.context.editor.onGraphUpdate(() => {
+    //   this.forceUpdate();
+    // });
   }
 
   componentWillUnmount() {}
@@ -35,9 +35,9 @@ export default class WEInspector extends Component {
     this.setState({ selected });
   }
 
-  get currentWorkflow() {
-    return this.context.editor.workflowGraph.workflowTemplate;
-  }
+  // get currentWorkflow() {
+  //   return this.context.editor.workflowGraph.workflowTemplate;
+  // }
 
   render() {
     var selected = this.state.selected || [];
@@ -75,8 +75,7 @@ export default class WEInspector extends Component {
           margin: 0,
           padding: 0
         }} />
-        <WEWorkflowOutline ref="outline"
-            model={this.currentWorkflow}/>
+        <WEWorkflowOutline ref="outline" model={{}} />
       </div>
     );
   }

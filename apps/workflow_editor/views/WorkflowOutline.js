@@ -64,12 +64,13 @@ export default class WEWorkflowOutline extends Component {
 
   componentWillUnmount() {}
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({model: nextProps.model});
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   this.setState({model: nextProps.model});
+  // }
 
   render() {
-    let workflow = this.props.model;
+    console.log('RENDER WORKFLOW OUTLINE', this.state);
+    let workflow = this.state.model;
 
     // let optionsMapper = (object, list, hash) => {
     //   if (!object || typeof object !== 'object') {
@@ -114,7 +115,7 @@ export default class WEWorkflowOutline extends Component {
     // let options = optionsMapper(workflow.options, []);
     let options = (
       <ListItem>
-        <div style={{background: 'white'}}>
+        <div style={{background: 'white', overflow: 'hidden'}}>
           <JsonInspector
               search={false}
               isExpanded={() => true}
@@ -151,7 +152,7 @@ export default class WEWorkflowOutline extends Component {
                     tooltip="Workflow Name"
                     tooltipPosition="top-left" />
               }>
-            {this.context.editor.workflowGraph.name || '(Unknown)'}
+            {workflow.friendlyName || '(Unknown)'}
           </ListItem>
           <ListItem
               ref="options"
