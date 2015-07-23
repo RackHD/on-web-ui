@@ -239,14 +239,7 @@ export default class GCLinkElement extends Component {
     var confirmProps = {
       callback: (ok) => {
         if (ok) {
-          this.graphCanvas.unregister(this);
-          this.linksManager.unregister(this);
-          let fromSocket = this.graphCanvas.lookup(this.state.from),
-              toSocket = this.graphCanvas.lookup(this.state.to);
-          fromSocket.forceUpdate();
-          toSocket.forceUpdate();
-          this.setState({removed: true});
-          // TODO: actually remove from this.parentComponent
+          this.destroyLink();
         }
       },
       children: 'Are you sure you want to delete this link?',
@@ -255,5 +248,15 @@ export default class GCLinkElement extends Component {
     ConfirmDialog.create(confirmProps);
   }
 
+  destroyLink() {
+    this.graphCanvas.unregister(this);
+    this.linksManager.unregister(this);
+    let fromSocket = this.graphCanvas.lookup(this.state.from),
+        toSocket = this.graphCanvas.lookup(this.state.to);
+    fromSocket.forceUpdate();
+    toSocket.forceUpdate();
+    this.setState({removed: true});
+    // TODO: actually remove from this.parentComponent
+  }
 
 }
