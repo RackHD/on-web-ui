@@ -7,7 +7,6 @@ import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
-/* eslint-enable no-unused-vars */
 
 // import Vector from '../../lib/Vector';
 
@@ -28,8 +27,6 @@ export default class GCNodesManager extends Component {
     return this.context.graphCanvas;
   }
 
-  // nodes = this.graphCanvas.props.initialNodes;
-
   shouldComponentUpdate() {
     return false;
   }
@@ -38,17 +35,8 @@ export default class GCNodesManager extends Component {
     return null;
   }
 
-  // register(node) {
-  //   var nodes = this.nodes;
-  //
-  //   // debugger;
-  //   if (this.nodes.indexOf(node) === -1) {
-  //     nodes = this.nodes = nodes.concat([node]);
-  //   }
-  //
-  //   this.graphCanvas.setState({ nodes });
-  // }
-  //
-  // removeNode() {}
+  register(node) {}
+
+  unregister(node) {}
 
 }

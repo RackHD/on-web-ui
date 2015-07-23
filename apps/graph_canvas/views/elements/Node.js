@@ -54,6 +54,10 @@ export default class GCNodeElement extends Component {
 
   get parentGroup() { return this.context.parentGCGroup; }
 
+  get parentComponent() {
+    return this.parentGroup || this.graphCanvasWorld;
+  }
+
   id = this.props.initialId || generateId('node');
 
   // componentWillMount() {
@@ -114,7 +118,10 @@ export default class GCNodeElement extends Component {
   }
 
   onRemovePanel() {
-    this.nodesManager.removePanel(this);
+    this.graphCanvas.unregister(this);
+    this.nodesManager.unregister(this);
+    // TODO: unregister child elements and links
+    // TODO: actually remove from this.parentComponent
   }
 
   onUpdateBounds(bounds) {

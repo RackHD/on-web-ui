@@ -39,17 +39,9 @@ export default class GCGroupsManager extends Component {
     return null;
   }
 
-  // register(group) {
-  //   var groups = this.groups;
-  //
-  //   if (this.groups.indexOf(group) === -1) {
-  //     groups = this.groups = groups.concat([group]);
-  //   }
-  //
-  //   this.graphCanvas.setState({ groups });
-  // }
-  //
-  // removeGroup() {}
+  register(group) {}
+
+  unregister(group) {}
 
   // drawGroup() {
   //   return this.setupClickDrag({

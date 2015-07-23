@@ -169,7 +169,10 @@ export default class GCGroupElement extends Component {
   }
 
   onRemovePanel() {
-    this.groupsManager.removePanel(this);
+    this.graphCanvas.unregister(this)
+    this.groupsManager.unregister(this);
+    // TODO: unregister child elements and links
+    // TODO: actually remove from this.parentComponent
   }
 
   onUpdateBounds(bounds) {

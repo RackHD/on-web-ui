@@ -246,6 +246,7 @@ export default class GCLinkElement extends Component {
           fromSocket.forceUpdate();
           toSocket.forceUpdate();
           this.setState({removed: true});
+          // TODO: actually remove from this.parentComponent
         }
       },
       children: 'Are you sure you want to delete this link?',
