@@ -25,7 +25,7 @@ import GCLinksManager from './managers/Links';
 import GCMarksManager from './managers/Marks';
 import GCNodesManager from './managers/Nodes';
 
-import './GraphCanvas.less';
+// import './GraphCanvas.less';
 import GCGroupElement from './elements/Group';
 import GCLinkElement from './elements/Link';
 import GCNodeElement from './elements/Node';
@@ -282,6 +282,7 @@ export default class GraphCanvas extends Component {
     if (obj.matches.indexOf(child) === -1) {
       obj.matches.push(child);
     }
+    // TODO: create groups, nodes, links, ports, and sockets lists using child.constructor.GCTypeEnum
   }
 
   unregister(child) {

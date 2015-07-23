@@ -54,13 +54,11 @@ export default class Editor extends EventEmitter {
   }
 
   resetWorkflow() {
-    this.graph = new Graph();
     this.emitGraphUpdate();
   }
 
   loadWorkflowTemplate(workflowTemplate, newGraph) {
-    var workflowGraph = newGraph ? new Graph() : this.graph,
-        taskMap = {};
+    var taskMap = {};
     this.tasks = [];
     workflowTemplate.tasks.forEach(task => {
       task._node = workflowGraph.add({

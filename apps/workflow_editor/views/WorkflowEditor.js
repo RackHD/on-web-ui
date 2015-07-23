@@ -35,7 +35,7 @@ import Editor from '../lib/Editor';
     editor: PropTypes.any
   }
 })
-export default class WELayout extends Component {
+export default class WorkflowEditor extends Component {
 
   editor = new Editor(this);
 

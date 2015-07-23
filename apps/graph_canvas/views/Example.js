@@ -22,7 +22,7 @@ import GraphCanvas, {
   propTypes: {},
   defaultProps: {}
 })
-export default class WEExampleGC extends Component {
+export default class ExampleGraphCanvas extends Component {
 
   componentWillMount() {}
 
