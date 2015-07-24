@@ -324,39 +324,41 @@ export default class GraphCanvas extends Component {
     else { delete scope[a][b][id]; }
   }
 
-  associateLink(link, value) {
-    if (value === undefined) { value = link; }
-
+  associateLinkConcept(linkTo, linkFrom, linkId, value) {
     let scope = this.index._links_ = this.index._links_ || {};
 
-    let to = link.state.to;
-    let toSocket = this.lookup(to);
+    let toSocket = this.lookup(linkTo);
     let toPort = toSocket.context.parentGCPort;
     let toNode = toPort.context.parentGCNode;
     let toGroup = toNode.context.parentGCGroup;
 
-    let from = link.state.from;
-    let fromSocket = this.lookup(from);
+    let fromSocket = this.lookup(linkFrom);
     let fromPort = fromSocket.context.parentGCPort;
     let fromNode = fromPort.context.parentGCNode;
     let fromGroup = fromNode.context.parentGCGroup;
 
-    this.associate(scope, fromSocket, toSocket, link.id, value);
-    this.associate(scope, toSocket, fromSocket, link.id, value);
+    this.associate(scope, fromSocket, toSocket, linkId, value);
+    this.associate(scope, toSocket, fromSocket, linkId, value);
 
-    this.associate(scope, fromPort, toPort, link.id, value);
-    this.associate(scope, toPort, fromPort, link.id, value);
+    this.associate(scope, fromPort, toPort, linkId, value);
+    this.associate(scope, toPort, fromPort, linkId, value);
 
-    this.associate(scope, fromNode, toNode, link.id, value);
-    this.associate(scope, toNode, fromNode, link.id, value);
+    this.associate(scope, fromNode, toNode, linkId, value);
+    this.associate(scope, toNode, fromNode, linkId, value);
 
-    this.associate(scope, fromGroup, toGroup, link.id, value);
-    this.associate(scope, toGroup, fromGroup, link.id, value);
+    this.associate(scope, fromGroup, toGroup, linkId, value);
+    this.associate(scope, toGroup, fromGroup, linkId, value);
 
     setTimeout(() => {
       fromSocket.forceUpdate();
       toSocket.forceUpdate();
     }, 0);
+  }
+
+  associateLink(link, value) {
+    if (value === undefined) { value = link; }
+
+    this.associateLinkConcept(link.state.to, link.state.from, link.id, value);
   }
 
   forgetLinkAssociation(link) {

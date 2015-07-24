@@ -131,12 +131,18 @@ export default class GCLinksManager extends Component {
     event.stopPropagation();
     dragState.link = this.graphCanvas.lookup(dragState.link.id || dragState.link.props.initialId);
     if (dragState.link) {
+      let lastEnd = dragState.link.state.to;
       let end = this.detectSocketFromEvent(event, dragState, e.target);
       dragState.link.setState({
         isPartial: typeof end !== 'string',
         to: end
       });
       dragState.link.updateBounds();
+      if (lastEnd !== end && typeof lastEnd === 'string') {
+        this.graphCanvas.associateLinkConcept(
+          dragState.link.state.from, lastEnd,
+          dragState.link.id, null);
+      }
     }
   }
 
