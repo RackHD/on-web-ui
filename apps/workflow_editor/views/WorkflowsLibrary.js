@@ -93,12 +93,12 @@ export default class WEWorkflowsLibrary extends Component {
     if (workflowTemplate.id) {
       if (newGraph) {
         try {
-          this.context.editor.loadWorkflow(workflowTemplate, newGraph);
+          this.context.layout.loadWorkflow(workflowTemplate, newGraph);
         } catch (err) { console.error(err); }
-        return this.routeTo(encodeURIComponent(workflowTemplate.id));
+        return this.routeTo('edit', encodeURIComponent(workflowTemplate.id));
       }
       else {
-        return this.context.editor.loadWorkflow(workflowTemplate, newGraph);
+        return this.context.layout.loadWorkflow(workflowTemplate, newGraph);
       }
     }
     return this.context.editor.resetWorkflow();

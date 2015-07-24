@@ -18,6 +18,8 @@ import GraphCanvas, {
     GCSocket
   } from 'graph-canvas-web-ui/views/GraphCanvas';
 
+import Rectangle from 'graph-canvas-web-ui/lib/Rectangle';
+
 import WEToolbar from './Toolbar';
 import WETray from './Tray';
 
@@ -139,7 +141,7 @@ export default class WorkflowEditor extends Component {
   }
 
   newGraphCanvas() {
-    this.groups = {};
+    this.workflowGraphs = {};
     return <GraphCanvas
         key={'graphCanvas' + this.state.version}
         ref="graphCanvas"
@@ -151,7 +153,8 @@ export default class WorkflowEditor extends Component {
   }
 
   resetWorkflow() {
-    this.setState(prevState => {version: prevState.version + 1});
+    this.setState(prevState => ({version: prevState.version + 1}));
+    this.refs.tray.refs.inspector.refs.outline.setState({model: {}});
   }
 
   updateCanvasSize() {
@@ -179,25 +182,20 @@ export default class WorkflowEditor extends Component {
     if (newGraph) { this.resetWorkflow(); }
     setTimeout(() => {
       let workflowGraph = cloneDeep(workflowTemplate);
-      // this.workflowGraph = workflowGraph;
-      this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph})
-      this.loadWorkflowTemplate(workflowGraph);
+      this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
+      this.loadWorkflowTemplate(workflowGraph, () => {
+        this.organizeWorkflowGraphs(workflowGraph._.groupId);
+      });
     }, 32);
   }
 
-  loadWorkflowTemplate(workflowGraph) {
+  loadWorkflowTemplate(workflowGraph, callback) {
     let workflowGroupId = GCGroup.id();
 
-    this.groups[workflowGroupId] = workflowGraph;
+    this.workflowGraphs[workflowGroupId] = workflowGraph;
 
     workflowGraph._ = {};
     workflowGraph._.groupId = workflowGroupId;
-
-    var ids = {}, testId = (id) => {
-      if (ids[id]) { throw new Error('ID ALREADY EXISTS ' + id); }
-      ids[id] = true;
-    }
-    testId(workflowGroupId);
 
     // Setup Workflow
     React.withContext({
@@ -210,10 +208,10 @@ export default class WorkflowEditor extends Component {
       let taskWidth = taskGutter + taskSizeX;
       let taskHeight = taskGutter + taskSizeY;
       let minSizeX = taskGutter + taskWidth / 2;
-      let minSizeY = taskGutter + 10 + taskHeight / 2;
+      let minSizeY = taskGutter + taskHeight / 2;
       let columns = 4;
       let sizeX = Math.max(minSizeX, taskGutter + (columns * taskWidth) / 2);
-      let sizeY = Math.max(minSizeY, taskGutter + (Math.ceil(taskCount / columns) * taskHeight) / 2);
+      let sizeY = Math.max(minSizeY, taskGutter + (Math.ceil(taskCount / columns) * taskHeight) / 2) + 10;
 
       let workflowGroup = (
         <GCGroup key={workflowGroupId}
@@ -248,13 +246,6 @@ export default class WorkflowEditor extends Component {
               succeededId = GCSocket.id(),
               finishedId = GCSocket.id();
 
-          testId(taskNodeId);
-          testId(orderPortId);
-          testId(waitOnId);
-          testId(failedId);
-          testId(succeededId);
-          testId(finishedId);
-
           task._ = {};
           task._.nodeId = taskNodeId;
           task._.orderSocketIds = {
@@ -288,7 +279,7 @@ export default class WorkflowEditor extends Component {
                       dir={[-1, 0]}
                       initialColor="#249"
                       initialId={waitOnId}
-                      initialName="Wait" />
+                      initialName="Wait On" />
                   <GCSocket key={failedId}
                       dir={[1, 0]}
                       initialColor="#227"
@@ -299,10 +290,10 @@ export default class WorkflowEditor extends Component {
                       initialColor="#227"
                       initialId={succeededId}
                       initialName="Succeeded" />
-                  <GCSocket key={finishedId + 'a'}
+                  <GCSocket key={finishedId}
                       dir={[1, 0]}
                       initialColor="#227"
-                      initialId={finishedId + 'a'}
+                      initialId={finishedId}
                       initialName="Finished" />
                 </GCPort>
               </GCNode>
@@ -335,6 +326,7 @@ export default class WorkflowEditor extends Component {
                   <GCLink key={orderLinkId}
                       from={socketFrom}
                       to={socketTo}
+                      initialId={orderLinkId}
                       initialColor="#6cf" />
                 );
 
@@ -346,8 +338,91 @@ export default class WorkflowEditor extends Component {
             });
           }
         });
+        if (callback) { setTimeout(callback, 32); }
       }, 32);
     });
+  }
+
+  organizeWorkflowGraphs() {
+    Object.keys(this.workflowGraphs).forEach(workflowGraphId => {
+      this.organizeWorkflowGraph(workflowGraphId);
+      // TODO: resize and arrange groups
+    });
+  }
+
+  organizeWorkflowGraph(workflowGraphId, callback) {
+    let workflowGraph = this.workflowGraphs[workflowGraphId];
+    let taskMap = {};
+
+    workflowGraph.tasks.forEach(task => taskMap[task.label] = task);
+
+    let columns = [workflowGraph.tasks.filter(task => !task.waitOn)];
+
+    function findMaxDepth(task, depth=0) {
+      if (!task.waitOn) { return depth; }
+      depth += 1;
+      var depths = Object.keys(task.waitOn).map(taskLabel => {
+        var nextTask = taskMap[taskLabel];
+        return findMaxDepth(nextTask, depth);
+      });
+      return Math.max.apply(Math, depths);
+    }
+
+    workflowGraph.tasks.filter(task => task.waitOn).forEach(task => {
+      var column = findMaxDepth(task);
+      columns[column] = columns[column] || [];
+      columns[column].push(task);
+    });
+
+    let numRows = 0,
+        numCols = 0;
+
+    columns = columns.filter(column => {
+      if (column) {
+        numCols += 1;
+        numRows = Math.max(column.length, numRows);
+        return true;
+      }
+    });
+
+    if (numRows < 2) {
+      if (callback) { callback(); }
+      return;
+    }
+
+    columns.forEach((column, c) => {
+      column.forEach((task, i) => {
+        let nodeComponent = this.refs.graphCanvas.lookup(task._.nodeId);
+        let x = 350 * c + 30;
+        let y = 250 * i + 30;
+        nodeComponent.refs.panel.updateBounds(
+          new Rectangle([
+            x, y,
+            x + 320, y + 220
+          ])
+        );
+      });
+    });
+
+    setTimeout(() => {
+      Object.keys(workflowGraph._.links).forEach(linkId => {
+        let link = this.refs.graphCanvas.lookup(linkId);
+        link.updateBounds();
+      });
+
+      let workflowGraphComponent = this.refs.graphCanvas.lookup(workflowGraphId),
+          workflowGraphSizeX = (numCols * 350 + 30) / 2,
+          workflowGraphSizeY = (numRows * 250 + 30 + 50) / 2;
+
+      workflowGraphComponent.refs.panel.updateBounds(
+        new Rectangle([
+          1500 - workflowGraphSizeX, 1500 - workflowGraphSizeY,
+          1500 + workflowGraphSizeX, 1500 + workflowGraphSizeY
+        ])
+      );
+
+      if (callback) { setTimeout(callback, 32); }
+    }, 32);
   }
 
 }

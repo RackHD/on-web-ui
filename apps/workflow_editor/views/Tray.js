@@ -42,7 +42,7 @@ export default class WETray extends Component {
 
   css = {
     root: {
-      width: '40%',
+      width: '32%',
       background: 'white',
       minWidth: 300,
       verticalAlign: 'top',

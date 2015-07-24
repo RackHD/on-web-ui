@@ -454,10 +454,7 @@ export default class GCPanelElement extends Component {
   updateBounds(bounds) {
     this.setState({ bounds });
     if (this.props.onUpdateBounds) {
-      // HACK: without the timeout resizing a group is very slow.
-      // clearTimeout(this.onUpdateBoundsTimer);
-      // this.onUpdateBoundsTimer = setTimeout(() =>
-      this.props.onUpdateBounds(bounds);//, 16);
+      this.props.onUpdateBounds(bounds);
     }
   }
 

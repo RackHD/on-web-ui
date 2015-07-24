@@ -53,7 +53,7 @@ export default class WEFileMenu extends Component {
 
   triggerFileAction(e, selectedIndex, menuItem) {
     if (menuItem.text === 'New') {
-      this.context.editor.resetWorkflow();
+      this.context.layout.resetWorkflow();
       this.routeTo('');
     }
     if (selectedIndex !== 0) {

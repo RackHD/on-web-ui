@@ -100,29 +100,29 @@ export default class Editor extends EventEmitter {
   //   return workflowGraph;
   // }
 
-  organizeWorkflowTemplateWithTaskMap(workflowTemplate, taskMap) {
-    var columns = [workflowTemplate.tasks.filter(task => !task.waitOn)];
-    function findMaxDepth(task, depth=0) {
-      if (!task.waitOn) { return depth; }
-      depth += 1;
-      var depths = Object.keys(task.waitOn).map(taskLabel => {
-        var nextTask = taskMap[taskLabel];
-        return findMaxDepth(nextTask, depth);
-      });
-      return Math.max.apply(Math, depths);
-    }
-    workflowTemplate.tasks.filter(task => task.waitOn).forEach(task => {
-      var column = findMaxDepth(task);
-      columns[column] = columns[column] || [];
-      columns[column].push(task);
-    });
-    columns.forEach((column, c) => {
-      if (column) {
-        column.forEach((task, i) => {
-          task._node.bounds.translate([150 * c, 120 * i]);
-        });
-      }
-    });
-  }
+  // organizeWorkflowTemplateWithTaskMap(workflowTemplate, taskMap) {
+  //   var columns = [workflowTemplate.tasks.filter(task => !task.waitOn)];
+  //   function findMaxDepth(task, depth=0) {
+  //     if (!task.waitOn) { return depth; }
+  //     depth += 1;
+  //     var depths = Object.keys(task.waitOn).map(taskLabel => {
+  //       var nextTask = taskMap[taskLabel];
+  //       return findMaxDepth(nextTask, depth);
+  //     });
+  //     return Math.max.apply(Math, depths);
+  //   }
+  //   workflowTemplate.tasks.filter(task => task.waitOn).forEach(task => {
+  //     var column = findMaxDepth(task);
+  //     columns[column] = columns[column] || [];
+  //     columns[column].push(task);
+  //   });
+  //   columns.forEach((column, c) => {
+  //     if (column) {
+  //       column.forEach((task, i) => {
+  //         task._node.bounds.translate([150 * c, 120 * i]);
+  //       });
+  //     }
+  //   });
+  // }
 
 }

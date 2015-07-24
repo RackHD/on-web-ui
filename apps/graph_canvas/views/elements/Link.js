@@ -103,6 +103,7 @@ export default class GCLinkElement extends Component {
   }
 
   renderVector(bounds) {
+    console.log(bounds.toString());
     try {
       var //props = this.props,
           gutter = 5,
