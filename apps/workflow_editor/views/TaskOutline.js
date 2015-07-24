@@ -78,7 +78,7 @@ export default class WETaskOutline extends Component {
       this.context.editor.getTaskDefinitionByName(task.taskName) ||
       {};
 
-    console.log(task, definition);
+    // console.log(task, definition);
     // <br/>implementsTask:<br/>
     // {JSON.stringify(definition.implementsTask) || 'undefined'}
     // <br/>options:<br/>

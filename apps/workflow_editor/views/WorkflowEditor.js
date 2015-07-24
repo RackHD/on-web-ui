@@ -75,6 +75,7 @@ export default class WorkflowEditor extends Component {
   emitter = new EventEmitter();
 
   state = {
+    trayWidth: window.innerWidth * 0.4,
     version: 0,
     canvasWidth: 1000,
     canvasHeight: 1000
@@ -163,7 +164,9 @@ export default class WorkflowEditor extends Component {
             <WEToolbar ref="toolbar" />
             {this.newGraphCanvas()}
           </div>
-          <WETray ref="tray" className="cell" />
+          <WETray ref="tray" className="cell"
+              initialWidth={this.state.trayWidth}
+              onResize={this.updateTraySize.bind(this)} />
         </div>
         <div ref="overlay" className="overlay" style={css.overlay}></div>
       </div>
@@ -192,11 +195,17 @@ export default class WorkflowEditor extends Component {
     this.refs.tray.refs.inspector.refs.outline.setState({model: {}});
   }
 
+  updateTraySize(trayWidth) {
+    // debugger;
+    this.setState({ trayWidth });
+    setTimeout(this.updateCanvasSize.bind(this), 16);
+  }
+
   updateCanvasSize() {
     var canvasCell = React.findDOMNode(this.refs.canvasCell),
         toolbarLine = React.findDOMNode(this.refs.toolbar),
         footerSize = 38,
-        canvasWidth = canvasCell.offsetWidth,
+        canvasWidth = canvasCell.offsetWidth, //window.innerWidth - this.state.trayWidth,
         canvasHeight = window.innerHeight - toolbarLine.offsetHeight - footerSize;
     if (this.state.canvasWidth !== canvasWidth) { this.setState({ canvasWidth }); }
     if (this.state.canvasHeight !== canvasHeight) { this.setState({ canvasHeight }); }

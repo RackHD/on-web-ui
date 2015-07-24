@@ -22,14 +22,18 @@ import WETWorkflowsLibrary from './WorkflowsLibrary';
     className: PropTypes.string,
     css: PropTypes.object,
     editor: PropTypes.object,
-    styles: PropTypes.object
+    styles: PropTypes.object,
+    initialWidth: PropTypes.number,
+    onResize: PropTypes.func
   },
 
   defaultProps: {
     className: '',
     css: {},
     editor: null,
-    styles: {}
+    styles: {},
+    initialWidth: 400,
+    onResize: null
   },
 
   contextTypes: {
@@ -39,13 +43,22 @@ import WETWorkflowsLibrary from './WorkflowsLibrary';
 })
 export default class WETray extends Component {
 
-  state = {};
+  state = {
+    size: this.props.initialWidth,
+    hide: false
+  };
 
   css = {
+    resize: {
+      cursor: 'col-resize',
+      position: 'absolute',
+      fontSize: 18,
+      top: 18,
+      left: -30
+    },
     root: {
-      width: '32%',
+      position: 'relative',
       background: 'white',
-      minWidth: 300,
       verticalAlign: 'top',
       borderLeft: '2px solid #eee'
     }
@@ -57,10 +70,25 @@ export default class WETray extends Component {
 
   render() {
     let css = {
-      root: [this.css.root, this.props.css.root, this.props.style]
+      root: [
+        this.css.root,
+        {width: this.state.hide ? 0 : this.state.size},
+        this.props.css.root,
+        this.props.style
+      ],
+      resize: [
+        this.css.resize,
+        this.props.css.resize
+      ]
     };
     return (
       <div ref="root" className={this.props.className} style={css.root}>
+        <a ref="resize"
+            style={css.resize}
+            onDoubleClick={this.toggleTray.bind(this)}
+            onMouseDown={this.resizeTray.bind(this)}
+            className="fa fa-arrows-h"
+            title="Resize Tray" />
         <Tabs ref="tabs" contentContainerStyle={{maxHeight: window.innerHeight - 86, overflow: 'auto'}}>
           <Tab label="Inspector">
             <WEInspector ref="inspector" />
@@ -77,6 +105,34 @@ export default class WETray extends Component {
         </Tabs>
       </div>
     );
+  }
+
+  toggleTray() {
+    let hide = !this.state.hide;
+    this.setState({hide: hide});
+    if (this.props.onResize) { this.props.onResize(hide ? 0 : this.state.size); }
+  }
+
+  resizeTray(event) {
+    let active = true,
+        pageX = event.pageX,
+        size = this.state.size;
+
+    let moveHandler = (e) => {
+      if (!active) { return; }
+      let diffX = e.pageX - pageX;
+      this.setState({size: size - diffX});
+      if (this.props.onResize) { this.props.onResize(size - diffX); }
+    };
+
+    let upHandler = () => {
+      active = false;
+      window.removeEventListener('mousemove', moveHandler);
+      window.removeEventListener('mouseup', upHandler);
+    };
+
+    window.addEventListener('mousemove', moveHandler);
+    window.addEventListener('mouseup', upHandler);
   }
 
   viewInspector() {
