@@ -1,5 +1,7 @@
 'use strict';
 
+import { EventEmitter } from 'events';
+
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
 
@@ -23,7 +25,11 @@ import Rectangle from 'graph-canvas-web-ui/lib/Rectangle';
 import WEToolbar from './Toolbar';
 import WETray from './Tray';
 
-import Editor from '../lib/Editor';
+import TaskDefinition from '../lib/TaskDefinition';
+import WorkflowTemplate from '../lib/WorkflowTemplate';
+
+import TaskDefinitionStore from '../stores/TaskDefinitionStore';
+import WorkflowTemplateStore from '../stores/WorkflowTemplateStore';
 
 @radium
 @decorate({
@@ -46,7 +52,27 @@ import Editor from '../lib/Editor';
 })
 export default class WorkflowEditor extends Component {
 
-  editor = new Editor(this);
+  taskDefinitionStore = new TaskDefinitionStore(TaskDefinition);
+  workflowTemplateStore = new WorkflowTemplateStore(WorkflowTemplate);
+
+  getTaskDefinitionByName(name) {
+    return this.taskDefinitionStore.collection[name];
+  }
+
+  getWorkflowTemplateByName(name) {
+    return this.workflowTemplateStore.collection[name];
+  }
+
+  onGraphUpdate(handler) {
+    this.emitter.on('graphUpdate', handler);
+  }
+
+  emitGraphUpdate() {
+    this.emitter.emit('graphUpdate');
+  }
+
+  editor = this;
+  emitter = new EventEmitter();
 
   state = {
     version: 0,
@@ -72,7 +98,7 @@ export default class WorkflowEditor extends Component {
   getChildContext() {
     return {
       layout: this,
-      editor: this.editor
+      editor: this
     };
   }
 
