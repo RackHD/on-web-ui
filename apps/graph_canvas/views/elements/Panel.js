@@ -178,6 +178,7 @@ export default class GCPanelElement extends Component {
       height: 39
     },
     inputs: {
+      maxWidth: '40%',
       color: 'inherit',
       background: 'transparent',
       border: 'none',
@@ -185,7 +186,12 @@ export default class GCPanelElement extends Component {
       marginTop: -5,
       marginRight: '1ex',
       transition: 'all 0.4s ease-out',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
       ':focus': {
+        textOverflow: 'clip',
+        maxWidth: '80%',
         color: 'black',
         background: 'white',
         outline: 'inset 2px rgba(127, 127, 127, 0.5)'
