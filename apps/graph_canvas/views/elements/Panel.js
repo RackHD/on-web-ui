@@ -111,46 +111,43 @@ export default class GCPanelElement extends Component {
     let id = this.id;
 
     return (
-      <div
+      <div ref="root"
           data-id={id}
           onMouseOver={this.setHoverState.bind(this, true, 1000)}
           onMouseOut={this.setHoverState.bind(this, false, 250)}
           className={props.className}
           style={css.root}>
-        <div
-            onClick={this.stopEventPropagation}
+        <div ref="header"
             onMouseDown={this.movePanel.bind(this)}
             style={css.header}>
-          <input
+          <input ref="nameInput"
               key="nameInput"
               type="text"
               value={this.state.name}
               style={css.inputs.concat([{width: (this.state.name.length + 1) + 'ex'}])}
               onChange={this.handleNameChange.bind(this)}
-              onMouseDown={this.stopEventPropagation}
-              onTouchTap={this.stopEventPropagation} />
-          <a
+              onFocus={this.focusInput.bind(this)}
+              onBlur={this.blurInput.bind(this)} />
+          <a ref="remove"
               style={css.remove}
               onMouseDown={this.stopEventPropagation}
               onTouchTap={this.removePanel.bind(this)}
               className="fa fa-remove"
               title="Remove" />
-          <input
+          <input ref="colorInput"
               key="colorInput"
               type="text"
               value={this.state.color}
               style={css.inputs.concat([{float: 'right', width: (this.state.color.length + 1) + 'ex'}])}
               onChange={this.handleColorChange.bind(this)}
-              onMouseDown={this.stopEventPropagation}
-              onTouchTap={this.stopEventPropagation} />
-
+              onFocus={this.focusInput.bind(this)}
+              onBlur={this.blurInput.bind(this)} />
         </div>
-        <div
-            onClick={this.toggleSelected.bind(this)}
+        <div ref="content"
             style={css.content}>
           {props.children}
         </div>
-        <a
+        <a ref="resize"
             style={css.resize}
             onMouseOver={this.setHoverState.bind(this, true, 100)}
             onMouseOut={this.setHoverState.bind(this, false, 1000)}
@@ -285,15 +282,20 @@ export default class GCPanelElement extends Component {
 
   // renamePanel() {}
 
-  // selectPanel() { this.setState({selected: true}); }
-
-  // unselectPanel() { this.setState({selected: false}); }
-
   // TODO: this is sometimes calls as an event handler for onClick
   //       and should not select the node if the user pans
-  toggleSelected(e) {
-    if (e) { e.stopPropagation(); }
+  toggleSelected() {
     this.setState({selected: !this.state.selected});
+  }
+
+  focusInput(e) {
+    e.currentTarget.focus();
+    this.forceUpdate();
+  }
+
+  blurInput(e) {
+    e.currentTarget.blur();
+    this.forceUpdate();
   }
 
   handleNameChange(event) {
@@ -345,10 +347,11 @@ export default class GCPanelElement extends Component {
       dragState.frames.push(frame);
       if (dragState.frames.length >= 12) { dragState.frames.shift(); }
     };
-    return this.graphCanvasViewport.setupClickDrag({
+    e.stopPropagation();
+    if (e.target.tagName === 'INPUT') { return; }
+    this.graphCanvasViewport.setupClickDrag({
       down: (event, dragState) => {
         this.setState({moving: true});
-        event.stopPropagation();
         dragState.start = event.timeStamp || Date.now();
         dragState.nextMove = -1;
         dragState.lastMove = {
@@ -361,9 +364,10 @@ export default class GCPanelElement extends Component {
       },
       move: (event, dragState) => {
         clearInterval(this.moveRepeat);
-        event.stopPropagation();
         var duration = (event.timeStamp || Date.now()) - dragState.start;
-        if (duration < 100) { return; }
+        if (duration < 200) { return; }
+        event.stopPropagation();
+        event.preventDefault(); // prevent text selection;
         var lastX = dragState.lastMove.x,
             lastY = dragState.lastMove.y;
         dragState.lastMove = {
@@ -373,11 +377,6 @@ export default class GCPanelElement extends Component {
         pushFrame(event, dragState);
         var displace = new Vector(lastX - event.relX, lastY - event.relY).squish(this.graphCanvas.scale).negate();
         this.updateBounds(this.state.bounds.clone().translate(displace));
-        // this.setState({bounds: this.state.bounds.clone().translate(displace)});
-        // this.graphCanvas.refs.nodes.moveNode(
-        //   this.props.model.id,
-        //   lastX - event.relX,
-        //   lastY - event.relY);
         this.moveRepeat = setInterval(() => {
           pushFrame(event, dragState);
         }, 32);
@@ -385,12 +384,10 @@ export default class GCPanelElement extends Component {
       up: (event, dragState) => {
         clearInterval(this.moveRepeat);
         this.setState({moving: false});
-        event.stopPropagation();
         var duration = (event.timeStamp || Date.now()) - dragState.start;
-        // if (duration < 100) { return null; }
-        if (duration < 100) { return this.toggleSelected(); }
+        if (duration < 250) { return this.toggleSelected(); }
         pushFrame(event, dragState);
-        var velocitySum = dragState.frames.reduce(function (lastValue, currFrame) {
+        var velocitySum = dragState.frames.reduce((lastValue, currFrame) => {
           return (lastValue.velocity || lastValue).add(currFrame.velocity);
         });
         velocitySum = velocitySum.squish(dragState.frames.length / 2);
@@ -398,13 +395,6 @@ export default class GCPanelElement extends Component {
         var tick = () => {
           if (Math.abs(velocitySum.x) < 0.001 &&
               Math.abs(velocitySum.y) < 0.001) { return; }
-          // this.graphCanvas.refs.nodes.moveNode(
-          //   this.props.model.id,
-          //   velocitySum.x,
-          //   velocitySum.y);
-          // this.setState({
-          //   bounds: this.state.bounds.clone().translate(velocitySum.squish(this.graphCanvas.scale).negate())
-          // });
           this.updateBounds(this.state.bounds.clone().translate(velocitySum.squish(this.graphCanvas.scale).negate()));
           velocitySum = velocitySum.scale(0.95);
           if (!this.stopPhysicsMove) {
@@ -417,7 +407,7 @@ export default class GCPanelElement extends Component {
   }
 
   resizePanel(e) {
-    return this.graphCanvasViewport.setupClickDrag({
+    this.graphCanvasViewport.setupClickDrag({
       down: (event, dragState) => {
         this.setState({resizing: true});
         event.stopPropagation();
@@ -433,6 +423,7 @@ export default class GCPanelElement extends Component {
       move: (event, dragState) => {
         clearInterval(this.moveRepeat);
         event.stopPropagation();
+        event.preventDefault();
         var lastX = dragState.lastMove.x,
             lastY = dragState.lastMove.y;
         dragState.lastMove = {

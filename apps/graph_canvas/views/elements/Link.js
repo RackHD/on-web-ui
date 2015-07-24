@@ -95,7 +95,7 @@ export default class GCLinkElement extends Component {
   render() {
     try {
       if (!this.state.removed && this.state.bounds) {
-        console.log('RENDER LINK');
+        // console.log('RENDER LINK');
         return this.renderVector(this.state.bounds);
       }
     } catch (err) { console.error(err.stack || err); }
@@ -103,7 +103,6 @@ export default class GCLinkElement extends Component {
   }
 
   renderVector(bounds) {
-    console.log(bounds.toString());
     try {
       var //props = this.props,
           gutter = 5,

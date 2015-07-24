@@ -69,7 +69,7 @@ export default class WEWorkflowOutline extends Component {
   // }
 
   render() {
-    console.log('RENDER WORKFLOW OUTLINE', this.state);
+    // console.log('RENDER WORKFLOW OUTLINE', this.state);
     let workflow = this.state.model;
 
     // let optionsMapper = (object, list, hash) => {
