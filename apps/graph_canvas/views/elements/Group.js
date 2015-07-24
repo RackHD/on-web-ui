@@ -99,7 +99,8 @@ export default class GCGroupElement extends Component {
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
           onRemovePanel={this.onRemovePanel.bind(this)}
-          onUpdateBounds={this.onUpdateBounds.bind(this)}>
+          onUpdateBounds={this.onUpdateBounds.bind(this)}
+          onSelect={this.onSelect.bind(this)}>
 
         <GCVectorsLayer ref="vectors" key="vectors" bounds={vectorsBounds}>
           {vectors}
@@ -189,4 +190,7 @@ export default class GCGroupElement extends Component {
     this.setState({ bounds });
   }
 
+  onSelect(selected) {
+    this.graphCanvas.updateSelection(selected, this);
+  }
 }

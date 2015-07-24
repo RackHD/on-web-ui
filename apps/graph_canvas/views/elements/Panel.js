@@ -285,7 +285,11 @@ export default class GCPanelElement extends Component {
   // TODO: this is sometimes calls as an event handler for onClick
   //       and should not select the node if the user pans
   toggleSelected() {
-    this.setState({selected: !this.state.selected});
+    let selected = !this.state.selected;
+    this.setState({ selected });
+    if (this.props.onSelect) {
+      this.props.onSelect(selected);
+    }
   }
 
   focusInput(e) {

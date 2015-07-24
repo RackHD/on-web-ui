@@ -57,7 +57,8 @@ import WETaskOutline from './TaskOutline';
 export default class WEWorkflowOutline extends Component {
 
   state = {
-    model: this.props.model
+    model: this.props.model/*,
+    selected: []*/
   };
 
   componentWillMount() {}
@@ -67,6 +68,13 @@ export default class WEWorkflowOutline extends Component {
   // componentWillReceiveProps(nextProps) {
   //   this.setState({model: nextProps.model});
   // }
+
+  updateSelected(selected) {
+    // this.setState({ selected });
+    // debugger;
+    let isChecked = selected.indexOf(this.state.model._.groupComponent) !== -1;
+    this.refs.selected.setChecked(isChecked);
+  }
 
   render() {
     // console.log('RENDER WORKFLOW OUTLINE', this.state);
@@ -145,7 +153,7 @@ export default class WEWorkflowOutline extends Component {
         <List
             subheader="Workflow:">
           <ListItem
-              leftCheckbox={<Checkbox onCheck={this.selectWorkflow.bind(this)}/>}
+              leftCheckbox={<Checkbox ref="selected" onCheck={this.selectWorkflow.bind(this)}/>}
               rightIconButton={
                 <IconButton
                     iconClassName="fa fa-at"
@@ -187,7 +195,8 @@ export default class WEWorkflowOutline extends Component {
 
   selectWorkflow(e, toggled) {
     // this.stopEvent(e);
-    console.log(toggled);
+    // console.log(toggled, );
+    this.state.model._.groupComponent.refs.panel.toggleSelected();
     // if (toggled) {
     //   this.context.layout.refs.graphCanvas.selectNode(this.props.model._node, e.shiftKey);
     // }

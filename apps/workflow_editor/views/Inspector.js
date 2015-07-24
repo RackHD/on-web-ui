@@ -32,7 +32,9 @@ export default class WEInspector extends Component {
   componentWillUnmount() {}
 
   update(selected) {
+    // debugger;
     this.setState({ selected });
+    this.refs.outline.updateSelected(selected);
   }
 
   // get currentWorkflow() {
@@ -56,13 +58,16 @@ export default class WEInspector extends Component {
     if (!selected || !selected.length) {
       selected = 'No selected nodes.';
     }
+    else {
+      selected = selected.length;
+    }
     return (
       <div className="WorkflowInspector" style={{padding: 10}}>
         <p style={{color: '#bbb', float: 'left'}}>
-          {selected.length} selected items.
+          {selected} selected items.
         </p>
         <RaisedButton
-            disabled={!!selected.length}
+            disabled={!!selected}
             style={{float: 'right'}}
             primary={true}
             label="Remove Selected" />

@@ -103,9 +103,9 @@ export default class WorkflowEditor extends Component {
   }
 
   componentWillMount() {
-    this.editor.onGraphUpdate(graph => {
-      this.refs.graphCanvas.updateGraph(graph);
-    });
+    // this.editor.onGraphUpdate(graph => {
+    //   this.refs.graphCanvas.updateGraph(graph);
+    // });
     this.loadWorkflowFromParams();
   }
 
@@ -120,10 +120,6 @@ export default class WorkflowEditor extends Component {
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleResize);
     document.body.classList.add('no-select');
-
-    this.refs.graphCanvas.onSelect((selection) => {
-      this.refs.tray.refs.inspector.update(selection);
-    });
   }
 
   componentWillUnmount() {
@@ -136,6 +132,14 @@ export default class WorkflowEditor extends Component {
   // componentWillReceiveProps(nextProps) {
     // TODO: fix this
     // this.loadWorkflowFromParams(nextProps);
+  // }
+
+  // componentDidUpdate() {
+  //   debugger;
+  //   this.refs.graphCanvas.onSelect((selection) => {
+  //     debugger;
+  //     this.refs.tray.refs.inspector.update(selection);
+  //   });
   // }
 
   render() {
@@ -175,7 +179,12 @@ export default class WorkflowEditor extends Component {
         viewWidth={this.state.canvasWidth}
         viewHeight={this.state.canvasHeight}
         worldWidth={3000}
-        worldHeight={3000} />;
+        worldHeight={3000}
+        onSelect={this.onSelect.bind(this)} />;
+  }
+
+  onSelect(selection) {
+    this.refs.tray.refs.inspector.update(selection);
   }
 
   resetWorkflow() {

@@ -1,6 +1,6 @@
 'use strict';
 
-import { EventEmitter } from 'events';
+// import { EventEmitter } from 'events';
 
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
@@ -63,7 +63,8 @@ export { GCSocketElement as GCSocket };
     viewHeight: PropTypes.number,
     viewWidth: PropTypes.number,
     worldHeight: PropTypes.number,
-    worldWidth: PropTypes.number
+    worldWidth: PropTypes.number,
+    onSelect: PropTypes.func
   },
   defaultProps: {
     className: 'GraphCanvas',
@@ -76,7 +77,8 @@ export { GCSocketElement as GCSocket };
     viewHeight: 600,
     viewWidth: 800,
     worldHeight: 2000,
-    worldWidth: 2000
+    worldWidth: 2000,
+    onSelect: null
   },
   childContextTypes: {
     graphCanvas: PropTypes.any
@@ -129,13 +131,14 @@ export default class GraphCanvas extends Component {
     };
   }
 
-  componentWillMount() {
-    this.events = new EventEmitter();
-  }
-
-  componentWillUnmount() {
-    this.events.removeAllListeners();
-  }
+  // componentWillMount() {
+  //   debugger;
+  //   this.events = new EventEmitter();
+  // }
+  //
+  // componentWillUnmount() {
+  //   this.events.removeAllListeners();
+  // }
 
   /**
   @method
@@ -218,49 +221,23 @@ export default class GraphCanvas extends Component {
     this.setState({ scale });
   }
 
-  // updateGraph(graph) {
-  //   this.graph = graph || this.graph;
-  //   this.setState({nodes: this.graph.nodes});
-  //   console.log(this.graph.nodes);
-  //   setTimeout(() => {
-  //     console.log(this.graph.links);
-  //     this.setState({links: this.fixLinkPositions(this.graph.links)});
-  //   }, 0);
+  updateSelection(selected, element) {
+    let index = this.selected.indexOf(element);
+    if (selected) {
+      if (index === -1) { this.selected.push(element); }
+    }
+    else {
+      if (index !== -1) { this.selected.splice(index, 1); }
+    }
+    // debugger;
+    // this.events.emit('selection', this.selected);
+    if (this.props.onSelect) { this.props.onSelect(this.selected); }
+  }
+
+  // onSelect(callback) {
+  //   // debugger;
+  //   this.events.on('selection', callback);
   // }
-  //
-  // fixLinkPositions(links) {
-  //   links = links || this.graph.links;
-  //   var getSocketPosition = (link, k) => {
-  //     var socket = link['socket' + k],
-  //         port = socket.port,
-  //         node = port.node;
-  //     var nodeRef = this.refs[node.id],
-  //         portRef = nodeRef.refs[port.name],
-  //         socketRef = portRef.refs[socket.type];
-  //     return this.getSocketCenter(
-  //       React.findDOMNode(socketRef).querySelector('.GraphCanvasSocketIcon')
-  //     );
-  //   };
-  //   console.log('fix links', links.length);
-  //   links.forEach(link => {
-  //     var a = getSocketPosition(link, 'Out'),
-  //         b = getSocketPosition(link, 'In');
-  //     link.data.bounds = new Rectangle(a.x, a.y, b.x, b.y);
-  //   });
-  //   return links;
-  // }
-
-  selectNode(node, shiftKey) {
-    this.refs.world.selectNode(node, shiftKey);
-  }
-
-  onSelect(callback) {
-    this.events.on('selection', callback);
-  }
-
-  selectionHandler(selection) {
-    this.events.emit('selection', selection);
-  }
 
   lookup(id) {
     let obj = this.index[id];

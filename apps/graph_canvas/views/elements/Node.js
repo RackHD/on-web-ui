@@ -96,7 +96,8 @@ export default class GCNodeElement extends Component {
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
           onRemovePanel={this.onRemovePanel.bind(this)}
-          onUpdateBounds={this.onUpdateBounds.bind(this)}>
+          onUpdateBounds={this.onUpdateBounds.bind(this)}
+          onSelect={this.onSelect.bind(this)}>
         <div ref="ports"
             onScroll={this.updateLinks.bind(this)}
             style={{
@@ -137,6 +138,10 @@ export default class GCNodeElement extends Component {
   updateLinks() {
     let links = this.graphCanvas.lookupLinks(this.id);
     links.forEach(link => link.updateBounds());
+  }
+
+  onSelect(selected) {
+    this.graphCanvas.updateSelection(selected, this);
   }
 
 }
