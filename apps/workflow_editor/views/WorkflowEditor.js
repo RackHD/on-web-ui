@@ -212,19 +212,20 @@ export default class WorkflowEditor extends Component {
         this.currentWorkflowGraph = workflowGraph;
       }
       this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
-      this.loadWorkflowTemplate(workflowGraph, this.currentWorkflowGraph, () => {
+      this.refs.tray.refs.json.setState({model: workflowTemplate});
+      this.loadWorkflowTemplate(workflowGraph, workflowTemplate, this.currentWorkflowGraph, () => {
         this.organizeWorkflowGraphs(workflowGraph._.groupId);
       });
     }, 32);
   }
 
-  loadWorkflowTemplate(workflowGraph, parentWorkflowGraph, callback) {
+  loadWorkflowTemplate(workflowGraph, workflowTemplate, parentWorkflowGraph, callback) {
     let workflowGroupId = GCGroup.id(),
         isSubGraph = parentWorkflowGraph && parentWorkflowGraph !== workflowGraph;
 
     this.workflowGraphs[workflowGroupId] = workflowGraph;
 
-    workflowGraph._ = { isSubGraph };
+    workflowGraph._ = { isSubGraph, template: workflowTemplate };
     workflowGraph._.groupId = workflowGroupId;
 
     // Setup Workflow

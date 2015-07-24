@@ -12,6 +12,7 @@ import {
   } from 'material-ui';
 
 import WEInspector from './Inspector';
+import WEWorkflowJSON from './WorkflowJSON';
 import WETasksLibrary from './TasksLibrary';
 import WETWorkflowsLibrary from './WorkflowsLibrary';
 
@@ -64,6 +65,9 @@ export default class WETray extends Component {
           <Tab label="Inspector">
             <WEInspector ref="inspector" />
           </Tab>
+          <Tab label="JSON">
+            <WEWorkflowJSON ref="json" />
+          </Tab>
           <Tab label="Tasks">
             <WETasksLibrary ref="tasks" />
           </Tab>
@@ -79,12 +83,16 @@ export default class WETray extends Component {
     this.refs.tabs.setState({selectedIndex: 0});
   }
 
-  viewTasks() {
+  viewJSON() {
     this.refs.tabs.setState({selectedIndex: 1});
   }
 
-  viewWorkflows() {
+  viewTasks() {
     this.refs.tabs.setState({selectedIndex: 2});
+  }
+
+  viewWorkflows() {
+    this.refs.tabs.setState({selectedIndex: 3});
   }
 
 }

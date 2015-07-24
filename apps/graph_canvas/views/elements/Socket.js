@@ -81,12 +81,14 @@ export default class GCSocketElement extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     let state = this.state;
     return (
+      state.hover !== nextState.hover ||
       state.color !== nextState.color ||
       state.name !== nextState.name
     );
   }
 
   state = {
+    hover: false,
     color: new Color(this.props.initialColor),
     name: this.props.initialName
   };
@@ -129,7 +131,9 @@ export default class GCSocketElement extends Component {
 
     return (
       <div className="GraphCanvasSocket ungrid"
-           data-id={this.id}>
+           data-id={this.id}
+           onMouseOver={this.onHover.bind(this)}
+           onMouseOut={this.onLeave.bind(this)}>
         <div className="line">
           {cells}
         </div>
@@ -151,19 +155,40 @@ export default class GCSocketElement extends Component {
   get preparedCSS() {
     let props = this.props,
         color = this.state.color;
+    let cssColor = {color: this.state.hover ? 'red' : color.hexString()};
     return {
       socket: [
         this.css.socket,
-        {color: color.hexString()},
+        cssColor,
         props.css.socket
       ],
       type: [
         this.css.type,
-        {color: color.hexString()},
+        cssColor,
         props.css.type
       ],
       root: [this.css.root, props.css.root, props.style]
     };
+  }
+
+  onHover(skipLink) {
+    this.setState({hover: true});
+    var links = this.graphCanvas.lookupLinks(this.id);
+    if (skipLink === true) { return; }
+    links.forEach(link => {
+      if (link === skipLink) { return; }
+      link.onHoverCurve(skipLink ? true : this);
+    });
+  }
+
+  onLeave(skipLink) {
+    this.setState({hover: false});
+    var links = this.graphCanvas.lookupLinks(this.id);
+    if (skipLink === true) { return; }
+    links.forEach(link => {
+      if (link === skipLink) { return; }
+      link.onLeaveCurve(skipLink ? true : this);
+    });
   }
 
   drawLink(_event) {

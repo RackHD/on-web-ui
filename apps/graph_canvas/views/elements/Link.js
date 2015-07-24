@@ -145,6 +145,7 @@ export default class GCLinkElement extends Component {
       // var socket = this.props.model.socketOut || this.props.model.socketIn;
       // var color = socket && socket.port && socket.port.color || 'black';
       var color = this.props.initialColor;
+      if (this.state.hover) { color = 'red'; }
 
       // style={{overflow: 'visible'}}
       // <g transform={transform}>
@@ -175,10 +176,10 @@ export default class GCLinkElement extends Component {
               strokeWidth={stroke}
               strokeLinecap="round"
               style={{
-                pointerEvents: 'all',
-                ':hover': {
-                  stroke: 'red'
-                }
+                // pointerEvents: 'all',
+                // ':hover': {
+                //   stroke: 'red'
+                // }
               }}
               onMouseOver={this.onHoverCurve.bind(this)}
               onMouseMove={this.onHoverCurve.bind(this)}
@@ -225,13 +226,23 @@ export default class GCLinkElement extends Component {
     }
   }
 
-  onHoverCurve() {
+  onHoverCurve(skipSocket) {
     this.setState({hover: true});
     this.updateBounds();
+    if (skipSocket === true) { return; }
+    let fromSocket = this.graphCanvas.lookup(this.state.from),
+        toSocket = this.graphCanvas.lookup(this.state.to);
+    if (skipSocket !== fromSocket) { fromSocket.onHover(skipSocket ? true : this); }
+    if (skipSocket !== toSocket) { toSocket.onHover(toSocket ? true : this); }
   }
 
-  onLeaveCurve() {
+  onLeaveCurve(skipSocket) {
     this.setState({hover: false});
+    if (skipSocket === true) { return; }
+    let fromSocket = this.graphCanvas.lookup(this.state.from),
+        toSocket = this.graphCanvas.lookup(this.state.to);
+    if (skipSocket !== fromSocket) { fromSocket.onLeave(skipSocket ? true : this); }
+    if (skipSocket !== toSocket) { toSocket.onLeave(toSocket ? true : this); }
   }
 
   removeLink(event) {

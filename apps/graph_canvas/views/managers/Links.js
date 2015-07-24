@@ -129,6 +129,7 @@ export default class GCLinksManager extends Component {
 
   drawLinkContinue(event, dragState, e) {
     event.stopPropagation();
+    event.preventDefault(); // prevent text selection
     dragState.link = this.graphCanvas.lookup(dragState.link.id || dragState.link.props.initialId);
     if (dragState.link) {
       let lastEnd = dragState.link.state.to;
