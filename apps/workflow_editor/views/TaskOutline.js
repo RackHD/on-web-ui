@@ -54,9 +54,21 @@ export default class WETaskOutline extends Component {
 
   state = {};
 
-  componentWillMount() {}
+  componentWillMount() {
+    if (this.props.model && this.props.model._) {
+      this.props.model._.outlineComponent = this;
+    }
+  }
 
   componentWillUnmount() {}
+
+  updateSelected(selected) {
+    // this.setState({ selected });
+    // debugger;
+    let nodeComponent = this.context.editor.refs.graphCanvas.lookup(this.props.model._.nodeId);
+    let isChecked = selected.indexOf(nodeComponent) !== -1;
+    this.refs.selected.setChecked(isChecked);
+  }
 
   render() {
     let task = this.props.model;
@@ -81,7 +93,7 @@ export default class WETaskOutline extends Component {
       <List
           subheader={this.props.showSubHeader ? 'Task:' : ''}>
         <ListItem
-            leftCheckbox={<Checkbox onCheck={this.selectTask.bind(this)}/>}
+            leftCheckbox={<Checkbox ref="selected" onCheck={this.selectTask.bind(this)}/>}
             rightIconButton={
               <IconButton
                   iconClassName="fa fa-at"
@@ -101,6 +113,8 @@ export default class WETaskOutline extends Component {
   selectTask(e, toggled) {
     // this.stopEvent(e);
     console.log(toggled);
+    let nodeComponent = this.context.editor.refs.graphCanvas.lookup(this.props.model._.nodeId);
+    nodeComponent.refs.panel.toggleSelected();
     // if (toggled) {
     //   this.context.layout.refs.graphCanvas.selectNode(this.props.model._node, e.shiftKey);
     // }

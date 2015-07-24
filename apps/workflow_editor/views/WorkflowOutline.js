@@ -69,11 +69,23 @@ export default class WEWorkflowOutline extends Component {
   //   this.setState({model: nextProps.model});
   // }
 
+  componentDidUpdate() {
+    if (this.state.model && this.state.model._) {
+      this.state.model._.outlineComponent = this;
+    }
+  }
+
   updateSelected(selected) {
     // this.setState({ selected });
     // debugger;
     let isChecked = selected.indexOf(this.state.model._.groupComponent) !== -1;
     this.refs.selected.setChecked(isChecked);
+    Object.keys(this.refs).forEach(key => {
+      if (key.indexOf('task-') === 0) {
+        console.log(this.refs[key]);
+        this.refs[key].updateSelected(selected);
+      }
+    });
   }
 
   render() {
@@ -138,7 +150,7 @@ export default class WEWorkflowOutline extends Component {
       tasks = tasks.map((task, i) => {
         return (
           <ListItem key={i}>
-            <WETaskOutline model={task} />
+            <WETaskOutline ref={'task-' + i} model={task} />
           </ListItem>
         );
       });
