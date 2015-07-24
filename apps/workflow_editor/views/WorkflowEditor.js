@@ -208,19 +208,23 @@ export default class WorkflowEditor extends Component {
     if (newGraph) { this.resetWorkflow(); }
     setTimeout(() => {
       let workflowGraph = cloneDeep(workflowTemplate);
+      if (newGraph) {
+        this.currentWorkflowGraph = workflowGraph;
+      }
       this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
-      this.loadWorkflowTemplate(workflowGraph, () => {
+      this.loadWorkflowTemplate(workflowGraph, this.currentWorkflowGraph, () => {
         this.organizeWorkflowGraphs(workflowGraph._.groupId);
       });
     }, 32);
   }
 
-  loadWorkflowTemplate(workflowGraph, callback) {
-    let workflowGroupId = GCGroup.id();
+  loadWorkflowTemplate(workflowGraph, parentWorkflowGraph, callback) {
+    let workflowGroupId = GCGroup.id(),
+        isSubGraph = parentWorkflowGraph && parentWorkflowGraph !== workflowGraph;
 
     this.workflowGraphs[workflowGroupId] = workflowGraph;
 
-    workflowGraph._ = {};
+    workflowGraph._ = { isSubGraph };
     workflowGraph._.groupId = workflowGroupId;
 
     // Setup Workflow
@@ -241,7 +245,9 @@ export default class WorkflowEditor extends Component {
 
       let workflowGroup = (
         <GCGroup key={workflowGroupId}
-            initialBounds={[
+            initialBounds={isSubGraph ? [
+              0, 0, sizeX * 2, sizeY * 2
+            ] : [
               1500 - sizeX, 1500 - sizeY,
               1500 + sizeX, 1500 + sizeY
             ]}
@@ -253,7 +259,14 @@ export default class WorkflowEditor extends Component {
       workflowGraph._.groupElement = workflowGroup;
 
       // TODO: add handler to remove from this.groups
-      this.refs.graphCanvas.refs.world.appendChild(workflowGroup);
+      if (isSubGraph) {
+        parentWorkflowGraph._.subGraphs = parentWorkflowGraph._.subGraphs || [];
+        parentWorkflowGraph._.subGraphs.push(workflowGraph);
+        parentWorkflowGraph._.groupComponent.appendChild(workflowGroup);
+      }
+      else {
+        this.refs.graphCanvas.refs.world.appendChild(workflowGroup);
+      }
 
       setTimeout(() => {
         let workflowGroupComponent = this.refs.graphCanvas.lookup(workflowGroupId);
@@ -436,12 +449,15 @@ export default class WorkflowEditor extends Component {
         link.updateBounds();
       });
 
-      let workflowGraphComponent = this.refs.graphCanvas.lookup(workflowGraphId),
+      let isSubGraph = workflowGraph._.isSubGraph,
+          workflowGraphComponent = workflowGraph._.groupComponent,
           workflowGraphSizeX = (numCols * 350 + 30) / 2,
           workflowGraphSizeY = (numRows * 250 + 30 + 50) / 2;
 
       workflowGraphComponent.refs.panel.updateBounds(
-        new Rectangle([
+        new Rectangle(isSubGraph ? [
+          0, 0, workflowGraphSizeX * 2, workflowGraphSizeY * 2
+        ] : [
           1500 - workflowGraphSizeX, 1500 - workflowGraphSizeY,
           1500 + workflowGraphSizeX, 1500 + workflowGraphSizeY
         ])
