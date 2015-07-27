@@ -227,6 +227,7 @@ export default class GCLinkElement extends Component {
   }
 
   onHoverCurve(skipSocket) {
+    if (this.state.isPartial) { return; }
     this.setState({hover: true});
     this.updateBounds();
     if (skipSocket === true) { return; }
@@ -237,6 +238,7 @@ export default class GCLinkElement extends Component {
   }
 
   onLeaveCurve(skipSocket) {
+    if (this.state.isPartial) { return; }
     this.setState({hover: false});
     if (skipSocket === true) { return; }
     let fromSocket = this.graphCanvas.lookup(this.state.from),
