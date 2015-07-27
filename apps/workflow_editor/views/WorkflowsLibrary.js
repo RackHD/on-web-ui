@@ -64,17 +64,17 @@ export default class WEWorkflowsLibrary extends Component {
   render() {
     var libraryWorkflows = this.state.workflowTemplates.map(workflowTemplate => {
       let onLoad = this.loadWorkflow.bind(this, workflowTemplate, true);
-      let onSelect = this.loadWorkflow.bind(this, workflowTemplate, false);
+      // let onSelect = this.loadWorkflow.bind(this, workflowTemplate, false);
       return (
-        <LibraryItem key={workflowTemplate.friendlyName}
-            onSelect={onSelect}
+        <LibraryItem key={workflowTemplate.id}
+            onSelect={onLoad/*onSelect*/}
             object={workflowTemplate}
             name={workflowTemplate.friendlyName}>
-          <a
+          {/*<a
               title="Load this workflow."
               style={{display: 'inline-block', margin: '0 5px'}}
               onClick={onLoad}
-              className="fa fa-external-link-square fa-flip-horizontal" />
+              className="fa fa-external-link-square fa-flip-horizontal" />*/}
         </LibraryItem>
       );
     });

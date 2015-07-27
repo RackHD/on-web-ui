@@ -14,8 +14,8 @@ import {
     ListItem,
     // FontIcon,
     IconButton,
-    Checkbox,
-    Toggle
+    Checkbox//,
+    // Toggle
   } from 'material-ui';
 
 /**
@@ -73,10 +73,10 @@ export default class WETaskOutline extends Component {
   render() {
     let task = this.props.model;
 
-    let definition =
-      task.taskDefinition ||
-      this.context.editor.getTaskDefinitionByName(task.taskName) ||
-      {};
+    // let definition =
+    //   task.taskDefinition ||
+    //   this.context.editor.getTaskDefinitionByName(task.taskName) ||
+    //   {};
 
     // console.log(task, definition);
     // <br/>implementsTask:<br/>
@@ -102,10 +102,10 @@ export default class WETaskOutline extends Component {
             }>
           {task.label}
         </ListItem>
-        <ListItem
+        {/*<ListItem
             primaryText="Ignore Failure"
             rightToggle={<Toggle />}>
-        </ListItem>
+        </ListItem>*/}
       </List>
     );
   }

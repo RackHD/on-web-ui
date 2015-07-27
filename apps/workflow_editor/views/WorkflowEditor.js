@@ -95,7 +95,6 @@ export default class WorkflowEditor extends Component {
 
     overlay: {
       position: 'absolute',
-      // box-sizing: 'border-box',
       height: 0,
       width: '100%',
       top: 0
@@ -110,9 +109,6 @@ export default class WorkflowEditor extends Component {
   }
 
   componentWillMount() {
-    // this.editor.onGraphUpdate(graph => {
-    //   this.refs.graphCanvas.updateGraph(graph);
-    // });
     this.loadWorkflowFromParams();
   }
 
@@ -221,14 +217,16 @@ export default class WorkflowEditor extends Component {
     props = props || this.props;
     if (props.params && props.params.workflow) {
       let workflowName = decodeURIComponent(props.params.workflow);
-      this.editor.workflowTemplateStore.list().then(() => {
-        let workflowTemplate = this.editor.getWorkflowTemplateByName(workflowName);
-        if (workflowTemplate) { this.loadWorkflow(workflowTemplate, true); }
+      this.taskDefinitionStore.list().then(() => {
+        this.workflowTemplateStore.list().then(() => {
+          let workflowTemplate = this.editor.getWorkflowTemplateByName(workflowName);
+          if (workflowTemplate) { this.loadWorkflow(workflowTemplate, true); }
+        });
       });
     }
   }
 
-  loadWorkflow(workflowTemplate, newGraph) {
+  loadWorkflow(workflowTemplate, newGraph, callback) {
     if (newGraph) { this.resetWorkflow(); }
     setTimeout(() => {
       let workflowGraph = cloneDeep(workflowTemplate);
@@ -239,6 +237,8 @@ export default class WorkflowEditor extends Component {
       this.refs.tray.refs.json.setState({model: workflowTemplate});
       this.loadWorkflowTemplate(workflowGraph, workflowTemplate, this.currentWorkflowGraph, () => {
         this.organizeWorkflowGraphs(workflowGraph._.groupId);
+
+        if (callback) { callback(workflowGraph); }
       });
     }, 32);
   }
@@ -256,7 +256,7 @@ export default class WorkflowEditor extends Component {
     React.withContext({
       graphCanvas: this.refs.graphCanvas
     }, () => {
-      let taskCount = workflowGraph.tasks.length;
+      let taskCount = workflowGraph.tasks.length + 1;
       let taskGutter = 30;
       let taskSizeX = 320;
       let taskSizeY = 220;
@@ -326,10 +326,10 @@ export default class WorkflowEditor extends Component {
           workflowOptions.element = (
             <GCNode key={optionsNodeId}
                 initialBounds={[
-                  -180, 20,
-                  -180 + taskWidth, 20 + taskHeight
+                  0, 0,
+                  taskWidth, taskHeight
                 ]}
-                initialColor="green"
+                initialColor="#7ea"
                 initialId={optionsNodeId}
                 initialName={'Options: ' + workflowGraph.friendlyName}>
               <GCPort key={defaultOptionsPortId}
@@ -369,6 +369,7 @@ export default class WorkflowEditor extends Component {
         });
 
         workflowGraph.tasks.forEach((task, taskNumber) => {
+          taskNumber += 1;
           taskMap[task.label] = task;
 
           let taskNodeId = GCNode.id(),
@@ -393,6 +394,18 @@ export default class WorkflowEditor extends Component {
             in: optionsInId,
             out: optionsOutId
           };
+
+          task._.definition = this.getTaskDefinitionFromTask(task);
+          // TODO: figure out how to link a nested workflow to a task.
+          // let definition = task._.definition
+          // if (definition && definition.implementsTask && definition.implementsTask.indexOf('Graph.Run') !== -1) {
+          //   let nestedWorkflowTemplate = this.getWorkflowTemplateByName(definition.options.graphName);
+          //   if (nestedWorkflowTemplate) {
+          //     this.loadWorkflow(nestedWorkflowTemplate, false, (linkedWorkflowGraph) => {
+          //       task._.linkedWorkflow = linkedWorkflowGraph;
+          //     });
+          //   }
+          // }
 
           React.withContext({
             graphCanvas: this.refs.graphCanvas,
@@ -527,7 +540,7 @@ export default class WorkflowEditor extends Component {
           Object.keys(workflowGraph.options.defaults).forEach(optionKey => {
             let associatedTasks = [];
             workflowGraph.tasks.forEach(task => {
-              let taskDefinition = this.getTaskDefinitionFromTask(task);
+              let taskDefinition = task._.definition;
               if (taskDefinition && taskDefinition.options && taskDefinition.options.hasOwnProperty(optionKey)) {
                 associatedTasks.push(task);
               }
@@ -577,7 +590,7 @@ export default class WorkflowEditor extends Component {
 
     workflowGraph.tasks.forEach(task => taskMap[task.label] = task);
 
-    let columns = [workflowGraph.tasks.filter(task => !task.waitOn)];
+    let columns = [true, workflowGraph.tasks.filter(task => !task.waitOn)];
 
     function findMaxDepth(task, depth=0) {
       if (!task.waitOn) { return depth; }
@@ -586,7 +599,7 @@ export default class WorkflowEditor extends Component {
         var nextTask = taskMap[taskLabel];
         return findMaxDepth(nextTask, depth);
       });
-      return Math.max.apply(Math, depths);
+      return Math.max.apply(Math, depths) + 1;
     }
 
     workflowGraph.tasks.filter(task => task.waitOn).forEach(task => {
@@ -601,6 +614,7 @@ export default class WorkflowEditor extends Component {
     columns = columns.filter(column => {
       if (column) {
         numCols += 1;
+        if (column === true) { return true; }
         numRows = Math.max(column.length, numRows);
         return true;
       }
@@ -612,6 +626,7 @@ export default class WorkflowEditor extends Component {
     }
 
     columns.forEach((column, c) => {
+      if (column === true) { return; }
       column.forEach((task, i) => {
         let nodeComponent = this.refs.graphCanvas.lookup(task._.nodeId);
         let x = 350 * c + 30;

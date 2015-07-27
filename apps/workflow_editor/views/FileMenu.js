@@ -38,9 +38,9 @@ export default class WEFileMenu extends Component {
   render() {
     var fileMenuItems = [
       {text: 'File', type: MenuItem.Types.SUBHEADER},
-      {text: 'New'},
-      {text: 'Clone'},
-      {text: 'Load'}
+      {text: 'New'}//,
+      // {text: 'Clone'},
+      // {text: 'Load'}
     ];
 
     return (

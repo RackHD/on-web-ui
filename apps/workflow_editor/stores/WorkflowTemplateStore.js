@@ -12,7 +12,7 @@ export default class WorkflowTemplateStore extends Store {
     this.empty();
     return this.workflowsRestAPI.list()
       .then(list => this.collect(list.map(item => {
-        item.id = item.friendlyName;
+        item.id = item.injectableName;
         return item;
       })))
       .catch(err => this.error(null, err));

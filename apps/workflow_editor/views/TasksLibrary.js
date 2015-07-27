@@ -63,7 +63,7 @@ export default class WETasksLibrary extends Component {
     var libraryTasks = this.state.taskDefinitions.map(taskDefinition => {
       let onSelect = this.loadTask.bind(this, taskDefinition);
       return (
-        <LibraryItem key={taskDefinition.friendlyName}
+        <LibraryItem key={taskDefinition.id}
             onSelect={onSelect}
             object={taskDefinition}
             name={taskDefinition.friendlyName}></LibraryItem>

@@ -35,8 +35,8 @@ export default class WEToolbar extends Component {
       <Toolbar style={{background: '#fff', borderBottom: '2px solid #eee'}}>
         <ToolbarGroup key={0} float="left" style={{height: 'inherit'}}>
           <WEFileMenu ref="file" />
-          <WEEditMenu ref="edit" />
-          <WEViewMenu ref="view" />
+          {/*<WEEditMenu ref="edit" />
+          <WEViewMenu ref="view" />*/}
         </ToolbarGroup>
       </Toolbar>
     );

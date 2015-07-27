@@ -122,7 +122,8 @@ export default class GCNodeElement extends Component {
 
   onRemovePanel() {
     // TODO: fix this
-    let links = this.graphCanvas.lookupLinks(this);
+    // debugger;
+    let links = this.graphCanvas.lookupLinks(this.id);
     links.forEach(link => link.destroyLink());
     this.graphCanvas.unregister(this);
     this.nodesManager.unregister(this);
