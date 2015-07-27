@@ -166,7 +166,8 @@ export default class GCPanelElement extends Component {
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
       borderStyle: 'dotted',
-      borderWidth: '0 2px 2px'
+      borderWidth: '0 2px 2px',
+      transition: 'background 0.4s ease-out'
     },
     header: {
       cursor: 'move',
@@ -248,7 +249,7 @@ export default class GCPanelElement extends Component {
           overflow: this.state.selected ? 'visible' : 'hidden',
           height: bounds.height - this.css.header.height - 6,
           borderColor: color.rgbString(),
-          backgroundColor: color.clone().alpha(0.25).lighten(0.25).rgbaString()
+          backgroundColor: color.clone().alpha(this.state.hover ? 0.5 : 0.25).lighten(0.25).rgbaString()
         },
         props.css.content
       ],
@@ -277,6 +278,7 @@ export default class GCPanelElement extends Component {
       root: [
         this.css.root,
         bounds.getCSSTransform(),
+        this.state.hover ? {zIndex: 9} : null,
         this.state.selected ? {borderColor: 'red'} : null,
         props.css.root,
         props.style
@@ -320,7 +322,7 @@ export default class GCPanelElement extends Component {
     if (e) { e.stopPropagation(); }
     clearTimeout(this.hoverTimer);
     // TODO: remove if hover toggles opacity, this causes bugs in chrome
-    sleep = 100;
+    sleep = 0;
     this.hoverTimer = setTimeout(() => this.setState({hover: bool}), sleep || 0);
   }
 

@@ -306,37 +306,60 @@ export default class WorkflowEditor extends Component {
         }, () => {
           let workflowOptions = workflowGraph._.options = {},
               optionsNodeId = GCNode.id(),
-              optionsPortId = GCPort.id(),
-              optionsInId = GCSocket.id(),
-              optionsOutId = GCSocket.id();
+              defaultOptionsPortId = GCPort.id(),
+              defaultOptionsInId = GCSocket.id(),
+              defaultOptionsOutId = GCSocket.id(),
+              specificOptionsPortId = GCPort.id(),
+              specificOptionsInId = GCSocket.id(),
+              specificOptionsOutId = GCSocket.id();
 
-          workflowOptions.socketIds = {
-            in: optionsInId,
-            out: optionsOutId
+          workflowOptions.defaultSocketIds = {
+            in: defaultOptionsInId,
+            out: defaultOptionsOutId
+          };
+
+          workflowOptions.specificSocketIds = {
+            in: specificOptionsInId,
+            out: specificOptionsOutId
           };
 
           workflowOptions.element = (
             <GCNode key={optionsNodeId}
                 initialBounds={[
-                  -200, -200,
-                  -200 + taskWidth, -200 + taskHeight
+                  -180, 20,
+                  -180 + taskWidth, 20 + taskHeight
                 ]}
                 initialColor="green"
                 initialId={optionsNodeId}
                 initialName={'Options: ' + workflowGraph.friendlyName}>
-              <GCPort key={optionsPortId}
+              <GCPort key={defaultOptionsPortId}
                   initialColor="#496"
-                  initialId={optionsPortId}
-                  initialName="Workflow Options">
-                <GCSocket key={optionsInId}
+                  initialId={defaultOptionsPortId}
+                  initialName="Workflow Options (Defaults)">
+                <GCSocket key={defaultOptionsInId}
                     dir={[-1, 0]}
                     initialColor="#294"
-                    initialId={optionsInId}
+                    initialId={defaultOptionsInId}
                     initialName="In" />
-                <GCSocket key={optionsOutId}
+                <GCSocket key={defaultOptionsOutId}
                     dir={[1, 0]}
                     initialColor="#272"
-                    initialId={optionsOutId}
+                    initialId={defaultOptionsOutId}
+                    initialName="Out" />
+              </GCPort>
+              <GCPort key={specificOptionsPortId}
+                  initialColor="#496"
+                  initialId={specificOptionsPortId}
+                  initialName="Workflow Options (Specifics)">
+                <GCSocket key={specificOptionsInId}
+                    dir={[-1, 0]}
+                    initialColor="#294"
+                    initialId={specificOptionsInId}
+                    initialName="In" />
+                <GCSocket key={specificOptionsOutId}
+                    dir={[1, 0]}
+                    initialColor="#272"
+                    initialId={specificOptionsOutId}
                     initialName="Out" />
               </GCPort>
             </GCNode>
@@ -470,10 +493,11 @@ export default class WorkflowEditor extends Component {
           }
         });
 
+        // Specific Options Link Setup
         Object.keys(workflowGraph.options).forEach(optionsKey => {
           let associatedTask = taskMap[optionsKey];
           if (associatedTask) {
-            let socketFrom = workflowGraph._.options.socketIds.out,
+            let socketFrom = workflowGraph._.options.specificSocketIds.out,
                 socketTo = associatedTask._.optionsSocketIds.in;
 
             React.withContext({
@@ -498,6 +522,7 @@ export default class WorkflowEditor extends Component {
           }
         });
 
+        // Default Options Link Setup
         if (workflowGraph.options.defaults) {
           Object.keys(workflowGraph.options.defaults).forEach(optionKey => {
             let associatedTasks = [];
@@ -508,7 +533,7 @@ export default class WorkflowEditor extends Component {
               }
             });
             associatedTasks.forEach(associatedTask => {
-              let socketFrom = workflowGraph._.options.socketIds.out,
+              let socketFrom = workflowGraph._.options.defaultSocketIds.out,
                   socketTo = associatedTask._.optionsSocketIds.in;
 
               React.withContext({
