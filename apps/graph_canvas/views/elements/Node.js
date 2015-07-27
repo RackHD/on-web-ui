@@ -23,6 +23,11 @@ import Panel from './Panel';
     initialColor: PropTypes.string,
     initialId: PropTypes.string,
     initialName: PropTypes.string,
+    isRemovable: PropTypes.bool,
+    onRemove: PropTypes.func,
+    onChange: PropTypes.func,
+    onLink: PropTypes.func,
+    onUnlink: PropTypes.func,
     style: PropTypes.object
   },
   defaultProps: {
@@ -32,6 +37,11 @@ import Panel from './Panel';
     initialColor: 'grey',
     initialId: null,
     initialName: '(Unamed Node)',
+    isRemovable: true,
+    onRemove: null,
+    onChange: null,
+    onLink: null,
+    onUnlink: null,
     style: {}
   },
   contextTypes: {
@@ -97,7 +107,8 @@ export default class GCNodeElement extends Component {
           initialId={this.props.initialId || this.id}
           onRemovePanel={this.onRemovePanel.bind(this)}
           onUpdateBounds={this.onUpdateBounds.bind(this)}
-          onSelect={this.onSelect.bind(this)}>
+          onSelect={this.onSelect.bind(this)}
+          onChange={this.onChange.bind(this)}>
         <div ref="ports"
             onScroll={this.updateLinks.bind(this)}
             style={{
@@ -129,6 +140,7 @@ export default class GCNodeElement extends Component {
     this.nodesManager.unregister(this);
     // TODO: unregister child elements and links
     // TODO: actually remove from this.parentComponent
+    if (this.props.onRemove) { this.props.onRemove(); }
   }
 
   onUpdateBounds(bounds) {
@@ -143,6 +155,20 @@ export default class GCNodeElement extends Component {
 
   onSelect(selected) {
     this.graphCanvas.updateSelection(selected, this);
+  }
+
+  onChange() {
+    if (this.props.onChange) { this.props.onChange(this, this.refs.panel); }
+  }
+
+  emitLink(link) {
+    if (this.props.onLink) { this.props.onLink(link); }
+    if (this.parentGroup) { this.parentGroup.emitLink(link); }
+  }
+
+  emitUnlink(link) {
+    if (this.props.onUnlink) { this.props.onUnlink(link); }
+    if (this.parentGroup) { this.parentGroup.emitUnlink(link); }
   }
 
 }

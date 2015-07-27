@@ -53,12 +53,62 @@ export default class WEWorkflowJson extends Component {
   componentWillUnmount() {}
 
   componentDidUpdate() {
-    this.refs.jsonEditor.setState({value: this.state.model});
+    this.refs.jsonEditor.setState({value: this.prepareJSON(this.state.model)});
   }
 
   render() {
     // let workflow = this.state.model;
-    return <JsonEditor ref="jsonEditor" initialValue={this.props.model}/>;
+    return <JsonEditor ref="jsonEditor"
+        style={{width: '96%', height: window.innerHeight - 200}}
+        initialValue={this.prepareJSON(this.props.model)}
+        updateParentState={this.updateWorkflowGraph.bind(this)} />;
+  }
+
+  prepareJSON(model) {
+    let safeJsonify = (output, source) => {
+      if (!source || typeof source !== 'object') { return source; }
+      if (Array.isArray(source)) {
+        return source.slice(0).map(item => safeJsonify({}, item));
+      }
+      Object.keys(source).forEach(key => {
+        if (key === '_' || key === 'id') { return; }
+        output[key] = safeJsonify({}, source[key]);
+      });
+      return output;
+    };
+    return safeJsonify({}, model);
+  }
+
+  updateWorkflowGraph(updates) {
+    clearTimeout(this.updateTimer);
+    this.updateTimer = setTimeout(() => {
+      let safeMerge = (current, changes) => {
+        if (!changes || typeof changes !== 'object') {
+          return changes;
+        }
+        if (Array.isArray(changes)) {
+          changes.forEach((item, i) => {
+            current[i] = safeMerge(current[i], item);
+          });
+        }
+        else {
+          Object.keys(changes).forEach(key => {
+            if (key === '_' || key === 'id') {
+              throw new Error('WorkflowEditor: Cannot use _ or id as property names in workflow templates.');
+            }
+            current[key] = safeMerge(current[key], changes[key]);
+          });
+        }
+        return current;
+      };
+      safeMerge(this.context.editor.currentWorkflowTemplate, updates);
+      safeMerge(this.context.editor.currentWorkflowGraph, updates);
+      try {
+        this.context.editor.refreshWorkflow();
+      } catch (err) {
+        console.error(err);
+      }
+    }, 2000);
   }
 
 }

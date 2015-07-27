@@ -31,11 +31,11 @@ export default class JsonEditor extends Component {
   handleChange(newValue) {
     try {
       var newState = JSON.parse(newValue);
-      this.setState({value: newState, error: false});
+      this.setState({rawValue: null, value: newState, error: false});
     }
 
     catch (err) {
-      this.setState({error: err});
+      this.setState({rawValue: newValue, error: err});
     }
 
     if (this.props.updateParentState) {
@@ -45,7 +45,7 @@ export default class JsonEditor extends Component {
 
   linkState() {
     return {
-      value: JSON.stringify(this.state.value, null, 2),
+      value: this.state.rawValue ? this.state.rawValue : JSON.stringify(this.state.value, null, 2),
       requestChange: this.handleChange.bind(this)
     };
   }
@@ -63,7 +63,7 @@ export default class JsonEditor extends Component {
                   rows={this.props.rows}
                   cols={this.props.cols}
                   disabled={this.props.disabled}
-                  style={{width: '99%', height: 300}} />
+                  style={this.props.style || {width: '99%', height: 300}} />
       </div>
     );
   }

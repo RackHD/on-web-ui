@@ -30,6 +30,8 @@ import generateId from '../../lib/generateId';
     initialColor: PropTypes.string,
     initialId: PropTypes.string,
     initialName: PropTypes.string,
+    onLink: PropTypes.func,
+    onUnlink: PropTypes.func,
     style: PropTypes.any
   },
   defaultProps: {
@@ -39,6 +41,8 @@ import generateId from '../../lib/generateId';
     initialColor: 'black',
     initialId: null,
     initialName: 'port',
+    onLink: null,
+    onUnlink: null,
     style: null
   },
   contextTypes: {
@@ -199,6 +203,16 @@ export default class GCSocketElement extends Component {
     }, {
       fromSocket: this
     })(_event);
+  }
+
+  emitLink(link) {
+    if (this.props.onLink) { this.props.onLink(link); }
+    if (this.parentPort) { this.parentPort.emitLink(link); }
+  }
+
+  emitUnlink(link) {
+    if (this.props.onUnlink) { this.props.onUnlink(link); }
+    if (this.parentPort) { this.parentPort.emitUnlink(link); }
   }
 
 }

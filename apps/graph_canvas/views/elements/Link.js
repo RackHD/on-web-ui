@@ -17,17 +17,20 @@ import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
     to: PropTypes.any,
     isPartial: PropTypes.bool,
     initialColor: PropTypes.string,
-    initialId: PropTypes.string
+    initialId: PropTypes.string,
+    onRemove: PropTypes.func
   },
   defaultProps: {
     from: null,
     to: null,
     isPartial: false,
     initialColor: 'black',
-    initialId: null
+    initialId: null,
+    onRemove: null
   },
   contextTypes: {
-    graphCanvas: PropTypes.any
+    graphCanvas: PropTypes.any,
+    parentGCGroup: PropTypes.any
   }
 })
 export default class GCLinkElement extends Component {
@@ -76,6 +79,13 @@ export default class GCLinkElement extends Component {
   componentDidUpdate() {
     if (!this.state.isPartial && !this.state.removed) {
       this.linksManager.register(this);
+    }
+    if (this.newLink) {
+      this.socketFrom.emitLink(this);
+      this.socketTo.emitLink(this);
+      delete this.newLink;
+      delete this.socketFrom;
+      delete this.socketTo;
     }
   }
 
@@ -203,12 +213,17 @@ export default class GCLinkElement extends Component {
       var toSocket, toSocketElement, toVector;
 
       if (this.state.isPartial) {
+        this.newLink = true;
         toVector = new Vector(this.state.to);
       }
       else {
         toSocket = this.graphCanvas.lookup(this.state.to);
         toSocketElement = React.findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon');
         toVector = this.linksManager.getSocketCenter(toSocketElement);
+        if (this.newLink) {
+          this.fromSocket = fromSocket;
+          this.toSocket = toSocket;
+        }
       }
 
       let bounds = new Rectangle(fromVector.x, fromVector.y, toVector.x, toVector.y);
@@ -268,10 +283,11 @@ export default class GCLinkElement extends Component {
     this.linksManager.unregister(this);
     let fromSocket = this.graphCanvas.lookup(this.state.from),
         toSocket = this.graphCanvas.lookup(this.state.to);
-    fromSocket.forceUpdate();
-    toSocket.forceUpdate();
+    fromSocket.emitUnlink(this);
+    toSocket.emitUnlink(this);
     this.setState({removed: true});
     // TODO: actually remove from this.parentComponent
+    if (this.props.onRemove) { this.props.onRemove(); }
   }
 
 }

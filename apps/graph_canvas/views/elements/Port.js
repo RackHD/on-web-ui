@@ -27,6 +27,8 @@ import generateId from '../../lib/generateId';
     initialName: PropTypes.string,
     initialId: PropTypes.string,
     initialSockets: PropTypes.array,
+    onLink: PropTypes.func,
+    onUnlink: PropTypes.func,
     style: PropTypes.any
   },
   defaultProps: {
@@ -35,6 +37,8 @@ import generateId from '../../lib/generateId';
     initialColor: 'black',
     initialName: 'port',
     initialId: null,
+    onLink: null,
+    onUnlink: null,
     style: null
   },
   contextTypes: {
@@ -170,6 +174,16 @@ export default class GCPortElement extends Component {
       ],
       root: [this.css.root, props.css.root, props.style]
     };
+  }
+
+  emitLink(link) {
+    if (this.props.onLink) { this.props.onLink(link); }
+    if (this.parentElement) { this.parentElement.emitLink(link); }
+  }
+
+  emitUnlink(link) {
+    if (this.props.onUnlink) { this.props.onUnlink(link); }
+    if (this.parentElement) { this.parentElement.emitUnlink(link); }
   }
 
 }

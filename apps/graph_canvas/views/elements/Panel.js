@@ -30,6 +30,9 @@ import Vector from '../../lib/Vector';
     initialColor: PropTypes.string,
     initialId: PropTypes.string,
     initialName: PropTypes.string,
+    isRemovable: PropTypes.bool,
+    onChange: PropTypes.func,
+    onSelect: PropTypes.func,
     onRemovePanel: PropTypes.func,
     onUpdateBounds: PropTypes.func,
     style: PropTypes.object
@@ -41,6 +44,9 @@ import Vector from '../../lib/Vector';
     initialColor: 'grey',
     initialId: null,
     initialName: '(Unamed)',
+    isRemovable: true,
+    onChange: null,
+    onSelect: null,
     onRemovePanel: null,
     onUpdateBounds: null,
     style: {}
@@ -128,12 +134,12 @@ export default class GCPanelElement extends Component {
               onChange={this.handleNameChange.bind(this)}
               onFocus={this.focusInput.bind(this)}
               onBlur={this.blurInput.bind(this)} />
-          <a ref="remove"
+          {props.isRemovable ? <a ref="remove"
               style={css.remove}
               onMouseDown={this.stopEventPropagation}
               onTouchTap={this.removePanel.bind(this)}
               className="fa fa-remove"
-              title="Remove" />
+              title="Remove" /> : null}
           <input ref="colorInput"
               key="colorInput"
               type="text"
@@ -312,10 +318,12 @@ export default class GCPanelElement extends Component {
 
   handleNameChange(event) {
     this.setState({name: event.target.value});
+    if (this.props.onChange) { this.props.onChange(); }
   }
 
   handleColorChange(event) {
     this.setState({color: event.target.value});
+    if (this.props.onChange) { this.props.onChange(); }
   }
 
   setHoverState(bool, sleep, e) {

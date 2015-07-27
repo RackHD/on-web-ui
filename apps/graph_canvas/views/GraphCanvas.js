@@ -64,7 +64,9 @@ export { GCSocketElement as GCSocket };
     viewWidth: PropTypes.number,
     worldHeight: PropTypes.number,
     worldWidth: PropTypes.number,
-    onSelect: PropTypes.func
+    onSelect: PropTypes.func,
+    onLink: PropTypes.func,
+    onUnlink: PropTypes.func
   },
   defaultProps: {
     className: 'GraphCanvas',
@@ -78,7 +80,9 @@ export { GCSocketElement as GCSocket };
     viewWidth: 800,
     worldHeight: 2000,
     worldWidth: 2000,
-    onSelect: null
+    onSelect: null,
+    onLink: null,
+    onUnlink: null
   },
   childContextTypes: {
     graphCanvas: PropTypes.any
@@ -340,6 +344,14 @@ export default class GraphCanvas extends Component {
 
   forgetLinkAssociation(link) {
     this.associateLink(link, null);
+  }
+
+  emitLink(link) {
+    if (this.props.onLink) { this.props.onLink(link); }
+  }
+
+  emitUnlink(link) {
+    if (this.props.onUnlink) { this.props.onUnlink(link); }
   }
 
 }

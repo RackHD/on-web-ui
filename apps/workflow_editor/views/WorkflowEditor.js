@@ -185,7 +185,9 @@ export default class WorkflowEditor extends Component {
         viewHeight={this.state.canvasHeight}
         worldWidth={3000}
         worldHeight={3000}
-        onSelect={this.onSelect.bind(this)} />;
+        onSelect={this.onSelect.bind(this)}
+        onLink={this.addLink.bind(this)}
+        onUnlink={this.removeLink.bind(this)} />;
   }
 
   onSelect(selection) {
@@ -213,6 +215,14 @@ export default class WorkflowEditor extends Component {
     if (this.state.canvasHeight !== canvasHeight) { this.setState({ canvasHeight }); }
   }
 
+  addLink(link) {
+    console.log(link);
+  }
+
+  removeLink(link) {
+    console.log(link);
+  }
+
   loadWorkflowFromParams(props) {
     props = props || this.props;
     if (props.params && props.params.workflow) {
@@ -226,21 +236,34 @@ export default class WorkflowEditor extends Component {
     }
   }
 
+  refreshWorkflow(callback) {
+    this.resetWorkflow();
+    setTimeout(() => {
+      this.loadWorkflowGraph(this.currentWorkflowGraph, this.currentWorkflowTemplate, callback);
+    }, 32);
+  }
+
   loadWorkflow(workflowTemplate, newGraph, callback) {
     if (newGraph) { this.resetWorkflow(); }
     setTimeout(() => {
       let workflowGraph = cloneDeep(workflowTemplate);
+      workflowTemplate = cloneDeep(workflowTemplate);
       if (newGraph) {
         this.currentWorkflowGraph = workflowGraph;
+        this.currentWorkflowTemplate = workflowTemplate;
       }
-      this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
-      this.refs.tray.refs.json.setState({model: workflowTemplate});
-      this.loadWorkflowTemplate(workflowGraph, workflowTemplate, this.currentWorkflowGraph, () => {
-        this.organizeWorkflowGraphs(workflowGraph._.groupId);
-
-        if (callback) { callback(workflowGraph); }
-      });
+      this.loadWorkflowGraph(workflowGraph, workflowTemplate, callback);
     }, 32);
+  }
+
+  loadWorkflowGraph(workflowGraph, workflowTemplate, callback) {
+    this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
+    // this.refs.tray.refs.json.setState({model: workflowTemplate});
+    this.loadWorkflowTemplate(workflowGraph, workflowTemplate, this.currentWorkflowGraph, () => {
+      this.organizeWorkflowGraphs(workflowGraph._.groupId);
+      if (callback) { callback(workflowGraph); }
+      this.refs.tray.refs.json.setState({model: workflowGraph});
+    });
   }
 
   loadWorkflowTemplate(workflowGraph, workflowTemplate, parentWorkflowGraph, callback) {
@@ -278,7 +301,8 @@ export default class WorkflowEditor extends Component {
             ]}
             initialColor="#777"
             initialName={workflowGraph.friendlyName}
-            initialId={workflowGroupId} />
+            initialId={workflowGroupId}
+            isRemovable={false} />
       );
 
       workflowGraph._.groupElement = workflowGroup;
@@ -317,7 +341,6 @@ export default class WorkflowEditor extends Component {
             in: defaultOptionsInId,
             out: defaultOptionsOutId
           };
-
           workflowOptions.specificSocketIds = {
             in: specificOptionsInId,
             out: specificOptionsOutId
@@ -331,7 +354,8 @@ export default class WorkflowEditor extends Component {
                 ]}
                 initialColor="#7ea"
                 initialId={optionsNodeId}
-                initialName={'Options: ' + workflowGraph.friendlyName}>
+                initialName={'Options: ' + workflowGraph.friendlyName}
+                isRemovable={false}>
               <GCPort key={defaultOptionsPortId}
                   initialColor="#496"
                   initialId={defaultOptionsPortId}
