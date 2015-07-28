@@ -194,7 +194,7 @@ export default class GCGroupElement extends Component {
     this.groupsManager.unregister(this);
     // TODO: unregister child elements and links
     // TODO: actually remove from this.parentComponent
-    if (this.props.onRemove) { this.props.onRemove(); }
+    if (this.props.onRemove) { this.props.onRemove(this); }
   }
 
   onUpdateBounds(bounds) {
@@ -209,12 +209,18 @@ export default class GCGroupElement extends Component {
     if (this.props.onChange) { this.props.onChange(this, this.refs.panel); }
   }
 
+  emitters = {add: {}, remove: {}};
+
   emitLink(link) {
+    if (this.emitters.add[link.id]) { return; }
+    this.emitters.add[link.id] = true;
     if (this.props.onLink) { this.props.onLink(link); }
     if (this.graphCanvas) { this.graphCanvas.emitLink(link); }
   }
 
   emitUnlink(link) {
+    if (this.emitters.remove[link.id]) { return; }
+    this.emitters.remove[link.id] = true;
     if (this.props.onUnlink) { this.props.onUnlink(link); }
     if (this.graphCanvas) { this.graphCanvas.emitUnlink(link); }
   }

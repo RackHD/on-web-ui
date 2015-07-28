@@ -105,6 +105,7 @@ export default class GCLinksManager extends Component {
   }
 
   drawLinkStart(event, dragState, e) {
+    this.isDrawing = true;
     event.stopPropagation();
     let fromPort = dragState.fromSocket.parentPort,
         fromGroup = fromPort.parentGroup || fromPort.parentNode.parentGroup;
@@ -148,10 +149,13 @@ export default class GCLinksManager extends Component {
   }
 
   drawLinkFinish(event, dragState) {
+    this.isDrawing = false;
     event.stopPropagation();
     if (dragState.link && dragState.link.state.isPartial) {
       dragState.parentComponent.removeChild(dragState.originalLink);
     }
+    // debugger;
+    dragState.link.forceUpdate();
   }
 
 }

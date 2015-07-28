@@ -318,12 +318,16 @@ export default class GCPanelElement extends Component {
 
   handleNameChange(event) {
     this.setState({name: event.target.value});
-    if (this.props.onChange) { this.props.onChange(); }
+    if (this.props.onChange) {
+      clearTimeout(this.onChangeTimer);
+      this.onChangeTimer = setTimeout(() => { this.props.onChange(); }, 50);
+    }
   }
 
   handleColorChange(event) {
     this.setState({color: event.target.value});
-    if (this.props.onChange) { this.props.onChange(); }
+    clearTimeout(this.onChangeTimer);
+    this.onChangeTimer = setTimeout(() => { this.props.onChange(); }, 50);
   }
 
   setHoverState(bool, sleep, e) {

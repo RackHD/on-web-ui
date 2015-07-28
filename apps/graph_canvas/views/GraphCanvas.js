@@ -346,11 +346,17 @@ export default class GraphCanvas extends Component {
     this.associateLink(link, null);
   }
 
+  emitters = {add: {}, remove: {}};
+
   emitLink(link) {
+    if (this.emitters.add[link.id]) { return; }
+    this.emitters.add[link.id] = true;
     if (this.props.onLink) { this.props.onLink(link); }
   }
 
   emitUnlink(link) {
+    if (this.emitters.remove[link.id]) { return; }
+    this.emitters.remove[link.id] = true;
     if (this.props.onUnlink) { this.props.onUnlink(link); }
   }
 

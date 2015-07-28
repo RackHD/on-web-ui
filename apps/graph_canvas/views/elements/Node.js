@@ -140,7 +140,7 @@ export default class GCNodeElement extends Component {
     this.nodesManager.unregister(this);
     // TODO: unregister child elements and links
     // TODO: actually remove from this.parentComponent
-    if (this.props.onRemove) { this.props.onRemove(); }
+    if (this.props.onRemove) { this.props.onRemove(this); }
   }
 
   onUpdateBounds(bounds) {
@@ -161,12 +161,18 @@ export default class GCNodeElement extends Component {
     if (this.props.onChange) { this.props.onChange(this, this.refs.panel); }
   }
 
+  emitters = {add: {}, remove: {}};
+
   emitLink(link) {
+    if (this.emitters.add[link.id]) { return; }
+    this.emitters.add[link.id] = true;
     if (this.props.onLink) { this.props.onLink(link); }
     if (this.parentGroup) { this.parentGroup.emitLink(link); }
   }
 
   emitUnlink(link) {
+    if (this.emitters.remove[link.id]) { return; }
+    this.emitters.remove[link.id] = true;
     if (this.props.onUnlink) { this.props.onUnlink(link); }
     if (this.parentGroup) { this.parentGroup.emitUnlink(link); }
   }

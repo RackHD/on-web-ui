@@ -80,12 +80,13 @@ export default class GCLinkElement extends Component {
     if (!this.state.isPartial && !this.state.removed) {
       this.linksManager.register(this);
     }
-    if (this.newLink) {
-      this.socketFrom.emitLink(this);
-      this.socketTo.emitLink(this);
+    if (this.newLink && (this.fromSocket && this.toSocket) && !this.graphCanvas.refs.links.isDrawing) {
+      // debugger;
+      this.fromSocket.emitLink(this);
+      this.toSocket.emitLink(this);
       delete this.newLink;
-      delete this.socketFrom;
-      delete this.socketTo;
+      // delete this.fromSocket;
+      // delete this.toSocket;
     }
   }
 
@@ -220,10 +221,10 @@ export default class GCLinkElement extends Component {
         toSocket = this.graphCanvas.lookup(this.state.to);
         toSocketElement = React.findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon');
         toVector = this.linksManager.getSocketCenter(toSocketElement);
-        if (this.newLink) {
-          this.fromSocket = fromSocket;
-          this.toSocket = toSocket;
-        }
+        // if (this.newLink) {
+        this.fromSocket = fromSocket;
+        this.toSocket = toSocket;
+        // }
       }
 
       let bounds = new Rectangle(fromVector.x, fromVector.y, toVector.x, toVector.y);
@@ -287,7 +288,7 @@ export default class GCLinkElement extends Component {
     toSocket.emitUnlink(this);
     this.setState({removed: true});
     // TODO: actually remove from this.parentComponent
-    if (this.props.onRemove) { this.props.onRemove(); }
+    if (this.props.onRemove) { this.props.onRemove(this); }
   }
 
 }

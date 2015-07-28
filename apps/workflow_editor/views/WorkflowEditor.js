@@ -180,7 +180,7 @@ export default class WorkflowEditor extends Component {
     return <GraphCanvas
         key={'graphCanvas' + this.state.version}
         ref="graphCanvas"
-        initialScale={1}
+        initialScale={0.5}
         viewWidth={this.state.canvasWidth}
         viewHeight={this.state.canvasHeight}
         worldWidth={3000}
@@ -195,6 +195,28 @@ export default class WorkflowEditor extends Component {
   }
 
   resetWorkflow() {
+    this.currentWorkflowGraph = this.currentWorkflowGraph || {
+      friendlyName: 'New Workflow',
+      injectableName: 'Graph.New.Workflow',
+      options: {
+        defaults: {
+          parameter: null
+        }
+      },
+      tasks: [
+        {
+          label: 'new-task',
+          taskDefinition: {
+            friendlyName: 'New Task',
+            injectableName: 'Task.Base.New',
+            options: {
+              parameter: null
+            },
+            properties: {}
+          }
+        }
+      ]
+    };
     this.setState(prevState => ({version: prevState.version + 1}));
     try {
       this.refs.tray.refs.inspector.refs.outline.setState({model: {}});
@@ -220,14 +242,6 @@ export default class WorkflowEditor extends Component {
     if (this.state.canvasHeight !== canvasHeight) { this.setState({ canvasHeight }); }
   }
 
-  addLink(link) {
-    console.log(link);
-  }
-
-  removeLink(link) {
-    console.log(link);
-  }
-
   loadWorkflowFromParams(props) {
     props = props || this.props;
     if (props.params && props.params.workflow) {
@@ -239,12 +253,17 @@ export default class WorkflowEditor extends Component {
         });
       });
     }
+    else {
+      this.refreshWorkflow(this.currentWorkflowGraph);
+    }
   }
 
   refreshWorkflow(callback) {
     this.resetWorkflow();
     setTimeout(() => {
-      this.loadWorkflowGraph(this.currentWorkflowGraph, this.currentWorkflowTemplate, callback);
+      this.loadWorkflowGraph(this.currentWorkflowGraph,
+        // this.currentWorkflowTemplate,
+        callback);
     }, 32);
   }
 
@@ -252,32 +271,41 @@ export default class WorkflowEditor extends Component {
     if (newGraph) { this.resetWorkflow(); }
     setTimeout(() => {
       let workflowGraph = cloneDeep(workflowTemplate);
-      workflowTemplate = cloneDeep(workflowTemplate);
+      // workflowTemplate = cloneDeep(workflowTemplate);
       if (newGraph) {
         this.currentWorkflowGraph = workflowGraph;
-        this.currentWorkflowTemplate = workflowTemplate;
+        // this.currentWorkflowTemplate = workflowTemplate;
       }
-      this.loadWorkflowGraph(workflowGraph, workflowTemplate, callback);
+      this.loadWorkflowGraph(workflowGraph,
+        // workflowTemplate,
+        callback);
     }, 32);
   }
 
-  loadWorkflowGraph(workflowGraph, workflowTemplate, callback) {
+  loadWorkflowGraph(workflowGraph,
+      // workflowTemplate,
+      callback) {
     this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
     // this.refs.tray.refs.json.setState({model: workflowTemplate});
-    this.loadWorkflowTemplate(workflowGraph, workflowTemplate, this.currentWorkflowGraph, () => {
-      this.organizeWorkflowGraphs(workflowGraph._.groupId);
-      this.refs.tray.refs.json.setState({model: workflowGraph});
-      if (callback) { callback(workflowGraph); }
-    });
+    this.loadWorkflowTemplate(workflowGraph,
+      // workflowTemplate,
+      this.currentWorkflowGraph, () => {
+        this.organizeWorkflowGraphs(workflowGraph._.groupId);
+        this.refs.tray.refs.json.setState({model: workflowGraph});
+        if (callback) { callback(workflowGraph); }
+      });
   }
 
-  loadWorkflowTemplate(workflowGraph, workflowTemplate, parentWorkflowGraph, callback) {
+  loadWorkflowTemplate(workflowGraph,
+    // workflowTemplate,
+    parentWorkflowGraph, callback) {
     let workflowGroupId = GCGroup.id(),
         isSubGraph = parentWorkflowGraph && parentWorkflowGraph !== workflowGraph;
 
     this.workflowGraphs[workflowGroupId] = workflowGraph;
 
-    workflowGraph._ = { isSubGraph, template: workflowTemplate };
+    workflowGraph._ = { isSubGraph//, template: workflowTemplate
+    };
     workflowGraph._.groupId = workflowGroupId;
 
     // Setup Workflow
@@ -307,7 +335,8 @@ export default class WorkflowEditor extends Component {
             initialColor="#bbb"
             initialName={workflowGraph.friendlyName}
             initialId={workflowGroupId}
-            isRemovable={false} />
+            isRemovable={false}
+            onChange={this.changeTask.bind(this, workflowGraph)} />
       );
 
       workflowGraph._.groupElement = workflowGroup;
@@ -341,6 +370,9 @@ export default class WorkflowEditor extends Component {
               specificOptionsPortId = GCPort.id(),
               specificOptionsInId = GCSocket.id(),
               specificOptionsOutId = GCSocket.id();
+
+          workflowOptions.defaultOptionsPortId = defaultOptionsPortId;
+          workflowOptions.specificOptionsPortId = specificOptionsPortId;
 
           workflowOptions.defaultSocketIds = {
             in: defaultOptionsInId,
@@ -413,12 +445,14 @@ export default class WorkflowEditor extends Component {
 
           task._ = {};
           task._.nodeId = taskNodeId;
+          task._.orderPortId = orderPortId;
           task._.orderSocketIds = {
             waitOn: waitOnId,
             failed: failedId,
             succeeded: succeededId,
             finished: finishedId
           };
+          task._.optionsPortId = optionsPortId;
           task._.optionsSocketIds = {
             in: optionsInId,
             out: optionsOutId
@@ -451,7 +485,9 @@ export default class WorkflowEditor extends Component {
                   ]}
                   initialColor="#999"
                   initialId={taskNodeId}
-                  initialName={task.label}>
+                  initialName={task.label}
+                  onRemove={this.removeTask.bind(this, workflowGraph, task)}
+                  onChange={this.changeTask.bind(this, workflowGraph, task)}>
                 <GCPort key={orderPortId}
                     initialColor="#469"
                     initialId={orderPortId}
@@ -691,6 +727,176 @@ export default class WorkflowEditor extends Component {
 
       if (callback) { setTimeout(callback, 32); }
     }, 32);
+  }
+
+  addTask(taskDefinition, label) {
+    this.currentWorkflowGraph.tasks.push({
+      label: label,
+      taskDefinition: taskDefinition
+    });
+    this.refreshWorkflow();
+  }
+
+  changeTask(workflow, task, node, panel) {
+    if (panel.state.name !== task.label) {
+      this.renameTask(workflow, task, panel.state.name);
+    }
+  }
+
+  renameTask(workflow, task, newName) {
+    let oldName = task.label;
+    if (workflow && workflow.tasks) {
+      workflow.tasks.forEach(t => {
+        if (t.waitOn && t.waitOn === oldName) {
+          t.waitOn[newName] = t.waitOn[oldName];
+          delete t.waitOn[oldName];
+        }
+      });
+    }
+    task.label = newName;
+    clearTimeout(this.renameTaskUpdateTimer);
+    this.renameTaskUpdateTimer = setTimeout(() => {
+      this.refreshWorkflow();
+    }, 1500);
+  }
+
+  removeTask(workflow, task) {
+    let index = workflow.tasks.indexOf(task);
+    if (index !== -1) {
+      workflow.tasks.splice(index, 1);
+    }
+    clearTimeout(this.removeTaskUpdateTimer);
+    this.removeTaskUpdateTimer = setTimeout(() => {
+      this.refreshWorkflow();
+    }, 500);
+  }
+
+  changeWorkflow(workflow, group, panel) {
+    if (panel.state.name !== workflow.friendlyName) {
+      this.renameWorkflow(workflow, panel.state.name);
+    }
+  }
+
+  renameWorkflow(workflow, newName) {
+    workflow.friendlyName = newName;
+    clearTimeout(this.renameWorkflowUpdateTimer);
+    this.renameWorkflowUpdateTimer = setTimeout(() => {
+      this.refreshWorkflow();
+    }, 1500);
+  }
+
+  removeWorkflow(/*workflow, group*/) {
+    // TODO
+  }
+
+  getSocketDetailsById(socketId) {
+    // debugger;
+    let graph = this.currentWorkflowGraph,
+        task = null,
+        socketLabel = null,
+        portId = null,
+        portType = null;
+    if (
+      graph._.options.defaultSocketIds.in === socketId ||
+      graph._.options.defaultSocketIds.out === socketId
+    ) {
+      task = 'options';
+      socketLabel = 'out'; // TODO:
+      portId = graph._.options.defaultOptionsPortId;
+      portType = 'defaultOtions';
+    }
+    else if (
+      graph._.options.specificSocketIds.in === socketId ||
+      graph._.options.specificSocketIds.out === socketId
+    ) {
+      task = 'options';
+      socketLabel = 'out'; // TODO:
+      portId = graph._.options.specificOptionsPortId;
+      portType = 'specificOptions';
+    }
+    graph.tasks.forEach(t => {
+      if (task) { return; }
+      let match = Object.keys(t._.optionsSocketIds).some(k => {
+        if (t._.optionsSocketIds[k] === socketId) {
+          socketLabel = k;
+          return true;
+        }
+      });
+      if (match) {
+        task = t;
+        portId = t._.optionsPortId;
+        portType = 'taskOptions';
+        return;
+      }
+      match = Object.keys(t._.orderSocketIds).some(k => {
+        if (t._.orderSocketIds[k] === socketId) {
+          socketLabel = k;
+          return true;
+        }
+      });
+      if (match) {
+        task = t;
+        portId = t._.orderPortId;
+        portType = 'taskOrder';
+      }
+    });
+    return {
+      task: task,
+      portId: portId,
+      portType: portType,
+      socketLabel: socketLabel
+    };
+  }
+
+  addLink(link) {
+    // console.log(link);
+    let fromSocketDetails = this.getSocketDetailsById(link.fromSocket.id),
+        toSocketDetails = this.getSocketDetailsById(link.toSocket.id);
+    if (fromSocketDetails.portType === 'taskOrder') {
+      if (toSocketDetails.portType === 'taskOrder') {
+        if (fromSocketDetails.task !== toSocketDetails.task) {
+          if (link.fromSocket.props.dir[0] === -1 && link.toSocket.props.dir[0] === 1) {
+            fromSocketDetails.task.waitOn = fromSocketDetails.task.waitOn || {};
+            fromSocketDetails.task.waitOn[toSocketDetails.task.label] = toSocketDetails.socketLabel;
+          }
+          else if (link.toSocket.props.dir[0] === -1 && link.fromSocket.props.dir[0] === 1) {
+            toSocketDetails.task.waitOn = toSocketDetails.task.waitOn || {};
+            toSocketDetails.task.waitOn[fromSocketDetails.task.label] = fromSocketDetails.socketLabel;
+          }
+        }
+      }
+    }
+    // debugger;
+    clearTimeout(this.linksUpdateTimer);
+    this.linksUpdateTimer = setTimeout(() => {
+      this.refreshWorkflow();
+    }, 1500);
+  }
+
+  removeLink(link) {
+    // console.log(link);
+    clearTimeout(this.linksUpdateTimer);
+    let fromSocketDetails = this.getSocketDetailsById(link.fromSocket.id),
+        toSocketDetails = this.getSocketDetailsById(link.toSocket.id);
+    if (fromSocketDetails.portType === 'taskOrder') {
+      if (toSocketDetails.portType === 'taskOrder') {
+        if (fromSocketDetails.task !== toSocketDetails.task) {
+          if (link.fromSocket.props.dir[0] === -1 && link.toSocket.props.dir[0] === 1) {
+            fromSocketDetails.task.waitOn = fromSocketDetails.task.waitOn || {};
+            delete fromSocketDetails.task.waitOn[toSocketDetails.task.label];
+          }
+          else if (link.toSocket.props.dir[0] === -1 && link.fromSocket.props.dir[0] === 1) {
+            toSocketDetails.task.waitOn = toSocketDetails.task.waitOn || {};
+            delete toSocketDetails.task.waitOn[fromSocketDetails.task.label];
+          }
+        }
+      }
+    }
+    // debugger;
+    clearTimeout(this.linksUpdateTimer);
+    this.linksUpdateTimer = setTimeout(() => {
+      this.refreshWorkflow();
+    }, 1500);
   }
 
 }
