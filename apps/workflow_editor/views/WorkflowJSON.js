@@ -8,9 +8,15 @@ import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
-import JsonEditor from 'common-web-ui/views/JsonEditor';
+// import JsonEditor from 'common-web-ui/views/JsonEditor';
 
-import { } from 'material-ui';
+import AceEditor from 'common-web-ui/views/AceEditor';
+import 'brace/mode/json';
+import 'brace/theme/github';
+
+import {
+    RaisedButton
+  } from 'material-ui';
 
 /**
 # WEWorkflowJSON
@@ -52,19 +58,28 @@ export default class WEWorkflowJson extends Component {
 
   componentWillUnmount() {}
 
-  componentDidUpdate() {
-    this.refs.jsonEditor.setState({value: this.prepareJSON(this.state.model)});
-  }
-
   render() {
-    // let workflow = this.state.model;
-    return <JsonEditor ref="jsonEditor"
-        style={{width: '96%', height: window.innerHeight - 200}}
-        initialValue={this.prepareJSON(this.props.model)}
-        updateParentState={this.updateWorkflowGraph.bind(this)} />;
+    return (
+      <div>
+        <RaisedButton label="Update Graph" onTouchTap={this.updateGraph.bind(this)}/>
+        {this.state.error}
+        <AceEditor ref="aceEditor" key="aceEditor"
+          mode="json"
+          theme="github"
+          name="workflowAceEditor"
+          width="98%"
+          height={window.innerHeight - 150}
+          value={this.prepareJSON(this.state.model || this.props.model)}
+          onChange={this.autoUpdateGraph.bind(this)} />
+      </div>
+    );
   }
 
   prepareJSON(model) {
+    if (!model || Object.keys(model).length === 0) {
+      this.lastValue = '{}';
+      return this.lastValue;
+    }
     let safeJsonify = (output, source) => {
       if (!source || typeof source !== 'object') { return source; }
       if (Array.isArray(source)) {
@@ -76,39 +91,70 @@ export default class WEWorkflowJson extends Component {
       });
       return output;
     };
-    return safeJsonify({}, model);
+    this.lastValue = JSON.stringify(safeJsonify({}, model), '\t', 2);
+    return this.lastValue;
   }
 
-  updateWorkflowGraph(updates) {
+  autoUpdateGraph(newValue) {
+    if (newValue === this.lastValue) { return; }
+    try {
+      let updates = JSON.parse(newValue);
+      this.compileJSON(updates, 2500);
+    }
+    catch (err) {
+      console.warn(err.stack || err);
+    }
+  }
+
+  updateGraph() {
+    this.compileJSON(this.refs.aceEditor.editor.getValue());
+  }
+
+  compileJSON(newValue, delay) {
+    try {
+      let updates = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
+      if (updates) {
+        this.updateWorkflowGraph(updates, delay || 32);
+      }
+    }
+    catch(err) {
+      this.setState({error: err});
+    }
+  }
+
+  updateWorkflowGraph(updates, delay) {
+    let safeMerge = (current, changes) => {
+      if (!changes || typeof changes !== 'object') {
+        return changes;
+      }
+      if (Array.isArray(changes)) {
+        changes.forEach((item, i) => {
+          current[i] = safeMerge(current[i] || changes[i], item);
+        });
+      }
+      else {
+        Object.keys(changes).forEach(key => {
+          if (key === '_' || key === 'id') {
+            throw new Error('WorkflowEditor: Cannot use _ or id as property names in workflow templates.');
+          }
+          current[key] = safeMerge(current[key] || changes[key], changes[key]);
+        });
+      }
+      return current || changes;
+    };
+
+    safeMerge(this.context.editor.currentWorkflowTemplate, updates);
+    safeMerge(this.context.editor.currentWorkflowGraph, updates);
+
     clearTimeout(this.updateTimer);
     this.updateTimer = setTimeout(() => {
-      let safeMerge = (current, changes) => {
-        if (!changes || typeof changes !== 'object') {
-          return changes;
-        }
-        if (Array.isArray(changes)) {
-          changes.forEach((item, i) => {
-            current[i] = safeMerge(current[i], item);
-          });
-        }
-        else {
-          Object.keys(changes).forEach(key => {
-            if (key === '_' || key === 'id') {
-              throw new Error('WorkflowEditor: Cannot use _ or id as property names in workflow templates.');
-            }
-            current[key] = safeMerge(current[key], changes[key]);
-          });
-        }
-        return current;
-      };
-      safeMerge(this.context.editor.currentWorkflowTemplate, updates);
-      safeMerge(this.context.editor.currentWorkflowGraph, updates);
+      this.setState({error: null});
       try {
         this.context.editor.refreshWorkflow();
       } catch (err) {
         console.error(err);
       }
-    }, 2000);
+    }, delay || 250);
   }
 
 }

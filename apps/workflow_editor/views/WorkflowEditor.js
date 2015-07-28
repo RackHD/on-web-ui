@@ -197,6 +197,7 @@ export default class WorkflowEditor extends Component {
   resetWorkflow() {
     this.setState(prevState => ({version: prevState.version + 1}));
     this.refs.tray.refs.inspector.refs.outline.setState({model: {}});
+    this.refs.tray.refs.json.setState({model: {}});
   }
 
   updateTraySize(trayWidth) {
@@ -261,8 +262,8 @@ export default class WorkflowEditor extends Component {
     // this.refs.tray.refs.json.setState({model: workflowTemplate});
     this.loadWorkflowTemplate(workflowGraph, workflowTemplate, this.currentWorkflowGraph, () => {
       this.organizeWorkflowGraphs(workflowGraph._.groupId);
-      if (callback) { callback(workflowGraph); }
       this.refs.tray.refs.json.setState({model: workflowGraph});
+      if (callback) { callback(workflowGraph); }
     });
   }
 

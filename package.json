@@ -10,6 +10,7 @@
     "npm": ">= 2.1"
   },
   "dependencies": {
+    "brace": "^0.5.1",
     "color": "^0.9.0",
     "gl-matrix": "^2.3.1",
     "griddle-react": "^0.2.13",
