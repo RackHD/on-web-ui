@@ -196,8 +196,12 @@ export default class WorkflowEditor extends Component {
 
   resetWorkflow() {
     this.setState(prevState => ({version: prevState.version + 1}));
-    this.refs.tray.refs.inspector.refs.outline.setState({model: {}});
-    this.refs.tray.refs.json.setState({model: {}});
+    try {
+      this.refs.tray.refs.inspector.refs.outline.setState({model: {}});
+      this.refs.tray.refs.json.setState({model: {}});
+    } catch (err) {
+      console.warn(err.stack || err);
+    }
   }
 
   updateTraySize(trayWidth) {
@@ -300,7 +304,7 @@ export default class WorkflowEditor extends Component {
               1500 - sizeX, 1500 - sizeY,
               1500 + sizeX, 1500 + sizeY
             ]}
-            initialColor="#777"
+            initialColor="#bbb"
             initialName={workflowGraph.friendlyName}
             initialId={workflowGroupId}
             isRemovable={false} />
@@ -353,7 +357,7 @@ export default class WorkflowEditor extends Component {
                   0, 0,
                   taskWidth, taskHeight
                 ]}
-                initialColor="#7ea"
+                initialColor="#6c8"
                 initialId={optionsNodeId}
                 initialName={'Options: ' + workflowGraph.friendlyName}
                 isRemovable={false}>
@@ -445,7 +449,7 @@ export default class WorkflowEditor extends Component {
                     taskGutter + (col * taskWidth), taskGutter + (row * taskHeight),
                     taskWidth + (col * taskWidth), taskHeight + (row * taskHeight)
                   ]}
-                  initialColor="#ddd"
+                  initialColor="#999"
                   initialId={taskNodeId}
                   initialName={task.label}>
                 <GCPort key={orderPortId}

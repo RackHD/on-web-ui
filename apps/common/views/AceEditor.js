@@ -61,10 +61,12 @@ module.exports = React.createClass({
     this.editor.setOption('readOnly', this.props.readOnly);
     this.editor.setOption('highlightActiveLine', this.props.highlightActiveLine);
     this.editor.setShowPrintMargin(this.props.setShowPrintMargin);
-
-    if (this.props.onLoad) {
-      this.props.onLoad(this.editor);
-    }
+    setTimeout(() => {
+      this.editor.selection.moveCursorFileStart();
+      if (this.props.onLoad) {
+        this.props.onLoad(this.editor);
+      }
+    }, 32);
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -80,9 +82,12 @@ module.exports = React.createClass({
       this.editor.setValue(nextProps.value, 1);
     }
     this.editor.renderer.setShowGutter(nextProps.showGutter);
-    if (nextProps.onLoad) {
-      nextProps.onLoad(this.editor);
-    }
+    setTimeout(() => {
+      this.editor.selection.moveCursorFileStart();
+      if (nextProps.onLoad) {
+        nextProps.onLoad(this.editor);
+      }
+    }, 32);
   },
 
   render: function() {
