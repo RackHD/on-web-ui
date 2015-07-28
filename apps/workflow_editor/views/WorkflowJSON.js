@@ -95,11 +95,20 @@ export default class WEWorkflowJson extends Component {
     return this.lastValue;
   }
 
+  silentUpdate() {
+    this.silentUpdating = true;
+    this.forceUpdate();
+    setTimeout(() => {
+      delete this.silentUpdating;
+    }, 32);
+  }
+
   autoUpdateGraph(newValue) {
+    if (this.silentUpdating) { return; }
     if (newValue === this.lastValue) { return; }
     try {
       let updates = JSON.parse(newValue);
-      this.compileJSON(updates, 2500);
+      this.compileJSON(updates, 1500);
     }
     catch (err) {
       console.warn(err.stack || err);
@@ -111,6 +120,7 @@ export default class WEWorkflowJson extends Component {
   }
 
   compileJSON(newValue, delay) {
+    console.log('COMPILE JSON');
     try {
       let updates = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
       if (updates) {
@@ -123,6 +133,7 @@ export default class WEWorkflowJson extends Component {
   }
 
   updateWorkflowGraph(updates, delay) {
+    console.log('UPDATE WORKFLOW GRAPH');
     let safeMerge = (current, changes) => {
       if (!changes || typeof changes !== 'object') {
         return changes;
