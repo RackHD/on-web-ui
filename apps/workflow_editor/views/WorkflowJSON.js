@@ -144,13 +144,13 @@ export default class WEWorkflowJson extends Component {
       }
       let safe;
       if (Array.isArray(changes)) {
-        safe = current || [];
+        safe = [];
         changes.forEach((item, i) => {
           safe[i] = safeMerge(safe[i], item);
         });
       }
       else {
-        safe = current || {};
+        safe = {};
         Object.keys(changes).forEach(key => {
           if (key === '_' || key === 'id') {
             throw new Error('WorkflowEditor: Cannot use _ or id as property names in workflow templates.');
@@ -162,7 +162,8 @@ export default class WEWorkflowJson extends Component {
     };
 
     // safeMerge(this.context.editor.currentWorkflowTemplate, updates);
-    safeMerge(this.context.editor.currentWorkflowGraph, updates);
+    this.context.editor.currentWorkflowGraph =
+      safeMerge(this.context.editor.currentWorkflowGraph, updates);
 
     // console.log('UPDATE TIMER');
     clearTimeout(this.updateTimer);
