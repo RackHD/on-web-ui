@@ -62,7 +62,6 @@ export default class WEWorkflowJson extends Component {
     return (
       <div>
         <RaisedButton label="Update Graph" onTouchTap={this.updateGraph.bind(this)}/>
-        <RaisedButton label="Update JSON" onTouchTap={this.updateJSON.bind(this)}/>
         {this.state.error}
         <AceEditor ref="aceEditor" key="aceEditor"
           mode="json"
@@ -176,10 +175,6 @@ export default class WEWorkflowJson extends Component {
         console.error(err);
       }
     }, delay || 250);
-  }
-
-  updateJSON() {
-    this.context.editor;
   }
 
 }
