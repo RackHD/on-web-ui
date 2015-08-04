@@ -86,7 +86,8 @@ if [ -n "$DOCKER_PROVISION" ]; then
 else
   printf "\n\nInstall on-web-ui:\n\n"
   rm -rf node_modules
-  npm install
+  npm install || true
+  npm install || true
   ./scripts/link_project.sh
 
   if [ -n "$TEST_ON_WEB_UI" ]; then

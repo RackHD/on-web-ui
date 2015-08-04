@@ -4,6 +4,12 @@ npm link
 cd ../../
 npm link common-web-ui
 
+printf '\n\nNPM link graph-canvas-web-ui:\n\n'
+cd apps/graph_canvas
+npm link
+cd ../../
+npm link graph-canvas-web-ui
+
 printf '\n\nNPM link monorail-web-ui:\n\n'
 cd apps/monorail
 npm link

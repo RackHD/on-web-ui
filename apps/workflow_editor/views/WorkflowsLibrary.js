@@ -8,6 +8,7 @@ import mixin from 'react-mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
+import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
 import Library from './Library';
 import LibraryItem from './LibraryItem';
@@ -24,6 +25,7 @@ import LibraryItem from './LibraryItem';
 
 @radium
 @mixin.decorate(DeveloperHelpers)
+@mixin.decorate(RouteHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,
@@ -35,19 +37,24 @@ import LibraryItem from './LibraryItem';
     className: '',
     editor: null,
     style: {}
+  },
+
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
   }
 })
 export default class WEWorkflowsLibrary extends Component {
 
-  state = {workflows: []};
+  state = {workflowTemplates: []};
 
   componentWillMount() {
-    this.workflowStore = this.props.editor.workflowStore;
+    this.workflowTemplateStore = this.context.editor.workflowTemplateStore;
   }
 
   componentDidMount() {
-    this.unwatchWorkflows = this.workflowStore.watchAll('workflows', this);
-    this.workflowStore.list();
+    this.unwatchWorkflows = this.workflowTemplateStore.watchAll('workflowTemplates', this);
+    this.workflowTemplateStore.list();
   }
 
   componentWillUnmount() {
@@ -55,16 +62,19 @@ export default class WEWorkflowsLibrary extends Component {
   }
 
   render() {
-    var libraryWorkflows = this.state.workflows.map(workflow => {
-      let onLoad = this.loadWorkflow.bind(this, workflow, true);
-      let onSelect = this.loadWorkflow.bind(this, workflow, false);
+    var libraryWorkflows = this.state.workflowTemplates.map(workflowTemplate => {
+      let onLoad = this.loadWorkflow.bind(this, workflowTemplate, true);
+      // let onSelect = this.loadWorkflow.bind(this, workflowTemplate, false);
       return (
-        <LibraryItem key={workflow.friendlyName} onSelect={onSelect} object={workflow} name={workflow.friendlyName}>
-          <a
+        <LibraryItem key={workflowTemplate.id}
+            onSelect={onLoad/*onSelect*/}
+            object={workflowTemplate}
+            name={workflowTemplate.friendlyName}>
+          {/*<a
               title="Load this workflow."
               style={{display: 'inline-block', margin: '0 5px'}}
               onClick={onLoad}
-              className="fa fa-external-link-square fa-flip-horizontal" />
+              className="fa fa-external-link-square fa-flip-horizontal" />*/}
         </LibraryItem>
       );
     });
@@ -76,22 +86,22 @@ export default class WEWorkflowsLibrary extends Component {
     );
   }
 
-  loadWorkflow(workflow, newGraph, event) {
-    if (!workflow) { return; }
+  loadWorkflow(workflowTemplate, newGraph, event) {
+    if (!workflowTemplate) { return null; }
     event.stopPropagation();
     event.preventDefault();
-    // if (workflow.id) {
-    //   this.routeTo('builder', workflow.id);
-    // }
-    // else {
-    //   this.routeTo('builder', 'new');
-    // }
-    if (workflow.id) {
-      this.props.editor.loadWorkflow(workflow, newGraph);
+    if (workflowTemplate.id) {
+      if (newGraph) {
+        try {
+          this.context.layout.loadWorkflow(workflowTemplate, newGraph);
+        } catch (err) { console.error(err); }
+        return this.routeTo('edit', encodeURIComponent(workflowTemplate.id));
+      }
+      else {
+        return this.context.layout.loadWorkflow(workflowTemplate, newGraph);
+      }
     }
-    else {
-      this.props.editor.resetWorkflow();
-    }
+    return this.context.editor.resetWorkflow();
   }
 
 }

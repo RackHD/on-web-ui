@@ -12,6 +12,7 @@ import {
   } from 'material-ui';
 
 import WEInspector from './Inspector';
+import WEWorkflowJSON from './WorkflowJSON';
 import WETasksLibrary from './TasksLibrary';
 import WETWorkflowsLibrary from './WorkflowsLibrary';
 
@@ -21,23 +22,43 @@ import WETWorkflowsLibrary from './WorkflowsLibrary';
     className: PropTypes.string,
     css: PropTypes.object,
     editor: PropTypes.object,
-    styles: PropTypes.object
+    styles: PropTypes.object,
+    initialWidth: PropTypes.number,
+    onResize: PropTypes.func
   },
 
   defaultProps: {
     className: '',
     css: {},
     editor: null,
-    styles: {}
+    styles: {},
+    initialWidth: 400,
+    onResize: null
+  },
+
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
   }
 })
 export default class WETray extends Component {
 
-  state = {};
+  state = {
+    size: this.props.initialWidth,
+    hide: false
+  };
 
   css = {
+    resize: {
+      cursor: 'col-resize',
+      position: 'absolute',
+      fontSize: 18,
+      top: 18,
+      left: -30
+    },
     root: {
-      width: '40%',
+      position: 'relative',
+      background: 'white',
       verticalAlign: 'top',
       borderLeft: '2px solid #eee'
     }
@@ -49,35 +70,85 @@ export default class WETray extends Component {
 
   render() {
     let css = {
-      root: [this.css.root, this.props.css.root, this.props.style]
+      root: [
+        this.css.root,
+        {width: this.state.hide ? 0 : this.state.size},
+        this.props.css.root,
+        this.props.style
+      ],
+      resize: [
+        this.css.resize,
+        this.props.css.resize
+      ]
     };
     return (
       <div ref="root" className={this.props.className} style={css.root}>
-        <Tabs ref="tabs">
+        <a ref="resize"
+            style={css.resize}
+            onDoubleClick={this.toggleTray.bind(this)}
+            onMouseDown={this.resizeTray.bind(this)}
+            className="fa fa-arrows-h"
+            title="Resize Tray" />
+        <Tabs ref="tabs" contentContainerStyle={{maxHeight: window.innerHeight - 86, overflow: 'auto'}}>
           <Tab label="Inspector">
-            <WEInspector ref="inspector" editor={this.props.editor} />
+            <WEInspector ref="inspector" />
+          </Tab>
+          <Tab label="JSON">
+            <WEWorkflowJSON ref="json" />
           </Tab>
           <Tab label="Tasks">
-            <WETasksLibrary ref="tasks" editor={this.props.editor} />
+            <WETasksLibrary ref="tasks" />
           </Tab>
           <Tab label="Workflows">
-            <WETWorkflowsLibrary ref="workflows" editor={this.props.editor} />
+            <WETWorkflowsLibrary ref="workflows" />
           </Tab>
         </Tabs>
       </div>
     );
   }
 
+  toggleTray() {
+    let hide = !this.state.hide;
+    this.setState({hide: hide});
+    if (this.props.onResize) { this.props.onResize(hide ? 0 : this.state.size); }
+  }
+
+  resizeTray(event) {
+    let active = true,
+        pageX = event.pageX,
+        size = this.state.size;
+
+    let moveHandler = (e) => {
+      if (!active) { return; }
+      let diffX = e.pageX - pageX;
+      this.setState({size: size - diffX});
+      if (this.props.onResize) { this.props.onResize(size - diffX); }
+    };
+
+    let upHandler = () => {
+      active = false;
+      window.removeEventListener('mousemove', moveHandler);
+      window.removeEventListener('mouseup', upHandler);
+    };
+
+    window.addEventListener('mousemove', moveHandler);
+    window.addEventListener('mouseup', upHandler);
+  }
+
   viewInspector() {
     this.refs.tabs.setState({selectedIndex: 0});
   }
 
-  viewTasks() {
+  viewJSON() {
     this.refs.tabs.setState({selectedIndex: 1});
   }
 
-  viewWorkflows() {
+  viewTasks() {
     this.refs.tabs.setState({selectedIndex: 2});
+  }
+
+  viewWorkflows() {
+    this.refs.tabs.setState({selectedIndex: 3});
   }
 
 }

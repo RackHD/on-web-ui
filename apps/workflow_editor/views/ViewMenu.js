@@ -18,7 +18,7 @@ import {
     editor: PropTypes.any
   }
 })
-export default class WEEditMenu extends Component {
+export default class WEViewMenu extends Component {
 
   state = {};
 
@@ -27,19 +27,20 @@ export default class WEEditMenu extends Component {
   componentWillUnmount() {}
 
   render() {
-    var editMenuItems = [
-      {text: 'Edit', type: MenuItem.Types.SUBHEADER},
-      {text: 'Auto Layout'},
-      {text: 'Delete Selected'}
+    var viewMenuItems = [
+      {text: 'View', type: MenuItem.Types.SUBHEADER},
+      {text: 'View Selected'},
+      {text: 'Go Home'}
     ];
     return (
-      <DropDownMenu ref="root" className="EditMenu"
-          menuItems={editMenuItems}
-          onChange={this.triggerEditAction.bind(this)} />
+      <DropDownMenu ref="root"
+          className="ViewMenu"
+          menuItems={viewMenuItems}
+          onChange={this.triggerViewAction.bind(this)} />
     );
   }
 
-  triggerEditAction(e, selectedIndex, menuItem) {
+  triggerViewAction(e, selectedIndex, menuItem) {
     console.log(menuItem);
     if (selectedIndex !== 0) {
       setTimeout(() => {

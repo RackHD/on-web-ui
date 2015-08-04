@@ -9,6 +9,8 @@ import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 
+import PromptDialog from 'common-web-ui/views/dialogs/Prompt';
+
 import Library from './Library';
 import LibraryItem from './LibraryItem';
 
@@ -33,19 +35,24 @@ import LibraryItem from './LibraryItem';
   defaultProps: {
     className: '',
     style: {}
+  },
+
+  contextTypes: {
+    layout: PropTypes.any,
+    editor: PropTypes.any
   }
 })
 export default class WETasksLibrary extends Component {
 
-  state = {tasks: []};
+  state = {taskDefinitions: []};
 
   componentWillMount() {
-    this.taskStore = this.props.editor.taskStore;
+    this.taskDefinitionStore = this.context.editor.taskDefinitionStore;
   }
 
   componentDidMount() {
-    this.unwatchTasks = this.taskStore.watchAll('tasks', this);
-    this.taskStore.list();
+    this.unwatchTasks = this.taskDefinitionStore.watchAll('taskDefinitions', this);
+    this.taskDefinitionStore.list();
   }
 
   componentWillUnmount() {
@@ -53,10 +60,13 @@ export default class WETasksLibrary extends Component {
   }
 
   render() {
-    var libraryTasks = this.state.tasks.map(task => {
-      let onSelect = this.loadTask.bind(this, task);
+    var libraryTasks = this.state.taskDefinitions.map(taskDefinition => {
+      let onSelect = this.loadTask.bind(this, taskDefinition);
       return (
-        <LibraryItem key={task.friendlyName} onSelect={onSelect} object={task} name={task.friendlyName}></LibraryItem>
+        <LibraryItem key={taskDefinition.id}
+            onSelect={onSelect}
+            object={taskDefinition}
+            name={taskDefinition.friendlyName}></LibraryItem>
       );
     });
 
@@ -67,13 +77,24 @@ export default class WETasksLibrary extends Component {
     );
   }
 
-  loadTask(task, event) {
-    if (!task) { return; }
+  loadTask(taskDefinition, event) {
+    if (!taskDefinition) { return; }
     event.stopPropagation();
     event.preventDefault();
-    let label = prompt('Label'); // eslint-disable-line no-alert
-    task.insertGraphNode(this.props.editor, label, [1000, 1000, 1100, 1100]);
-    this.props.editor.layout.refs.graphCanvas.refs.world.updateGraph();
+    var promptProps = {
+      callback: (label) => {
+        if (label) {
+          // let taskNode = taskDefinition.toTaskNode(this, taskDefinition, { label });
+          // taskNode.addGraphCanvasNode([1000, 1000, 1100, 1100]);
+          // this.context.layout.refs.graphCanvas.refs.world.updateGraph();
+          this.context.editor.addTask(taskDefinition, label);
+        }
+      },
+      children: 'Please label your task.',
+      title: 'Define Task Label:'
+    };
+    PromptDialog.create(promptProps,
+      React.findDOMNode(this.context.layout.refs.overlay));
   }
 
 }

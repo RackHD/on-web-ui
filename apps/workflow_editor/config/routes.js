@@ -9,15 +9,17 @@ import NotFound from 'common-web-ui/views/NotFound';
 
 // Must be imported after navigation.
 import App from '../views/App';
-import WELayout from '../views/Layout';
+import WorkflowEditor from '../views/WorkflowEditor';
+import ExampleGraphCanvas from 'graph-canvas-web-ui/views/Example';
 
 // See http://rackt.github.io/react-router/
 let routes = (
   <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={WELayout} />
-    <Route path="/:workflow" handler={WELayout} />
+    <DefaultRoute handler={WorkflowEditor} />
+    <Route path="/example" handler={ExampleGraphCanvas} />
+    <Route path="/edit/:workflow" handler={WorkflowEditor} />
     <NotFoundRoute handler={NotFound} />
-    <Redirect from="editor" to="/" />
+    <Redirect from="/edit" to="/edit/new" />
   </Route>
 );
 

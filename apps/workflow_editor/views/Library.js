@@ -48,11 +48,10 @@ export default class WELibrary extends Component {
       background: '#fff'
     },
     search: {
-      padding: 0,
-      marginBottom: 0
+      marginTop: '-20px'
     },
     ul: {
-      maxHeight: '500px',
+      // maxHeight: 500,
       overflow: 'auto',
       userSelect: 'none',
       borderTop: '1px dotted #ddd',
@@ -74,7 +73,7 @@ export default class WELibrary extends Component {
     var css = {
       root: [this.css.root, this.props.css.root, this.props.style],
       search: [this.css.search, this.props.css.search],
-      ul: [this.css.ul, this.props.css.ul]
+      ul: [this.css.ul, /*{maxHeight: window.innerHeight - 200},*/ this.props.css.ul]
     };
     var empty = null;
     if (!React.Children.count(this.props.children)) {
@@ -82,12 +81,14 @@ export default class WELibrary extends Component {
     }
     return (
       <div className={this.props.className} style={css.root}>
-        <TextField
-            ref="search"
-            fullWidth={true}
-            floatingLabelText="Search"
-            onBlur={this.clearSearch.bind(this)}
-            onChange={this.updateSearch.bind(this)} />
+        <div style={css.search}>
+          <TextField
+              ref="search"
+              fullWidth={true}
+              floatingLabelText="Search"
+              onBlur={this.clearSearch.bind(this)}
+              onChange={this.updateSearch.bind(this)} />
+          </div>
         <ul ref="list" style={css.ul}>
           {this.state.filteredChildren || empty || this.props.children}
         </ul>
@@ -104,8 +105,10 @@ export default class WELibrary extends Component {
     this.trie = {};
 
     React.Children.forEach(this.props.children, child => {
-      var name = child.key || child.props.children,
-          words = name.toLowerCase().split(/\s+/);
+      var name = //child.key || child.props.children ||
+                 child.props.object && child.props.object.friendlyName,
+          words = name && name.toLowerCase().split(/\s+/) || [];
+      // if (!name) {debugger;}
 
       words.forEach(word => {
         var letters = word.split(''),
@@ -147,10 +150,10 @@ export default class WELibrary extends Component {
   }
 
   clearSearch() {
-    setTimeout(() => {
-      this.refs.search.setValue('');
-      this.setState({filteredChildren: null});
-    }, 500);
+    // setTimeout(() => {
+    //   this.refs.search.setValue('');
+    //   this.setState({filteredChildren: null});
+    // }, 500);
   }
 
 }
