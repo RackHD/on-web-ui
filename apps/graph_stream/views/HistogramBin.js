@@ -16,14 +16,15 @@ export default class HistogramBin extends Component {
     max: null,
     count: 0,
     value: 0,
-    label: '0'
+    label: '0',
+    color: '#000'
   }, this.props);
 
   state = {};
 
   css = {
     root: {
-      background: '#000'
+      background: this.props.color
     }
   };
 
@@ -44,8 +45,8 @@ export default class HistogramBin extends Component {
   render(React) {
     let css = {
       root: [this.css.root, this.props.css.root, this.props.style, {
-        width: this.props.size + 'ex',
-        height: this.props.count + 'em'
+        width: (this.props.size * 14) - 2,
+        height: (this.props.count * 18)
       }]
     };
 

@@ -31,23 +31,34 @@ export default class Histogram extends Component {
       verticalAlign: 'bottom'
     },
     corner: {
-      height: '1em',
-      width: '1em'
+      height: '18px',
+      width: '14px'
     },
-    root: {},
-    row: {
+    root: {
+      position: 'relative',
+      padding: '5px',
+      fontSize: '12px',
+      lineHeight: '18px',
       display: 'table',
-      tableLayout: 'fixed',
-      width: '100%'
+      tableLayout: 'fixed'
     },
+    row: {},
     xAxis: {
-      height: '1em',
+      height: '18px',
     },
-    xAxisKey: {},
+    xAxisKey: {
+      textAlign: 'center',
+      height: '18px',
+    },
     yAxis: {
-      width: '1em',
+      width: '14px',
     },
-    yAxisKey: {}
+    yAxisKey: {
+      position: 'relative',
+      top: '-9px',
+      height: '18px',
+      width: '14px',
+    }
   };
 
   getChildContext() {
@@ -66,7 +77,7 @@ export default class Histogram extends Component {
 
   getXKeys(bins) {
     if (this.props.orient === 'horizontal') {
-      return bins.map(bin => ({value: bin.component.props.value, size: bin.component.props.size}));
+      return bins.map(bin => bin.component.props);
     }
   }
 
@@ -92,7 +103,14 @@ export default class Histogram extends Component {
     let xKeys = this.getXKeys(bins),
         yKeys = this.getYKeys(bins);
 
-    let cssCol = [this.css.col, this.props.css.col];
+    let cssCol = [this.css.col, this.props.css.col],
+        cssRow = [this.css.row, this.props.css.row];
+
+    bins = bins.map(bin => {
+      return (<div className="bin-cell" style={[{width: (bin.component.props.size * 14) - 2, padding: '0 1px'}].concat(cssCol)}>
+        {bin}
+      </div>);
+    })
 
     let css = {
       bins: [{}].concat(cssCol.concat([this.css.bins, this.props.css.bins])),
@@ -100,38 +118,46 @@ export default class Histogram extends Component {
       corner: [{}].concat(cssCol.concat([this.css.corner, this.props.css.corner])),
       root: [{}, this.css.root, this.props.css.root, this.props.style],
       row: [{}, this.css.row, this.props.css.row],
-      xAxis: [{}].concat(cssCol.concat([this.css.xAxis, this.props.css.xAxis])),
-      xAxisKey: [{}, this.css.xAxisKey, this.props.css.xAxisKey],
+      xAxis: [{}].concat(cssRow.concat([this.css.xAxis, this.props.css.xAxis])),
+      xAxisKey: [{}].concat(cssCol.concat([this.css.xAxisKey, this.props.css.xAxisKey])),
       yAxis: [{}].concat(cssCol.concat([this.css.yAxis, this.props.css.yAxis])),
       yAxisKey: [{}, this.css.yAxisKey, this.props.css.yAxisKey]
     };
 
+    let lines = yKeys.map((key, i) => {
+      return (
+        <div className="line" style={{
+          height: 1,
+          width: '95%',
+          left: '5%',
+          borderTop: '1px dotted #000',
+          position: 'absolute',
+          top: i * 18 + 4.5
+        }} />
+      );
+    });
+
     return (
       <div className="histogram" style={css.root}>
-        <div className="row">
+        <div className="bins" style={css.row}>
           <div className="y-axis" style={css.yAxis}>
             {yKeys.map(key =>
               <div className="y-axis-key" style={css.yAxisKey}>{key}</div>
             ).reverse()}
           </div>
-          <div className="col" style={css.col}>
-            <div className="bins" style={css.bins}>
-              {bins}
-            </div>
-          </div>
+          {bins}
         </div>
-        <div className="row">
+        <div className="x-axis" style={css.xAxis}>
           <div className="corner" style={css.corner} />
-          <div className="x-axis" style={css.xAxis}>
-            {xKeys.map(key =>
-              <span
-                  className="x-axis-key"
-                  style={css.xAxisKey.concat([{width: key.size}])}>
-                {key.value}
-              </span>
-            )}
-          </div>
+          {xKeys.map(key =>
+            <span
+                className="x-axis-key"
+                style={css.xAxisKey.concat([{width: (key.size * 14) - 2, padding: '0 1px'}])}>
+              {key.label || key.value}
+            </span>
+          )}
         </div>
+        {lines}
       </div>
     );
   }
