@@ -8,7 +8,7 @@ var superagent = require('superagent');
 
 server.set('port', 2000);
 
-var api = 'http://onrackapi.hwimo.lab.emc.com/rest/v1';
+var api = 'http://137.69.148.83/rest/v1/';
 
 var methods = {
   GET: 'get',
