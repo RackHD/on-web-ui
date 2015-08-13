@@ -27,13 +27,14 @@ let defaultStyles = {
 
 export default class HomeView extends Component {
 
-  props = {
+  props = this.assignObject(this.props || {}, {
     styles: {}
-  };
+  });
 
   state = {};
 
   render(React) {
+    console.log(this.props.children);
     var styles = this.props.styles,
         header = this.props.header,
         footer = this.props.footer;
@@ -54,6 +55,8 @@ export default class HomeView extends Component {
       </div>;
     }
 
+    let isEmpty = !this.props.children || !this.props.children.length;
+
     return (
       <div
           className={this.props.className}
@@ -63,7 +66,7 @@ export default class HomeView extends Component {
           <div
               className="content"
               style={[defaultStyles.content, styles.content]}>
-            {this.props.children}
+            {isEmpty ? 'Not Found' : this.props.children}
           </div>
           {footer}
         </div>
