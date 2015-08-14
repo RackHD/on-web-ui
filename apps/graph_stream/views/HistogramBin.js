@@ -43,10 +43,30 @@ export default class HistogramBin extends Component {
   }
 
   render(React) {
+    if (this.context.parentHistogram.props.orient === 'horizontal') {
+      return this.renderHorizontal(React);
+    }
+    return this.renderVertical(React);
+  }
+
+  renderHorizontal(React) {
     let css = {
       root: [this.css.root, this.props.css.root, this.props.style, {
         width: (this.props.size * 14) - 2,
         height: (this.props.count * 18)
+      }]
+    };
+
+    return (
+      <div className="histogram-bin" style={css.root}></div>
+    );
+  }
+
+  renderVertical(React) {
+    let css = {
+      root: [this.css.root, this.props.css.root, this.props.style, {
+        width: (this.props.count * 18),
+        height: (this.props.size * 14) - 2
       }]
     };
 

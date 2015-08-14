@@ -51,6 +51,25 @@ onReady(() => {
         <HistogramBin size={2} count={1} value={5} label="6" color="#ccc" />
         <HistogramBin size={2} count={0} value={6} label="7" color="#ccc" />
       </Histogram>
+      <Histogram
+          orient="vertical"
+          minCount={1}
+          maxCount={10}>
+        <HistogramBin size={1} count={0} value={0} label="1" />
+        <HistogramBin size={1} count={1} value={1} label="2" />
+        <HistogramBin size={1} count={2} value={2} label="3" />
+        <HistogramBin size={1} count={8} value={3} label="4" />
+        <HistogramBin size={1} count={2} value={4} label="5" />
+        <HistogramBin size={1} count={1} value={5} label="6" />
+        <HistogramBin size={1} count={0} value={6} label="7" />
+        <HistogramBin size={2} count={0} value={0} label="1" color="#ccc" />
+        <HistogramBin size={2} count={1} value={1} label="2" color="#ccc" />
+        <HistogramBin size={2} count={2} value={2} label="3" color="#ccc" />
+        <HistogramBin size={2} count={8} value={3} label="4" color="#ccc" />
+        <HistogramBin size={2} count={2} value={4} label="5" color="#ccc" />
+        <HistogramBin size={2} count={1} value={5} label="6" color="#ccc" />
+        <HistogramBin size={2} count={0} value={6} label="7" color="#ccc" />
+      </Histogram>
     </HistogramSet>
   ));
   page();

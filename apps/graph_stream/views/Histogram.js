@@ -20,7 +20,50 @@ export default class Histogram extends Component {
 
   state = {};
 
-  css = {
+  getChildContext() {
+    return {
+      parentHistogram: this
+    }
+  }
+
+  componentWillMount() {}
+
+  componentWillReceiveProps(nextProps) {}
+
+  get bins() {
+    return this.props.children.slice(0);
+  }
+
+  sortBins(bins) {
+    return bins.sort((binA, binB) => {
+      let propsA = binA.component.props,
+          propsB = binB.component.props;
+      return propsA.value - propsB.value ||
+             propsA.size - propsB.size ||
+             propsA.count - propsB.count;
+    });
+  }
+
+  getBinProps(bins) {
+    return bins.map(bin => bin.component.props);
+  }
+
+  getCountKeys() {
+    let keys = [],
+        len = this.props.maxCount,
+        i = this.props.minCount;
+    for (; i < len; i += 1) keys.push(i.toString());
+    return keys;
+  }
+
+  render(React) {
+    if (this.props.orient === 'horizontal') {
+      return this.renderHorizontal(React);
+    }
+    return this.renderVertical(React);
+  }
+
+  horizontalCSS = {
     bins: {
       alignItems: 'flex-end',
       display: 'flex',
@@ -57,71 +100,44 @@ export default class Histogram extends Component {
       position: 'relative',
       top: '-9px',
       height: '18px',
-      width: '14px',
+      width: '14px'
     }
   };
 
-  getChildContext() {
-    return {
-      parentHistogram: this
-    }
-  }
+  renderHorizontal(React) {
+    let props = this.props,
+        bins = this.bins,
+        css = this.horizontalCSS;
 
-  componentWillMount() {}
+    bins = this.sortBins(bins);
 
-  componentWillReceiveProps(nextProps) {}
+    let xKeys = this.getBinProps(bins),
+        yKeys = this.getCountKeys();
 
-  get bins() {
-    return this.props.children.slice(0);
-  }
-
-  getXKeys(bins) {
-    if (this.props.orient === 'horizontal') {
-      return bins.map(bin => bin.component.props);
-    }
-  }
-
-  getYKeys(bins) {
-    if (this.props.orient === 'horizontal') {
-      let keys = [],
-          len = this.props.maxCount,
-          i = this.props.minCount;
-      for (; i < len; i += 1) {
-        keys.push(i.toString());
-      }
-      return keys;
-    }
-  }
-
-  render(React) {
-    let bins = this.bins;
-
-    bins = bins.sort((binA, binB) => {
-      return binA.component.props.value - binB.component.props.value;
-    });
-
-    let xKeys = this.getXKeys(bins),
-        yKeys = this.getYKeys(bins);
-
-    let cssCol = [this.css.col, this.props.css.col],
-        cssRow = [this.css.row, this.props.css.row];
+    let cssCol = [css.col, props.css.col],
+        cssRow = [css.row, props.css.row];
 
     bins = bins.map(bin => {
-      return (<div className="bin-cell" style={[{width: (bin.component.props.size * 14) - 2, padding: '0 1px'}].concat(cssCol)}>
-        {bin}
-      </div>);
-    })
+      let binProps = bin.component.props;
+      return (
+        <div
+            className="bin-cell"
+            style={[{width: (binProps.size * 14) - 2, padding: '0 1px'}].concat(cssCol)}>
+          {bin}
+        </div>
+      );
+    });
 
-    let css = {
-      bins: [{}].concat(cssCol.concat([this.css.bins, this.props.css.bins])),
+    let cssMix = {
+      bins: [{}].concat(cssCol.concat([css.bins, props.css.bins])),
       col: [{}].concat(cssCol),
-      corner: [{}].concat(cssCol.concat([this.css.corner, this.props.css.corner])),
-      root: [{}, this.css.root, this.props.css.root, this.props.style],
-      row: [{}, this.css.row, this.props.css.row],
-      xAxis: [{}].concat(cssRow.concat([this.css.xAxis, this.props.css.xAxis])),
-      xAxisKey: [{}].concat(cssCol.concat([this.css.xAxisKey, this.props.css.xAxisKey])),
-      yAxis: [{}].concat(cssCol.concat([this.css.yAxis, this.props.css.yAxis])),
-      yAxisKey: [{}, this.css.yAxisKey, this.props.css.yAxisKey]
+      corner: [{}].concat(cssCol.concat([css.corner, props.css.corner])),
+      root: [{}, css.root, props.css.root, props.style],
+      row: [{}, css.row, props.css.row],
+      xAxis: [{}].concat(cssRow.concat([css.xAxis, props.css.xAxis])),
+      xAxisKey: [{}].concat(cssCol.concat([css.xAxisKey, props.css.xAxisKey])),
+      yAxis: [{}].concat(cssCol.concat([css.yAxis, props.css.yAxis])),
+      yAxisKey: [{}, css.yAxisKey, props.css.yAxisKey]
     };
 
     let lines = yKeys.map((key, i) => {
@@ -138,23 +154,127 @@ export default class Histogram extends Component {
     });
 
     return (
-      <div className="histogram" style={css.root}>
-        <div className="bins" style={css.row}>
-          <div className="y-axis" style={css.yAxis}>
+      <div className="histogram" style={cssMix.root}>
+        <div className="bins" style={cssMix.row}>
+          <div className="y-axis" style={cssMix.yAxis}>
             {yKeys.map(key =>
-              <div className="y-axis-key" style={css.yAxisKey}>{key}</div>
+              <div className="y-axis-key" style={cssMix.yAxisKey}>{key}</div>
             ).reverse()}
           </div>
           {bins}
         </div>
-        <div className="x-axis" style={css.xAxis}>
-          <div className="corner" style={css.corner} />
+        <div className="x-axis" style={cssMix.xAxis}>
+          <div className="corner" style={cssMix.corner} />
           {xKeys.map(key =>
             <span
                 className="x-axis-key"
-                style={css.xAxisKey.concat([{width: (key.size * 14) - 2, padding: '0 1px'}])}>
+                style={cssMix.xAxisKey.concat([{width: (key.size * 14) - 2, padding: '0 1px'}])}>
               {key.label || key.value}
             </span>
+          )}
+        </div>
+        {lines}
+      </div>
+    );
+  }
+
+  verticalCSS = {
+    col: {
+      display: 'table-cell',
+      verticalAlign: 'middle'
+    },
+    corner: {
+      height: '18px',
+      width: '27px'
+    },
+    root: {
+      position: 'relative',
+      padding: '5px',
+      fontSize: '12px',
+      lineHeight: '12px',
+      display: 'table',
+      tableLayout: 'fixed'
+    },
+    row: {},
+    xAxis: {},
+    xAxisKey: {
+      textAlign: 'center',
+      height: '18px',
+    },
+    yAxisKey: {
+      width: '18px'
+    }
+  };
+
+  renderVertical(React) {
+    let props = this.props,
+        bins = this.bins,
+        css = this.verticalCSS;
+
+    bins = this.sortBins(bins);
+
+    let xKeys = this.getCountKeys(),
+        yKeys = this.getBinProps(bins);
+
+    let cssCol = [css.col, props.css.col],
+        cssRow = [css.row, props.css.row];
+
+    let cssMix = {
+      col: [{}].concat(cssCol),
+      corner: [{}].concat(cssCol.concat([css.corner, props.css.corner])),
+      root: [{}, css.root, props.css.root, props.style],
+      row: [{}, css.row, props.css.row],
+      xAxis: [{}].concat(cssRow.concat([css.xAxis, props.css.xAxis])),
+      xAxisKey: [{}].concat(cssCol.concat([css.xAxisKey, props.css.xAxisKey])),
+      yAxisKey: [{}].concat(cssCol.concat([css.yAxisKey, props.css.yAxisKey]))
+    };
+
+    let lines = xKeys.map((key, i) => {
+      return (
+        <div className="line" style={{
+          width: 1,
+          height: '92%',
+          left: i * 18 + 40,
+          borderLeft: '1px dotted #000',
+          position: 'absolute',
+          bottom: '8%'
+        }} />
+      );
+    });
+
+    let rows = [];
+
+    bins.forEach((bin, i) => {
+      let binProps = bin.component.props,
+          baseCss = {height: (binProps.size * 14) - 2, padding: '1px 0'},
+          key = yKeys[i];
+      rows.push(
+        <div className="bin-row" style={cssMix.row}>
+          <div
+              className="y-axis-key"
+              style={[baseCss].concat(cssMix.yAxisKey)}>
+            {key.label || key.value}
+          </div>
+          <div
+              className="bin-cell"
+              style={[baseCss].concat(cssCol)}>
+            {bin}
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className="histogram" style={cssMix.root}>
+        {rows}
+        <div className="x-axis" style={cssMix.xAxis}>
+          <div className="corner" style={cssMix.corner} />
+          {xKeys.map(key =>
+            <div
+                className="x-axis-key"
+                style={cssMix.xAxisKey.concat([{width: 16, textAlign: 'center', padding: '0 1px'}])}>
+              {key}
+            </div>
           )}
         </div>
         {lines}
