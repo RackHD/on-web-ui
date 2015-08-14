@@ -12,29 +12,38 @@ export var navigation = [
   { text: 'Dashboard', route: '/' },
   { text: 'Objects', type: MenuItem.Types.SUBHEADER },
   { text: 'Nodes', route: 'nodes' },
-  { text: 'Templates', route: 'templates' },
   { text: 'Profiles', route: 'profiles' },
-  { text: 'Lookups', route: 'lookups' },
+  { text: 'Skus', route: 'skus' },
+  { text: 'Templates', route: 'templates' },
+  { text: 'Workflows', route: 'workflows' },
   { text: 'Other', type: MenuItem.Types.SUBHEADER },
+  { text: 'Lookups', route: 'lookups' },
   { text: 'EMC', type: MenuItem.Types.LINK, payload: 'http://emc.com' }
 ];
 
 // Must be imported after navigation.
 import App from '../views/App';
 
-import Node, { CreateNode } from '../views/Node';
-import Profile, { CreateProfile } from '../views/Profile';
-import Template, { CreateTemplate } from '../views/Template';
-import Nodes from '../views/Nodes';
-import Profiles from '../views/Profiles';
-import Templates from '../views/Templates';
-import Lookups from '../views/Lookups';
 import Dashboard from '../views/Dashboard';
+import Lookups from '../views/Lookups';
+import Node, { CreateNode } from '../views/Node';
+import Nodes from '../views/Nodes';
+import Profile, { CreateProfile } from '../views/Profile';
+import Profiles from '../views/Profiles';
+import Sku from '../views/Sku';
+import Skus from '../views/Skus';
+import Template, { CreateTemplate } from '../views/Template';
+import Templates from '../views/Templates';
+import Workflow from '../views/Workflow';
+import Workflows from '../views/Workflows';
 
 // See http://rackt.github.io/react-router/
 let routes = (
   <Route name="root" path="/" handler={App}>
     <DefaultRoute handler={Dashboard}/>
+
+    <Route name="dashboard" handler={Dashboard} />
+    <Route name="lookups" handler={Lookups} />
 
     <Route name="nodes" handler={Nodes} />
     <Route name="newNode" path="/nodes/new" handler={CreateNode} />
@@ -44,11 +53,16 @@ let routes = (
     <Route name="newProfile" path="/profiles/new" handler={CreateProfile} />
     <Route name="profile" path="/profiles/:profileId" handler={Profile} />
 
+    <Route name="skus" handler={Skus} />
+    <Route name="sku" path="/skus/:skuId" handler={Sku} />
+
     <Route name="templates" handler={Templates} />
     <Route name="newTemplate" path="/templates/new" handler={CreateTemplate} />
     <Route name="template" path="/templates/:templateId" handler={Template} />
 
-    <Route name="lookups" path="/lookups" handler={Lookups} />
+    <Route name="workflows" handler={Workflows} />
+    <Route name="workflow" path="/workflows/:workflowId" handler={Workflow} />
+
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />
   </Route>

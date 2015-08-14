@@ -3,10 +3,10 @@
 import { API } from '../config/index';
 import http from 'superagent';
 
-export default class TemplatesRestAPI {
+export default class WorkflowsRestAPI {
 
   api = API;
-  entity = 'templates';
+  entity = 'workflows';
 
   get url() {
     if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
@@ -15,7 +15,7 @@ export default class TemplatesRestAPI {
 
   get(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + 'library/' + id)
+      http.get(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -26,7 +26,7 @@ export default class TemplatesRestAPI {
 
   list() {
     return new Promise((resolve, reject) => {
-      http.get(this.url + 'library')
+      http.get(this.url)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -37,7 +37,7 @@ export default class TemplatesRestAPI {
 
   put(id, body) {
     return new Promise((resolve, reject) => {
-      http.put(this.url + 'library/' + id)
+      http.put(this.url + id)
         .accept('json')
         .type('application/octet-stream')
         .send(body)

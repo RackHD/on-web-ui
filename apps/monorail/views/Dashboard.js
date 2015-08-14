@@ -6,10 +6,12 @@ import mixin from 'react-mixin';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
+import Chart from './Chart';
 import NodesGrid from './NodesGrid';
 import ProfilesGrid from './ProfilesGrid';
+import SkusGrid from './SkusGrid';
 import TemplatesGrid from './TemplatesGrid';
-import Chart from './Chart';
+import WorkflowsGrid from './WorkflowsGrid';
 
 @mixin.decorate(PageHelpers)
 export default class Dashboard extends Component {
@@ -21,7 +23,9 @@ export default class Dashboard extends Component {
         <Chart />
         <NodesGrid />
         <ProfilesGrid />
+        <SkusGrid />
         <TemplatesGrid />
+        <WorkflowsGrid />
       </div>
     );
   }

@@ -1,0 +1,50 @@
+'use strict';
+
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import mixin from 'react-mixin';
+import PageHelpers from 'common-web-ui/mixins/PageHelpers';
+/* eslint-enable no-unused-vars */
+
+import {} from 'material-ui';
+
+import JsonInspector from 'react-json-inspector';
+
+import WorkflowStore from '../stores/WorkflowStore';
+let workflows = new WorkflowStore();
+
+@mixin.decorate(PageHelpers)
+export default class Workflow extends Component {
+
+  state = {
+    workflow: null
+  };
+
+  componentDidMount() {
+    this.unwatchWorkflow = workflows.watchOne(this.getWorkflowId(), 'workflow', this);
+    this.readWorkflow();
+  }
+
+  componentWillUnmount() { this.unwatchWorkflow(); }
+
+  render() {
+    return (
+      <div className="Workflow">
+        {this.renderBreadcrumbs(
+          {href: 'dash', label: 'Dashboard'},
+          {href: 'workflows', label: 'Workflows'},
+          this.props.params.workflowId
+        )}
+        <JsonInspector
+            search={false}
+            isExpanded={() => true}
+            data={this.state.workflow || {}} />
+      </div>
+    );
+  }
+
+  getWorkflowId() { return this.props.params.workflowId; }
+
+  readWorkflow() { workflows.read(this.getWorkflowId()); }
+
+}
