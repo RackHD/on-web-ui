@@ -4,10 +4,6 @@ import { Component, mixin } from 'mach-react';
 
 import colors from '../config/colors';
 
-let defaultStyles = {
-  root: {}
-};
-
 export default class Histogram extends Component {
 
   props = this.assignObject({
@@ -129,15 +125,15 @@ export default class Histogram extends Component {
     });
 
     let cssMix = {
-      bins: [{}].concat(cssCol.concat([css.bins, props.css.bins])),
-      col: [{}].concat(cssCol),
-      corner: [{}].concat(cssCol.concat([css.corner, props.css.corner])),
-      root: [{}, css.root, props.css.root, props.style],
-      row: [{}, css.row, props.css.row],
-      xAxis: [{}].concat(cssRow.concat([css.xAxis, props.css.xAxis])),
-      xAxisKey: [{}].concat(cssCol.concat([css.xAxisKey, props.css.xAxisKey])),
-      yAxis: [{}].concat(cssCol.concat([css.yAxis, props.css.yAxis])),
-      yAxisKey: [{}, css.yAxisKey, props.css.yAxisKey]
+      bins: cssCol.concat([css.bins, props.css.bins]),
+      col: cssCol,
+      corner: cssCol.concat([css.corner, props.css.corner]),
+      root: [css.root, props.css.root, props.style],
+      row: [css.row, props.css.row],
+      xAxis: cssRow.concat([css.xAxis, props.css.xAxis]),
+      xAxisKey: cssCol.concat([css.xAxisKey, props.css.xAxisKey]),
+      yAxis: cssCol.concat([css.yAxis, props.css.yAxis]),
+      yAxisKey: [css.yAxisKey, props.css.yAxisKey]
     };
 
     let lines = yKeys.map((key, i) => {
@@ -220,13 +216,13 @@ export default class Histogram extends Component {
         cssRow = [css.row, props.css.row];
 
     let cssMix = {
-      col: [{}].concat(cssCol),
-      corner: [{}].concat(cssCol.concat([css.corner, props.css.corner])),
-      root: [{}, css.root, props.css.root, props.style],
-      row: [{}, css.row, props.css.row],
-      xAxis: [{}].concat(cssRow.concat([css.xAxis, props.css.xAxis])),
-      xAxisKey: [{}].concat(cssCol.concat([css.xAxisKey, props.css.xAxisKey])),
-      yAxisKey: [{}].concat(cssCol.concat([css.yAxisKey, props.css.yAxisKey]))
+      col: cssCol,
+      corner: cssCol.concat([css.corner, props.css.corner]),
+      root: [css.root, props.css.root, props.style],
+      row: [css.row, props.css.row],
+      xAxis: cssRow.concat([css.xAxis, props.css.xAxis]),
+      xAxisKey: cssCol.concat([css.xAxisKey, props.css.xAxisKey]),
+      yAxisKey: cssCol.concat([css.yAxisKey, props.css.yAxisKey])
     };
 
     let lines = xKeys.map((key, i) => {
