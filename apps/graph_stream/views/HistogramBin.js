@@ -7,9 +7,7 @@ import colors from '../config/colors';
 export default class HistogramBin extends Component {
 
   props = this.assignObject({
-    styles: {
-      root: {}
-    },
+    style: {},
     css: {},
     size: 1,
     min: null,
