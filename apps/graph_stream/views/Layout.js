@@ -1,6 +1,6 @@
 'use strict';
 
-import { Component, mixin } from 'mach-react';
+import { Component } from 'mach-react';
 
 import colors from '../config/colors';
 
@@ -34,7 +34,7 @@ export default class HomeView extends Component {
   state = {};
 
   render(React) {
-    console.log(this.props.children);
+    // console.log(this.props.children);
     var styles = this.props.styles,
         header = this.props.header,
         footer = this.props.footer;

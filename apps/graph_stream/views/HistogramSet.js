@@ -1,6 +1,6 @@
 'use strict';
 
-import { Component, mixin } from 'mach-react';
+import { Component } from 'mach-react';
 
 import colors from '../config/colors';
 
