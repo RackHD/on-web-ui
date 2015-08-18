@@ -10,14 +10,18 @@ import Histogram from '../views/Histogram';
 import HistogramBin from '../views/HistogramBin';
 import HistogramSet from '../views/HistogramSet';
 
+// import viewers from '../messengers/viewers';
+
 let current = null;
 
 function render(Component, context, props, children) {
   return function (pageContext, next) {
     if (current) { current.unmount(); }
     props.children = children;
+    props.params = pageContext.params;
+    context.page = pageContext;
     current = new Component(props, context);
-    current.mergeObjectProperty('props', {params: pageContext.params});
+    // current.mergeObjectProperty('props', {params: pageContext.params});
     current.mount(document.body);
     if (next) { next(); }
   }
@@ -31,7 +35,10 @@ function view(...children) {
 
 // Run the application when both DOM is ready and page content is loaded
 onReady(() => {
-  render(GSCanvas, {}, {}, ['Hello World'])({});
+  render(GSCanvas, {}, {
+    viewWidth: window.innerWidth,
+    viewHeight: window.innerHeight,
+  }, ['Hello World'])({});
   // page('*', render(GSCanvas, {}, {}, ['Hello World']))
   // page('*', view(
   //   <HistogramSet>

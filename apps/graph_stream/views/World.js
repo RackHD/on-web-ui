@@ -4,6 +4,7 @@ import { Component } from 'mach-react';
 
 import GSElementsLayer from './ElementsLayer';
 import GSVectorsLayer from './VectorsLayer';
+import GSViewerElement from './ViewerElement';
 
 export default class GSWorld extends Component {
 
@@ -23,11 +24,8 @@ export default class GSWorld extends Component {
   }
 
   render(React) {
-    let graphVectors = this.canvas.vectors,
-        graphElements = this.canvas.elements;
-
-    let vectors = graphVectors.concat(this.state.vectors),
-        elements = graphElements.concat(this.state.elements),
+    let vectors = this.state.vectors,
+        elements = this.state.elements,
         children = this.props.children;
 
     try {
@@ -58,6 +56,38 @@ export default class GSWorld extends Component {
     return {
       transform: this.canvas.worldSpaceTransform.toCSS3Transform()
     };
+  }
+
+  updateViewers(viewers) {
+    let React = this.constructor;
+    let viewerElements = [];
+    Object.keys(viewers).forEach(id => {
+      if (id === this.canvas.state.id) return;
+      viewerElements.push(<GSViewerElement id={id} state={viewers[id]} />);
+    });
+    this.setState({elements: viewerElements});
+  }
+
+  addViewer(msg) {
+    let React = this.constructor;
+    let viewerElements = this.state.elements.concat(<GSViewerElement id={msg.id} state={{
+      id: msg.id,
+      size: msg.size,
+      position: msg.position
+    }} />);
+    this.setState({elements: viewerElements});
+  }
+
+  removeViewer(msg) {
+    let React = this.constructor;
+    let viewerElements = [];
+    this.state.elements.forEach((thunk) => {
+      if (thunk && thunk.component && thunk.component.props && thunk.component.props.id === msg.viewer.id) {
+        return;
+      }
+      viewerElements.push(thunk);
+    });
+    this.setState({elements: viewerElements});
   }
 
 }

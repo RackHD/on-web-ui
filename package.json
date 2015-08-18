@@ -34,7 +34,8 @@
     "react-select": "^0.5.6",
     "react-tap-event-plugin": "^0.1.7",
     "superagent": "^1.2.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "ws": "^0.7.2"
   },
   "devDependencies": {
     "autoprefixer-loader": "^2.0.0",

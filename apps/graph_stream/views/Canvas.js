@@ -9,6 +9,8 @@ import Vector from '../lib/Vector';
 import GSViewport from './Viewport';
 import GSWorld from './World';
 
+import viewers from '../messengers/viewers'
+
 /**
 # GSCanvas
 
@@ -54,6 +56,44 @@ export default class GSCanvas extends Component {
   };
 
   childContext = {canvas: this};
+
+  componentDidMount() {
+    viewers.init((msg) => {
+      this.setState({id: msg.id});
+      this.refs.viewport.refs.world.updateViewers(msg.viewers);
+
+      viewers.ready(() => {
+        viewers.reg(
+          this.state.position.toArray(),
+          [this.props.viewWidth, this.props.viewHeight]
+        )
+      });
+    });
+
+    viewers.events.on('reg', (msg) => {
+      this.refs.viewport.refs.world.addViewer(msg);
+    });
+
+    viewers.events.on('unreg', (msg) => {
+      this.refs.viewport.refs.world.removeViewer(msg);
+    });
+
+    viewers.events.on('pan', (msg) => {
+      this.updatePosition(new Vector([
+        this.state.position[0] - msg.offset[0],
+        this.state.position[1] - msg.offset[1]
+      ]), true);
+    });
+
+    viewers.events.on('pan', (msg) => {
+      if (msg.id === this.state.id) {
+        this.updatePosition(new Vector([
+          this.state.position[0] - msg.offset[0],
+          this.state.position[1] - msg.offset[1]
+        ]), true);
+      }
+    });
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     let props = this.props,
@@ -106,15 +146,15 @@ export default class GSCanvas extends Component {
     };
   }
 
-  get elements() {
-    return [];
-  }
-
-  get vectors() {
-    return [];
-  }
-
-  updatePosition(position) {
+  updatePosition(position, noBroadcast) {
+    position = new Vector(position);
+    if (!noBroadcast) {
+      let offset = new Vector([
+        this.state.position.x - position.x,
+        this.state.position.y - position.y
+      ]);
+      this.broadcastPan(offset);
+    }
     this.setState({ position });
     this.refs.viewport.refs.world.queueUpdate();
   }
@@ -123,5 +163,9 @@ export default class GSCanvas extends Component {
     this.setState({ scale });
     this.refs.viewport.refs.world.queueUpdate();
   }
+
+  broadcastPan(offset) { viewers.pan(offset); }
+
+  broadcastMove(id, offset) { viewers.move(id, offset); }
 
 }
