@@ -17,7 +17,9 @@ export default class GSViewerElement extends Component {
   render(React) {
     try {
       var state = this.state;
-      var css = [{
+      console.log(this.state.size, this.state, new Error().stack);
+      // debugger;
+      var css = {
         boxSizing: 'border-box',
         position: 'absolute',
         top: 1000 - (this.state.size[1] / 2) + this.state.position[1],
@@ -26,7 +28,7 @@ export default class GSViewerElement extends Component {
         height: this.state.size[1],
         background: 'rgba(0, 0, 0, 0.25)',
         border: '2px solid #000'
-      }];
+      };
       return (
         <div
             className={this.props.className}

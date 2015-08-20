@@ -13,20 +13,31 @@ export default class GSWorld extends Component {
     css: {},
     elements: [],
     style: {},
-    vectors: []
+    vectors: [],
+    viewers: []
   }
 
   get canvas() { return this.context.canvas; }
 
   state = {
+    elements: this.props.elements,
     vectors: this.props.vectors,
-    elements: this.props.elements
+    viewers: this.props.viewers
   }
 
   render(React) {
-    let vectors = this.state.vectors,
+    let viewers = this.state.viewers,
+        vectors = this.state.vectors,
         elements = this.state.elements,
         children = this.props.children;
+
+    elements = elements.concat(Object.keys(viewers).map(id => {
+      if (id === this.canvas.state.id) return;
+      let viewer = viewers[id];
+      return <GSViewerElement id={id} key={id} state={viewer} />;
+    }));
+
+    console.log(elements, children);
 
     try {
       var cssWorldSpaceTransform = this.cssWorldSpaceTransform,
@@ -59,35 +70,27 @@ export default class GSWorld extends Component {
   }
 
   updateViewers(viewers) {
-    let React = this.constructor;
-    let viewerElements = [];
-    Object.keys(viewers).forEach(id => {
-      if (id === this.canvas.state.id) return;
-      viewerElements.push(<GSViewerElement id={id} state={viewers[id]} />);
-    });
-    this.setState({elements: viewerElements});
+    console.log('update viewers', viewers);
+    // debugger;
+    this.setState({viewers: viewers});
   }
 
-  addViewer(msg) {
-    let React = this.constructor;
-    let viewerElements = this.state.elements.concat(<GSViewerElement id={msg.id} state={{
+  upsertViewer(msg) {
+    let viewers = this.state.viewers;
+    viewers[msg.id] = {
       id: msg.id,
       size: msg.size,
       position: msg.position
-    }} />);
-    this.setState({elements: viewerElements});
+    };
+    // console.log('upsert viewer', viewers);
+    this.setState({viewers: viewers});
   }
 
   removeViewer(msg) {
-    let React = this.constructor;
-    let viewerElements = [];
-    this.state.elements.forEach((thunk) => {
-      if (thunk && thunk.component && thunk.component.props && thunk.component.props.id === msg.viewer.id) {
-        return;
-      }
-      viewerElements.push(thunk);
-    });
-    this.setState({elements: viewerElements});
+    let viewers = this.state.viewers;
+    delete viewers[msg.viewer.id];
+    // console.log('remove viewer', viewers);
+    this.setState({viewers: viewers});
   }
 
 }

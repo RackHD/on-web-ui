@@ -55,6 +55,7 @@ export default class GCViewport extends Component {
             onWheel={this.scaleWorld.bind(this)}
             onMouseDown={this.translateWorld()}
             style={css}>
+          {this.canvas.id}
           {this.props.children}
         </div>
       );

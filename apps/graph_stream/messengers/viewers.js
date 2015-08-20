@@ -2,52 +2,82 @@
 
 import { EventEmitter } from 'events';
 
-let events = new EventEmitter();
-
-export let wsConn = new WebSocket('ws://localhost:8888');
-
-wsConn.onopen = function (event) {
-  console.log('open:', event);
-  wsConn.isOpen = true;
-  events.emit('open', event);
-}
-
-wsConn.onclose = function (event) {
-  console.log('close', event);
-  wsConn.isOpen = false;
-  events.emit('close', event);
-}
-
-wsConn.onmessage = function (event) {
-  console.log('message:', event);
-  var msg = JSON.parse(event.data);
-  events.emit('message', msg, event);
-  if (msg && msg.type) {
-    events.emit(msg.type, msg, event);
-  }
-}
-
-events.on('init', function (msg) {
-  console.log('init:', msg.id, msg.viewers);
-  wsConn.initMsg = msg;
-  wsConn.id = msg.id;
-  wsConn.viewers = msg.viewers;
-})
-
 export default {
-  events: events,
-  wsConn: wsConn,
+  // events: null,
+  // wsConn: null,
+  reconnectInterval: 1000 * 30,
 
-  ready(cb) { wsConn.isOpen ? cb() : this.events.once('open', cb); },
-  init(cb) { wsConn.id ? cb(wsConn.initMsg) : this.events.once('init', cb); },
+  connect() {
+    if (this.isConnected) { return; }
+    this.isConnected = true;
 
-  // on() { return this.events.on.apply(this, arguments); },
-  // once() { return this.events.once.apply(this, arguments); },
-  // off() { return this.events.off.apply(this, arguments); },
+    this.events = new EventEmitter();
+    this.wsConn = new WebSocket('ws://localhost:8888');
 
-  reg(position, size) {
-    let type = 'reg', id = this.wsConn.id;
-    this.wsConn.send(JSON.stringify({type, id, position, size}));
+    this.events.once('init', (msg) => {
+      // console.log('init:', msg.id, msg.viewers);
+      this.initMsg = msg;
+      this.id = msg.id;
+    });
+
+    this.wsConn.onopen = (event) => {
+      // console.log('open:', event);
+      this.isOpen = true;
+      this.events.emit('open', event);
+    };
+
+    this.wsConn.onclose = (event) => {
+      // console.log('close', event);
+      this.isConnected = this.isOpen = false;
+      this.events.emit('close', event);
+      setTimeout(this.connect.bind(this), this.reconnectInterval);
+    };
+
+    this.wsConn.onerror = (event) => {
+      // console.log('error:', event);
+      this.isConnected = this.isOpen = false;
+      this.events.emit('error', event);
+      setTimeout(this.connect.bind(this), this.reconnectInterval);
+    }
+
+    this.wsConn.onmessage = (event) => {
+      // console.log('message:', event);
+      var msg = JSON.parse(event.data);
+      this.events.emit('message', msg, event);
+      if (msg && msg.type) this.events.emit(msg.type, msg, event);
+    };
+  },
+
+  disconnect() {
+    this.wsConn.close();
+    this.isConnected = this.isOpen = false;
+  },
+
+  ready(cb) {
+    this.isOpen ? cb() : this.events.once('open', cb);
+  },
+
+  init(cb) {
+    var shouldConnect = !this.isConnected;
+    if (shouldConnect) {
+      this.connect();
+      this.events.once('init', cb);
+      this.ready(() => this.wsConn.send('{"type": "init"}'));
+      return;
+    }
+    this.initMsg ? cb(this.initMsg) : this.events.once('init', cb);
+  },
+
+  list() {
+    this.wsConn.send('{"type": "list"}');
+  },
+
+  set(position, size) {
+    this.init((msg) => {
+      let type = 'set',
+          id = this.id || msg.id;
+      this.wsConn.send(JSON.stringify({type, id, position, size}));
+    });
   },
 
   pan(offset) {

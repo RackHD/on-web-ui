@@ -59,52 +59,61 @@ export default class GSCanvas extends Component {
 
   componentDidMount() {
     viewers.init((msg) => {
+      console.log('got here');
       this.setState({id: msg.id});
+      viewers.list();
+      viewers.set(this.state.position.toArray(), [this.props.viewWidth, this.props.viewHeight]);
+    });
+
+    viewers.events.on('list', (msg) => {
+      // debugger;
+      console.log(msg.viewer);
       this.refs.viewport.refs.world.updateViewers(msg.viewers);
-
-      viewers.ready(() => {
-        viewers.reg(
-          this.state.position.toArray(),
-          [this.props.viewWidth, this.props.viewHeight]
-        )
-      });
     });
 
-    viewers.events.on('reg', (msg) => {
-      this.refs.viewport.refs.world.addViewer(msg);
-    });
+    // viewers.events.on('set', (msg) => {
+    //   this.refs.viewport.refs.world.upsertViewer(msg);
+    // });
 
-    viewers.events.on('unreg', (msg) => {
-      this.refs.viewport.refs.world.removeViewer(msg);
-    });
+    // viewers.events.on('remove', (msg) => {
+    //   this.refs.viewport.refs.world.removeViewer(msg);
+    //   // viewers.list();
+    // });
 
-    viewers.events.on('pan', (msg) => {
-      this.updatePosition(new Vector([
-        this.state.position[0] - msg.offset[0],
-        this.state.position[1] - msg.offset[1]
-      ]), true);
-    });
+    // viewers.events.on('pan', (msg) => {
+    //   this.updatePosition(new Vector([
+    //     this.state.position[0] - msg.offset[0],
+    //     this.state.position[1] - msg.offset[1]
+    //   ]), true);
+    // });
 
-    viewers.events.on('pan', (msg) => {
-      if (msg.id === this.state.id) {
-        this.updatePosition(new Vector([
-          this.state.position[0] - msg.offset[0],
-          this.state.position[1] - msg.offset[1]
-        ]), true);
-      }
-    });
+    // viewers.events.on('pan', (msg) => {
+    //   if (msg.id === this.state.id) {
+    //     this.updatePosition(new Vector([
+    //       this.state.position[0] - msg.offset[0],
+    //       this.state.position[1] - msg.offset[1]
+    //     ]), true);
+    //   }
+    // });
+
+    // setTimeout(() => {
+    //   console.log('GOT HERE');
+    //   this.updatePosition({x: 10, y: 10}, true);
+    // }, 3000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     let props = this.props,
         state = this.state;
+    // debugger;
     return (
       props.viewHeight !== nextProps.viewHeight ||
       props.viewWidth !== nextProps.viewWidth ||
       props.worldHeight !== nextProps.worldHeight ||
       props.worldWidth !== nextProps.worldWidth ||
       state.position !== nextState.position ||
-      state.scale !== nextState.scale
+      state.scale !== nextState.scale ||
+      state.id !== nextState.id
     );
   }
 
@@ -114,12 +123,15 @@ export default class GSCanvas extends Component {
     @desc
   */
   render(React) {
+    console.log('render canvas', this.state);
+    // debugger;
     try {
       let props = this.props,
           css = [this.css.root, this.cssViewSize, props.css.root, props.style];
 
       return (
         <div className={props.className} style={css}>
+          {this.state.id}
           <GSViewport ref="viewport">
             <GSWorld ref="world">
               {props.children}
