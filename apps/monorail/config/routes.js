@@ -26,6 +26,8 @@ import App from '../views/App';
 
 import Dashboard from '../views/Dashboard';
 import Lookups from '../views/Lookups';
+import Catalog from '../views/Catalog';
+import Catalogs from '../views/Catalogs';
 import Node, { CreateNode } from '../views/Node';
 import Nodes from '../views/Nodes';
 import Profile, { CreateProfile } from '../views/Profile';
@@ -44,6 +46,12 @@ let routes = (
 
     <Route name="dashboard" handler={Dashboard} />
     <Route name="lookups" handler={Lookups} />
+
+    <Route name="catalogs" handler={Catalogs} />
+    <Route name="catalogs/n/:nodeId" handler={Catalogs} />
+    <Route name="catalogs/n/:nodeId/s/:source" handler={Catalog} />
+    <Route name="catalogI" path="/catalogs/i/:catalogId" handler={Catalog} />
+    <Route name="catalog" path="/catalogs/:catalogId" handler={Catalog} />
 
     <Route name="nodes" handler={Nodes} />
     <Route name="newNode" path="/nodes/new" handler={CreateNode} />

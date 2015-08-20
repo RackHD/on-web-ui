@@ -81,7 +81,9 @@ export default class Store extends EventEmitter {
   }
 
   watchOne(id, prop, component, onError) {
-    var listener = () => component.setState({[prop]: this.get(id)});
+    var listener = () => component.setState({
+      [prop]: Array.isArray(id) ? this.get.apply(this, id) : this.get(id)
+    });
     this.subscribe(id, listener, onError);
     return this.unsubscribe.bind(this, id, listener, onError);
   }
