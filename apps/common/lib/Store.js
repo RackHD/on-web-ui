@@ -49,8 +49,10 @@ export default class Store extends EventEmitter {
     this.publish();
   }
 
+  key = 'id';
+
   collect(list) {
-    list.forEach(item => this.insert(item.id, item));
+    list.forEach(item => this.insert(item[this.key], item));
   }
 
   publish(id) {
@@ -69,6 +71,10 @@ export default class Store extends EventEmitter {
     this.publish(id);
   }
 
+  assign(id, newData) {
+    this.insert(id, Object.assign(this.get(id) || {}, newData)); 
+  }
+
   change(id, data) {
     this.insert(id, data);
   }
@@ -81,7 +87,9 @@ export default class Store extends EventEmitter {
   }
 
   watchOne(id, prop, component, onError) {
-    var listener = () => component.setState({[prop]: this.get(id)});
+    var listener = () => component.setState({
+      [prop]: Array.isArray(id) ? this.get.apply(this, id) : this.get(id)
+    });
     this.subscribe(id, listener, onError);
     return this.unsubscribe.bind(this, id, listener, onError);
   }

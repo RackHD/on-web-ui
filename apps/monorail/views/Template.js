@@ -10,7 +10,7 @@ import EditTemplate from './EditTemplate';
 import CreateTemplate from './CreateTemplate';
 export { CreateTemplate, EditTemplate };
 
-import {} from 'material-ui';
+import { LinearProgress } from 'material-ui';
 
 import TemplateStore from '../stores/TemplateStore';
 let templates = new TemplateStore();
@@ -19,7 +19,8 @@ let templates = new TemplateStore();
 export default class Template extends Component {
 
   state = {
-    template: null
+    template: null,
+    loading: true
   };
 
   componentDidMount() {
@@ -35,8 +36,9 @@ export default class Template extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'templates', label: 'Templates'},
-          this.props.params.templateId
+          this.getTemplateId()
         )}
+        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
         <EditTemplate templateRef={this.state.template} />
       </div>
     );
@@ -44,6 +46,9 @@ export default class Template extends Component {
 
   getTemplateId() { return this.props.params.templateId; }
 
-  readTemplate() { templates.read(this.getTemplateId()); }
+  readTemplate() {
+    this.setState({loading: true});
+    templates.read(this.getTemplateId()).then(() => this.setState({loading: false}));
+  }
 
 }

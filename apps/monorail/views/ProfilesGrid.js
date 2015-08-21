@@ -10,8 +10,9 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    IconButton,
-    RaisedButton
+    // IconButton,
+    RaisedButton,
+    LinearProgress
   } from 'material-ui';
 
 import ProfileStore from '../stores/ProfileStore';
@@ -41,23 +42,23 @@ export default class ProfilesGrid extends Component {
           right:
             <RaisedButton label="Create Profile" primary={true} onClick={this.createProfile.bind(this)} />
         })}
-        <div className="clearfix"></div>
+        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.profiles,
-            resultsPerPage: 10
+            resultsPerPage: this.props.size || 50
           }, profile => (
             {
               ID: <a href={this.routePath('profiles', profile.name)}>{this.shortId(profile.id)}</a>,
               Name: profile.name,
               Created: this.fromNow(profile.createdAt),
-              Updated: this.fromNow(profile.updatedAt),
-              Actions: [
-                <IconButton iconClassName="fa fa-edit"
-                            tooltip="Edit Profile"
-                            touch={true}
-                            onClick={this.editProfile.bind(this, profile.name)} />
-              ]
+              Updated: this.fromNow(profile.updatedAt)//,
+              // Actions: [
+              //   <IconButton iconClassName="fa fa-edit"
+              //               tooltip="Edit Profile"
+              //               touch={true}
+              //               onClick={this.editProfile.bind(this, profile.name)} />
+              // ]
             }
           ), 'No profiles.')
         }
@@ -65,15 +66,18 @@ export default class ProfilesGrid extends Component {
     );
   }
 
-  listProfiles() { profiles.list(); }
+  listProfiles() {
+    this.setState({loading: true})
+    profiles.list().then(() => this.setState({loading: false}));
+  }
 
-  editProfile(id) { this.routeTo('profiles', id); }
+  // editProfile(id) { this.routeTo('profiles', id); }
 
   createProfile() { this.routeTo('profiles', 'new'); }
 
-  deleteProfile(id) {
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed && profiles.destroy(id));
-  }
+  // deleteProfile(id) {
+  //   this.confirmDialog('Are you sure want to delete: ' + id,
+  //     (confirmed) => confirmed && profiles.destroy(id));
+  // }
 
 }

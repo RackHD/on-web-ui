@@ -3,7 +3,7 @@
   "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
-  "description": "OnRack/Monorail Web UI",
+  "description": "OnRack/MonoRail Web UI",
   "repository": "",
   "license": "",
   "engines": {

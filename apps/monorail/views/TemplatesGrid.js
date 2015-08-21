@@ -10,8 +10,9 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    IconButton,
-    RaisedButton
+    // IconButton,
+    RaisedButton,
+    LinearProgress
   } from 'material-ui';
 
 import TemplateStore from '../stores/TemplateStore';
@@ -23,7 +24,10 @@ let templates = new TemplateStore();
 @mixin.decorate(GridHelpers)
 export default class TemplatesGrid extends Component {
 
-  state = {templates: null};
+  state = {
+    templates: null,
+    loading: true
+  };
 
   componentDidMount() {
     this.unwatchTemplates = templates.watchAll('templates', this);
@@ -41,23 +45,23 @@ export default class TemplatesGrid extends Component {
           right:
             <RaisedButton label="Create Template" primary={true} onClick={this.createTemplate.bind(this)} />
         })}
-        <div className="clearfix"></div>
+        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.templates,
-            resultsPerPage: 10
+            resultsPerPage: this.props.size || 50
           }, template => (
             {
               ID: <a href={this.routePath('templates', template.name)}>{this.shortId(template.id)}</a>,
               Name: template.name,
               Created: this.fromNow(template.createdAt),
-              Updated: this.fromNow(template.updatedAt),
-              Actions: [
-                <IconButton iconClassName="fa fa-edit"
-                            tooltip="Edit Template"
-                            touch={true}
-                            onClick={this.editTemplate.bind(this, template.name)} />
-              ]
+              Updated: this.fromNow(template.updatedAt)//,
+              // Actions: [
+              //   <IconButton iconClassName="fa fa-edit"
+              //               tooltip="Edit Template"
+              //               touch={true}
+              //               onClick={this.editTemplate.bind(this, template.name)} />
+              // ]
             }
           ), 'No templates.')
         }
@@ -65,15 +69,18 @@ export default class TemplatesGrid extends Component {
     );
   }
 
-  listTemplates() { templates.list(); }
+  listTemplates() {
+    this.setState({loading: true});
+    templates.list().then(() => this.setState({loading: false}));
+  }
 
-  editTemplate(id) { this.routeTo('templates', id); }
+  // editTemplate(id) { this.routeTo('templates', id); }
 
   createTemplate() { this.routeTo('templates', 'new'); }
 
-  deleteTemplate(id) {
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed && templates.destroy(id));
-  }
+  // deleteTemplate(id) {
+  //   this.confirmDialog('Are you sure want to delete: ' + id,
+  //     (confirmed) => confirmed && templates.destroy(id));
+  // }
 
 }

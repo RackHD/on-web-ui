@@ -19,9 +19,11 @@
     "griddle-react": "^0.2.13",
     "highlight.js": "^8.7.0",
     "lodash": "^3.10.1",
-    "material-ui": "^0.10.2",
+    "mach-react": "*",
     "marked": "^0.3.5",
+    "material-ui": "^0.10.4",
     "moment": "^2.10.6",
+    "page": "^1.6.3",
     "radium": "git+http://github.com/FormidableLabs/radium.git",
     "react": "^0.13.3",
     "react-chartist": "^0.8.0",
@@ -32,7 +34,8 @@
     "react-select": "^0.5.6",
     "react-tap-event-plugin": "^0.1.7",
     "superagent": "^1.2.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "ws": "^0.7.2"
   },
   "devDependencies": {
     "autoprefixer-loader": "^2.0.0",
@@ -45,7 +48,7 @@
     "chai-spies": "^0.7.0",
     "css-loader": "^0.15.6",
     "del": "^1.2.0",
-    "eslint": "^1.0.0",
+    "eslint": "~1.0.0-rc-0",
     "eslint-loader": "^0.14.2",
     "eslint-plugin-react": "^3.2.0",
     "eventemitter3": "^1.1.1",

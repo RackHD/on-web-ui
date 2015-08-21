@@ -27,7 +27,7 @@ export default {
     return (
       <Toolbar>
         <ToolbarGroup key={0} float="left">
-          <h3>{params.label} &nbsp; {params.count}</h3>
+          <h4>{params.label} &nbsp; {params.count}</h4>
         </ToolbarGroup>
         {rightToolbar}
       </Toolbar>

@@ -1,15 +1,34 @@
 'use strict';
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import React, { Component } from 'react';
+import mixin from 'react-mixin';
+import PageHelpers from 'common-web-ui/mixins/PageHelpers';
+/* eslint-enable no-unused-vars */
 
-export default class CreateNode extends Component {
+import EditNode from './EditNode';
+import {} from 'material-ui';
 
-  state = {};
+@mixin.decorate(PageHelpers)
+export default class Node extends Component {
+
+  state = {
+    template: null
+  };
+
+  componentDidMount() {}
+
+  componentWillUnmount() { }
 
   render() {
     return (
-      <div className="CreateNode container">
-        CreateNode, Hello World
+      <div className="Node">
+        {this.renderBreadcrumbs(
+          {href: 'dash', label: 'Dashboard'},
+          {href: 'nodes', label: 'Nodes'},
+          'New Node'
+        )}
+        <EditNode templateRef={{id: null, name: 'New Node', contents: ''}} />
       </div>
     );
   }

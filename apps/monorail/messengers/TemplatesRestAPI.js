@@ -3,7 +3,7 @@
 import { API } from '../config/index';
 import http from 'superagent';
 
-export default class ProfilesRestAPI {
+export default class TemplatesRestAPI {
 
   api = API;
   entity = 'templates';

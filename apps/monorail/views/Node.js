@@ -10,6 +10,8 @@ import EditNode from './EditNode';
 import CreateNode from './CreateNode';
 export { CreateNode, EditNode };
 
+import CatalogsGrid from './CatalogsGrid';
+
 import {} from 'material-ui';
 
 import NodeStore from '../stores/NodeStore';
@@ -35,8 +37,9 @@ export default class Node extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'nodes', label: 'Nodes'},
-          this.props.params.nodeId
+          this.getNodeId()
         )}
+        <CatalogsGrid nodeId={this.getNodeId()} />
         <EditNode nodeRef={this.state.node} />
       </div>
     );

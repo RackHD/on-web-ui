@@ -16,7 +16,7 @@
     "strict": [1, "global"],
 
     // Code style
-    "indent": [1, 2],
+    "indent": [1, 2, {"VariableDeclarator": 2}],
     "quotes": [2, "single"],
     "no-underscore-dangle": 0
   }

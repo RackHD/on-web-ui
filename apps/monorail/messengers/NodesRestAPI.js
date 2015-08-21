@@ -119,7 +119,18 @@ export default class NodesRestAPI {
     });
   }
 
-  getCatalogsBySource(id, source) {
+  listCatalogs(id) {
+    return new Promise((resolve, reject) => {
+      http.get(this.url + id + '/catalogs')
+        .accept('json')
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
+  listSourceCatalogs(id, source) {
     return new Promise((resolve, reject) => {
       http.get(this.url + id + '/catalogs/' + source)
         .accept('json')

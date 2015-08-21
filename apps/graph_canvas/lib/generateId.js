@@ -3,8 +3,8 @@
 export default function generateId(prefix) {
 
   prefix = prefix ? prefix + '_' : '';
+
   return prefix +
     (Math.floor(1024 + Math.random() * 31743)).toString(32);
-    //+ '_' + Date.now().toString(32);
 
 }
