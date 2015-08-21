@@ -11,7 +11,7 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 
 import {
     // IconButton,
-    // RaisedButton,
+    RaisedButton,
     LinearProgress
   } from 'material-ui';
 
@@ -41,9 +41,9 @@ export default class WorkflowsGrid extends Component {
       <div className="WorkflowsGrid">
         {this.renderGridToolbar({
           label: <a href="#/workflows">Workflows</a>,
-          count: this.state.workflows && this.state.workflows.length || 0//,
-          // right:
-          //   <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
+          count: this.state.workflows && this.state.workflows.length || 0,
+          right:
+            <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
         })}
         {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
         {
@@ -55,13 +55,7 @@ export default class WorkflowsGrid extends Component {
               ID: <a href={this.routePath('workflows', workflow.id)}>{this.shortId(workflow.id)}</a>,
               Name: workflow.name,
               Created: this.fromNow(workflow.createdAt),
-              Updated: this.fromNow(workflow.updatedAt)//,
-              // Actions: [
-              //   <IconButton iconClassName="fa fa-edit"
-              //               tooltip="Edit Workflow"
-              //               touch={true}
-              //               onClick={this.editWorkflow.bind(this, workflow.id)} />
-              // ]
+              Updated: this.fromNow(workflow.updatedAt)
             }
           ), 'No workflows.')
         }

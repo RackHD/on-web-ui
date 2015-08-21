@@ -6,6 +6,10 @@ import mixin from 'react-mixin';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
+import EditPoller from './EditPoller';
+import CreatePoller from './CreatePoller';
+export { CreatePoller, EditPoller };
+
 import { LinearProgress } from 'material-ui';
 
 import JsonInspector from 'react-json-inspector';
@@ -41,6 +45,7 @@ export default class Poller extends Component {
             search={false}
             isExpanded={() => true}
             data={this.state.poller || {}} />
+        <EditPoller pollerRef={this.state.poller} />
       </div>
     );
   }

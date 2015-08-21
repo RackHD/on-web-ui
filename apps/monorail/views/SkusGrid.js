@@ -10,8 +10,8 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    IconButton,
-    RaisedButton
+    RaisedButton,
+    LinearProgress
   } from 'material-ui';
 
 import SkuStore from '../stores/SkuStore';
@@ -23,7 +23,10 @@ let skus = new SkuStore();
 @mixin.decorate(GridHelpers)
 export default class SkusGrid extends Component {
 
-  state = {skus: null};
+  state = {
+    skus: null,
+    loading: true
+  };
 
   componentDidMount() {
     this.unwatchSkus = skus.watchAll('skus', this);
@@ -37,9 +40,11 @@ export default class SkusGrid extends Component {
       <div className="SkusGrid">
         {this.renderGridToolbar({
           label: <a href="#/skus">Skus</a>,
-          count: this.state.skus && this.state.skus.length || 0
+          count: this.state.skus && this.state.skus.length || 0,
+          right:
+            <RaisedButton label="Create SKU" primary={true} onClick={this.createSku.bind(this)} />
         })}
-        <div className="clearfix"></div>
+        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.skus,
@@ -57,6 +62,11 @@ export default class SkusGrid extends Component {
     );
   }
 
-  listSkus() { skus.list(); }
+  listSkus() {
+    this.setState({loading: true});
+    skus.list().then(() => this.setState({loading: false}));
+  }
+
+  createSku() { this.routeTo('skus', 'new'); }
 
 }

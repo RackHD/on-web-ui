@@ -44,18 +44,18 @@ import Node, { CreateNode } from '../views/Node';
 import Nodes from '../views/Nodes';
 import OBMService from '../views/OBMService';
 import OBMServices from '../views/OBMServices';
-import Poller from '../views/Poller';
+import Poller, { CreatePoller } from '../views/Poller';
 import Pollers from '../views/Pollers';
 import Profile, { CreateProfile } from '../views/Profile';
 import Profiles from '../views/Profiles';
 import Schema from '../views/Schema';
 import Schemas from '../views/Schemas';
-import Sku from '../views/Sku';
+import Sku, { CreateSku } from '../views/Sku';
 import Skus from '../views/Skus';
 import Template, { CreateTemplate } from '../views/Template';
 import Templates from '../views/Templates';
 import Versions from '../views/Versions';
-import Workflow from '../views/Workflow';
+import Workflow, { CreateWorkflow } from '../views/Workflow';
 import Workflows from '../views/Workflows';
 
 // See http://rackt.github.io/react-router/
@@ -87,6 +87,7 @@ let routes = (
     <Route name="obmService" path="/obms/:obmsId" handler={OBMService} />
 
     <Route name="pollers" handler={Pollers} />
+    <Route name="pollerN" path="/pollers/new" handler={CreatePoller} />
     <Route name="poller" path="/pollers/:pollerId" handler={Poller} />
 
     <Route name="profiles" handler={Profiles} />
@@ -97,6 +98,7 @@ let routes = (
     <Route name="schema" path="/schemas/:schemaId" handler={Schema} />
 
     <Route name="skus" handler={Skus} />
+    <Route name="skuN" path="/skus/new" handler={CreateSku} />
     <Route name="sku" path="/skus/:skuId" handler={Sku} />
 
     <Route name="templates" handler={Templates} />
@@ -106,6 +108,7 @@ let routes = (
     <Route name="versions" handler={Versions} />
 
     <Route name="workflows" handler={Workflows} />
+    <Route name="workflowN" path="/workflows/new" handler={CreateWorkflow} />
     <Route name="workflow" path="/workflows/:workflowId" handler={Workflow} />
 
     <NotFoundRoute handler={NotFound}/>

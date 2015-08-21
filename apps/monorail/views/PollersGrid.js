@@ -10,6 +10,7 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
+    RaisedButton,
     LinearProgress
   } from 'material-ui';
 
@@ -39,7 +40,9 @@ export default class PollersGrid extends Component {
       <div className="PollersGrid">
         {this.renderGridToolbar({
           label: <a href="#/pollers">Pollers</a>,
-          count: this.state.pollers && this.state.pollers.length || 0
+          count: this.state.pollers && this.state.pollers.length || 0,
+          right:
+            <RaisedButton label="Create Poller" primary={true} onClick={this.createPoller.bind(this)} />
         })}
         {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
         {
@@ -63,5 +66,7 @@ export default class PollersGrid extends Component {
     this.setState({loading: true});
     pollers.list().then(() => this.setState({loading: false}));
   }
+
+  createPoller() { this.routeTo('pollers', 'new'); }
 
 }
