@@ -3,7 +3,7 @@
   "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
-  "description": "Monorail Web UI",
+  "description": "MonoRail Web UI",
   "repository": "",
   "license": "",
   "engines": {

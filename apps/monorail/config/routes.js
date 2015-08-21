@@ -9,7 +9,9 @@ import NotFound from 'common-web-ui/views/NotFound';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
-  { text: 'Dashboard', route: '/' },
+  { text: 'MonoRail API', type: MenuItem.Types.LINK, payload: '/docs', target: '_blank'  },
+  { text: 'MonoRail Dashboard', route: '/' },
+  { text: 'Workflow Editor', type: MenuItem.Types.LINK, payload: '/workflow_editor', target: '_blank' },
   { text: 'Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Catalogs', route: 'catalogs' },
   { text: 'Files', route: 'files' },
@@ -26,7 +28,7 @@ export var navigation = [
   { text: 'Schemas', route: 'schemas' },
   { text: 'Versions', route: 'versions' },
   { text: '', type: MenuItem.Types.SUBHEADER },
-  { text: ['© 2015 EMC', <sup>2</sup>], type: MenuItem.Types.LINK, payload: 'http://emc.com' }
+  { text: ['© 2015 EMC', <sup>2</sup>], type: MenuItem.Types.LINK, payload: 'http://emc.com', target: '_blank' }
 ];
 
 // Must be imported after navigation.
