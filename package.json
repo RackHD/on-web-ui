@@ -48,7 +48,7 @@
     "chai-spies": "^0.7.0",
     "css-loader": "^0.15.6",
     "del": "^1.2.0",
-    "eslint": "^1.0.0",
+    "eslint": "~1.0.0-rc-0",
     "eslint-loader": "^0.14.2",
     "eslint-plugin-react": "^3.2.0",
     "eventemitter3": "^1.1.1",

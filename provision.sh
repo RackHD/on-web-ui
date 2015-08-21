@@ -52,7 +52,7 @@ if [ -z "$DOCKER_PROVISION" ]; then
   fi
 
   printf "\n\nInstall global npm dependencies:\n\n"
-  npm install -g gulp slush karma-cli
+  npm install -g gulp slush karma-cli babel eslint
 fi
 
 printf "\n\nDetect on-web-ui source:\n\n"
@@ -87,7 +87,7 @@ else
   printf "\n\nInstall on-web-ui:\n\n"
   rm -rf node_modules
   npm install || true
-  npm install || true
+  npm install || true#
   ./scripts/link_project.sh
 
   if [ -n "$TEST_ON_WEB_UI" ]; then

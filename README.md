@@ -5,6 +5,7 @@
 ```shell
 $ git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
 $ cd on-web-ui
+$ npm install babel -g
 $ npm install                   # Install Node.js modules.
 $ npm install gulp -g
 $ gulp                          # Run gulp to run on-web-ui
