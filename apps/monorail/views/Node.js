@@ -40,7 +40,7 @@ export default class Node extends Component {
           this.props.params.nodeId
         )}
         <CatalogsGrid nodeId={this.getNodeId()} />
-        <EditNode nodeRef={this.state.node} />
+        {/*<EditNode nodeRef={this.state.node} />*/}
       </div>
     );
   }

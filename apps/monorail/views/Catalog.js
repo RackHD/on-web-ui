@@ -7,6 +7,7 @@ import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
 import CatalogsGrid from './CatalogsGrid';
+import JsonInspector from 'react-json-inspector';
 
 import {} from 'material-ui';
 
@@ -74,7 +75,9 @@ export default class Catalog extends Component {
     }
 
     if (this.catalogId && this.state.catalog) {
-      content = JSON.stringify(this.state.catalog);
+      content = <JsonInspector
+          isExpanded={() => true}
+          data={this.state.catalog} />
     }
     else if (this.state.catalogs && this.state.catalogs.length) {
       content = <CatalogsGrid catalogs={this.state.catalogs} nodeId={this.nodeId} source={this.source} />;

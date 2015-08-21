@@ -49,8 +49,10 @@ export default class Store extends EventEmitter {
     this.publish();
   }
 
+  key = 'id';
+
   collect(list) {
-    list.forEach(item => this.insert(item.id, item));
+    list.forEach(item => this.insert(item[this.key], item));
   }
 
   publish(id) {

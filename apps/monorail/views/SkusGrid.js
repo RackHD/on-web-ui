@@ -43,7 +43,7 @@ export default class SkusGrid extends Component {
         {
           this.renderGrid({
             results: this.state.skus,
-            resultsPerPage: 10
+            resultsPerPage: this.props.size || 50
           }, sku => (
             {
               ID: <a href={this.routePath('skus', sku.id)}>{this.shortId(sku.id)}</a>,

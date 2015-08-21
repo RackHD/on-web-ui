@@ -10,8 +10,9 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    IconButton,
-    RaisedButton
+    // IconButton,
+    // RaisedButton,
+    LinearProgress
   } from 'material-ui';
 
 import WorkflowStore from '../stores/WorkflowStore';
@@ -23,7 +24,10 @@ let workflows = new WorkflowStore();
 @mixin.decorate(GridHelpers)
 export default class WorkflowsGrid extends Component {
 
-  state = {workflows: null};
+  state = {
+    workflows: null,
+    loading: true
+  };
 
   componentDidMount() {
     this.unwatchWorkflows = workflows.watchAll('workflows', this);
@@ -37,27 +41,27 @@ export default class WorkflowsGrid extends Component {
       <div className="WorkflowsGrid">
         {this.renderGridToolbar({
           label: <a href="#/workflows">Workflows</a>,
-          count: this.state.workflows && this.state.workflows.length || 0,
-          right:
-            <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
+          count: this.state.workflows && this.state.workflows.length || 0//,
+          // right:
+          //   <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
         })}
-        <div className="clearfix"></div>
+        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.workflows,
-            resultsPerPage: 10
+            resultsPerPage: this.props.size || 50
           }, workflow => (
             {
               ID: <a href={this.routePath('workflows', workflow.id)}>{this.shortId(workflow.id)}</a>,
               Name: workflow.name,
               Created: this.fromNow(workflow.createdAt),
-              Updated: this.fromNow(workflow.updatedAt),
-              Actions: [
-                <IconButton iconClassName="fa fa-edit"
-                            tooltip="Edit Workflow"
-                            touch={true}
-                            onClick={this.editWorkflow.bind(this, workflow.id)} />
-              ]
+              Updated: this.fromNow(workflow.updatedAt)//,
+              // Actions: [
+              //   <IconButton iconClassName="fa fa-edit"
+              //               tooltip="Edit Workflow"
+              //               touch={true}
+              //               onClick={this.editWorkflow.bind(this, workflow.id)} />
+              // ]
             }
           ), 'No workflows.')
         }
@@ -65,15 +69,18 @@ export default class WorkflowsGrid extends Component {
     );
   }
 
-  listWorkflows() { workflows.list(); }
+  listWorkflows() {
+    this.setState({loading: true});
+    workflows.list().then(() => this.setState({loading: false}));
+  }
 
-  editWorkflow(id) { this.routeTo('workflows', id); }
+  // editWorkflow(id) { this.routeTo('workflows', id); }
 
   createWorkflow() { this.routeTo('workflows', 'new'); }
 
-  deleteWorkflow(id) {
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed && workflows.destroy(id));
-  }
+  // deleteWorkflow(id) {
+  //   this.confirmDialog('Are you sure want to delete: ' + id,
+  //     (confirmed) => confirmed && workflows.destroy(id));
+  // }
 
 }

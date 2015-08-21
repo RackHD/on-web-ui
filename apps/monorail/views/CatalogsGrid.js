@@ -10,8 +10,9 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    IconButton,
-    RaisedButton
+    // IconButton,
+    // RaisedButton,
+    LinearProgress
   } from 'material-ui';
 
 import CatalogStore from '../stores/CatalogStore';
@@ -23,7 +24,10 @@ let catalogs = new CatalogStore();
 @mixin.decorate(GridHelpers)
 export default class CatalogsGrid extends Component {
 
-  state = {catalogs: this.props.catalogs};
+  state = {
+    catalogs: this.props.catalogs,
+    loading: !this.props.catalogs
+  };
 
   componentDidMount() {
     this.unwatchCatlogs = catalogs.watchAll('catalogs', this);
@@ -36,17 +40,18 @@ export default class CatalogsGrid extends Component {
     return (
       <div className="CatalogsGrid">
         {this.renderGridToolbar({
-          label: <a href="#/catalogs/">Catalogs</a>,
+          label: <a href="#/catalogs">Catalogs</a>,
           count: this.state.catalogs && this.state.catalogs.length || 0
         })}
-        <div className="clearfix"></div>
+        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.catalogs,
-            resultsPerPage: 10
+            resultsPerPage: this.props.size || 50
           }, catalog => (
             {
               ID: <a href={this.routePath('catalogs', catalog.id)}>{this.shortId(catalog.id)}</a>,
+              Node: <a href={this.routePath('nodes', catalog.node)}>{this.shortId(catalog.node)}</a>,
               Source: <a href={this.routePath('catalogs/n', catalog.node, 's', catalog.source)}>{catalog.source}</a>,
               Created: this.fromNow(catalog.createdAt),
               Updated: this.fromNow(catalog.updatedAt),
@@ -62,13 +67,14 @@ export default class CatalogsGrid extends Component {
   get source() { return this.props.source; }
 
   listCatalogs() {
+    this.setState({loading: true});
     let nodeId = this.nodeId,
         source = this.source;
     if (nodeId) {
-      if (source) return catalogs.listNodeSource(nodeId, source);
-      return catalogs.listNode(nodeId);
+      if (source) return catalogs.listNodeSource(nodeId, source).then(() => this.setState({loading: false}));
+      return catalogs.listNode(nodeId).then(() => this.setState({loading: false}));
     }
-    catalogs.list();
+    catalogs.list().then(() => this.setState({loading: false}));
   }
 
 }

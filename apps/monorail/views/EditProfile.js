@@ -54,13 +54,13 @@ export default class EditProfile extends Component {
                       cols={40}
                       style={{width: '99%', height: 300}} />
           </div>
-          <div className="cell">
+          {/*<div className="cell">
             <h3>Raw JSON</h3>
             <JsonEditor initialValue={this.state.profile}
                         updateParentState={this.updateStateFromJsonEditor.bind(this)}
                         disabled={this.state.disabled}
                         ref="jsonEditor" />
-          </div>
+          </div>*/}
         </div>
 
         <div className="buttons container">

@@ -3,10 +3,10 @@
 import { API } from '../config/index';
 import http from 'superagent';
 
-export default class SkusRestAPI {
+export default class TasksRestAPI {
 
   api = API;
-  entity = 'skus';
+  entity = 'tasks';
 
   get url() {
     if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
@@ -34,20 +34,5 @@ export default class SkusRestAPI {
         });
     });
   }
-
-  put(id, body) {
-    return new Promise((resolve, reject) => {
-      http.put(this.url + id)
-        .accept('json')
-        .type('application/octet-stream')
-        .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  // TODO: more api calls
 
 }

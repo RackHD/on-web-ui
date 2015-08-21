@@ -28,7 +28,6 @@ export default class Sku extends Component {
   componentWillUnmount() { this.unwatchSku(); }
 
   render() {
-    console.log(this.state.sku);
     return (
       <div className="Sku">
         {this.renderBreadcrumbs(
@@ -44,7 +43,7 @@ export default class Sku extends Component {
     );
   }
 
-  getSkuId() { return this.props.params.skuId; }
+  getSkuId() { return this.props.skuId || this.props.params.skuId; }
 
   readSku() { skus.read(this.getSkuId()); }
 

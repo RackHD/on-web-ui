@@ -21,7 +21,7 @@
     "lodash": "^3.10.1",
     "mach-react": "*",
     "marked": "^0.3.5",
-    "material-ui": "^0.10.2",
+    "material-ui": "^0.10.4",
     "moment": "^2.10.6",
     "page": "^1.6.3",
     "radium": "git+http://github.com/FormidableLabs/radium.git",
