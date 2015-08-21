@@ -72,7 +72,7 @@ let routes = (
     <Route name="dashboard" handler={Dashboard} />
 
     <Route name="files" handler={Files} />
-    <Route name="fileN" path="/nodes/new" handler={CreateFile} />
+    <Route name="fileN" path="/files/new" handler={CreateFile} />
     <Route name="file" path="/files/:fileId" handler={File} />
 
     <Route name="lookups" handler={Lookups} />

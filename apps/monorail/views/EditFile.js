@@ -82,7 +82,7 @@ export default class EditFile extends Component {
 
   saveFile() {
     this.disable();
-    file.update(this.state.file.name, this.state.file.body).then(() => this.enable());
+    file.update(this.state.file.basename, this.state.file.body).then(() => this.enable());
   }
 
   resetFile() {

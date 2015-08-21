@@ -42,7 +42,7 @@ export default class NodesGrid extends Component {
         {this.renderGridToolbar({
           label: <a href="#/nodes">Nodes</a>,
           count: this.state.nodes && this.state.nodes.length || 0,
-          createButton:
+          right:
             <RaisedButton label="Create Node" primary={true} onClick={this.createNode.bind(this)} />
         })}
         {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
