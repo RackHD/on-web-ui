@@ -36,8 +36,10 @@ export default class EditPoller extends Component {
     if (!this.state.poller) {
       this.state.poller = this.props.pollerRef || null;
     }
+    this.state.poller = this.state.poller || {};
     var nameLink = this.linkObjectState('poller', 'name'),
-        profileLink = this.linkObjectState('poller', 'profile');
+        typeLink = this.linkObjectState('poller', 'type'),
+        nodeLink = this.linkObjectState('poller', 'node');
     return (
       <div className="EditPoller container">
         <div className="row">
@@ -48,9 +50,15 @@ export default class EditPoller extends Component {
                        disabled={this.state.disabled} />
           </div>
           <div className="one-half column">
-            <TextField valueLink={profileLink}
-                       hintText="Profile"
-                       floatingLabelText="Profile"
+            <TextField valueLink={typeLink}
+                       hintText="Type"
+                       floatingLabelText="Type"
+                       disabled={this.state.disabled} />
+          </div>
+          <div className="one-half column">
+            <TextField valueLink={nodeLink}
+                       hintText="Node"
+                       floatingLabelText="Node"
                        disabled={this.state.disabled} />
           </div>
         </div>
