@@ -35,7 +35,7 @@ import Catalog from '../views/Catalog';
 import Catalogs from '../views/Catalogs';
 import Config from '../views/Config';
 import Dashboard from '../views/Dashboard';
-import File from '../views/File';
+import File, { CreateFile } from '../views/File';
 import Files from '../views/Files';
 import Lookups from '../views/Lookups';
 import Node, { CreateNode } from '../views/Node';
@@ -72,6 +72,7 @@ let routes = (
     <Route name="dashboard" handler={Dashboard} />
 
     <Route name="files" handler={Files} />
+    <Route name="fileN" path="/nodes/new" handler={CreateFile} />
     <Route name="file" path="/files/:fileId" handler={File} />
 
     <Route name="lookups" handler={Lookups} />

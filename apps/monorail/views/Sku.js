@@ -6,7 +6,7 @@ import mixin from 'react-mixin';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
-import {} from 'material-ui';
+import { LinearProgress } from 'material-ui';
 
 import JsonInspector from 'react-json-inspector';
 
@@ -17,7 +17,8 @@ let skus = new SkuStore();
 export default class Sku extends Component {
 
   state = {
-    sku: null
+    sku: null,
+    loading: true
   };
 
   componentDidMount() {
@@ -33,8 +34,9 @@ export default class Sku extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'skus', label: 'Skus'},
-          this.props.params.skuId
+          this.getSkuId()
         )}
+        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}
@@ -45,6 +47,9 @@ export default class Sku extends Component {
 
   getSkuId() { return this.props.skuId || this.props.params.skuId; }
 
-  readSku() { skus.read(this.getSkuId()); }
+  readSku() {
+    this.setState({loading: true});
+    skus.read(this.getSkuId()).then(() => this.setState({loading: false}));
+  }
 
 }

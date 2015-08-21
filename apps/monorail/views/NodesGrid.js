@@ -11,7 +11,7 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 
 import {
     // IconButton,
-    // RaisedButton,
+    RaisedButton,
     LinearProgress
   } from 'material-ui';
 
@@ -41,9 +41,9 @@ export default class NodesGrid extends Component {
       <div className="NodesGrid">
         {this.renderGridToolbar({
           label: <a href="#/nodes">Nodes</a>,
-          count: this.state.nodes && this.state.nodes.length || 0//,
-          // createButton:
-          //   <RaisedButton label="Create Node" primary={true} onClick={this.createNode.bind(this)} />
+          count: this.state.nodes && this.state.nodes.length || 0,
+          createButton:
+            <RaisedButton label="Create Node" primary={true} onClick={this.createNode.bind(this)} />
         })}
         {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
         {
@@ -79,9 +79,9 @@ export default class NodesGrid extends Component {
   }
 
   // editNode(id) { this.routeTo('nodes', id); }
-  //
-  // createNode() { this.routeTo('nodes', 'new'); }
-  //
+
+  createNode() { this.routeTo('nodes', 'new'); }
+
   // deleteNode(id) {
   //   this.confirmDialog('Are you sure want to delete: ' + id,
   //     (confirmed) => confirmed && nodes.destroy(id));

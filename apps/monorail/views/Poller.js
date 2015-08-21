@@ -33,8 +33,8 @@ export default class Poller extends Component {
       <div className="Poller">
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
-          {href: 'obms', label: 'OBM Services'},
-          this.props.params.obmsId
+          {href: 'pollers', label: 'Pollers'},
+          this.getPollerId()
         )}
         {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
         <JsonInspector

@@ -6,7 +6,7 @@ import mixin from 'react-mixin';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
-import {} from 'material-ui';
+import { LinearProgress } from 'material-ui';
 
 import JsonInspector from 'react-json-inspector';
 
@@ -17,7 +17,8 @@ let workflows = new WorkflowStore();
 export default class Workflow extends Component {
 
   state = {
-    workflow: null
+    workflow: null,
+    loading: true
   };
 
   componentDidMount() {
@@ -33,8 +34,9 @@ export default class Workflow extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'workflows', label: 'Workflows'},
-          this.props.params.workflowId
+          this.getWorkflowId()
         )}
+        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}
@@ -45,6 +47,9 @@ export default class Workflow extends Component {
 
   getWorkflowId() { return this.props.params.workflowId; }
 
-  readWorkflow() { workflows.read(this.getWorkflowId()); }
+  readWorkflow() {
+    this.setState({loading: true});
+    workflows.read(this.getWorkflowId()).then(() => this.setState({loading: false}));
+  }
 
 }

@@ -71,6 +71,10 @@ export default class Store extends EventEmitter {
     this.publish(id);
   }
 
+  assign(id, newData) {
+    this.insert(id, Object.assign(this.get(id) || {}, newData)); 
+  }
+
   change(id, data) {
     this.insert(id, data);
   }

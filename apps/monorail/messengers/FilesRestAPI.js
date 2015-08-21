@@ -30,7 +30,7 @@ export default class FilesRestAPI {
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
-          resolve(res && res.body);
+          resolve(res && (res.body || res.text));
         });
     });
   }

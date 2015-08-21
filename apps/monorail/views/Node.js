@@ -37,10 +37,10 @@ export default class Node extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'nodes', label: 'Nodes'},
-          this.props.params.nodeId
+          this.getNodeId()
         )}
         <CatalogsGrid nodeId={this.getNodeId()} />
-        {/*<EditNode nodeRef={this.state.node} />*/}
+        <EditNode nodeRef={this.state.node} />
       </div>
     );
   }

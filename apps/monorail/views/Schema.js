@@ -33,8 +33,8 @@ export default class Schema extends Component {
       <div className="Schema">
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
-          {href: 'obms', label: 'OBM Services'},
-          this.props.params.obmsId
+          {href: 'schemas', label: 'Schemas'},
+          this.getSchemaId()
         )}
         {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
         <JsonInspector
