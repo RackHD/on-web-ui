@@ -10,6 +10,7 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
+import Select from 'react-select';
 import {
     TextField,
     FlatButton,
@@ -20,6 +21,9 @@ import JsonEditor from 'common-web-ui/views/JsonEditor';
 import PollerStore from '../stores/PollerStore';
 let pollers = new PollerStore();
 
+import NodeStore from '../stores/NodeStore';
+let nodes = new NodeStore();
+
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
 @mixin.decorate(EditorHelpers)
@@ -29,17 +33,33 @@ export default class EditPoller extends Component {
 
   state = {
     poller: null,
-    disabled: false
+    disabled: true
   };
+
+  componentWillMount() {
+    this.unwatchNodes = nodes.watchAll('nodes', this);
+    nodes.list().then(() => this.setState({disabled: false}));
+  }
+
+  componentWillUnmount() {
+    this.unwatchNodes();
+  }
 
   render() {
     if (!this.state.poller) {
       this.state.poller = this.props.pollerRef || null;
     }
     this.state.poller = this.state.poller || {};
-    var nameLink = this.linkObjectState('poller', 'name'),
-        typeLink = this.linkObjectState('poller', 'type'),
-        nodeLink = this.linkObjectState('poller', 'node');
+    let nodeOptions = [];
+    if (this.state.nodes && this.state.nodes.length) {
+      this.state.nodes.forEach(node => {
+        nodeOptions.push({
+          label: node.name,
+          value: node.id
+        });
+      })
+    }
+    var nameLink = this.linkObjectState('poller', 'name');
     return (
       <div className="EditPoller container">
         <div className="row">
@@ -50,16 +70,57 @@ export default class EditPoller extends Component {
                        disabled={this.state.disabled} />
           </div>
           <div className="one-half column">
-            <TextField valueLink={typeLink}
-                       hintText="Type"
-                       floatingLabelText="Type"
-                       disabled={this.state.disabled} />
-          </div>
-          <div className="one-half column">
-            <TextField valueLink={nodeLink}
-                       hintText="Node"
-                       floatingLabelText="Node"
-                       disabled={this.state.disabled} />
+            <label>Type:</label>
+            <Select
+                name="type"
+                value={this.state.poller && this.state.poller.type}
+                placeholder="Select a type..."
+                options={[
+                  {value: 'ipmi', label: 'IPMI'},
+                  {value: 'snmp', label: 'SNMP'}
+                ]}
+                onChange={(value) => {
+                  let poller = this.state.poller;
+                  poller.type = value;
+                  this.setState({poller: poller})
+                }} />
+            <br/>
+            <label>Node:</label>
+            <Select
+                name="node"
+                value={this.state.poller && this.state.poller.node}
+                placeholder="Select a node..."
+                options={nodeOptions}
+                onChange={(value) => {
+                  let poller = this.state.poller;
+                  poller.node = value;
+                  this.setState({poller: poller})
+                }} />
+            <br/>
+            <label>Poll Interval:</label>
+            <Select
+                name="node"
+                value={this.state.poller && this.state.poller.pollInterval}
+                placeholder="Select a polling interval..."
+                options={[
+                  {value: 1000, label: 'Every Second'},
+                  {value: 5000, label: 'Every 5 Seconds'},
+                  {value: 30000, label: 'Every 30 Seconds'},
+                  {value: 60000, label: 'Every Minute'},
+                  {value: 60000 * 5, label: 'Every 5 Minutes'},
+                  {value: 60000 * 30, label: 'Every 30 Minutes'},
+                  {value: 60000 * 60, label: 'Every Hour'},
+                  {value: 60000 * 60 * 3, label: 'Every 3 Hours'},
+                  {value: 60000 * 60 * 6, label: 'Every 6 Hours'},
+                  {value: 60000 * 60 * 12, label: 'Every 12 Hours'},
+                  {value: 60000 * 60 * 24, label: 'Every Day'},
+                  {value: 60000 * 60 * 24 * 7, label: 'Every Week'},
+                ]}
+                onChange={(value) => {
+                  let poller = this.state.poller;
+                  poller.pollInterval = value;
+                  this.setState({poller: poller})
+                }} />
           </div>
         </div>
 
@@ -103,7 +164,12 @@ export default class EditPoller extends Component {
 
   savePoller() {
     this.disable();
-    pollers.update(this.state.poller.id, this.state.poller).then(() => this.enable());
+    if (this.state.poller.id) {
+      pollers.update(this.state.poller.id, this.state.poller).then(() => this.enable());
+    }
+    else {
+      pollers.create(this.state.poller).then(() => this.enable());
+    }
   }
 
   deletePoller() {

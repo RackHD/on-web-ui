@@ -28,6 +28,12 @@ export default class JsonEditor extends Component {
     error: false
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.initialValue !== this.props.initialValue) {
+      this.setState({value: nextProps.initialValue});
+    }
+  }
+
   handleChange(newValue) {
     try {
       var newState = JSON.parse(newValue);
