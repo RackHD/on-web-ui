@@ -49,6 +49,10 @@ export default class OBMService extends Component {
 
   readOBMService() {
     this.setState({loading: true});
+    let nodeId = this.getNodeId();
+    if (nodeId) {
+
+    }
     obmService.read(this.getOBMServiceId()).then(() => this.setState({loading: false}));
   }
 

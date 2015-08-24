@@ -10,10 +10,10 @@ import EditProfile from './EditProfile';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Profile extends Component {
+export default class CreateProfile extends Component {
 
   state = {
-    template: null
+    profile: null
   };
 
   componentDidMount() {}
@@ -28,7 +28,7 @@ export default class Profile extends Component {
           {href: 'profiles', label: 'Profiles'},
           'New Profile'
         )}
-        <EditProfile templateRef={{id: null, name: 'New Profile', contents: ''}} />
+        <EditProfile profileRef={{id: null, name: 'New Profile', contents: ''}} />
       </div>
     );
   }

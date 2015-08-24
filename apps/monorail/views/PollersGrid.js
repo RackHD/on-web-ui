@@ -39,7 +39,7 @@ export default class PollersGrid extends Component {
     return (
       <div className="PollersGrid">
         {this.renderGridToolbar({
-          label: <a href="#/pollers">Pollers</a>,
+          label: <a href={'#/pollers' + (this.nodeId ? '/n/' + this.nodeId : '')}>Pollers</a>,
           count: this.state.pollers && this.state.pollers.length || 0,
           right:
             <RaisedButton label="Create Poller" primary={true} onClick={this.createPoller.bind(this)} />
@@ -52,6 +52,7 @@ export default class PollersGrid extends Component {
           }, poller => (
             {
               ID: <a href={this.routePath('pollers', poller.id)}>{this.shortId(poller.id)}</a>,
+              Node: <a href={this.routePath('nodes', poller.node)}>{this.shortId(poller.node)}</a>,
               Name: poller.name,
               Created: this.fromNow(poller.createdAt),
               Updated: this.fromNow(poller.updatedAt)
@@ -62,11 +63,20 @@ export default class PollersGrid extends Component {
     );
   }
 
+  get nodeId() { return this.props.nodeId; }
+
   listPollers() {
     this.setState({loading: true});
+    let nodeId = this.nodeId
+    if (nodeId) {
+      return pollers.listNode(nodeId).then(() => this.setState({loading: false}));
+    }
     pollers.list().then(() => this.setState({loading: false}));
   }
 
-  createPoller() { this.routeTo('pollers', 'new'); }
+  createPoller() {
+    if (this.nodeId) return this.routeTo('pollers', 'new', this.nodeId);
+    this.routeTo('pollers', 'new');
+  }
 
 }

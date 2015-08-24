@@ -10,10 +10,10 @@ import EditNode from './EditNode';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Node extends Component {
+export default class CreateNode extends Component {
 
   state = {
-    template: null
+    node: null
   };
 
   componentDidMount() {}
@@ -28,7 +28,7 @@ export default class Node extends Component {
           {href: 'nodes', label: 'Nodes'},
           'New Node'
         )}
-        <EditNode templateRef={{id: null, name: 'New Node', contents: ''}} />
+        <EditNode nodeRef={{id: null, name: 'New Node', contents: ''}} />
       </div>
     );
   }

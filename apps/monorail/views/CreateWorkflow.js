@@ -10,10 +10,10 @@ import EditWorkflow from './EditWorkflow';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Workflow extends Component {
+export default class CreateWorkflow extends Component {
 
   state = {
-    template: null
+    workflow: null
   };
 
   componentDidMount() {}
@@ -28,7 +28,7 @@ export default class Workflow extends Component {
           {href: 'workflows', label: 'Workflows'},
           'New Workflow'
         )}
-        <EditWorkflow templateRef={{id: null, name: 'New Workflow', contents: ''}} />
+        <EditWorkflow workflowRef={{id: null, name: 'New Workflow', contents: ''}} />
       </div>
     );
   }

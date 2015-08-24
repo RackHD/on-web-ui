@@ -10,7 +10,7 @@ import EditTemplate from './EditTemplate';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Template extends Component {
+export default class CreateTemplate extends Component {
 
   state = {
     template: null

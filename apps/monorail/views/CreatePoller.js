@@ -10,10 +10,10 @@ import EditPoller from './EditPoller';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Poller extends Component {
+export default class CreatePoller extends Component {
 
   state = {
-    template: null
+    poller: null
   };
 
   componentDidMount() {}
@@ -28,7 +28,7 @@ export default class Poller extends Component {
           {href: 'pollers', label: 'Pollers'},
           'New Poller'
         )}
-        <EditPoller templateRef={{id: null, name: 'New Poller', contents: ''}} />
+        <EditPoller pollerRef={{id: null, name: 'New Poller', contents: ''}} />
       </div>
     );
   }
