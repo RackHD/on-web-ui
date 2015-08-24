@@ -10,6 +10,7 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
+import Select from 'react-select';
 import {
     TextField,
     FlatButton,
@@ -19,6 +20,10 @@ import JsonEditor from 'common-web-ui/views/JsonEditor';
 
 import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
+
+import NodeStore from '../stores/NodeStore';
+let nodes = new NodeStore();
+let nodesRestAPI = nodes.nodesRestAPI;
 
 @mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
@@ -32,9 +37,27 @@ export default class EditWorkflow extends Component {
     disabled: false
   };
 
+  componentWillMount() {
+    this.unwatchNodes = nodes.watchAll('nodes', this);
+    nodes.list().then(() => this.setState({disabled: false}));
+  }
+
+  componentWillUnmount() {
+    this.unwatchNodes();
+  }
+
   render() {
     if (!this.state.workflow) {
       this.state.workflow = this.props.workflowRef || null;
+    }
+    let nodeOptions = [];
+    if (this.state.nodes && this.state.nodes.length) {
+      this.state.nodes.forEach(node => {
+        nodeOptions.push({
+          label: node.name,
+          value: node.id
+        });
+      })
     }
     var nameLink = this.linkObjectState('workflow', 'name'),
         profileLink = this.linkObjectState('workflow', 'profile');
@@ -52,6 +75,18 @@ export default class EditWorkflow extends Component {
                        hintText="Profile"
                        floatingLabelText="Profile"
                        disabled={this.state.disabled} />
+            <br/>
+            <label>Node:</label>
+            <Select
+                name="node"
+                value={this.state.workflow && this.state.workflow.node || this.props.nodeId}
+                placeholder="Select a node..."
+                options={nodeOptions}
+                onChange={(value) => {
+                  let workflow = this.state.workflow;
+                  workflow.node = value;
+                  this.setState({workflow: workflow})
+                }} />
           </div>
         </div>
 

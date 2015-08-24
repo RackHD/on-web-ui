@@ -28,7 +28,7 @@ export default class CreateWorkflow extends Component {
           {href: 'workflows', label: 'Workflows'},
           'New Workflow'
         )}
-        <EditWorkflow workflowRef={{id: null, name: 'New Workflow', contents: ''}} />
+        <EditWorkflow workflowRef={{id: null, name: 'New Workflow', contents: ''}} nodeId={this.props.params.nodeId}/>
       </div>
     );
   }
