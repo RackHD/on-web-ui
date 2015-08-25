@@ -87,7 +87,7 @@ let routes = (
     <Route name="obmService" path="/obms/:obmsId" handler={OBMService} />
 
     <Route name="pollers" handler={Pollers} />
-    <Route name="pollersN" path="catalogs/n/:nodeId" handler={Catalogs} />
+    <Route name="pollersN" path="/pollers/n/:nodeId" handler={Pollers} />
     <Route name="pollerNN" path="/pollers/new/:nodeId" handler={CreatePoller} />
     <Route name="pollerN" path="/pollers/new" handler={CreatePoller} />
     <Route name="poller" path="/pollers/:pollerId" handler={Poller} />
@@ -110,7 +110,7 @@ let routes = (
     <Route name="versions" handler={Versions} />
 
     <Route name="workflows" handler={Workflows} />
-    <Route name="workflowsN" path="workflows/n/:nodeId" handler={Workflows} />
+    <Route name="workflowsN" path="/workflows/n/:nodeId" handler={Workflows} />
     <Route name="workflowNN" path="/workflows/new/:nodeId" handler={CreateWorkflow} />
     <Route name="workflowN" path="/workflows/new" handler={CreateWorkflow} />
     <Route name="workflow" path="/workflows/:workflowId" handler={Workflow} />

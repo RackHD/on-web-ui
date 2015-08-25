@@ -20,8 +20,9 @@ export default class Pollers extends Component {
         {nodeId ?
           this.renderBreadcrumbs(
             {href: 'dash', label: 'Dashboard'},
-            {href: 'pollers', label: 'Pollers'},
-            'n', nodeId
+            {href: 'nodes', label: 'Nodes'},
+            {href: 'nodes/' + nodeId, label: nodeId},
+            'Pollers'
           ) :
           this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Pollers')
         }

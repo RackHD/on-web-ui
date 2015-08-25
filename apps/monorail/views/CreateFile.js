@@ -28,7 +28,7 @@ export default class CreateFile extends Component {
           {href: 'files', label: 'Files'},
           'New File'
         )}
-        <EditFile fileRef={{id: null, name: 'New File', contents: ''}} />
+        <EditFile fileRef={{name: 'New File', body: ''}} />
       </div>
     );
   }

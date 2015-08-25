@@ -20,8 +20,9 @@ export default class Workflows extends Component {
         {nodeId ?
           this.renderBreadcrumbs(
             {href: 'dash', label: 'Dashboard'},
-            {href: 'workflows', label: 'Workflows'},
-            'n', nodeId
+            {href: 'nodes', label: 'Nodes'},
+            {href: 'nodes/' + nodeId, label: nodeId},
+            'Workflows'
           ) :
           this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Workflows')
         }
