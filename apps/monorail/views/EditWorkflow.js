@@ -18,6 +18,9 @@ import {
   } from 'material-ui';
 import JsonEditor from 'common-web-ui/views/JsonEditor';
 
+import WorkflowTemplateStore from '../stores/WorkflowTemplateStore';
+let workflowTemplates = new WorkflowTemplateStore();
+
 import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
 
@@ -33,16 +36,20 @@ let nodesRestAPI = nodes.nodesRestAPI;
 export default class EditWorkflow extends Component {
 
   state = {
+    nodes: [],
+    library: null,
     workflow: null,
     disabled: false
   };
 
   componentWillMount() {
+    this.unwatchWorkflowTemplates = workflowTemplates.watchAll('library', this);
     this.unwatchNodes = nodes.watchAll('nodes', this);
-    nodes.list().then(() => this.setState({disabled: false}));
+    Promise.all([workflowTemplates.list(), nodes.list()]).then(() => this.setState({disabled: false}));
   }
 
   componentWillUnmount() {
+    this.unwatchWorkflowTemplates();
     this.unwatchNodes();
   }
 
@@ -59,23 +66,32 @@ export default class EditWorkflow extends Component {
         });
       })
     }
-    var nameLink = this.linkObjectState('workflow', 'name'),
-        profileLink = this.linkObjectState('workflow', 'profile');
+    let templateOptions = [];
+    if (this.state.library && this.state.library.length) {
+      this.state.library.forEach(template => {
+        templateOptions.push({
+          label: template.friendlyName,
+          value: template.injectableName
+        });
+      });
+    }
     return (
       <div className="EditWorkflow container">
         <div className="row">
           <div className="one-half column">
-            <TextField valueLink={nameLink}
-                       hintText="Name"
-                       floatingLabelText="Name"
-                       disabled={this.state.disabled} />
+            <label>Type:</label>
+            <Select
+                name="node"
+                value={this.state.workflow && this.state.workflow.name || this.props.name}
+                placeholder="Select a workflow graph..."
+                options={templateOptions}
+                onChange={(value) => {
+                  let workflow = this.state.workflow;
+                  workflow.name = value;
+                  this.setState({workflow: workflow})
+                }} />
           </div>
           <div className="one-half column">
-            <TextField valueLink={profileLink}
-                       hintText="Profile"
-                       floatingLabelText="Profile"
-                       disabled={this.state.disabled} />
-            <br/>
             <label>Node:</label>
             <Select
                 name="node"
@@ -130,7 +146,12 @@ export default class EditWorkflow extends Component {
 
   saveWorkflow() {
     this.disable();
-    workflows.update(this.state.workflow.id, this.state.workflow).then(() => this.enable());
+    if (this.state.workflow.id) {
+      workflows.update(this.state.workflow.id, this.state.workflow).then(() => this.enable());
+    }
+    else {
+      nodesRestAPI.postWorkflow(this.state.workflow.node, this.state.workflow).then(() => this.enable());
+    }
   }
 
   deleteWorkflow() {
