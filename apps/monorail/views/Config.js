@@ -35,7 +35,7 @@ export default class Config extends Component {
           {href: 'dash', label: 'Dashboard'},
           'Config'
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}

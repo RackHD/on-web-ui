@@ -3,13 +3,14 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
+import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
-import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
-import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 import GridHelpers from 'common-web-ui/mixins/GridHelpers';
+import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
 
+import Select from 'react-select';
 import {
     TextField,
     FlatButton,
@@ -20,8 +21,8 @@ import JsonEditor from 'common-web-ui/views/JsonEditor';
 import NodeStore from '../stores/NodeStore';
 let nodes = new NodeStore();
 
-@mixin.decorate(DialogHelpers)
 @mixin.decorate(FormatHelpers)
+@mixin.decorate(DialogHelpers)
 @mixin.decorate(EditorHelpers)
 @mixin.decorate(RouteHelpers)
 @mixin.decorate(GridHelpers)
@@ -48,10 +49,23 @@ export default class EditNode extends Component {
                        disabled={this.state.disabled} />
           </div>
           <div className="one-half column">
-            <TextField valueLink={profileLink}
-                       hintText="Profile"
-                       floatingLabelText="Profile"
-                       disabled={this.state.disabled} />
+            <label>Type:</label>
+            <Select
+                name="type"
+                value={this.state.node && this.state.node.type}
+                placeholder="Select a type..."
+                options={[
+                  {value: 'compute', label: 'Compute Node'},
+                  {value: 'dea', label: 'DEA Node'},
+                  {value: 'mgmt', label: 'Management Node'},
+                  {value: 'pdu', label: 'PDU Node'},
+                  {value: 'switch', label: 'Switch Node'}
+                ]}
+                onChange={(value) => {
+                  let node = this.state.node;
+                  node.type = value;
+                  this.setState({node: node})
+                }} />
           </div>
         </div>
 
@@ -60,30 +74,19 @@ export default class EditNode extends Component {
                     updateParentState={this.updateStateFromJsonEditor.bind(this)}
                     disabled={this.state.disabled}
                     ref="jsonEditor" />
-        <div className="buttons container">
+        <div className="right">
           <FlatButton className="button"
-                      label="Delete"
-                      onClick={this.deleteNode.bind(this)}
+                      label="Cancel"
+                      onClick={this.routeBack}
                       disabled={this.state.disabled} />
-          <FlatButton className="button"
-                      label="Clone"
-                      onClick={this.cloneNode.bind(this)}
-                      disabled={true || this.state.disabled} />
-
-          <div className="right">
-            <FlatButton className="button"
-                        label="Cancel"
-                        onClick={this.routeBack}
+          <RaisedButton className="button"
+                        label="Reset"
+                        onClick={this.resetNode.bind(this)}
                         disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Reset"
-                          onClick={this.resetNode.bind(this)}
-                          disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Save" primary={true}
-                          onClick={this.saveNode.bind(this)}
-                          disabled={this.state.disabled} />
-          </div>
+          <RaisedButton className="button"
+                        label="Save" primary={true}
+                        onClick={this.saveNode.bind(this)}
+                        disabled={this.state.disabled} />
         </div>
       </div>
     );
@@ -95,14 +98,12 @@ export default class EditNode extends Component {
 
   saveNode() {
     this.disable();
-    nodes.update(this.state.node.id, this.state.node).then(() => this.enable());
-  }
-
-  deleteNode() {
-    var id = this.state.node.id;
-    this.disable();
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed && nodes.destroy(id).then(() => this.routeBack()));
+    if (this.state.node.id) {
+      nodes.update(this.state.node.id, this.state.node).then(() => this.enable());
+    }
+    else {
+      nodes.create(this.state.node).then(() => this.routeBack());
+    }
   }
 
   resetNode() {
@@ -110,7 +111,5 @@ export default class EditNode extends Component {
     nodes.read(this.state.node.id)
       .then(node => this.setState({node: node, disabled: false}));
   }
-
-  cloneNode() {}// TODO
 
 }

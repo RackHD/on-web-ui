@@ -45,7 +45,7 @@ export default class TemplatesGrid extends Component {
           right:
             <RaisedButton label="Create Template" primary={true} onClick={this.createTemplate.bind(this)} />
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.templates,

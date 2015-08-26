@@ -36,7 +36,7 @@ export default class Schema extends Component {
           {href: 'schemas', label: 'Schemas'},
           this.getSchemaId()
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}

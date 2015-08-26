@@ -44,7 +44,7 @@ export default class SkusGrid extends Component {
           right:
             <RaisedButton label="Create SKU" primary={true} onClick={this.createSku.bind(this)} />
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.skus,

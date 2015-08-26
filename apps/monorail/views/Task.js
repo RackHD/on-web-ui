@@ -35,7 +35,7 @@ export default class Task extends Component {
           {href: 'dash', label: 'Dashboard'},
           'Task'
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}

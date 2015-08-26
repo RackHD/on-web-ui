@@ -41,7 +41,7 @@ export default class OBMServicesGrid extends Component {
           label: <a href="#/obms">OBM Services</a>,
           count: this.state.obmServices && this.state.obmServices.length || 0
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.obmServices,

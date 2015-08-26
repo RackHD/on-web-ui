@@ -41,7 +41,7 @@ export default class VersionsGrid extends Component {
           label: <a href="#/versions">Versions</a>,
           count: this.state.versions && this.state.versions.length || 0
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.versions,

@@ -28,7 +28,7 @@ export default class CreateSku extends Component {
           {href: 'skus', label: 'Skus'},
           'New Sku'
         )}
-        <EditSku skuRef={{id: null, name: 'New Sku', contents: ''}} />
+        <EditSku skuRef={{name: 'New Sku', rules: [{path: 'example.catalog.path', contains: 'value'}]}} />
       </div>
     );
   }

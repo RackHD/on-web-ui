@@ -40,7 +40,7 @@ export default class File extends Component {
           {href: 'files', label: 'Files'},
           this.getFileId()
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}

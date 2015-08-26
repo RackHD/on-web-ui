@@ -36,7 +36,7 @@ export default class OBMService extends Component {
           {href: 'obms', label: 'OBM Services'},
           this.props.params.obmsId
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}

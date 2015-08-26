@@ -6,7 +6,7 @@ import http from 'superagent';
 export default {
 
   getSystemsCollection() {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Systems')
         .accept('json')
         .end((err, res) => {
@@ -17,7 +17,7 @@ export default {
   },
 
   getSystem(id) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Systems/' + id)
         .accept('json')
         .end((err, res) => {

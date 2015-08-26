@@ -38,7 +38,7 @@ export default class Template extends Component {
           {href: 'templates', label: 'Templates'},
           this.getTemplateId()
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <EditTemplate templateRef={this.state.template} />
       </div>
     );

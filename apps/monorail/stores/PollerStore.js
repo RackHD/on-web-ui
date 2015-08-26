@@ -43,7 +43,7 @@ export default class PollerStore extends Store {
 
   listNode(nodeId) {
     this.empty();
-    return this.nodesRestAPI.listWorkflows(nodeId)
+    return this.nodesRestAPI.listPollers(nodeId)
       .then(list => this.collect(list))
       .catch(err => this.error(null, err));
   }

@@ -40,7 +40,7 @@ export default class Workflow extends Component {
           {href: 'workflows', label: 'Workflows'},
           this.getWorkflowId()
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}

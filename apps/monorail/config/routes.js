@@ -115,6 +115,7 @@ let routes = (
     <Route name="workflowN" path="/workflows/new" handler={CreateWorkflow} />
     <Route name="workflow" path="/workflows/:workflowId" handler={Workflow} />
 
+    <Route name="notFound" path="/notFound" handler={NotFound} />
     <NotFoundRoute handler={NotFound}/>
     <Redirect from="dash" to="/" />
   </Route>

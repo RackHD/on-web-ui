@@ -21,15 +21,21 @@ export default class SkuStore extends Store {
       .catch(err => this.error(id, err));
   }
 
-  create(id, data) {
-    return this.skusRestAPI.put(id, data)
-      .then(() => this.insert(id, data))
-      .catch(err => this.error(id, err));
+  create(data) {
+    return this.skusRestAPI.post(data)
+      .then(() => this.insert(data))
+      .catch(err => this.error(null, err));
   }
 
   update(id, data) {
-    return this.skusRestAPI.put(id, data)
+    return this.skusRestAPI.patch(id, data)
       .then(() => this.change(id, data))
+      .catch(err => this.error(id, err));
+  }
+
+  destroy(id) {
+    return this.skusRestAPI.delete(id)
+      .then(() => this.remove(id))
       .catch(err => this.error(id, err));
   }
 

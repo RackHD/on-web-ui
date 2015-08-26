@@ -28,7 +28,7 @@ export default class CreateNode extends Component {
           {href: 'nodes', label: 'Nodes'},
           'New Node'
         )}
-        <EditNode nodeRef={{id: null, name: 'New Node', contents: ''}} />
+        <EditNode nodeRef={{name: 'New Node', type: 'compute'}} />
       </div>
     );
   }

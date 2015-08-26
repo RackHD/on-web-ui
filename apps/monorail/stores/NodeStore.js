@@ -21,10 +21,10 @@ export default class NodeStore extends Store {
       .catch(err => this.error(id, err));
   }
 
-  create(id, data) {
-    return this.nodesRestAPI.post(id, data)
-      .then(() => this.insert(id, data))
-      .catch(err => this.error(id, err));
+  create(data) {
+    return this.nodesRestAPI.post(data)
+      .then(() => this.insert(data))
+      .catch(err => this.error(null, err));
   }
 
   update(id, data) {

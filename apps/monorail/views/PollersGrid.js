@@ -44,7 +44,7 @@ export default class PollersGrid extends Component {
           right:
             <RaisedButton label="Create Poller" primary={true} onClick={this.createPoller.bind(this)} />
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.pollers,

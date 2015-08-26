@@ -40,7 +40,7 @@ export default class Sku extends Component {
           {href: 'skus', label: 'Skus'},
           this.getSkuId()
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}

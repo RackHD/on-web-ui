@@ -90,7 +90,7 @@ export default class GuideViewerPage extends Component {
   */
   getGuide(path) {
     path = path || '';
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(codeServer + '/' + path)
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -105,7 +105,7 @@ export default class GuideViewerPage extends Component {
     @desc Sends a HTTP request to get a list of files.
   */
   getGuideMenu() {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(codeServer + '/handbook/views/guides')
         .end((err, res) => {
           if (err) { return reject(err); }

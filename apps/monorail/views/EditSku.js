@@ -36,8 +36,7 @@ export default class EditSku extends Component {
     if (!this.state.sku) {
       this.state.sku = this.props.skuRef || null;
     }
-    var nameLink = this.linkObjectState('sku', 'name'),
-        profileLink = this.linkObjectState('sku', 'profile');
+    var nameLink = this.linkObjectState('sku', 'name');
     return (
       <div className="EditSku container">
         <div className="row">
@@ -45,12 +44,6 @@ export default class EditSku extends Component {
             <TextField valueLink={nameLink}
                        hintText="Name"
                        floatingLabelText="Name"
-                       disabled={this.state.disabled} />
-          </div>
-          <div className="one-half column">
-            <TextField valueLink={profileLink}
-                       hintText="Profile"
-                       floatingLabelText="Profile"
                        disabled={this.state.disabled} />
           </div>
         </div>
@@ -95,7 +88,12 @@ export default class EditSku extends Component {
 
   saveSku() {
     this.disable();
-    skus.update(this.state.sku.id, this.state.sku).then(() => this.enable());
+    if (this.state.sku.id) {
+      skus.update(this.state.sku.id, this.state.sku).then(() => this.enable());
+    }
+    else {
+      skus.create(this.state.sku).then(() => this.routeBack());
+    }
   }
 
   deleteSku() {

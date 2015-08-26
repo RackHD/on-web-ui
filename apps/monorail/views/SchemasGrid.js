@@ -41,7 +41,7 @@ export default class SchemasGrid extends Component {
           label: <a href="#/schemas">Schemas</a>,
           count: this.state.schemas && this.state.schemas.length || 0
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.schemas,

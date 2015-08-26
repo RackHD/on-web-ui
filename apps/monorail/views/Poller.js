@@ -40,7 +40,7 @@ export default class Poller extends Component {
           {href: 'pollers', label: 'Pollers'},
           this.getPollerId()
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <JsonInspector
             search={false}
             isExpanded={() => true}

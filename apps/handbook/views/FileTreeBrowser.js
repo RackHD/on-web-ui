@@ -255,7 +255,7 @@ export default class FileTreeBrowser extends Component {
   */
   getFiles(path) {
     path = path || '';
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(codeServer + '/' + path)
         .end((err, res) => {
           if (err) { return reject(err); }

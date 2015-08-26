@@ -45,7 +45,7 @@ export default class WorkflowsGrid extends Component {
           right:
             <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.workflows,

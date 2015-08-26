@@ -28,7 +28,7 @@ export default class CreateProfile extends Component {
           {href: 'profiles', label: 'Profiles'},
           'New Profile'
         )}
-        <EditProfile profileRef={{id: null, name: 'New Profile', contents: ''}} />
+        <EditProfile profileRef={{name: 'New Profile', contents: ''}} />
       </div>
     );
   }

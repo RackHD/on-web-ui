@@ -28,7 +28,7 @@ export default class CreateTemplate extends Component {
           {href: 'templates', label: 'Templates'},
           'New Template'
         )}
-        <EditTemplate templateRef={{id: null, name: 'New Template', contents: ''}} />
+        <EditTemplate templateRef={{name: 'New Template', contents: ''}} />
       </div>
     );
   }
