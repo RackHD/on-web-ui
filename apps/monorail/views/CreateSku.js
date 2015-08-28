@@ -26,9 +26,9 @@ export default class CreateSku extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'skus', label: 'Skus'},
-          'New Sku'
+          'Create Sku'
         )}
-        <EditSku skuRef={{name: 'New Sku', rules: [{path: 'example.catalog.path', contains: 'value'}]}} />
+        <EditSku sku={{rules: [{path: 'example.catalog.path', contains: 'value'}]}} />
       </div>
     );
   }

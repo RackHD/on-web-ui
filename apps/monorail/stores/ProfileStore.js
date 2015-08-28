@@ -9,9 +9,8 @@ export default class ProfileStore extends Store {
   profilesRestAPI = new ProfilesRestAPI();
 
   list() {
-    this.empty();
     return this.profilesRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

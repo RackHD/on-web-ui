@@ -75,9 +75,11 @@ export default class Catalog extends Component {
     }
 
     if (this.catalogId && this.state.catalog) {
-      content = <JsonInspector
-          isExpanded={() => true}
-          data={this.state.catalog} />
+      content = <div style={{overflow: 'auto', margin: 10}}>
+        <JsonInspector
+            isExpanded={() => true}
+            data={this.state.catalog} />
+      </div>;
     }
     else if (this.state.catalogs && this.state.catalogs.length) {
       content = <CatalogsGrid catalogs={this.state.catalogs} nodeId={this.nodeId} source={this.source} />;
@@ -89,13 +91,14 @@ export default class Catalog extends Component {
           this.renderBreadcrumbs(
             {href: 'dash', label: 'Dashboard'},
             {href: 'catalogs', label: 'Catalogs'},
-            'i', this.catalogId
+            this.catalogId
           ) :
           this.renderBreadcrumbs(
             {href: 'dash', label: 'Dashboard'},
+            {href: 'nodes', label: 'Nodes'},
+            {href: 'nodes/' + this.nodeId, label: this.nodeId},
             {href: 'catalogs', label: 'Catalogs'},
-            'n', this.nodeId,
-            's', this.source
+            this.source
           )
         }
         {content}

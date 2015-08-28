@@ -36,10 +36,12 @@ export default class Task extends Component {
           'Task'
         )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
-        <JsonInspector
-            search={false}
-            isExpanded={() => true}
-            data={this.state.task || {}} />
+        <div style={{overflow: 'auto', margin: 10}}>
+          <JsonInspector
+              search={false}
+              isExpanded={() => true}
+              data={this.state.task || {}} />
+        </div>
       </div>
     );
   }

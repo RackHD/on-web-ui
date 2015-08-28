@@ -26,9 +26,9 @@ export default class CreateTemplate extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'templates', label: 'Templates'},
-          'New Template'
+          'Create Template'
         )}
-        <EditTemplate templateRef={{name: 'New Template', contents: ''}} />
+        <EditTemplate template={{}} />
       </div>
     );
   }

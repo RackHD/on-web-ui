@@ -26,9 +26,9 @@ export default class CreateFile extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'files', label: 'Files'},
-          'New File'
+          'Create File'
         )}
-        <EditFile fileRef={{name: 'New File', body: ''}} />
+        <EditFile file={{}} />
       </div>
     );
   }

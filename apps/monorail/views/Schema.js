@@ -37,10 +37,12 @@ export default class Schema extends Component {
           this.getSchemaId()
         )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
-        <JsonInspector
-            search={false}
-            isExpanded={() => true}
-            data={this.state.schema || {}} />
+        <div style={{overflow: 'auto', margin: 10}}>
+          <JsonInspector
+              search={false}
+              isExpanded={() => true}
+              data={this.state.schema || {}} />
+        </div>
       </div>
     );
   }

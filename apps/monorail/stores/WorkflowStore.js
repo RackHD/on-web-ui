@@ -11,9 +11,8 @@ export default class WorkflowStore extends Store {
   nodesRestAPI = new NodesRestAPI();
 
   list() {
-    this.empty();
     return this.workflowsRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

@@ -3,6 +3,8 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import mixin from 'react-mixin';
+import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
+import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
@@ -10,16 +12,25 @@ import EditProfile from './EditProfile';
 import CreateProfile from './CreateProfile';
 export { CreateProfile, EditProfile };
 
-import {} from 'material-ui';
+import {
+    LinearProgress,
+    List, ListItem,
+    RaisedButton,
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle,
+    Snackbar
+  } from 'material-ui';
 
 import ProfileStore from '../stores/ProfileStore';
 let profiles = new ProfileStore();
 
+@mixin.decorate(DialogHelpers)
+@mixin.decorate(FormatHelpers)
 @mixin.decorate(PageHelpers)
 export default class Profile extends Component {
 
   state = {
-    profile: null
+    profile: null,
+    loading: true
   };
 
   componentDidMount() {
@@ -30,6 +41,7 @@ export default class Profile extends Component {
   componentWillUnmount() { this.unwatchProfile(); }
 
   render() {
+    let profile = this.state.profile || {};
     return (
       <div className="Profile">
         {this.renderBreadcrumbs(
@@ -37,13 +49,45 @@ export default class Profile extends Component {
           {href: 'profiles', label: 'Profiles'},
           this.props.params.profileId
         )}
-        <EditProfile profileRef={this.state.profile} />
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+            <ToolbarTitle text="Profile Details" />
+          </ToolbarGroup>
+          <ToolbarGroup key={1} float="right">
+          </ToolbarGroup>
+        </Toolbar>
+        <div className="ungrid">
+          <div className="line">
+            <div className="cell">
+              <List>
+                <ListItem
+                  primaryText={this.fromNow(profile.updatedAt)}
+                  secondaryText="Updated" />
+              </List>
+            </div>
+            <div className="cell">
+              <List>
+                <ListItem
+                  primaryText={this.fromNow(profile.createdAt)}
+                  secondaryText="Created" />
+              </List>
+            </div>
+          </div>
+        </div>
+        <EditProfile profile={this.state.profile} />
       </div>
     );
   }
 
-  getProfileId() { return this.props.params.profileId; }
+  getProfileId() {
+    return this.state.profile && this.state.profile.id ||
+    this.props.profileId || this.props.params.profileId;
+  }
 
-  readProfile() { profiles.read(this.getProfileId()); }
+  readProfile() {
+    this.setState({loading: true});
+    profiles.read(this.getProfileId()).then(() => this.setState({loading: false}));
+  }
 
 }

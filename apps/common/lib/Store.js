@@ -27,8 +27,9 @@ export default class Store extends EventEmitter {
   }
 
   error(id, error) {
-    console.error('Store:', id, error.stack || error);
     this.emit(this.event(id, 'error'), error);
+    console.error('Store Error:', this.constructor.name, id, error.stack || error);
+    if (window.onerror) window.onerror(error.message);
   }
 
   reset() {
@@ -44,9 +45,9 @@ export default class Store extends EventEmitter {
     return true;
   }
 
-  empty() {
+  empty(silent) {
     Object.keys(this.collection).forEach(id => this.remove(id));
-    this.publish();
+    if (!silent) { this.publish(); }
   }
 
   key = 'id';
@@ -55,12 +56,18 @@ export default class Store extends EventEmitter {
     list.forEach(item => this.insert(item[this.key], item));
   }
 
+  recollect(list, silent) {
+    this.empty(true);
+    this.collect(list);
+    if (!silent) { this.publish(); }
+  }
+
   publish(id) {
     if (id) { this.emit('change:' + id); }
     this.emit('change');
   }
 
-  insert(id, data) {
+  insert(id, data, silent) {
     if (!id) { throw new Error('Store: Unable to insert data without an id.'); }
     if (data === undefined) {
       console.warn(new Error('Store: Insert called with undefined data.'));
@@ -68,11 +75,11 @@ export default class Store extends EventEmitter {
     }
     var object = this.EntityClass ? new this.EntityClass(data) : data;
     this.collection[id] = object;
-    this.publish(id);
+    if (!silent) { this.publish(id); }
   }
 
   assign(id, newData) {
-    this.insert(id, Object.assign(this.get(id) || {}, newData)); 
+    this.insert(id, Object.assign(this.get(id) || {}, newData));
   }
 
   change(id, data) {
@@ -90,12 +97,14 @@ export default class Store extends EventEmitter {
     var listener = () => component.setState({
       [prop]: Array.isArray(id) ? this.get.apply(this, id) : this.get(id)
     });
+    listener();
     this.subscribe(id, listener, onError);
     return this.unsubscribe.bind(this, id, listener, onError);
   }
 
   watchAll(prop, component, onError) {
     var listener = () => component.setState({[prop]: this.all()});
+    listener();
     this.subscribe(null, listener, onError);
     return this.unsubscribe.bind(this, null, listener, onError);
   }

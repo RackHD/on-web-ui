@@ -11,11 +11,15 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
 
 import Select from 'react-select';
+
 import {
-    TextField,
     FlatButton,
-    RaisedButton
+    LinearProgress,
+    RaisedButton,
+    TextField,
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
+
 import JsonEditor from 'common-web-ui/views/JsonEditor';
 
 import NodeStore from '../stores/NodeStore';
@@ -29,64 +33,68 @@ let nodes = new NodeStore();
 export default class EditNode extends Component {
 
   state = {
-    node: null,
-    disabled: false
+    node: this.props.node,
+    disabled: !this.props.node,
+    loading: !this.props.node
   };
 
-  render() {
-    if (!this.state.node) {
-      this.state.node = this.props.nodeRef || null;
-    }
-    var nameLink = this.linkObjectState('node', 'name'),
-        profileLink = this.linkObjectState('node', 'profile');
-    return (
-      <div className="EditNode container">
-        <div className="row">
-          <div className="one-half column">
-            <TextField valueLink={nameLink}
-                       hintText="Name"
-                       floatingLabelText="Name"
-                       disabled={this.state.disabled} />
-          </div>
-          <div className="one-half column">
-            <label>Type:</label>
-            <Select
-                name="type"
-                value={this.state.node && this.state.node.type}
-                placeholder="Select a type..."
-                options={[
-                  {value: 'compute', label: 'Compute Node'},
-                  {value: 'dea', label: 'DEA Node'},
-                  {value: 'mgmt', label: 'Management Node'},
-                  {value: 'pdu', label: 'PDU Node'},
-                  {value: 'switch', label: 'Switch Node'}
-                ]}
-                onChange={(value) => {
-                  let node = this.state.node;
-                  node.type = value;
-                  this.setState({node: node})
-                }} />
-          </div>
-        </div>
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.node) this.setState({node: nextProps.node, loading: false, disabled: false});
+  }
 
-        <h3>JSON Editor</h3>
-        <JsonEditor initialValue={this.state.node}
-                    updateParentState={this.updateStateFromJsonEditor.bind(this)}
-                    disabled={this.state.disabled}
-                    ref="jsonEditor" />
-        <div className="right">
-          <FlatButton className="button"
-                      label="Cancel"
-                      onClick={this.routeBack}
-                      disabled={this.state.disabled} />
-          <RaisedButton className="button"
-                        label="Reset"
-                        onClick={this.resetNode.bind(this)}
-                        disabled={this.state.disabled} />
-          <RaisedButton className="button"
-                        label="Save" primary={true}
-                        onClick={this.saveNode.bind(this)}
-                        disabled={this.state.disabled} />
+  render() {
+    var node = this.state.node || {},
+        nameLink = this.linkObjectState('node', 'name')
+    return (
+      <div className="EditNode">
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+            <ToolbarTitle text={node.id ? 'Edit Node' : 'Create Node'} />
+          </ToolbarGroup>
+          <ToolbarGroup key={1} float="right">
+            <RaisedButton
+                label="Cancel"
+                onClick={this.routeBack}
+                disabled={this.state.disabled} />
+            <RaisedButton
+                label="Save"
+                primary={true}
+                onClick={this.saveNode.bind(this)}
+                disabled={this.state.disabled} />
+          </ToolbarGroup>
+        </Toolbar>
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix" />}
+        <div style={{padding: '0 10px 10px'}}>
+          <TextField
+              valueLink={nameLink}
+              hintText="Name"
+              floatingLabelText="Name"
+              disabled={this.state.disabled}
+              fullWidth={true} />
+          <h5 style={{margin: '15px 0 5px', color: '#666'}}>Node Type:</h5>
+          <Select
+              name="type"
+              value={this.state.node && this.state.node.type}
+              placeholder="Select a type..."
+              disabled={this.state.disabled}
+              options={[
+                {value: 'compute', label: 'Compute Node'},
+                {value: 'dea', label: 'DEA Node'},
+                {value: 'mgmt', label: 'Management Node'},
+                {value: 'pdu', label: 'PDU Node'},
+                {value: 'switch', label: 'Switch Node'}
+              ]}
+              onChange={(value) => {
+                let node = this.state.node || {};
+                node.type = value;
+                this.setState({node: node})
+              }} />
+          <h5 style={{margin: '15px 0 5px', color: '#666'}}>Node JSON:</h5>
+          <JsonEditor
+              initialValue={this.state.node}
+              updateParentState={this.updateStateFromJsonEditor.bind(this)}
+              disabled={this.state.disabled}
+              ref="jsonEditor" />
         </div>
       </div>
     );
@@ -106,10 +114,10 @@ export default class EditNode extends Component {
     }
   }
 
-  resetNode() {
-    this.disable();
-    nodes.read(this.state.node.id)
-      .then(node => this.setState({node: node, disabled: false}));
-  }
+  // resetNode() {
+  //   this.disable();
+  //   nodes.read(this.state.node.id)
+  //     .then(node => this.setState({node: node, disabled: false}));
+  // }
 
 }

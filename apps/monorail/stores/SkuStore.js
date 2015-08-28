@@ -9,9 +9,8 @@ export default class SkuStore extends Store {
   skusRestAPI = new SkusRestAPI();
 
   list() {
-    this.empty();
     return this.skusRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

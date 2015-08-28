@@ -9,9 +9,8 @@ export default class NodeStore extends Store {
   nodesRestAPI = new NodesRestAPI();
 
   list() {
-    this.empty();
     return this.nodesRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

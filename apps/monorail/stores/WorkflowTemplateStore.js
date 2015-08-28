@@ -8,13 +8,11 @@ export default class WorkflowTemplateStore extends Store {
 
   workflowsRestAPI = new WorkflowsRestAPI();
 
+  key = 'injectableName';
+
   list() {
-    this.empty();
     return this.workflowsRestAPI.library()
-      .then(list => this.collect(list.map(item => {
-        item.id = item.injectableName;
-        return item;
-      })))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

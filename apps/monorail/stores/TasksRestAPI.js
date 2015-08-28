@@ -15,9 +15,8 @@ export default class TasksStore extends Store {
   }
 
   list() {
-    this.empty();
     return this.tasksRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

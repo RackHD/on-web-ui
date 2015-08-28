@@ -11,9 +11,8 @@ export default class PollerStore extends Store {
   nodesRestAPI = new NodesRestAPI();
 
   list() {
-    this.empty();
     return this.pollersRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

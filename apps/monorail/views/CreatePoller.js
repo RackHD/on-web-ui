@@ -29,14 +29,14 @@ export default class CreatePoller extends Component {
             {href: 'nodes', label: 'Nodes'},
             {href: 'nodes/' + this.props.params.nodeId, label: this.props.params.nodeId},
             {href: 'pollers/n/' + this.props.params.nodeId, label: 'Pollers'},
-            'New Poller'
+            'Create Poller'
           ) : this.renderBreadcrumbs(
             {href: 'dash', label: 'Dashboard'},
             {href: 'pollers', label: 'Pollers'},
-            'New Poller'
+            'Create Poller'
           )
         }
-        <EditPoller pollerRef={{config: {}}} />
+        <EditPoller poller={{config: {}}} />
       </div>
     );
   }

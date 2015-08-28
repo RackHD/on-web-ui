@@ -18,7 +18,10 @@ import WorkflowsGrid from './WorkflowsGrid';
 import {
     FlatButton,
     LinearProgress,
-    Snackbar
+    List, ListItem,
+    RaisedButton,
+    Snackbar,
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
 import JsonInspector from 'react-json-inspector';
@@ -55,6 +58,7 @@ export default class Node extends Component {
   }
 
   render() {
+    let node = this.state.node || {};
     return (
       <div className="Node">
         {this.renderBreadcrumbs(
@@ -63,29 +67,52 @@ export default class Node extends Component {
           this.getNodeId()
         )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
-        {this.state.node && this.state.node.id ?
-          <div className="right">
-            <FlatButton className="button"
-                        label="Delete"
-                        onClick={this.deleteNode.bind(this)}
-                        disabled={this.state.loading} />
-            <FlatButton className="button"
-                        label="Clone"
-                        onClick={this.cloneNode.bind(this)}
-                        disabled={true || this.state.loading} />
-          </div> : null}
-        <div className="clearfix"></div>
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+            <ToolbarTitle text="Node Details" />
+          </ToolbarGroup>
+          <ToolbarGroup key={1} float="right">
+            <FlatButton
+                className="button"
+                label="Clone Node"
+                onClick={this.cloneNode.bind(this)}
+                disabled={true || this.state.loading} />
+            <RaisedButton
+                label="Delete Node"
+                primary={true}
+                onClick={this.deleteNode.bind(this)}
+                disabled={this.state.loading} />
+          </ToolbarGroup>
+        </Toolbar>
+        <div className="ungrid">
+          <div className="line">
+            <div className="cell">
+              <List>
+                <ListItem
+                  primaryText={node.name || '(Untitled)'}
+                  secondaryText="Name" />
+              </List>
+            </div>
+            <div className="cell">
+              <List>
+                <ListItem
+                  primaryText={node.type || '(Unknown)'}
+                  secondaryText="Type" />
+              </List>
+            </div>
+          </div>
+        </div>
+        <div style={{overflow: 'auto', margin: 10}}>
+          <h3>{this.state.obm ? 'OBM' : 'OBM Not Found'}</h3>
+          {this.state.obm && <div style={{overflow: 'auto', margin: 10}}><JsonInspector
+                search={false}
+                isExpanded={() => true}
+                data={this.state.obm || {}} /></div>}
+        </div>
         <CatalogsGrid nodeId={this.getNodeId()} />
         <PollersGrid nodeId={this.getNodeId()} />
         <WorkflowsGrid nodeId={this.getNodeId()} />
-        {this.state.obm ? [
-          <h4>OBM:</h4>,
-          <JsonInspector
-              search={false}
-              isExpanded={() => true}
-              data={this.state.obm || {}} />
-        ] : 'No OBM found.'}
-        <EditNode nodeRef={this.state.node} />
+        <EditNode node={this.state.node} />
         <Snackbar
           ref="error"
           action="dismiss"
@@ -123,6 +150,6 @@ export default class Node extends Component {
       (confirmed) => confirmed ? nodes.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
   }
 
-  cloneNode() {}// TODO
+  cloneNode() {}
 
 }

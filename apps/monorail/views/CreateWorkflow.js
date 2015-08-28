@@ -29,14 +29,14 @@ export default class CreateWorkflow extends Component {
             {href: 'nodes', label: 'Nodes'},
             {href: 'nodes/' + this.props.params.nodeId, label: this.props.params.nodeId},
             {href: 'workflows/n/' + this.props.params.nodeId, label: 'Workflows'},
-            'New Workflow'
+            'Create Workflow'
           ) : this.renderBreadcrumbs(
             {href: 'dash', label: 'Dashboard'},
             {href: 'workflows', label: 'Workflows'},
-            'New Workflow'
+            'Create Workflow'
           )
         }
-        <EditWorkflow workflowRef={{node: this.props.params.nodeId}} nodeId={this.props.params.nodeId}/>
+        <EditWorkflow workflow={{node: this.props.params.nodeId}} nodeId={this.props.params.nodeId}/>
       </div>
     );
   }

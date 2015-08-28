@@ -26,9 +26,9 @@ export default class CreateProfile extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'profiles', label: 'Profiles'},
-          'New Profile'
+          'Create Profile'
         )}
-        <EditProfile profileRef={{name: 'New Profile', contents: ''}} />
+        <EditProfile profile={{}} />
       </div>
     );
   }

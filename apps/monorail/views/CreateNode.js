@@ -26,9 +26,9 @@ export default class CreateNode extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'nodes', label: 'Nodes'},
-          'New Node'
+          'Create Node'
         )}
-        <EditNode nodeRef={{name: 'New Node', type: 'compute'}} />
+        <EditNode node={{type: 'compute'}} />
       </div>
     );
   }
