@@ -71,7 +71,6 @@ export default class GSWorld extends Component {
 
   updateViewers(viewers) {
     console.log('update viewers', viewers);
-    // debugger;
     this.setState({viewers: viewers});
   }
 
@@ -82,14 +81,12 @@ export default class GSWorld extends Component {
       size: msg.size,
       position: msg.position
     };
-    // console.log('upsert viewer', viewers);
     this.setState({viewers: viewers});
   }
 
   removeViewer(msg) {
     let viewers = this.state.viewers;
     delete viewers[msg.viewer.id];
-    // console.log('remove viewer', viewers);
     this.setState({viewers: viewers});
   }
 

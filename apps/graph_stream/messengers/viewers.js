@@ -91,6 +91,7 @@ export default {
 
   move(id, offset) {
     let type = 'move';
+    // console.log('move', id, offset);
     this.wsConn.send(JSON.stringify({type, id, offset}))
   }
 }

@@ -82,13 +82,20 @@ export default class GSCanvas extends Component {
         ]), true);
       });
 
-      viewers.events.on('pan', (msg) => {
+      viewers.events.on('move', (msg) => {
         if (msg.id === this.state.id) {
           this.updatePosition(new Vector([
             this.state.position[0] - msg.offset[0],
             this.state.position[1] - msg.offset[1]
           ]), true);
         }
+        this.refs.viewport.refs.world.setState(state => {
+          // debugger;
+          if (!state.viewers[msg.id]) return null;
+          state.viewers[msg.id].position =
+            new Vector(state.viewers[msg.id].position).sub(msg.offset);
+          return state;
+        });
       });
     });
   }
@@ -153,6 +160,18 @@ export default class GSCanvas extends Component {
       width: this.props.worldWidth,
       height: this.props.worldHeight
     };
+  }
+
+  updateViewPosition(view, position, noBroadcast) {
+    position = new Vector(position);
+    if (!noBroadcast) {
+      let offset = new Vector([
+        view.state.position.x - position.x,
+        view.state.position.y - position.y
+      ]);
+      this.broadcastMove(view.props.id, offset);
+    }
+    view.setState({ position });
   }
 
   updatePosition(position, noBroadcast) {
