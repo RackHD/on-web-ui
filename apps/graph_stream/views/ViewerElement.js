@@ -17,7 +17,7 @@ export default class GSViewerElement extends Component {
   render(React) {
     try {
       var state = this.state;
-      console.log(this.state.size, this.state, new Error().stack);
+      // console.log(this.state.size, this.state, new Error().stack);
       // debugger;
       var css = {
         boxSizing: 'border-box',

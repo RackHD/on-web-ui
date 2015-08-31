@@ -7,17 +7,20 @@ export default {
   // wsConn: null,
   reconnectInterval: 1000 * 30,
 
-  connect() {
+  connect(cb, setup) {
     if (this.isConnected) { return; }
     this.isConnected = true;
 
     this.events = new EventEmitter();
     this.wsConn = new WebSocket('ws://localhost:8888');
 
+    if (setup) setup();
+
     this.events.once('init', (msg) => {
       // console.log('init:', msg.id, msg.viewers);
       this.initMsg = msg;
       this.id = msg.id;
+      if (cb) cb(msg);
     });
 
     this.wsConn.onopen = (event) => {
@@ -30,14 +33,14 @@ export default {
       // console.log('close', event);
       this.isConnected = this.isOpen = false;
       this.events.emit('close', event);
-      setTimeout(this.connect.bind(this), this.reconnectInterval);
+      setTimeout(this.connect.bind(this, cb, setup), this.reconnectInterval);
     };
 
     this.wsConn.onerror = (event) => {
       // console.log('error:', event);
       this.isConnected = this.isOpen = false;
       this.events.emit('error', event);
-      setTimeout(this.connect.bind(this), this.reconnectInterval);
+      setTimeout(this.connect.bind(this, cb, setup), this.reconnectInterval);
     }
 
     this.wsConn.onmessage = (event) => {
@@ -57,12 +60,13 @@ export default {
     this.isOpen ? cb() : this.events.once('open', cb);
   },
 
-  init(cb) {
+  init(cb, setup) {
     var shouldConnect = !this.isConnected;
     if (shouldConnect) {
-      this.connect();
-      this.events.once('init', cb);
-      this.ready(() => this.wsConn.send('{"type": "init"}'));
+      this.connect(cb, () => {
+        if (setup) setup();
+        this.ready(() => this.wsConn.send('{"type": "init"}'));
+      });
       return;
     }
     this.initMsg ? cb(this.initMsg) : this.events.once('init', cb);

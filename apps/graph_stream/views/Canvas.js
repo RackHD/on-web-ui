@@ -59,47 +59,38 @@ export default class GSCanvas extends Component {
 
   componentDidMount() {
     viewers.init((msg) => {
-      console.log('got here');
       this.setState({id: msg.id});
-      viewers.list();
       viewers.set(this.state.position.toArray(), [this.props.viewWidth, this.props.viewHeight]);
+      setTimeout(viewers.list.bind(viewers), 10);
+    }, () => {
+      viewers.events.on('list', (msg) => {
+        this.refs.viewport.refs.world.updateViewers(msg.viewers);
+      });
+
+      viewers.events.on('set', (msg) => {
+        this.refs.viewport.refs.world.upsertViewer(msg);
+      });
+
+      viewers.events.on('remove', (msg) => {
+        this.refs.viewport.refs.world.removeViewer(msg);
+      });
+
+      viewers.events.on('pan', (msg) => {
+        this.updatePosition(new Vector([
+          this.state.position[0] - msg.offset[0],
+          this.state.position[1] - msg.offset[1]
+        ]), true);
+      });
+
+      viewers.events.on('pan', (msg) => {
+        if (msg.id === this.state.id) {
+          this.updatePosition(new Vector([
+            this.state.position[0] - msg.offset[0],
+            this.state.position[1] - msg.offset[1]
+          ]), true);
+        }
+      });
     });
-
-    viewers.events.on('list', (msg) => {
-      // debugger;
-      console.log(msg.viewer);
-      this.refs.viewport.refs.world.updateViewers(msg.viewers);
-    });
-
-    // viewers.events.on('set', (msg) => {
-    //   this.refs.viewport.refs.world.upsertViewer(msg);
-    // });
-
-    // viewers.events.on('remove', (msg) => {
-    //   this.refs.viewport.refs.world.removeViewer(msg);
-    //   // viewers.list();
-    // });
-
-    // viewers.events.on('pan', (msg) => {
-    //   this.updatePosition(new Vector([
-    //     this.state.position[0] - msg.offset[0],
-    //     this.state.position[1] - msg.offset[1]
-    //   ]), true);
-    // });
-
-    // viewers.events.on('pan', (msg) => {
-    //   if (msg.id === this.state.id) {
-    //     this.updatePosition(new Vector([
-    //       this.state.position[0] - msg.offset[0],
-    //       this.state.position[1] - msg.offset[1]
-    //     ]), true);
-    //   }
-    // });
-
-    // setTimeout(() => {
-    //   console.log('GOT HERE');
-    //   this.updatePosition({x: 10, y: 10}, true);
-    // }, 3000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -117,13 +108,19 @@ export default class GSCanvas extends Component {
     );
   }
 
+  componentDidUpdate() {
+    if (this.state.id) {
+      viewers.set(this.state.position.toArray(), [this.props.viewWidth, this.props.viewHeight]);
+    }
+  }
+
   /**
   @method
     @name render
     @desc
   */
   render(React) {
-    console.log('render canvas', this.state);
+    // console.log('render canvas', this.state);
     // debugger;
     try {
       let props = this.props,

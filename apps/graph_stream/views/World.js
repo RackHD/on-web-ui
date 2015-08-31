@@ -37,7 +37,7 @@ export default class GSWorld extends Component {
       return <GSViewerElement id={id} key={id} state={viewer} />;
     }));
 
-    console.log(elements, children);
+    // console.log(elements, children);
 
     try {
       var cssWorldSpaceTransform = this.cssWorldSpaceTransform,
