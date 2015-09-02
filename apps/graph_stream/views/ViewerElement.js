@@ -57,68 +57,30 @@ export default class GSViewerElement extends Component {
   }
 
   get translateViewListeners() {
-    // var pushFrame = (event, dragState) => {
-    //   dragState.frames = dragState.frames || [];
-    //   var index = dragState.frames.length,
-    //       frame = {position: this.position, time: event.timeStamp || Date.now()},
-    //       lastFrame = dragState.frames[index - 1] || frame,
-    //       timeLapse = (frame.time - lastFrame.time) || 1;
-    //   frame.velocity = frame.position.sub(lastFrame.position).squish(timeLapse).finite();
-    //   frame.duration = timeLapse;
-    //   dragState.frames.push(frame);
-    //   if (dragState.frames.length >= 12) { dragState.frames.shift(); }
-    // };
     return {
       down: (event, dragState) => {
-        if (event.shiftKey) { return; }
+        if (event.shiftKey) return;
         event.stopPropagation();
-        dragState.startTime = event.timeStamp || Date.now();
-        dragState.start = new Vector(this.position);
-        // pushFrame(event, dragState);
-        // clearTimeout(this.physicsScrollTimer);
-        // this.stopPhysicsScroll = true;
       },
       move: (event, dragState) => {
-        if (event.shiftKey) { return; }
+        if (event.shiftKey) return;
         event.stopPropagation();
         clearInterval(this.moveRepeat);
         var scale = this.canvas.scale,
-            start = dragState.start;
-        // pushFrame(event, dragState);
-        this.canvas.updateViewPosition(this, {
-          x: start.x + (event.diffX / scale),
-          y: start.y + (event.diffY / scale)
-        });
-        // this.moveRepeat = setInterval(() => {
-        //   pushFrame(event, dragState);
-        // }, 32);
+            offset = new Vector([event.diffX / scale, event.diffY / scale]);
+        this.canvas.offsetViewPosition(this, offset);
       },
       up: (event, dragState) => {
-        if (event.shiftKey) { return; }
+        if (event.shiftKey) return;
         event.stopPropagation();
-        // clearInterval(this.moveRepeat);
-        // pushFrame(event, dragState);
-        // var velocitySum = dragState.frames.reduce(function (lastValue, currFrame) {
-        //   return (lastValue.velocity || lastValue).add(currFrame.velocity);
-        // });
-        // velocitySum = velocitySum.squish(dragState.frames.length / 2);
-        // this.stopPhysicsScroll = false;
-        // var tick = () => {
-        //   if (Math.abs(velocitySum.x) < 0.0001 &&
-        //       Math.abs(velocitySum.y) < 0.0001) { return; }
-        //   let position = new Vector(this.position);
-        //   this.canvas.updateViewPosition(this, {
-        //     x: position.x + velocitySum.x,
-        //     y: position.y + velocitySum.y
-        //   });
-        //   velocitySum = velocitySum.scale(0.95);
-        //   if (!this.stopPhysicsScroll) {
-        //     this.physicsScrollTimer = setTimeout(tick, 16);
-        //   }
-        // };
-        // tick();
       }
     };
+  }
+
+  offsetPosition(offset) {
+    this.setState(state => {
+      return {position: new Vector(state.position).add(offset)}
+    });
   }
 
 }

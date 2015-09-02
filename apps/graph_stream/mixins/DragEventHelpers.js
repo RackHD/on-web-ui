@@ -86,8 +86,10 @@ export default {
       this.offsetEventXY(event, e,
         dragState.offsetDOMNode,
         dragState.offset);
-      event.diffX = event.absX - dragState.downEvent.absX;
-      event.diffY = event.absY - dragState.downEvent.absY;
+      let last = dragState.lastMoveEvent || dragState.downEvent;
+      event.diffX = event.absX - last.absX;
+      event.diffY = event.absY - last.absY;
+      dragState.lastMoveEvent = event;
       if (moveListener) {
         moveListener.call(this, event, dragState, e);
       }

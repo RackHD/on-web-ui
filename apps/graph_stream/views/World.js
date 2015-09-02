@@ -25,6 +25,10 @@ export default class GSWorld extends Component {
     viewers: this.props.viewers
   }
 
+  // componentDidUpdate() {
+  //   this.canvas.updateThisView();
+  // }
+
   render(React) {
     let viewers = this.state.viewers,
         vectors = this.state.vectors,
@@ -70,7 +74,7 @@ export default class GSWorld extends Component {
   }
 
   updateViewers(viewers) {
-    console.log('update viewers', viewers);
+    // console.log('update viewers', viewers);
     this.setState({viewers: viewers});
   }
 
