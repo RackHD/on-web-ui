@@ -5,6 +5,7 @@ import { Component } from 'mach-react';
 import GSElementsLayer from './ElementsLayer';
 import GSVectorsLayer from './VectorsLayer';
 import GSViewerElement from './ViewerElement';
+import GSInlineFrameElement from './InlineFrameElement';
 
 export default class GSWorld extends Component {
 
@@ -54,6 +55,7 @@ export default class GSWorld extends Component {
           </GSElementsLayer>
 
           {children}
+          <GSInlineFrameElement size={[800, 600]} position={[0, 0]} />
         </div>
       );
     } catch (err) {
