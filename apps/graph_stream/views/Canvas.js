@@ -57,10 +57,24 @@ export default class GSCanvas extends Component {
 
   childContext = {canvas: this};
 
+  setView() {
+    this.lastSetView = Date.now();
+    viewers.set(this.state.position.toArray(), [
+      this.props.viewWidth / this.state.scale,
+      this.props.viewHeight / this.state.scale
+    ]);
+  }
+
+  updateView() {
+    clearTimeout(this.setViewTimeout);
+    if (this.lastSetView + 5000 < Date.now()) this.setView();
+    else this.setViewTimeout = setInterval(this.setView.bind(this), 500);
+  }
+
   componentDidMount() {
     viewers.init((msg) => {
       this.setState({id: msg.id});
-      viewers.set(this.state.position.toArray(), [this.props.viewWidth, this.props.viewHeight]);
+      this.setView();
       setTimeout(viewers.list.bind(viewers), 10);
     }, () => {
       viewers.events.on('list', (msg) => {
@@ -84,10 +98,15 @@ export default class GSCanvas extends Component {
 
       viewers.events.on('move', (msg) => {
         if (msg.id === this.state.id) {
-          this.updatePosition(new Vector([
-            this.state.position[0] - msg.offset[0],
-            this.state.position[1] - msg.offset[1]
-          ]), true);
+          this.updateView();
+          this.setState(state => {
+            return {
+              position: new Vector([
+                state.position[0] - msg.offset[0],
+                state.position[1] - msg.offset[1]
+              ])
+            };
+          });
         }
         this.refs.viewport.refs.world.setState(state => {
           // debugger;
@@ -96,9 +115,12 @@ export default class GSCanvas extends Component {
             new Vector(state.viewers[msg.id].position).sub(msg.offset);
           return state;
         });
+        this.refs.viewport.refs.world.forceUpdate();
       });
     });
   }
+
+  componentWillUnmount() {}
 
   shouldComponentUpdate(nextProps, nextState) {
     let props = this.props,
@@ -194,6 +216,9 @@ export default class GSCanvas extends Component {
 
   broadcastPan(offset) { viewers.pan(offset); }
 
-  broadcastMove(id, offset) { viewers.move(id, offset); }
+  broadcastMove(id, offset) {
+    viewers.move(id, offset);
+    this.updateView();
+  }
 
 }

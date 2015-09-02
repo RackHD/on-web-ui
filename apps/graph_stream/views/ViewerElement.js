@@ -70,6 +70,7 @@ export default class GSViewerElement extends Component {
     // };
     return {
       down: (event, dragState) => {
+        if (event.shiftKey) { return; }
         event.stopPropagation();
         dragState.startTime = event.timeStamp || Date.now();
         dragState.start = new Vector(this.position);
@@ -78,6 +79,7 @@ export default class GSViewerElement extends Component {
         // this.stopPhysicsScroll = true;
       },
       move: (event, dragState) => {
+        if (event.shiftKey) { return; }
         event.stopPropagation();
         clearInterval(this.moveRepeat);
         var scale = this.canvas.scale,
@@ -92,6 +94,7 @@ export default class GSViewerElement extends Component {
         // }, 32);
       },
       up: (event, dragState) => {
+        if (event.shiftKey) { return; }
         event.stopPropagation();
         // clearInterval(this.moveRepeat);
         // pushFrame(event, dragState);
