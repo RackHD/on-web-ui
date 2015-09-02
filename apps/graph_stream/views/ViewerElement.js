@@ -74,9 +74,7 @@ export default class GSViewerElement extends Component {
   }
 
   offsetPosition(offset) {
-    this.setState(state => {
-      return {position: new Vector(state.position).add(offset)}
-    });
+    this.setProps({position: new Vector(this.props.position).add(offset)});
   }
 
 }

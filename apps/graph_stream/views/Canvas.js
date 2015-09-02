@@ -83,7 +83,7 @@ export default class GSCanvas extends Component {
       });
 
       viewers.events.on('set', (msg) => {
-        debugger;
+        // debugger;
         this.refs.viewport.refs.world.upsertViewer(msg);
       });
 
