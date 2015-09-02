@@ -17,21 +17,17 @@ export default class GSViewerElement extends Component {
 
   get canvas() { return this.context.canvas; }
 
-  state = this.props.state
-
   render(React) {
     try {
       var state = this.state;
-      // console.log(this.state.size, this.state, new Error().stack);
-      // debugger;
       var css = {
         userSelect: 'none',
         boxSizing: 'border-box',
         position: 'absolute',
-        top: 1000 - (this.state.size[1] / 2) + this.state.position[1],
-        left: 1000 - (this.state.size[0] / 2) + this.state.position[0],
-        width: this.state.size[0],
-        height: this.state.size[1],
+        top: 1000 - (this.props.size[1] / 2) + this.props.position[1],
+        left: 1000 - (this.props.size[0] / 2) + this.props.position[0],
+        width: this.props.size[0],
+        height: this.props.size[1],
         background: 'rgba(0, 0, 0, 0.25)',
         border: '2px solid #000'
       };
@@ -59,11 +55,11 @@ export default class GSViewerElement extends Component {
   get translateViewListeners() {
     return {
       down: (event, dragState) => {
-        if (event.shiftKey) return;
+        if (!event.shiftKey) return;
         event.stopPropagation();
       },
       move: (event, dragState) => {
-        if (event.shiftKey) return;
+        if (!event.shiftKey) return;
         event.stopPropagation();
         clearInterval(this.moveRepeat);
         var scale = this.canvas.scale,
@@ -71,7 +67,7 @@ export default class GSViewerElement extends Component {
         this.canvas.offsetViewPosition(this, offset);
       },
       up: (event, dragState) => {
-        if (event.shiftKey) return;
+        if (!event.shiftKey) return;
         event.stopPropagation();
       }
     };

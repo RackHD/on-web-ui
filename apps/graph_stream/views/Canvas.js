@@ -57,7 +57,7 @@ export default class GSCanvas extends Component {
 
   childContext = {canvas: this};
 
-  emitThisView() {
+  emitThisView(width=this.props.viewWidth, height=this.props.viewHeight) {
     this.lastSetView = Date.now();
     viewers.set(this.state.position.toArray(), [
       this.props.viewWidth / this.state.scale,
@@ -65,11 +65,11 @@ export default class GSCanvas extends Component {
     ]);
   }
 
-  updateThisView() {
+  updateThisView(w, h) {
     if (!this.state.id) { return; }
     clearTimeout(this.setViewTimeout);
-    if (this.lastSetView + 5000 < Date.now()) this.setView();
-    else this.setViewTimeout = setTimeout(this.emitThisView.bind(this), 500);
+    if (this.lastSetView + 5000 < Date.now()) this.emitThisView(w, h);
+    else this.setViewTimeout = setTimeout(this.emitThisView.bind(this, w, h), 500);
   }
 
   componentDidMount() {
@@ -83,6 +83,7 @@ export default class GSCanvas extends Component {
       });
 
       viewers.events.on('set', (msg) => {
+        debugger;
         this.refs.viewport.refs.world.upsertViewer(msg);
       });
 
@@ -116,7 +117,6 @@ export default class GSCanvas extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     let props = this.props,
         state = this.state;
-    // debugger;
     return (
       props.viewHeight !== nextProps.viewHeight ||
       props.viewWidth !== nextProps.viewWidth ||
@@ -138,8 +138,6 @@ export default class GSCanvas extends Component {
     @desc
   */
   render(React) {
-    // console.log('render canvas', this.state);
-    // debugger;
     try {
       let props = this.props,
           css = [this.css.root, this.cssViewSize, props.css.root, props.style];
@@ -196,7 +194,9 @@ export default class GSCanvas extends Component {
     this.refs.viewport.refs.world.queueUpdate();
   }
 
-  broadcastPan(offset) { viewers.pan(offset); }
+  broadcastPan(offset) {
+    viewers.pan(offset);
+  }
 
   broadcastMove(id, offset) {
     viewers.move(id, offset);

@@ -12,7 +12,8 @@ export default {
     this.isConnected = true;
 
     this.events = new EventEmitter();
-    this.wsConn = new WebSocket('ws://' + window.location.hostname + ':8888');
+    this.wsConn = new WebSocket('ws://localhost:8888');
+    // this.wsConn = new WebSocket('ws://' + window.location.hostname + ':8888');
 
     if (setup) setup();
 

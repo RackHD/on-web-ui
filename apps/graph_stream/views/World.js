@@ -14,7 +14,7 @@ export default class GSWorld extends Component {
     elements: [],
     style: {},
     vectors: [],
-    viewers: []
+    viewers: {}
   }
 
   get canvas() { return this.context.canvas; }
@@ -25,10 +25,6 @@ export default class GSWorld extends Component {
     viewers: this.props.viewers
   }
 
-  // componentDidUpdate() {
-  //   this.canvas.updateThisView();
-  // }
-
   render(React) {
     let viewers = this.state.viewers,
         vectors = this.state.vectors,
@@ -38,10 +34,8 @@ export default class GSWorld extends Component {
     elements = elements.concat(Object.keys(viewers).map(id => {
       if (id === this.canvas.state.id) return;
       let viewer = viewers[id];
-      return <GSViewerElement id={id} key={id} state={viewer} />;
+      return <GSViewerElement id={id} position={viewer.position} size={viewer.size} />;
     }));
-
-    // console.log(elements, children);
 
     try {
       var cssWorldSpaceTransform = this.cssWorldSpaceTransform,
@@ -74,7 +68,6 @@ export default class GSWorld extends Component {
   }
 
   updateViewers(viewers) {
-    // console.log('update viewers', viewers);
     this.setState({viewers: viewers});
   }
 
