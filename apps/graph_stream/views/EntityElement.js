@@ -5,7 +5,7 @@ import { Component } from 'mach-react';
 import DragEventHelpers from '../mixins/DragEventHelpers';
 import Vector from '../lib/Vector';
 
-export default class GSInlineFrameElement extends Component {
+export default class GSEntityElement extends Component {
 
   static mixins = [ DragEventHelpers ]
 
@@ -37,7 +37,7 @@ export default class GSInlineFrameElement extends Component {
             className={this.props.className}
             onMouseDown={this.translateView()}
             style={css}>
-          <iframe src="http://www.emc.com/en-us/index.htm" width="100%" height="100%" />
+          <iframe src="http://www.seattlemonorail.com/wp-content/uploads/2012/03/Monorail_About_General11.jpg" width="100%" height="100%" />
         </div>
       );
     } catch (err) {
@@ -63,7 +63,7 @@ export default class GSInlineFrameElement extends Component {
         clearInterval(this.moveRepeat);
         var scale = this.canvas.scale,
             offset = new Vector([event.diffX / scale, event.diffY / scale]);
-        this.offsetPosition(offset);
+        this.canvas.offsetElementPosition(this, offset);
       },
       up: (event, dragState) => {
         event.stopPropagation();

@@ -48,6 +48,7 @@ wsServer.on('connection', function wsConnection(wsConn) {
     if (msg.type === 'set') {
       viewer.position = msg.position;
       viewer.size = msg.size;
+      viewer.scale = msg.scale || 1;
       wsServer.broadcast(wsMsg, wsConn);
       return;
     }
@@ -62,9 +63,9 @@ wsServer.on('connection', function wsConnection(wsConn) {
       return;
     }
 
-    // if (msg.type === 'zoom') {
-    //   return;
-    // }
+    if (msg.type === 'zoom') {
+      msg.ids;
+    }
 
     if (msg.type === 'move') {
       other = viewers[msg.id];

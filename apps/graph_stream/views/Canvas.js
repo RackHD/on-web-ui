@@ -109,6 +109,10 @@ export default class GSCanvas extends Component {
           return state;
         });
       });
+
+      viewers.events.on('obj', (msg) => {
+        // TODO
+      });
     });
   }
 
@@ -169,6 +173,10 @@ export default class GSCanvas extends Component {
       width: this.props.worldWidth,
       height: this.props.worldHeight
     };
+  }
+
+  offsetElementPosition() {
+    // TODO
   }
 
   offsetViewPosition(view, offset, noBroadcast) {
