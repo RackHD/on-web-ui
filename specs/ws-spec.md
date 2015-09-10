@@ -1,9 +1,11 @@
 # WebSocket Specification:
 
-### Goal
- 1. Allow a WebSocket client to establish a connection to the MonoRail server via WebSocket protocol and communicate in real time. In order to provide a better user experience in the UI it should be able to subscribe and receive log output from nodes running workflows. Perhaps even MonoRail logs as well.
+### Goals
+ 1. Allow a WebSocket client to establish a connection to the MonoRail server via WebSocket protocol and communicate in real time.
 
- 2. There should also be a way for the client to subscript to various resource events such as newly created items, updated item, and removed item. Generally the client will only be reading data from the server, there are no plans to write updates through WebSockets, though this is a possibility in the future. However WebSocket clients should be able to query resource collection.
+ 2. Clients should be able to subscribe to RabbitMQ topics so that workflow status and logs can be seen in real time.
+
+ 3. Clients should be able to subscribe to database events, such as new documents, deletes, and updated documents.
 
 ### Recommended NodeJS Library
 
@@ -12,16 +14,12 @@
 ### WebSocket URI
   `ws://` `[host]` `:` `[port]` `/` `[channel]` — *This is the URI used by the client to establish a WebSocket connection.*
 
-  1. `[host]` — *WebSocket server host.*
-  2. `[port]` — *WebSocket server port.*
-  3. `[channel]` — *Path that designates which resource is going to be used. This is very imported because it is how the server will know which resources it should be providing to the client.*
-
-### Resources of Interest
+### MonoRail WebSocket Resources
  * Workflow logs.
  * Workflow state changes.
- * Catalog updates.
- * SKU updates.
- * Node updates.
+ * Catalog DB updates.
+ * SKU DB updates.
+ * Node DB updates.
 
 ### JSON Message Protocol
 
@@ -29,9 +27,9 @@ All messages should be serialized JSON strings. A handler property must be provi
 
 `handler` — *A string used to determine which handler should be used for this message.*
 
-### Request/Response Pattern
+`type` — Optional — *Resource identifier for the client/server to know what the expected data type is for the message.*
 
-Continuations will not be supported by this specification, this means that the client and server will not be able to associate incoming messages with outgoing. The message handlers should be designed so that message order is non-deterministic and there can be no acknowledgement of a response too a given request. In the future continuations can be implemented on top of this specification, but there is currently no need.
+There will be no need to continuations in this design. Request and response order of messages will be non-deterministic.
 
 ### Server WebSocket Events
 
@@ -42,10 +40,6 @@ Continuations will not be supported by this specification, this means that the c
 `error` — Encountered an error.
 
 `message` — Received a message from the client.
-
-### Server Broadcast Method
-
-There should be a way for a server message handler to broadcast to all or a subset of all known connections.
 
 ### Client WebSocket Events
 
@@ -69,10 +63,6 @@ There should be a way for a server message handler to broadcast to all or a subs
 
 Clients should have a connect method that can be used to reconnect to the server. This message should be called when the client connection closes or encounters and error.
 
-### Message Handlers
-
-Keep in mind that the resource for each these handlers should use is based on the path of the WebSocket connection. This means that a client could establish more than one connection the the server depending on how many resources it needs to negotiate.
-
 ##### Init/Session
 
 *`@client` —> `init` —> `@server` —> `session` —> `@client`*
@@ -85,31 +75,31 @@ Keep in mind that the resource for each these handlers should use is based on th
 
 *`@client` —> `query` —> `@server` —> `list` —> `@client`*
 
- * `{handler: query, params: Object}` — *The client can query the server for a collection of a resource.*
+ * `{handler: query, type: resource, params: Object}` — *The client can query the server for a collection of a resource.*
 
- * `{handler: list, items: Array}` — *The server is giving the client a list or collection.*
+ * `{handler: list, type: resource, items: Array}` — *The server is giving the client a list or collection.*
 
 ##### Watch/List/Item/Remove
 
 *`@client` —> `watch` —> `@server` —> `list|item|remove` —> `@client`*
 
- * `{handler: watch, params: Object}` — *The client wants the server to monitor an identifiable set of resources for changes.*
+ * `{handler: watch, type: resource, params: Object}` — *The client wants the server to monitor an identifiable set of resources for changes.*
 
 The server will send a lists, items, or removes until a matching stop is received or the connection closes.
 
- * `{handler: list, items: Array}` — *List of items.*
+ * `{handler: list, type: resource, items: Array}` — *List of items.*
 
- * `{handler: item, data: Object}` — *Item data.*
+ * `{handler: item, type: resource, data: Object}` — *Item data.*
 
- * `{handler: remove, params: Object}` — *Item(s) to remove.*
+ * `{handler: remove, type: resource, params: Object}` — *Item(s) to remove.*
 
 ##### Stop
 
 *`@client` —> `stop` —> `@server`*
 
- * `{handler: stop, params: Object}` — *The client wants to stop monitoring a resource it may or may not already be watching.*
+ * `{handler: stop, type: resource, params: Object}` — *The client wants to stop monitoring a resource it may or may not already be watching.*
 
-##### Stop
+##### All/List
 
 *`@client` —> `all` —> `@server` —> `list` —> `@client`*
 
@@ -117,17 +107,17 @@ The server will send a lists, items, or removes until a matching stop is receiv
 
  * `{handler: list, items: Array}` — *The server is giving the client a list or collection.*
 
-##### Stop
+##### Get/Item/Remove
 
 *`@client` —> `get` —> `@server` —> `item|remove` —> `@client`*
 
- * `{handler: get, params: Object}` — *The client would like an update on of a single identifiable resource.*
+ * `{handler: get, type: resource, params: Object}` — *The client would like an update on of a single identifiable resource.*
 
 The server should respond with the item or tell the client to remove it.
 
- * `{handler: item, data: Object}` — *Item data.*
+ * `{handler: item, type: resource, data: Object}` — *Item data.*
 
- * `{handler: remove, params: Object}` — *Item(s) to remove.*
+ * `{handler: remove, type: resource, params: Object}` — *Item(s) to remove.*
 
 ### MongoDB Integration
 
@@ -135,37 +125,38 @@ A resource can point to a MongoDB collection. Then the server handlers should kn
 
 ### RabbitMQ Integration
 
-A resource can point to a RabbitMQ topic. Then the query, all, get commands will be less relevant and should be ignore by the server. Unless there are logs that can be accessed.
+A resource type can point to a RabbitMQ topic. Then the query, all, get commands will be less relevant and should be ignore by the server. Unless there are logs that can be accessed.
 
 ### Server API
+
 The `ws` library will provide most of this API, it doesn’t include a broadcast method but they give you an example implementation.
 
-	WebSocketServer
-    on(event:String, handler:Function) — 
-    broadcast(data|String, skip:String|Array|Function) — 
+  WebSocketServer
+    on(event:String, handler:Function) — Subscribe function to event.
+    broadcast(data|String, skip:String|Array|Function) — Broadcast message to multiple connections.
 
-	WebSocketConnection
-    on(event:String, handler:Function) —
-    send(data:String) —
+  WebSocketConnection
+    on(event:String, handler:Function) — Subscribe function to event.
+    send(data:String) — Publish a message to a specific client.
 
 ### Client API
 
 	WebSocketConnection
-    events — EventEmitter isntance.
-      on(event:String, handler:Function) — 
-      once(event:String, handler:Function) — 
+    events — EventEmitter instance.
+      on(event:String, handler:Function) — Subscribe function to event.
+      once(event:String, handler:Function) — Subscribe function to event once.
     wsConn — WebSocket instance.
-      onopen() — 
-      onclose() — 
-      onerror() — 
-      onmessage() — 
-      send() — 
-    connect() —
-    disconnect() —
-    ready(callback:Function) —
-    init(callback:Function) —
-    all() —
-    query(params) —
-    get(params) — 
-    watch(params) —
-    stop(params) — 
+      onopen() — Event handler for connection open.
+      onclose() — Event handler for connection close.
+      onerror() — Event handler for connection error.
+      onmessage() — Event handler for connection message.
+      send() — Send a message to the WebSocket server.
+    connect() — Connect to the WebSocket server.
+    disconnect() — Disconnect from the WebSocket server.
+    ready(callback:Function) — Make connection ready and callback.
+    init(callback:Function) — Initialize WebSocket server connection and callback.
+    all(type:String) — Send all message to server.
+    query(type:String, params:Object) — Send query message to server.
+    get(type:String, params:Object) — Send get message to server.
+    watch(type:String, params:Object) — Send watch message to server.
+    stop(type:String, params:Object) — Send stop message to server.
