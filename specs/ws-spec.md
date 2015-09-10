@@ -119,13 +119,19 @@ The server should respond with the item or tell the client to remove it.
 
  * `{handler: remove, type: resource, params: Object}` — *Item(s) to remove.*
 
+##### Error
+
+*`@server` —> `error` —> `@client`*
+
+ * `{handler: error, type: resource, params: Object}` — 
+
 ### MongoDB Integration
 
 A resource can point to a MongoDB collection. Then the server handlers should know that they should deal with a MongoDB collection except for watch and stop which will most likely use RabbitMQ.
 
 ### RabbitMQ Integration
 
-A resource type can point to a RabbitMQ topic. Then the query, all, get commands will be less relevant and should be ignore by the server. Unless there are logs that can be accessed.
+A resource type can point to a RabbitMQ topic. Then the query, all, get commands will be less relevant and should be ignored by the server. Unless there are logs that can be accessed.
 
 ### Server API
 
