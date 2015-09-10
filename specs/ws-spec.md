@@ -131,32 +131,32 @@ A resource type can point to a RabbitMQ topic. Then the query, all, get commands
 
 The `ws` library will provide most of this API, it doesn’t include a broadcast method but they give you an example implementation.
 
-  WebSocketServer
-    on(event:String, handler:Function) — Subscribe function to event.
-    broadcast(data|String, skip:String|Array|Function) — Broadcast message to multiple connections.
+`WebSocketServer`
+  * `on(event:String, handler:Function)` — Subscribe function to event.
+  * `broadcast(data|String, skip:String|Array|Function)` — Broadcast message to multiple connections.
 
-  WebSocketConnection
-    on(event:String, handler:Function) — Subscribe function to event.
-    send(data:String) — Publish a message to a specific client.
+`WebSocketConnection`
+  * `on(event:String, handler:Function)` — Subscribe function to event.
+  * `send(data:String)` — Publish a message to a specific client.
 
 ### Client API
 
-	WebSocketConnection
-    events — EventEmitter instance.
-      on(event:String, handler:Function) — Subscribe function to event.
-      once(event:String, handler:Function) — Subscribe function to event once.
-    wsConn — WebSocket instance.
-      onopen() — Event handler for connection open.
-      onclose() — Event handler for connection close.
-      onerror() — Event handler for connection error.
-      onmessage() — Event handler for connection message.
-      send() — Send a message to the WebSocket server.
-    connect() — Connect to the WebSocket server.
-    disconnect() — Disconnect from the WebSocket server.
-    ready(callback:Function) — Make connection ready and callback.
-    init(callback:Function) — Initialize WebSocket server connection and callback.
-    all(type:String) — Send all message to server.
-    query(type:String, params:Object) — Send query message to server.
-    get(type:String, params:Object) — Send get message to server.
-    watch(type:String, params:Object) — Send watch message to server.
-    stop(type:String, params:Object) — Send stop message to server.
+`WebSocketConnection`
+  * `events` — EventEmitter instance.
+    * `on(event:String, handler:Function)` — Subscribe function to event.
+    * `once(event:String, handler:Function)` — Subscribe function to event once.
+  * `wsConn` — WebSocket instance.
+    * `onopen()` — Event handler for connection open.
+    * `onclose()` — Event handler for connection close.
+    * `onerror()` — Event handler for connection error.
+    * `onmessage()` — Event handler for connection message.
+    * `send()` — Send a message to the WebSocket server.
+  * `connect()` — Connect to the WebSocket server.
+  * `disconnect()` — Disconnect from the WebSocket server.
+  * `ready(callback:Function)` — Make connection ready and callback.
+  * `init(callback:Function)` — Initialize WebSocket server connection and callback.
+  * `all(type:String)` — Send all message to server.
+  * `query(type:String, params:Object)` — Send query message to server.
+  * `get(type:String, params:Object)` — Send get message to server.
+  * `watch(type:String, params:Object)` — Send watch message to server.
+  * `stop(type:String, params:Object)` — Send stop message to server.
