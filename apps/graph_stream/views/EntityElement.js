@@ -5,6 +5,10 @@ import { Component } from 'mach-react';
 import DragEventHelpers from '../mixins/DragEventHelpers';
 import Vector from '../lib/Vector';
 
+import Histogram from './Histogram';
+import HistogramBin from './HistogramBin';
+import HistogramSet from './HistogramSet';
+
 export default class GSEntityElement extends Component {
 
   static mixins = [ DragEventHelpers ]
@@ -19,6 +23,46 @@ export default class GSEntityElement extends Component {
 
   render(React) {
     try {
+      let test = (<HistogramSet>
+        <Histogram
+            orient="horizontal"
+            minCount={0}
+            maxCount={10}>
+          <HistogramBin size={1} count={0} value={0} label="1long" />
+          <HistogramBin size={1} count={1} value={1} label="2" />
+          <HistogramBin size={1} count={2} value={2} label="3" />
+          <HistogramBin size={1} count={8} value={3} label="4long" />
+          <HistogramBin size={1} count={2} value={4} label="5" />
+          <HistogramBin size={1} count={1} value={5} label="6" />
+          <HistogramBin size={1} count={0} value={6} label="7" />
+          <HistogramBin size={2} count={0} value={0} label="1" color="#ccc" />
+          <HistogramBin size={2} count={1} value={1} label="2" color="#ccc" />
+          <HistogramBin size={2} count={2} value={2} label="3" color="#ccc" />
+          <HistogramBin size={2} count={8} value={3} label="4long" color="#ccc" />
+          <HistogramBin size={2} count={2} value={4} label="5" color="#ccc" />
+          <HistogramBin size={2} count={1} value={5} label="6" color="#ccc" />
+          <HistogramBin size={2} count={0} value={6} label="7longlong" color="#ccc" />
+        </Histogram>
+        <Histogram
+            orient="vertical"
+            minCount={1}
+            maxCount={10}>
+          <HistogramBin size={1} count={0} value={0} label="1long" />
+          <HistogramBin size={1} count={1} value={1} label="2" />
+          <HistogramBin size={1} count={2} value={2} label="3" />
+          <HistogramBin size={1} count={8} value={3} label="4long" />
+          <HistogramBin size={1} count={2} value={4} label="5" />
+          <HistogramBin size={1} count={1} value={5} label="6" />
+          <HistogramBin size={1} count={0} value={6} label="7" />
+          <HistogramBin size={2} count={0} value={0} label="1" color="#ccc" />
+          <HistogramBin size={2} count={1} value={1} label="2" color="#ccc" />
+          <HistogramBin size={2} count={2} value={2} label="3" color="#ccc" />
+          <HistogramBin size={2} count={8} value={3} label="4long" color="#ccc" />
+          <HistogramBin size={2} count={2} value={4} label="5" color="#ccc" />
+          <HistogramBin size={2} count={1} value={5} label="6" color="#ccc" />
+          <HistogramBin size={2} count={0} value={6} label="7longlong" color="#ccc" />
+        </Histogram>
+      </HistogramSet>);
       var state = this.state;
       var css = {
         userSelect: 'none',
@@ -29,7 +73,7 @@ export default class GSEntityElement extends Component {
         width: this.props.size[0],
         height: this.props.size[1],
         paddingTop: '20px',
-        background: 'rgba(0, 0, 0, 0.25)',
+        background: 'rgba(255, 255, 255, 0.25)',
         border: '2px solid #000'
       };
       return (
@@ -37,7 +81,7 @@ export default class GSEntityElement extends Component {
             className={this.props.className}
             onMouseDown={this.translateEntity()}
             style={css}>
-          TEST!
+          {test}
           {this.props.children}
         </div>
       );
