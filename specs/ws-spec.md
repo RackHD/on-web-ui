@@ -1,6 +1,7 @@
 # WebSocket Specification:
 
 ### Goals
+
  1. Allow a WebSocket client to establish a connection to the MonoRail server via WebSocket protocol and communicate in real time.
 
  2. Clients should be able to subscribe to RabbitMQ topics so that workflow status and logs can be seen in real time.
@@ -123,7 +124,7 @@ The server should respond with the item or tell the client to remove it.
 
 *`@server` —> `error` —> `@client`*
 
- * `{handler: error, type: resource, params: Object}` — 
+ * `{handler: error, type: resource, params: Object}` —
 
 ### MongoDB Integration
 
@@ -152,6 +153,7 @@ The `ws` library will provide most of this API, it doesn’t include a broadcast
 ### Client API
 
 #### `WebSocketConnection`
+
   * `events` — EventEmitter instance.
 
     * `on(event:String, handler:Function)` — Subscribe function to event.

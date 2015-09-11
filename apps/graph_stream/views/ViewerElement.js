@@ -28,8 +28,8 @@ export default class GSViewerElement extends Component {
         left: 1000 - (this.props.size[0] / 2) + this.props.position[0],
         width: this.props.size[0],
         height: this.props.size[1],
-        background: 'rgba(0, 0, 0, 0.25)',
-        border: '2px solid #000'
+        background: 'rgba(0, 0, 0, 0.05)',
+        border: '1px dotted #000'
       };
       return (
         <div
@@ -74,7 +74,10 @@ export default class GSViewerElement extends Component {
   }
 
   offsetPosition(offset) {
-    this.setProps({position: new Vector(this.props.position).add(offset)});
+    this.props.position[0] += offset[0];
+    this.props.position[1] += offset[1];
+    this.queueUpdate();
+    // this.setProps({position: new Vector(this.props.position).add(offset)});
   }
 
 }

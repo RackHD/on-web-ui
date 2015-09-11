@@ -5,7 +5,7 @@ import { Component } from 'mach-react';
 import GSElementsLayer from './ElementsLayer';
 import GSVectorsLayer from './VectorsLayer';
 import GSViewerElement from './ViewerElement';
-import GSInlineFrameElement from './InlineFrameElement';
+import GSEntityElement from './EntityElement';
 
 export default class GSWorld extends Component {
 
@@ -13,6 +13,7 @@ export default class GSWorld extends Component {
     className: 'GSWorld',
     css: {},
     elements: [],
+    entities: [],
     style: {},
     vectors: [],
     viewers: {}
@@ -22,20 +23,27 @@ export default class GSWorld extends Component {
 
   state = {
     elements: this.props.elements,
+    entities: this.props.entities,
     vectors: this.props.vectors,
     viewers: this.props.viewers
   }
 
   render(React) {
-    let viewers = this.state.viewers,
-        vectors = this.state.vectors,
+    let children = this.props.children,
         elements = this.state.elements,
-        children = this.props.children;
+        entities = this.state.entities,
+        vectors = this.state.vectors,
+        viewers = this.state.viewers;
 
-    elements = elements.concat(Object.keys(viewers).map(id => {
+    elements = Object.keys(viewers).map(id => {
       if (id === this.canvas.state.id) return;
       let viewer = viewers[id];
       return <GSViewerElement id={id} position={viewer.position} size={viewer.size} />;
+    }).concat(elements);
+
+    elements = elements.concat(Object.keys(entities).map(id => {
+      let entity = entities[id];
+      return <GSEntityElement id={id} position={entity.position} size={entity.size} params={entity.params} />;
     }));
 
     try {
@@ -55,7 +63,6 @@ export default class GSWorld extends Component {
           </GSElementsLayer>
 
           {children}
-          <GSInlineFrameElement size={[800, 600]} position={[0, 0]} />
         </div>
       );
     } catch (err) {
@@ -69,24 +76,20 @@ export default class GSWorld extends Component {
     };
   }
 
-  updateViewers(viewers) {
-    this.setState({viewers: viewers});
+  updateList(collection, items) {
+    this.setState({[collection]: items});
   }
 
-  upsertViewer(msg) {
-    let viewers = this.state.viewers;
-    viewers[msg.id] = {
-      id: msg.id,
-      size: msg.size,
-      position: msg.position
-    };
-    this.setState({viewers: viewers});
+  upsertItem(msg) {
+    let collection = this.state[msg.collection];
+    collection[msg.id] = msg.item;
+    this.updateList(msg.collection, collection);
   }
 
-  removeViewer(msg) {
-    let viewers = this.state.viewers;
-    delete viewers[msg.viewer.id];
-    this.setState({viewers: viewers});
+  removeItem(msg) {
+    let collection = this.state[msg.collection];
+    delete collection[msg.id];
+    this.updateList(msg.collection, collection);
   }
 
 }

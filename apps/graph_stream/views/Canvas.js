@@ -9,7 +9,7 @@ import Vector from '../lib/Vector';
 import GSViewport from './Viewport';
 import GSWorld from './World';
 
-import viewers from '../messengers/viewers'
+import websocket from '../messengers/websocket'
 
 /**
 # GSCanvas
@@ -59,7 +59,7 @@ export default class GSCanvas extends Component {
 
   emitThisView(width=this.props.viewWidth, height=this.props.viewHeight) {
     this.lastSetView = Date.now();
-    viewers.set(this.state.position.toArray(), [
+    websocket.set('viewers', this.state.position.toArray(), [
       this.props.viewWidth / this.state.scale,
       this.props.viewHeight / this.state.scale
     ]);
@@ -73,45 +73,41 @@ export default class GSCanvas extends Component {
   }
 
   componentDidMount() {
-    viewers.init((msg) => {
+    websocket.init((msg) => {
       this.setState({id: msg.id});
       this.emitThisView();
-      setTimeout(viewers.list.bind(viewers), 10);
+      setTimeout(websocket.list.bind(websocket, 'viewers'), 100);
+      setTimeout(websocket.list.bind(websocket, 'entities'), 100);
     }, () => {
-      viewers.events.on('list', (msg) => {
-        this.refs.viewport.refs.world.updateViewers(msg.viewers);
+      websocket.events.on('list', (msg) => {
+        this.refs.viewport.refs.world.updateList(msg.collection, msg.items);
       });
 
-      viewers.events.on('set', (msg) => {
-        // debugger;
-        this.refs.viewport.refs.world.upsertViewer(msg);
+      websocket.events.on('set', (msg) => {
+        this.refs.viewport.refs.world.upsertItem(msg);
       });
 
-      viewers.events.on('remove', (msg) => {
-        this.refs.viewport.refs.world.removeViewer(msg);
+      websocket.events.on('remove', (msg) => {
+        this.refs.viewport.refs.world.removeItem(msg);
       });
 
-      viewers.events.on('pan', (msg) => {
-        this.offsetPosition(new Vector([
-          msg.offset[0],
-          msg.offset[1]
-        ]), true);
+      websocket.events.on('pan', (msg) => {
+        this.offsetPosition(new Vector([msg.offset[0], msg.offset[1]]), true);
       });
 
-      viewers.events.on('move', (msg) => {
-        if (msg.id === this.state.id) {
+      websocket.events.on('move', (msg) => {
+        if (msg.collection === 'viewers' && msg.id === this.state.id) {
           this.offsetPosition(new Vector(msg.offset).negate(), true);
         }
         this.refs.viewport.refs.world.setState(state => {
-          if (!state.viewers[msg.id]) return null;
-          state.viewers[msg.id].position =
-            new Vector(state.viewers[msg.id].position).sub(msg.offset);
+          if (!state[msg.collection] || !state[msg.collection][msg.id]) return null;
+          let position = state[[msg.collection]][msg.id].position;
+          state[msg.collection][msg.id].position = [
+            position[0] + msg.offset[0],
+            position[1] + msg.offset[1]
+          ];
           return state;
         });
-      });
-
-      viewers.events.on('obj', (msg) => {
-        // TODO
       });
     });
   }
@@ -175,12 +171,13 @@ export default class GSCanvas extends Component {
     };
   }
 
-  offsetElementPosition() {
-    // TODO
+  offsetElementPosition(entity, offset, noBroadcast) {
+    if (!noBroadcast) this.broadcastMove('entities', entity.props.id, offset);
+    entity.offsetPosition(offset);
   }
 
   offsetViewPosition(view, offset, noBroadcast) {
-    if (!noBroadcast) this.broadcastMove(view.props.id, offset);
+    if (!noBroadcast) this.broadcastMove('viewers', view.props.id, offset);
     view.offsetPosition(offset);
   }
 
@@ -203,11 +200,11 @@ export default class GSCanvas extends Component {
   }
 
   broadcastPan(offset) {
-    viewers.pan(offset);
+    websocket.pan(offset);
   }
 
-  broadcastMove(id, offset) {
-    viewers.move(id, offset);
+  broadcastMove(collection, id, offset) {
+    websocket.move(collection, id, offset);
   }
 
 }

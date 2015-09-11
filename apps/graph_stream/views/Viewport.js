@@ -77,7 +77,6 @@ export default class GCViewport extends Component {
         event.stopPropagation();
         var scale = this.canvas.scale,
             offset = new Vector([event.diffX / scale, event.diffY / scale]);
-        // console.log('move viewport', offset);
         this.canvas.offsetPosition(offset);
       },
       up: (event, dragState) => {
@@ -90,6 +89,7 @@ export default class GCViewport extends Component {
     event.stopPropagation();
     event.preventDefault();
     this.offsetEventXY(event);
+    // console.log(event.deltaY, event.deltaMode);
     var scale = this.canvas.scale,
         force = Math.max(0.05, scale / 5);
     if (event.deltaY < 0) {

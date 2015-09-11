@@ -18,34 +18,29 @@ export default {
     if (setup) setup();
 
     this.events.once('init', (msg) => {
-      // console.log('init:', msg.id, msg.viewers);
       this.initMsg = msg;
       this.id = msg.id;
       if (cb) cb(msg);
     });
 
     this.wsConn.onopen = (event) => {
-      // console.log('open:', event);
       this.isOpen = true;
       this.events.emit('open', event);
     };
 
     this.wsConn.onclose = (event) => {
-      // console.log('close', event);
       this.isConnected = this.isOpen = false;
       this.events.emit('close', event);
       setTimeout(this.connect.bind(this, cb, setup), this.reconnectInterval);
     };
 
     this.wsConn.onerror = (event) => {
-      // console.log('error:', event);
       this.isConnected = this.isOpen = false;
       this.events.emit('error', event);
       setTimeout(this.connect.bind(this, cb, setup), this.reconnectInterval);
     }
 
     this.wsConn.onmessage = (event) => {
-      // console.log('message:', event);
       var msg = JSON.parse(event.data);
       this.events.emit('message', msg, event);
       if (msg && msg.type) this.events.emit(msg.type, msg, event);
@@ -73,15 +68,15 @@ export default {
     this.initMsg ? cb(this.initMsg) : this.events.once('init', cb);
   },
 
-  list() {
-    this.wsConn.send('{"type": "list"}');
+  list(collection) {
+    this.wsConn.send('{"type": "list", "collection": "' + collection + '"}');
   },
 
-  set(position, size) {
+  set(collection, position, size, params) {
     this.init((msg) => {
       let type = 'set',
           id = this.id || msg.id;
-      this.wsConn.send(JSON.stringify({type, id, position, size}));
+      this.wsConn.send(JSON.stringify({type, collection, id, item: {id, position, size, params}}));
     });
   },
 
@@ -90,9 +85,8 @@ export default {
     this.wsConn.send(JSON.stringify({type, offset}))
   },
 
-  move(id, offset) {
+  move(collection, id, offset) {
     let type = 'move';
-    // console.log('move', id, offset);
-    this.wsConn.send(JSON.stringify({type, id, offset}))
+    this.wsConn.send(JSON.stringify({type, collection, id, offset}))
   }
 }

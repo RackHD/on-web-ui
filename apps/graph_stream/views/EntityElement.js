@@ -35,9 +35,10 @@ export default class GSEntityElement extends Component {
       return (
         <div
             className={this.props.className}
-            onMouseDown={this.translateView()}
+            onMouseDown={this.translateEntity()}
             style={css}>
-          <iframe src="http://www.seattlemonorail.com/wp-content/uploads/2012/03/Monorail_About_General11.jpg" width="100%" height="100%" />
+          TEST!
+          {this.props.children}
         </div>
       );
     } catch (err) {
@@ -45,15 +46,15 @@ export default class GSEntityElement extends Component {
     }
   }
 
-  translateView() {
-    return this.setupClickDrag(this.translateViewListeners);
+  translateEntity() {
+    return this.setupClickDrag(this.translateEntityListeners);
   }
 
   get position() {
     return new Vector(this.state.position)
   }
 
-  get translateViewListeners() {
+  get translateEntityListeners() {
     return {
       down: (event, dragState) => {
         event.stopPropagation();
@@ -72,7 +73,10 @@ export default class GSEntityElement extends Component {
   }
 
   offsetPosition(offset) {
-    this.setProps({position: new Vector(this.props.position).add(offset)});
+    this.props.position[0] += offset[0];
+    this.props.position[1] += offset[1];
+    this.queueUpdate();
+    // this.setProps({position: new Vector(this.props.position).add(offset)});
   }
 
 }
