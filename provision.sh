@@ -22,7 +22,7 @@ if [ -z "$DOCKER_PROVISION" ]; then
 
   if [ -n "$TEST_ON_WEB_UI" ]; then
     printf "\n\nInstall test dependencies:\n\n"
-    apt-get -y update || true
+    apt-get update -y || true
     which xvfb || apt-get install -y xvfb || true
     which firefox || apt-get install -y firefox || true
     which chromium-browser || apt-get install -y chromium-browser || true
@@ -101,12 +101,21 @@ else
     karma start karma.ci.conf.js
   fi
 
-  if [ -n "$DEPLOY_ON_WEB_UI" ]; then
+  if [ -n "$BUILD_ON_WEB_UI" ]; then
     printf "\n\nBuild on-web-ui:\n\n"
     gulp build
 
-    printf "\n\nDeploy on-web-ui:\n\n"
-    gulp deploy
+    if [ -n "$VAGRANT_PROVISION" ]; then
+      printf "\n\nInstall packaging tools:\n\n"
+      apt-get update -y
+      apt-get install -y --fix-missing pbuilder dh-make ubuntu-dev-tools devscripts
+    fi
+
+    printf "\n\Create debian package for on-web-ui:\n\n"
+    ./package.sh
+
+    # printf "\n\nDeploy on-web-ui:\n\n"
+    # gulp deploy
   fi
 
   if [ -n "$RUN_ON_WEB_UI" ]; then

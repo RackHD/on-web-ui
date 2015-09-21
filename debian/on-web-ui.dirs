@@ -1,0 +1,6 @@
+/opt/monorail/static/http
+/opt/monorail/static/http/common
+/opt/monorail/static/http/bundle
+/opt/monorail/static/http/monorail
+/opt/monorail/static/http/onrack
+/opt/monorail/static/http/workflow_editor

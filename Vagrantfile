@@ -55,6 +55,32 @@ Vagrant.configure(2) do |config|
     test.vm.provision :shell, inline: "sudo " + vars + " /tmp/provision.sh"
   end
 
+  config.vm.define :build do |build|
+    build.vm.box = "ubuntu/trusty64"
+    build.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box"
+
+    build.vm.network :private_network, ip: "192.168.33.10"
+    build.vm.network :public_network
+    build.ssh.forward_agent = true
+
+    # server.vm.synced_folder ".", "/vagrant"
+
+    build.vm.provider :virtualbox do |vb|
+      vb.name = "on-web-ui-build"
+      vb.gui = true
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
+
+    build.vm.provision :file, source: "provision.sh", destination: "/tmp/provision.sh"
+
+    vars = "";
+    vars += "VAGRANT_PROVISION=1 "
+    vars += "VERBOSE_PROVISION=1 "
+    vars += "BUILD_ON_WEB_UI=1 "
+    build.vm.provision :shell, inline: "sudo " + vars + " /tmp/provision.sh"
+  end
+
   ## COREOS
   config.vm.define :docker do |docker|
     docker.vm.box = "yungsang/coreos"
