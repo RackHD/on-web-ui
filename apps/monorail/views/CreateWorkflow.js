@@ -10,10 +10,10 @@ import EditWorkflow from './EditWorkflow';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Workflow extends Component {
+export default class CreateWorkflow extends Component {
 
   state = {
-    template: null
+    workflow: null
   };
 
   componentDidMount() {}
@@ -23,12 +23,20 @@ export default class Workflow extends Component {
   render() {
     return (
       <div className="Workflow">
-        {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
-          {href: 'workflows', label: 'Workflows'},
-          'New Workflow'
-        )}
-        <EditWorkflow templateRef={{id: null, name: 'New Workflow', contents: ''}} />
+        {this.props.params.nodeId ?
+          this.renderBreadcrumbs(
+            {href: 'dash', label: 'Dashboard'},
+            {href: 'nodes', label: 'Nodes'},
+            {href: 'nodes/' + this.props.params.nodeId, label: this.props.params.nodeId},
+            {href: 'workflows/n/' + this.props.params.nodeId, label: 'Workflows'},
+            'Create Workflow'
+          ) : this.renderBreadcrumbs(
+            {href: 'dash', label: 'Dashboard'},
+            {href: 'workflows', label: 'Workflows'},
+            'Create Workflow'
+          )
+        }
+        <EditWorkflow workflow={{node: this.props.params.nodeId}} nodeId={this.props.params.nodeId}/>
       </div>
     );
   }

@@ -11,11 +11,12 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    TextField,
     FlatButton,
-    RaisedButton
+    LinearProgress,
+    RaisedButton,
+    TextField,
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
-import JsonEditor from 'common-web-ui/views/JsonEditor';
 
 import ProfileStore from '../stores/ProfileStore';
 let profiles = new ProfileStore();
@@ -28,56 +29,52 @@ let profiles = new ProfileStore();
 export default class EditProfile extends Component {
 
   state = {
-    profile: null,
-    disabled: false
+    profile: this.props.profile,
+    disabled: !this.props.profile,
+    loading: !this.props.profile
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.profile) this.setState({profile: nextProps.profile, loading: false, disabled: false});
+  }
+
   render() {
-    if (!this.state.profile) {
-      this.state.profile = this.props.profileRef || null;
-    }
-    var nameLink = this.linkObjectState('profile', 'name'),
+    var profile = this.state.profile || {},
+        nameLink = this.linkObjectState('profile', 'name'),
         contentsLink = this.linkObjectState('profile', 'contents');
     return (
-      <div className="EditProfile ungrid">
-        <div className="line">
-          <div className="cell" style={{verticalAlign: 'top'}}>
-            <TextField valueLink={nameLink}
-                       hintText="Name"
-                       floatingLabelText="Name"
-                       disabled={this.state.disabled} />
-            <br/>
-            <label>Content:</label><br/>
-            <textarea valueLink={contentsLink}
-                      disabled={this.state.disabled}
-                      rows={5}
-                      cols={40}
-                      style={{width: '99%', height: 300}} />
-          </div>
-          {/*<div className="cell">
-            <h3>Raw JSON</h3>
-            <JsonEditor initialValue={this.state.profile}
-                        updateParentState={this.updateStateFromJsonEditor.bind(this)}
-                        disabled={this.state.disabled}
-                        ref="jsonEditor" />
-          </div>*/}
-        </div>
-
-        <div className="buttons container">
-          <div className="right">
-            <FlatButton className="button"
-                        label="Cancel"
-                        onClick={this.routeBack}
-                        disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Reset"
-                          onClick={this.resetProfile.bind(this)}
-                          disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Save" primary={true}
-                          onClick={this.saveProfile.bind(this)}
-                          disabled={this.state.disabled} />
-          </div>
+      <div className="EditProfile">
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+            <ToolbarTitle text={profile.id ? 'Edit File' : 'Create File'} />
+          </ToolbarGroup>
+          <ToolbarGroup key={1} float="right">
+            <RaisedButton
+                label="Cancel"
+                onClick={this.routeBack}
+                disabled={this.state.disabled} />
+            <RaisedButton
+                label="Save"
+                primary={true}
+                onClick={this.saveProfile.bind(this)}
+                disabled={this.state.disabled} />
+          </ToolbarGroup>
+        </Toolbar>
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix" />}
+        <div style={{padding: '0 10px 10px'}}>
+          <TextField
+              valueLink={nameLink}
+              hintText="Name"
+              floatingLabelText="Name"
+              disabled={this.state.disabled}
+              fullWidth={true} />
+          <h5 style={{margin: '15px 0 5px', color: '#666'}}>Profile Content:</h5>
+          <textarea
+              valueLink={contentsLink}
+              disabled={this.state.disabled}
+              rows={5}
+              cols={40}
+              style={{width: '99%', height: 300}} />
         </div>
       </div>
     );
@@ -88,16 +85,14 @@ export default class EditProfile extends Component {
   }
 
   saveProfile() {
+    this.setState({loading: true});
     this.disable();
-    profiles.update(this.state.profile.name, this.state.profile.contents).then(() => this.enable());
+    let isNewProfile = !this.state.profile.id;
+    templates.update(this.state.profile.name, this.state.profile.contents).then(() => {
+      this.enable()
+      this.setState({loading: false});
+      if (isNewProfile) this.routeBack();
+    });
   }
-
-  resetProfile() {
-    this.disable();
-    profiles.read(this.state.profile.name)
-      .then(profile => this.setState({profile: profile, disabled: false}));
-  }
-
-  cloneProfile() {}// TODO
 
 }

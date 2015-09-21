@@ -40,10 +40,10 @@ export default class CatalogsGrid extends Component {
     return (
       <div className="CatalogsGrid">
         {this.renderGridToolbar({
-          label: <a href="#/catalogs">Catalogs</a>,
+          label: <a href={'#/catalogs' + (this.nodeId ? '/n/' + this.nodeId : '')}>Catalogs</a>,
           count: this.state.catalogs && this.state.catalogs.length || 0
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.catalogs,

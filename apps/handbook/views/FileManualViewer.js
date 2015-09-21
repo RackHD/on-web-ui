@@ -189,7 +189,7 @@ export default class FileManualViewer extends Component {
     if (!file) {
       throw new Error('Missing file argument.');
     }
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(codeServer + '/' + file)
         .end((err, res) => {
           if (err) { return reject(err); }

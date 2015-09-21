@@ -17,9 +17,8 @@ export default class OBMServiceStore extends Store {
   }
 
   list() {
-    this.empty();
     return this.obmServicesRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

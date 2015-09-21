@@ -10,10 +10,10 @@ import EditSku from './EditSku';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Sku extends Component {
+export default class CreateSku extends Component {
 
   state = {
-    template: null
+    sku: null
   };
 
   componentDidMount() {}
@@ -26,9 +26,9 @@ export default class Sku extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'skus', label: 'Skus'},
-          'New Sku'
+          'Create Sku'
         )}
-        <EditSku templateRef={{id: null, name: 'New Sku', contents: ''}} />
+        <EditSku sku={{rules: [{path: 'example.catalog.path', contains: 'value'}]}} />
       </div>
     );
   }

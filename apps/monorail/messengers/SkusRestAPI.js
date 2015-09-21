@@ -35,12 +35,47 @@ export default class SkusRestAPI {
     });
   }
 
-  put(id, body) {
+  post(body) {
     return new Promise((resolve, reject) => {
-      http.put(this.url + id)
+      http.post(this.url)
         .accept('json')
-        .type('application/octet-stream')
+        .type('json')
         .send(body)
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
+  patch(id, body) {
+    return new Promise((resolve, reject) => {
+      http.patch(this.url + id)
+        .accept('json')
+        .type('json')
+        .send(body)
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
+  delete(id) {
+    return new Promise((resolve, reject) => {
+      http.del(this.url + id)
+        .accept('json')
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
+  listNodes() {
+    return new Promise((resolve, reject) => {
+      http.get(this.url + id + '/nodes')
+        .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);

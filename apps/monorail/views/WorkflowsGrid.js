@@ -40,12 +40,12 @@ export default class WorkflowsGrid extends Component {
     return (
       <div className="WorkflowsGrid">
         {this.renderGridToolbar({
-          label: <a href="#/workflows">Workflows</a>,
+          label: <a href={'#/workflows' + (this.nodeId ? '/n/' + this.nodeId : '')}>Workflows</a>,
           count: this.state.workflows && this.state.workflows.length || 0,
           right:
             <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.workflows,
@@ -53,6 +53,7 @@ export default class WorkflowsGrid extends Component {
           }, workflow => (
             {
               ID: <a href={this.routePath('workflows', workflow.id)}>{this.shortId(workflow.id)}</a>,
+              Node: <a href={this.routePath('nodes', workflow.node)}>{this.shortId(workflow.node)}</a>,
               Name: workflow.name,
               Created: this.fromNow(workflow.createdAt),
               Updated: this.fromNow(workflow.updatedAt)
@@ -63,14 +64,23 @@ export default class WorkflowsGrid extends Component {
     );
   }
 
+  get nodeId() { return this.props.nodeId; }
+
   listWorkflows() {
     this.setState({loading: true});
+    let nodeId = this.nodeId
+    if (nodeId) {
+      return workflows.listNode(nodeId).then(() => this.setState({loading: false}));
+    }
     workflows.list().then(() => this.setState({loading: false}));
   }
 
   // editWorkflow(id) { this.routeTo('workflows', id); }
 
-  createWorkflow() { this.routeTo('workflows', 'new'); }
+  createWorkflow() {
+    if (this.nodeId) return this.routeTo('workflows', 'new', this.nodeId);
+    this.routeTo('workflows', 'new');
+  }
 
   // deleteWorkflow(id) {
   //   this.confirmDialog('Are you sure want to delete: ' + id,

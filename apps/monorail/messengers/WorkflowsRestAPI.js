@@ -48,4 +48,15 @@ export default class WorkflowsRestAPI {
     });
   }
 
+  library() {
+    return new Promise((resolve, reject) => {
+      http.get(this.url + 'library')
+        .accept('json')
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
 }

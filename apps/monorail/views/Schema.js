@@ -36,11 +36,13 @@ export default class Schema extends Component {
           {href: 'schemas', label: 'Schemas'},
           this.getSchemaId()
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
-        <JsonInspector
-            search={false}
-            isExpanded={() => true}
-            data={this.state.schema || {}} />
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <div style={{overflow: 'auto', margin: 10}}>
+          <JsonInspector
+              search={false}
+              isExpanded={() => true}
+              data={this.state.schema || {}} />
+        </div>
       </div>
     );
   }

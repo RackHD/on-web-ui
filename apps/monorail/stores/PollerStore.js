@@ -3,15 +3,16 @@
 import Store from 'common-web-ui/lib/Store';
 
 import PollersRestAPI from '../messengers/PollersRestAPI';
+import NodesRestAPI from '../messengers/NodesRestAPI';
 
 export default class PollerStore extends Store {
 
   pollersRestAPI = new PollersRestAPI();
+  nodesRestAPI = new NodesRestAPI();
 
   list() {
-    this.empty();
     return this.pollersRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 
@@ -37,6 +38,13 @@ export default class PollerStore extends Store {
     return this.pollersRestAPI.delete(id)
       .then(() => this.remove(id))
       .catch(err => this.error(id, err));
+  }
+
+  listNode(nodeId) {
+    this.empty();
+    return this.nodesRestAPI.listPollers(nodeId)
+      .then(list => this.collect(list))
+      .catch(err => this.error(null, err));
   }
 
 }

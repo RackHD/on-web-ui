@@ -10,7 +10,7 @@ import EditTemplate from './EditTemplate';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Template extends Component {
+export default class CreateTemplate extends Component {
 
   state = {
     template: null
@@ -26,9 +26,9 @@ export default class Template extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'templates', label: 'Templates'},
-          'New Template'
+          'Create Template'
         )}
-        <EditTemplate templateRef={{id: null, name: 'New Template', contents: ''}} />
+        <EditTemplate template={{}} />
       </div>
     );
   }

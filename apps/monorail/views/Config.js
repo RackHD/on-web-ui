@@ -35,11 +35,12 @@ export default class Config extends Component {
           {href: 'dash', label: 'Dashboard'},
           'Config'
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
-        <JsonInspector
-            search={false}
-            isExpanded={() => true}
-            data={this.state.config || {}} />
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <div style={{overflow: 'auto', margin: 10}}>
+          <JsonInspector
+              isExpanded={() => true}
+              data={this.state.config || {}} />
+        </div>
       </div>
     );
   }

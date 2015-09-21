@@ -68,11 +68,24 @@ export default class PollersRestAPI {
     });
   }
 
+  post(body) {
+    return new Promise((resolve, reject) => {
+      http.post(this.url)
+        .accept('json')
+        .type('application/json')
+        .send(body)
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
   patch(id, body) {
     return new Promise((resolve, reject) => {
       http.put(this.url + id)
         .accept('json')
-        .type('application/octet-stream')
+        .type('application/json')
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -85,7 +98,7 @@ export default class PollersRestAPI {
     return new Promise((resolve, reject) => {
       http.put(this.url + id + '/pause')
         .accept('json')
-        .type('application/octet-stream')
+        .type('application/json')
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -98,7 +111,7 @@ export default class PollersRestAPI {
     return new Promise((resolve, reject) => {
       http.put(this.url + id + '/resume')
         .accept('json')
-        .type('application/octet-stream')
+        .type('application/json')
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }

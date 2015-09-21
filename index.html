@@ -1,0 +1,11 @@
+<!doctype html>
+<html>
+  <head></head>
+  <body>
+    <script>
+        var location = window.location.toString();
+        if (location.charAt(location.length - 1) !== '/') location += '/';
+        window.location = location + 'monorail';
+    </script>
+  </body>
+</html>

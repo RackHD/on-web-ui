@@ -6,7 +6,7 @@ import http from 'superagent';
 export default {
 
   getSystemResetActions(id) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Systems/' + id + '/Actions/ComputerSystem.Reset')
         .accept('json')
         .end((err, res) => {
@@ -17,7 +17,7 @@ export default {
   },
 
   postSystemResetAction(id, reset_type) { // eslint-disable-line camelcase
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.post(API + 'ManagedSystems/Systems/' + id + '/Actions/ComputerSystem.Reset')
         .accept('json')
         .type('json')
@@ -30,7 +30,7 @@ export default {
   },
 
   getSystemBootImages(id) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Systems/' + id + '/OEM/OnRack/Actions/OnRack.BootImage')
         .accept('json')
         .end((err, res) => {
@@ -41,7 +41,7 @@ export default {
   },
 
   postSystemBootImage(boot_image) { // eslint-disable-line camelcase
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.post(API + 'nodes')
         .accept('json')
         .type('json')

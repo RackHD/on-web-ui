@@ -2,7 +2,12 @@
 
 import { Component } from 'mach-react';
 
+import DragEventHelpers from '../mixins/DragEventHelpers';
+import Vector from '../lib/Vector';
+
 export default class GSViewerElement extends Component {
+
+  static mixins = [ DragEventHelpers ]
 
   static defaultProps = {
     className: 'GSViewer',
@@ -12,26 +17,24 @@ export default class GSViewerElement extends Component {
 
   get canvas() { return this.context.canvas; }
 
-  state = this.props.state
-
   render(React) {
     try {
       var state = this.state;
-      console.log(this.state.size, this.state, new Error().stack);
-      // debugger;
       var css = {
+        userSelect: 'none',
         boxSizing: 'border-box',
         position: 'absolute',
-        top: 1000 - (this.state.size[1] / 2) + this.state.position[1],
-        left: 1000 - (this.state.size[0] / 2) + this.state.position[0],
-        width: this.state.size[0],
-        height: this.state.size[1],
-        background: 'rgba(0, 0, 0, 0.25)',
-        border: '2px solid #000'
+        top: 1000 - (this.props.size[1] / 2) + this.props.position[1],
+        left: 1000 - (this.props.size[0] / 2) + this.props.position[0],
+        width: this.props.size[0],
+        height: this.props.size[1],
+        background: 'rgba(0, 0, 0, 0.05)',
+        border: '1px dotted #000'
       };
       return (
         <div
             className={this.props.className}
+            onMouseDown={this.translateView()}
             style={css}>
           {this.props.id}
         </div>
@@ -39,6 +42,42 @@ export default class GSViewerElement extends Component {
     } catch (err) {
       console.error(err.stack || err);
     }
+  }
+
+  translateView() {
+    return this.setupClickDrag(this.translateViewListeners);
+  }
+
+  get position() {
+    return new Vector(this.state.position)
+  }
+
+  get translateViewListeners() {
+    return {
+      down: (event, dragState) => {
+        if (!event.shiftKey) return;
+        event.stopPropagation();
+      },
+      move: (event, dragState) => {
+        if (!event.shiftKey) return;
+        event.stopPropagation();
+        clearInterval(this.moveRepeat);
+        var scale = this.canvas.scale,
+            offset = new Vector([event.diffX / scale, event.diffY / scale]);
+        this.canvas.offsetViewPosition(this, offset);
+      },
+      up: (event, dragState) => {
+        if (!event.shiftKey) return;
+        event.stopPropagation();
+      }
+    };
+  }
+
+  offsetPosition(offset) {
+    this.props.position[0] += offset[0];
+    this.props.position[1] += offset[1];
+    this.queueUpdate();
+    // this.setProps({position: new Vector(this.props.position).add(offset)});
   }
 
 }

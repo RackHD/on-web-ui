@@ -42,7 +42,7 @@ export default class ProfilesGrid extends Component {
           right:
             <RaisedButton label="Create Profile" primary={true} onClick={this.createProfile.bind(this)} />
         })}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : <div className="clearfix"></div>}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
             results: this.state.profiles,

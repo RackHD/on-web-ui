@@ -6,8 +6,20 @@ var wsServer = new WebSocketServer({ port: 8888 });
 
 var viewers = {};
 
+var collections = {
+  viewers: viewers,
+  entities: {
+    test: {
+      id: 'test',
+      position: [0, 0],
+      size: [800, 600],
+      scale: 1,
+      params: {}
+    }
+  }
+};
+
 wsServer.broadcast = function (data, skip) {
-  // console.log('broadcast:', data);
   wsServer.clients.forEach(function eachClient(client) {
     if (client === skip) return;
     try {
@@ -25,15 +37,14 @@ wsServer.on('connection', function wsConnection(wsConn) {
   var viewer = viewers[wsConn.id] = {
     id: wsConn.id,
     position: [0, 0],
-    size: [0, 0]
+    size: [0, 0],
+    scale: 1,
+    params: {}
   };
 
-  // console.log('connection:', wsConn.id, viewer);
-
   wsConn.on('message', function wsIncoming(wsMsg) {
-    // console.log('message:', wsMsg);
     var msg = JSON.parse(wsMsg),
-        other;
+        obj;
 
     if (msg.type === 'init') {
       wsConn.send(JSON.stringify({type: 'init', id: wsConn.id}));
@@ -41,14 +52,22 @@ wsServer.on('connection', function wsConnection(wsConn) {
     }
 
     if (msg.type === 'list') {
-      wsConn.send(JSON.stringify({type: 'list', viewers: viewers}));
+      wsConn.send(JSON.stringify({
+        type: 'list',
+        collection: msg.collection,
+        items: collections[msg.collection]
+      }));
       return;
     }
 
     if (msg.type === 'set') {
-      viewer.position = msg.position;
-      viewer.size = msg.size;
+      collections[msg.collection] = collections[msg.collection] || {};
+      obj = collections[msg.collection][msg.id] = msg.item;
       wsServer.broadcast(wsMsg, wsConn);
+      return;
+    }
+
+    if (msg.type === 'remove') {
       return;
     }
 
@@ -62,21 +81,22 @@ wsServer.on('connection', function wsConnection(wsConn) {
       return;
     }
 
-    // if (msg.type === 'zoom') {
-    //   return;
-    // }
+    if (msg.type === 'zoom') {
+      msg.ids;
+      return;
+    }
 
     if (msg.type === 'move') {
-      other = viewers[msg.id];
-      other.position[0] += msg.offset[0];
-      other.position[1] += msg.offset[1];
+      obj = collections[msg.collection][msg.id];
+      obj.position[0] += msg.offset[0];
+      obj.position[1] += msg.offset[1];
       wsServer.broadcast(wsMsg, wsConn);
       return;
     }
 
-    // if (msg.type === 'scale') {
-    //   return;
-    // }
+    if (msg.type === 'scale') {
+      return;
+    }
 
     throw new Error('Invalid message');
   });
@@ -85,12 +105,12 @@ wsServer.on('connection', function wsConnection(wsConn) {
 });
 
 function wsClose(wsConn) {
-  // console.log('close:', wsConn.id);
   if (!viewers[wsConn.id]) return;
   var viewer = viewers[wsConn.id];
   delete viewers[wsConn.id];
   wsServer.broadcast(JSON.stringify({
     type: 'remove',
-    viewer: viewer
+    collection: 'viewers',
+    id: viewer.id
   }), wsConn);
 }

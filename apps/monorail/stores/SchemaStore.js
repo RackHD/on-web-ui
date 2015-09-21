@@ -15,9 +15,8 @@ export default class SchemaStore extends Store {
   }
 
   list() {
-    this.empty();
     return this.schemasRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

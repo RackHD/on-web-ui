@@ -62,7 +62,7 @@ export default class NodesRestAPI {
   }
 
   delete(id) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.del(this.url + id)
         .accept('json')
         .end((err, res) => {
@@ -185,9 +185,9 @@ export default class NodesRestAPI {
     });
   }
 
-  postWorkflow(id, body) {
+  postWorkflow(nodeId, body) {
     return new Promise((resolve, reject) => {
-      http.post(this.url + id + '/workflows')
+      http.post(this.url + nodeId + '/workflows')
         .accept('json')
         .type('json')
         .send(body)

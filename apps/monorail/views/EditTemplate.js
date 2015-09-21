@@ -11,11 +11,12 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    TextField,
     FlatButton,
-    RaisedButton
+    LinearProgress,
+    RaisedButton,
+    TextField,
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
-import JsonEditor from 'common-web-ui/views/JsonEditor';
 
 import TemplateStore from '../stores/TemplateStore';
 let templates = new TemplateStore();
@@ -28,56 +29,52 @@ let templates = new TemplateStore();
 export default class EditTemplate extends Component {
 
   state = {
-    template: null,
-    disabled: false
+    template: this.props.template,
+    disabled: !this.props.template,
+    loading: !this.props.loading
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.template) this.setState({template: nextProps.template, loading: false, disabled: false});
+  }
+
   render() {
-    if (!this.state.template) {
-      this.state.template = this.props.templateRef || null;
-    }
-    var nameLink = this.linkObjectState('template', 'name'),
+    var template = this.state.template || {},
+        nameLink = this.linkObjectState('template', 'name'),
         contentsLink = this.linkObjectState('template', 'contents');
     return (
-      <div className="EditTemplate ungrid">
-        <div className="line">
-          <div className="cell" style={{verticalAlign: 'top'}}>
-            <TextField valueLink={nameLink}
-                       hintText="Name"
-                       floatingLabelText="Name"
-                       disabled={this.state.disabled} />
-            <br/>
-            <label>Content:</label><br/>
-            <textarea valueLink={contentsLink}
-                      disabled={this.state.disabled}
-                      rows={5}
-                      cols={40}
-                      style={{width: '99%', height: 300}} />
-          </div>
-          {/*<div className="cell">
-            <h3>Raw JSON</h3>
-            <JsonEditor initialValue={this.state.template}
-                        updateParentState={this.updateStateFromJsonEditor.bind(this)}
-                        disabled={this.state.disabled}
-                        ref="jsonEditor" />
-          </div>*/}
-        </div>
-
-        <div className="buttons container">
-          <div className="right">
-            <FlatButton className="button"
-                        label="Cancel"
-                        onClick={this.routeBack}
-                        disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Reset"
-                          onClick={this.resetTemplate.bind(this)}
-                          disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Save" primary={true}
-                          onClick={this.saveTemplate.bind(this)}
-                          disabled={this.state.disabled} />
-          </div>
+      <div className="EditTemplate">
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+            <ToolbarTitle text={template.id ? 'Edit File' : 'Create File'} />
+          </ToolbarGroup>
+          <ToolbarGroup key={1} float="right">
+            <RaisedButton
+                label="Cancel"
+                onClick={this.routeBack}
+                disabled={this.state.disabled} />
+            <RaisedButton
+                label="Save"
+                primary={true}
+                onClick={this.saveTemplate.bind(this)}
+                disabled={this.state.disabled} />
+          </ToolbarGroup>
+        </Toolbar>
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix" />}
+        <div style={{padding: '0 10px 10px'}}>
+          <TextField
+              valueLink={nameLink}
+              hintText="Name"
+              floatingLabelText="Name"
+              disabled={this.state.disabled}
+              fullWidth={true} />
+          <h5 style={{margin: '15px 0 5px', color: '#666'}}>Template Content:</h5>
+          <textarea
+              valueLink={contentsLink}
+              disabled={this.state.disabled}
+              rows={5}
+              cols={40}
+              style={{width: '99%', height: 300}} />
         </div>
       </div>
     );
@@ -88,16 +85,14 @@ export default class EditTemplate extends Component {
   }
 
   saveTemplate() {
+    this.setState({loading: true});
     this.disable();
-    templates.update(this.state.template.name, this.state.template.contents).then(() => this.enable());
+    let isNewTemplate = !this.state.template.id;
+    templates.update(this.state.template.name, this.state.template.contents).then(() => {
+      this.enable()
+      this.setState({loading: false});
+      if (isNewTemplate) this.routeBack();
+    });
   }
-
-  resetTemplate() {
-    this.disable();
-    templates.read(this.state.template.name)
-      .then(template => this.setState({template: template, disabled: false}));
-  }
-
-  cloneTemplate() {}// TODO
 
 }

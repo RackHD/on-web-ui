@@ -10,10 +10,10 @@ import EditFile from './EditFile';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class File extends Component {
+export default class CreateFile extends Component {
 
   state = {
-    template: null
+    file: null
   };
 
   componentDidMount() {}
@@ -26,9 +26,9 @@ export default class File extends Component {
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           {href: 'files', label: 'Files'},
-          'New File'
+          'Create File'
         )}
-        <EditFile templateRef={{id: null, name: 'New File', contents: ''}} />
+        <EditFile file={{}} />
       </div>
     );
   }

@@ -9,9 +9,8 @@ export default class TemplateStore extends Store {
   templatesRestAPI = new TemplatesRestAPI();
 
   list() {
-    this.empty();
     return this.templatesRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

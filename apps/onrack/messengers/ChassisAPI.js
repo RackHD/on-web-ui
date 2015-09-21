@@ -6,7 +6,7 @@ import http from 'superagent';
 export default {
 
   getChassisCollection() {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Chassis')
         .accept('json')
         .end((err, res) => {
@@ -17,7 +17,7 @@ export default {
   },
 
   getChassis(id) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Chassis/' + id)
         .accept('json')
         .end((err, res) => {

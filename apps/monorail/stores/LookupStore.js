@@ -11,7 +11,7 @@ export default class NodeStore extends Store {
   list(q) {
     this.empty();
     return this.lookupsRestAPI.list(q)
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

@@ -29,6 +29,7 @@ export default class OBMService extends Component {
   componentWillUnmount() { this.unwatchOBMService(); }
 
   render() {
+    console.log(this.state.obmService);
     return (
       <div className="OBMService">
         {this.renderBreadcrumbs(
@@ -36,11 +37,13 @@ export default class OBMService extends Component {
           {href: 'obms', label: 'OBM Services'},
           this.props.params.obmsId
         )}
-        {this.state.loading ? <LinearProgress mode="indeterminate"  /> : null}
-        <JsonInspector
-            search={false}
-            isExpanded={() => true}
-            data={this.state.obmService || {}} />
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <div style={{overflow: 'auto', margin: 10}}>
+          <JsonInspector
+              search={false}
+              isExpanded={() => true}
+              data={this.state.obmService || {}} />
+        </div>
       </div>
     );
   }

@@ -22,14 +22,16 @@ export default class Catalogs extends Component {
           (source ?
             this.renderBreadcrumbs(
               {href: 'dash', label: 'Dashboard'},
-              {href: 'catalogs', label: 'Catalogs'},
-              'n', this.nodeId,
-              's', this.source
+              {href: 'nodes', label: 'Nodes'},
+              {href: 'nodes/' + nodeId, label: nodeId},
+              {href: 'catalogs/n/' + nodeId, label: 'Catalogs'},
+              source
             ) :
             this.renderBreadcrumbs(
               {href: 'dash', label: 'Dashboard'},
-              {href: 'catalogs', label: 'Catalogs'},
-              'n', this.nodeId
+              {href: 'nodes', label: 'Nodes'},
+              {href: 'nodes/' + nodeId, label: nodeId},
+              'Catalogs'
             )) :
             this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Catalogs')
         }

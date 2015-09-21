@@ -17,9 +17,8 @@ export default class CatalogStore extends Store {
   }
 
   list() {
-    this.empty();
     return this.catalogsRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

@@ -11,16 +11,14 @@ export default class VersionsStore extends Store {
   key = 'package';
 
   get() {
-    this.empty();
     return this.versionsRestAPI.get()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 
   list() {
-    this.empty();
     return this.versionsRestAPI.get()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

@@ -8,7 +8,7 @@ import decorate from '../lib/decorate';
 import MUIContextHelpers from '../mixins/MUIContextHelpers';
 
 import { RouteHandler } from 'react-router';
-import { AppCanvas } from 'material-ui';
+import { AppCanvas, Snackbar } from 'material-ui';
 import AppHeader from './AppHeader';
 import AppFooter from './AppFooter';
 import emcColors from '../lib/emcColors';
@@ -63,6 +63,19 @@ export default class AppContainer extends Component {
 
   getChildContext() { return this.muiContext(); }
 
+  componentWillMount() {
+    this.handleError = this.onError.bind(this)
+    window.onerror = this.handleError;
+  }
+
+  componentWillUnmount() {
+    window.onerror = null;
+  }
+
+  componentDidUpdate() {
+    if (this.state.error) { this.refs.error.show(); }
+  }
+
   render() {
     var styles = this.props.styles,
         header = this.props.header,
@@ -92,12 +105,28 @@ export default class AppContainer extends Component {
           <div
               className="content"
               style={[defaultStyles.content, styles.content]}>
+            <Snackbar
+              ref="error"
+              action="dismiss"
+              message={this.state.error || 'Unknown error.'}
+              onActionTouchTap={this.dismissError.bind(this)} />
             {this.props.children || <RouteHandler />}
           </div>
           {footer}
         </AppCanvas>
       </div>
     );
+  }
+
+  onError(errorMsg) {
+    this.showError(errorMsg);
+  }
+
+  showError(error) { this.setState({error: error.message || error || 'Unknown Error'}); }
+
+  dismissError() {
+    this.refs.error.dismiss();
+    this.setState({error: null});
   }
 
 }

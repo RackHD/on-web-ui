@@ -11,11 +11,12 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    TextField,
     FlatButton,
-    RaisedButton
+    LinearProgress,
+    RaisedButton,
+    TextField,
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
-import JsonEditor from 'common-web-ui/views/JsonEditor';
 
 import FileStore from '../stores/FileStore';
 let file = new FileStore();
@@ -28,69 +29,66 @@ let file = new FileStore();
 export default class EditFile extends Component {
 
   state = {
-    file: null,
-    disabled: false
+    file: this.props.file,
+    disabled: !this.props.file,
+    loading: !this.props.file
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.file) this.setState({file: nextProps.file, loading: false, disabled: false});
+  }
+
   render() {
-    if (!this.state.file) {
-      this.state.file = this.props.fileRef || null;
-    }
-    var nameLink = this.linkObjectState('file', 'basename'),
+    let file = this.state.file || {},
+        nameLink = this.linkObjectState('file', 'basename'),
         bodyLink = this.linkObjectState('file', 'body');
     return (
-      <div className="EditFile ungrid">
-        <div className="line">
-          <div className="cell" style={{verticalAlign: 'top'}}>
-            <TextField valueLink={nameLink}
-                       hintText="Name"
-                       floatingLabelText="Name"
-                       disabled={this.state.disabled} />
-            <br/>
-            <label>Body:</label><br/>
-            <textarea valueLink={bodyLink}
-                      disabled={this.state.disabled}
-                      rows={5}
-                      cols={40}
-                      style={{width: '99%', height: 300}} />
-          </div>
-        </div>
-
-        <div className="buttons container">
-          <div className="right">
-            <FlatButton className="button"
-                        label="Cancel"
-                        onClick={this.routeBack}
-                        disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Reset"
-                          onClick={this.resetFile.bind(this)}
-                          disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Save" primary={true}
-                          onClick={this.saveFile.bind(this)}
-                          disabled={this.state.disabled} />
-          </div>
+      <div className="EditFile">
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+            <ToolbarTitle text={file.uuid ? 'Edit File' : 'Create File'} />
+          </ToolbarGroup>
+          <ToolbarGroup key={1} float="right">
+            <RaisedButton
+                label="Cancel"
+                onClick={this.routeBack}
+                disabled={this.state.disabled} />
+            <RaisedButton
+                label="Save"
+                primary={true}
+                onClick={this.saveFile.bind(this)}
+                disabled={this.state.disabled} />
+          </ToolbarGroup>
+        </Toolbar>
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix" />}
+        <div style={{padding: '0 10px 10px'}}>
+          <TextField
+              valueLink={nameLink}
+              hintText="Name"
+              floatingLabelText="Name"
+              disabled={this.state.disabled}
+              fullWidth={true} />
+          <h5 style={{margin: '15px 0 5px', color: '#666'}}>File Content:</h5>
+          <textarea
+              valueLink={bodyLink}
+              disabled={this.state.disabled}
+              rows={5}
+              cols={40}
+              style={{boxSizing: 'border-box', width: '100%', height: 300}} />
         </div>
       </div>
     );
   }
 
-  updateStateFromJsonEditor(stateChange) {
-    this.setState({file: stateChange});
-  }
-
   saveFile() {
+    this.setState({loading: true});
     this.disable();
-    file.update(this.state.file.basename, this.state.file.body).then(() => this.enable());
+    let isNewFile = !this.state.file.uuid;
+    file.update(this.state.file.basename, this.state.file.body).then(() => {
+      this.enable()
+      this.setState({loading: false});
+      if (isNewFile) this.routeBack();
+    });
   }
-
-  resetFile() {
-    this.disable();
-    file.read(this.state.file.name)
-      .then(file => this.setState({file: file, disabled: false}));
-  }
-
-  cloneFile() {}// TODO
 
 }

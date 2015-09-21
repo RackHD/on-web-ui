@@ -11,9 +11,8 @@ export default class NodeStore extends Store {
   key = 'uuid';
 
   list() {
-    this.empty();
     return this.filesRestAPI.list()
-      .then(list => this.collect(list))
+      .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 

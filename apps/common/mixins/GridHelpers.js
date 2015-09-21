@@ -27,7 +27,15 @@ export default {
     return (
       <Toolbar>
         <ToolbarGroup key={0} float="left">
-          <h4>{params.label} &nbsp; {params.count}</h4>
+          <span style={{
+            paddingRight: '16px',
+            lineHeight: '56px',
+            fontSize: '20px',
+            display: 'inline-block',
+            position: 'relative',
+            float: 'left',
+            color: '#666'
+          }}>{params.label} &nbsp; {params.count}</span>
         </ToolbarGroup>
         {rightToolbar}
       </Toolbar>

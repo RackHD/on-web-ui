@@ -11,10 +11,13 @@ import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
 import {
-    TextField,
     FlatButton,
-    RaisedButton
+    LinearProgress,
+    RaisedButton,
+    TextField,
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
+
 import JsonEditor from 'common-web-ui/views/JsonEditor';
 
 import SkuStore from '../stores/SkuStore';
@@ -29,61 +32,48 @@ export default class EditSku extends Component {
 
   state = {
     sku: null,
-    disabled: false
+    disabled: !this.props.sku,
+    loading: !this.props.sku
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.sku) this.setState({sku: nextProps.sku, loading: false, disabled: false});
+  }
+
   render() {
-    if (!this.state.sku) {
-      this.state.sku = this.props.skuRef || null;
-    }
-    var nameLink = this.linkObjectState('sku', 'name'),
-        profileLink = this.linkObjectState('sku', 'profile');
+    var sku = this.state.sku || {},
+        nameLink = this.linkObjectState('sku', 'name');
     return (
-      <div className="EditSku container">
-        <div className="row">
-          <div className="one-half column">
-            <TextField valueLink={nameLink}
-                       hintText="Name"
-                       floatingLabelText="Name"
-                       disabled={this.state.disabled} />
-          </div>
-          <div className="one-half column">
-            <TextField valueLink={profileLink}
-                       hintText="Profile"
-                       floatingLabelText="Profile"
-                       disabled={this.state.disabled} />
-          </div>
-        </div>
-
-        <h3>JSON Editor</h3>
-        <JsonEditor initialValue={this.state.sku}
-                    updateParentState={this.updateStateFromJsonEditor.bind(this)}
-                    disabled={this.state.disabled}
-                    ref="jsonEditor" />
-        <div className="buttons container">
-          <FlatButton className="button"
-                      label="Delete"
-                      onClick={this.deleteSku.bind(this)}
-                      disabled={this.state.disabled} />
-          <FlatButton className="button"
-                      label="Clone"
-                      onClick={this.cloneSku.bind(this)}
-                      disabled={true || this.state.disabled} />
-
-          <div className="right">
-            <FlatButton className="button"
-                        label="Cancel"
-                        onClick={this.routeBack}
-                        disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Reset"
-                          onClick={this.resetSku.bind(this)}
-                          disabled={this.state.disabled} />
-            <RaisedButton className="button"
-                          label="Save" primary={true}
-                          onClick={this.saveSku.bind(this)}
-                          disabled={this.state.disabled} />
-          </div>
+      <div className="EditSku">
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+            <ToolbarTitle text={sku.id ? 'Edit SKU' : 'Create SKU'} />
+          </ToolbarGroup>
+          <ToolbarGroup key={1} float="right">
+            <RaisedButton
+                label="Cancel"
+                onClick={this.routeBack}
+                disabled={this.state.disabled} />
+            <RaisedButton
+                label="Save"
+                primary={true}
+                onClick={this.saveSku.bind(this)}
+                disabled={this.state.disabled} />
+          </ToolbarGroup>
+        </Toolbar>
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix" />}
+        <div style={{padding: '0 10px 10px'}}>
+          <TextField valueLink={nameLink}
+              hintText="Name"
+              floatingLabelText="Name"
+              disabled={this.state.disabled}
+              fullWidth={true} />
+          <h5 style={{margin: '15px 0 5px', color: '#666'}}>SKU JSON:</h5>
+          <JsonEditor
+              initialValue={this.state.sku}
+              updateParentState={this.updateStateFromJsonEditor.bind(this)}
+              disabled={this.state.disabled}
+              ref="jsonEditor" />
         </div>
       </div>
     );
@@ -95,22 +85,18 @@ export default class EditSku extends Component {
 
   saveSku() {
     this.disable();
-    skus.update(this.state.sku.id, this.state.sku).then(() => this.enable());
+    if (this.state.sku.id) {
+      skus.update(this.state.sku.id, this.state.sku).then(() => this.enable());
+    }
+    else {
+      skus.create(this.state.sku).then(() => this.routeBack());
+    }
   }
 
-  deleteSku() {
-    var id = this.state.sku.id;
-    this.disable();
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed && skus.destroy(id).then(() => this.routeBack()));
-  }
-
-  resetSku() {
-    this.disable();
-    skus.read(this.state.sku.id)
-      .then(sku => this.setState({sku: sku, disabled: false}));
-  }
-
-  cloneSku() {}// TODO
+  // resetSku() {
+  //   this.disable();
+  //   skus.read(this.state.sku.id)
+  //     .then(sku => this.setState({sku: sku, disabled: false}));
+  // }
 
 }

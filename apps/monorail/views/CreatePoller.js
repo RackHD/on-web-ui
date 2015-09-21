@@ -10,10 +10,10 @@ import EditPoller from './EditPoller';
 import {} from 'material-ui';
 
 @mixin.decorate(PageHelpers)
-export default class Poller extends Component {
+export default class CreatePoller extends Component {
 
   state = {
-    template: null
+    poller: null
   };
 
   componentDidMount() {}
@@ -23,12 +23,20 @@ export default class Poller extends Component {
   render() {
     return (
       <div className="Poller">
-        {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
-          {href: 'pollers', label: 'Pollers'},
-          'New Poller'
-        )}
-        <EditPoller templateRef={{id: null, name: 'New Poller', contents: ''}} />
+        {this.props.params.nodeId ?
+          this.renderBreadcrumbs(
+            {href: 'dash', label: 'Dashboard'},
+            {href: 'nodes', label: 'Nodes'},
+            {href: 'nodes/' + this.props.params.nodeId, label: this.props.params.nodeId},
+            {href: 'pollers/n/' + this.props.params.nodeId, label: 'Pollers'},
+            'Create Poller'
+          ) : this.renderBreadcrumbs(
+            {href: 'dash', label: 'Dashboard'},
+            {href: 'pollers', label: 'Pollers'},
+            'Create Poller'
+          )
+        }
+        <EditPoller poller={{config: {}}} />
       </div>
     );
   }
