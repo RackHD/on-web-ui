@@ -3,7 +3,7 @@
 ### Quick Guide
 
 ```shell
-$ git clone git@github.com:RackHD/on-web-ui.git
+$ git clone https://github.com/RackHD/on-web-ui.git
 $ cd on-web-ui
 $ npm install babel -g
 $ npm install                   # Install Node.js modules.
