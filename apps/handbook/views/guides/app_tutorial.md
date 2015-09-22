@@ -1,3 +1,5 @@
+Copyright 2015, EMC, Inc.
+
 # App Tutorial (WIP)
 
 On Web UI is a project for making cutting edge web application development as easy of a process as possible.

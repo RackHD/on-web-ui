@@ -1,3 +1,5 @@
+Copyright 2015, EMC, Inc.
+
 ## Apps directory
 
 All folders in the `./apps/` directory are treated as separate **stand-alone** web applications. Except for the `./apps/common` folder, which goes through the  same build process, but it is meant to be a library used by other apps.

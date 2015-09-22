@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 // NOTE: The eventemitter3 npm module is required for browserSync to function.

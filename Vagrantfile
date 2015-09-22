@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Copyright 2015, EMC, Inc.
+
 Vagrant.configure(2) do |config|
   config.vm.define :server do |server|
     server.vm.box = "ubuntu/trusty64"

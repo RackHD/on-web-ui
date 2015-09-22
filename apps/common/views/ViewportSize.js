@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars

@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "description": "Graph Canvas Web UI",
   "repository": "",
-  "license": "",
+  "license": "Apache-2.0",
   "engines": {
     "node": ">= 0.10",
     "npm": ">= 2.1"

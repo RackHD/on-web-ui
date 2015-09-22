@@ -1,3 +1,5 @@
+Copyright 2015, EMC, Inc.
+
 # Configuration
 
 By default the application makes api calls to: `http://localhost/api/1.1`

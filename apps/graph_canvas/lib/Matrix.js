@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 // Documentation: http://glmatrix.net/docs/2.2.0/symbols/mat2d.html

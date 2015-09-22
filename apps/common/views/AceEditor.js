@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 // https://github.com/securingsincity/react-ace/blob/master/src/ace.jsx
