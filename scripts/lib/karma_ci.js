@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 var karmaBaseConfig = require('./karma_local');

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Copyright 2015, EMC, Inc.
+
 # Flags:
 # VERBOSE_PROVISION -- If set, log commands and stderr.
 # JENKINS_PROVISION -- If set, do not checkout source code from git.

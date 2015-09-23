@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 import Store from 'common-web-ui/lib/Store';

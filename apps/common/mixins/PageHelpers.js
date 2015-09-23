@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 import Breadcrumbs from '../views/Breadcrumbs';

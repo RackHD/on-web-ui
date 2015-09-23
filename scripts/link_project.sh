@@ -1,3 +1,5 @@
+# Copyright 2015, EMC, Inc.
+
 printf '\n\nNPM link common-web-ui:\n\n'
 cd apps/common
 npm link

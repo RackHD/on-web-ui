@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 /* global describe, it, expect, before, after, beforeEach */
 /* eslint-disable no-unused-expressions */

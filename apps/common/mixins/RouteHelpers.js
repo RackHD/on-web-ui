@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 // NOTE: delay is added to give material-ui a chance to show off its fancy-ness.

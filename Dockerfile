@@ -1,5 +1,7 @@
 FROM debian:latest
 
+# Copyright 2015, EMC, Inc.
+
 # ENV JENKINS_PROVISION 1
 ENV VERBOSE_PROVISION 1
 

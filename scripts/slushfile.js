@@ -1,3 +1,5 @@
+// Copyright 2015, EMC, Inc.
+
 'use strict';
 
 process.on('uncaughtException', console.error.bind(console));
