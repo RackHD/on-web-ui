@@ -8,7 +8,7 @@ import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import CoordinateHelpers from '../mixins/CoordinateHelpers';
@@ -50,7 +50,7 @@ export { GCSocketElement as GCSocket };
 */
 
 @radium
-@mixin.decorate(CoordinateHelpers)
+@mixin(CoordinateHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,

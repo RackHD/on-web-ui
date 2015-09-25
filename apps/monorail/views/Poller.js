@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
@@ -28,9 +28,9 @@ import JsonInspector from 'react-json-inspector';
 import PollerStore from '../stores/PollerStore';
 let poller = new PollerStore();
 
-@mixin.decorate(DialogHelpers)
-@mixin.decorate(FormatHelpers)
-@mixin.decorate(PageHelpers)
+@mixin(DialogHelpers)
+@mixin(FormatHelpers)
+@mixin(PageHelpers)
 export default class Poller extends Component {
 
   state = {

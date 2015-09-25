@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
@@ -15,8 +15,8 @@ import {
 
 import LookupStore from '../stores/LookupStore';
 
-@mixin.decorate(FormatHelpers)
-@mixin.decorate(RouteHelpers)
+@mixin(FormatHelpers)
+@mixin(RouteHelpers)
 export default class Lookups extends Component {
 
   state = {

@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
@@ -27,8 +27,8 @@ import JsonInspector from 'react-json-inspector';
 import SkuStore from '../stores/SkuStore';
 let skus = new SkuStore();
 
-@mixin.decorate(DialogHelpers)
-@mixin.decorate(PageHelpers)
+@mixin(DialogHelpers)
+@mixin(PageHelpers)
 export default class Sku extends Component {
 
   state = {

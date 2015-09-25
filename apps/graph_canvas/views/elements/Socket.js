@@ -7,7 +7,7 @@ import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import Color from 'color';
@@ -22,7 +22,7 @@ import {} from 'material-ui';
 import generateId from '../../lib/generateId';
 
 @radium
-@mixin.decorate(DragEventHelpers)
+@mixin(DragEventHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,

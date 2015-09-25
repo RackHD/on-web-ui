@@ -4,7 +4,7 @@
 
 import React, { // eslint-disable-line no-unused-vars
   Component, PropTypes } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import radium from 'radium';
 import decorate from '../lib/decorate';
 import MUIContextHelpers from '../mixins/MUIContextHelpers';
@@ -37,7 +37,7 @@ let defaultStyles = {
 };
 
 @radium
-@mixin.decorate(MUIContextHelpers)
+@mixin(MUIContextHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,

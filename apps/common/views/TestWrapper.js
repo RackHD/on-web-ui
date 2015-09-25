@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import decorate from '../lib/decorate';
 import MUIContextHelpers from '../mixins/MUIContextHelpers';
 /* eslint-enable no-unused-vars */
@@ -33,7 +33,7 @@ onReady(function() {
   },
   childContextTypes: MUIContextHelpers.muiContextTypes()
 })
-@mixin.decorate(MUIContextHelpers)
+@mixin(MUIContextHelpers)
 export default class TestWrapper extends Component {
 
   static testRender(TestComponent, componentProps, done, disableAutoTheme) {

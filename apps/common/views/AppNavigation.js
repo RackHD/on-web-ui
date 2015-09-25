@@ -5,7 +5,7 @@
 import React, {// eslint-disable-line no-unused-vars
   Component,
   PropTypes } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import radium from 'radium';
 import decorate from '../lib/decorate';
 import MUIStyleHelpers from '../mixins/MUIStyleHelpers';
@@ -13,7 +13,7 @@ import MUIStyleHelpers from '../mixins/MUIStyleHelpers';
 import { LeftNav } from 'material-ui';
 
 @radium
-@mixin.decorate(MUIStyleHelpers)
+@mixin(MUIStyleHelpers)
 @decorate({
   propTypes: {
     title: PropTypes.string,

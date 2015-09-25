@@ -22,7 +22,6 @@ gulp.task('bundle', function (done) {
       'moment',
       'react',
       'react-router',
-      'react-mixin',
       'react-tap-event-plugin',
 
       // other

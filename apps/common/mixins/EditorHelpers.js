@@ -1,7 +1,5 @@
 // Copyright 2015, EMC, Inc.
 
-// Copyright 2015, EMC, Inc.
-
 'use strict';
 
 export default {

@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import decorate from 'common-web-ui/lib/decorate';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
@@ -31,9 +31,9 @@ let systemResetActions = new SystemResetTypesStore();
     filter: null
   }
 })
-@mixin.decorate(DeveloperHelpers)
-@mixin.decorate(FormatHelpers)
-@mixin.decorate(RouteHelpers)
+@mixin(DeveloperHelpers)
+@mixin(FormatHelpers)
+@mixin(RouteHelpers)
 export default class SystemsGrid extends Component {
 
   state = {

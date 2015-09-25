@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
@@ -27,11 +27,11 @@ import JsonEditor from 'common-web-ui/views/JsonEditor';
 import NodeStore from '../stores/NodeStore';
 let nodes = new NodeStore();
 
-@mixin.decorate(FormatHelpers)
-@mixin.decorate(DialogHelpers)
-@mixin.decorate(EditorHelpers)
-@mixin.decorate(RouteHelpers)
-@mixin.decorate(GridHelpers)
+@mixin(FormatHelpers)
+@mixin(DialogHelpers)
+@mixin(EditorHelpers)
+@mixin(RouteHelpers)
+@mixin(GridHelpers)
 export default class EditNode extends Component {
 
   state = {

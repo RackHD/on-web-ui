@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
@@ -19,10 +19,10 @@ import {
 import PollerStore from '../stores/PollerStore';
 let pollers = new PollerStore();
 
-@mixin.decorate(DialogHelpers)
-@mixin.decorate(FormatHelpers)
-@mixin.decorate(RouteHelpers)
-@mixin.decorate(GridHelpers)
+@mixin(DialogHelpers)
+@mixin(FormatHelpers)
+@mixin(RouteHelpers)
+@mixin(GridHelpers)
 export default class PollersGrid extends Component {
 
   state = {
