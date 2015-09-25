@@ -6,7 +6,7 @@ import React, { // eslint-disable-line no-unused-vars
   Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import decorate from '../../lib/decorate';
 
 import DeveloperHelpers from '../../mixins/DeveloperHelpers';
@@ -29,8 +29,8 @@ import JsonEditor from '../JsonEditor';
 */
 
 @radium
-@mixin.decorate(DeveloperHelpers)
-@mixin.decorate(MUIContextHelpers)
+@mixin(DeveloperHelpers)
+@mixin(MUIContextHelpers)
 @decorate({
   propTypes: {
     callback: PropTypes.string,

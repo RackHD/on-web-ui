@@ -11,7 +11,7 @@ import React, { // eslint-disable-line no-unused-vars
   Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
@@ -41,9 +41,9 @@ import FileTreeBrowser from './FileTreeBrowser';
 import FileManualViewer from './FileManualViewer';
 
 @radium
-@mixin.decorate(DeveloperHelpers)
-@mixin.decorate(PageHelpers)
-@mixin.decorate(RouteHelpers)
+@mixin(DeveloperHelpers)
+@mixin(PageHelpers)
+@mixin(RouteHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,

@@ -5,13 +5,13 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 
 import radium from 'radium';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 
 import ViewportHelpers from '../mixins/ViewportHelpers';
 import decorate from '../lib/decorate';
 
 @radium
-@mixin.decorate(ViewportHelpers)
+@mixin(ViewportHelpers)
 @decorate({
 
   propTypes: ViewportHelpers.viewportPropTypes({

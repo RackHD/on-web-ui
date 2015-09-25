@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import decorate from 'common-web-ui/lib/decorate';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 /* eslint-enable no-unused-vars */
@@ -26,8 +26,8 @@ let chassis = new ChassisStore();
     showSystems: true
   }
 })
-@mixin.decorate(PageHelpers)
-@mixin.decorate(DeveloperHelpers)
+@mixin(PageHelpers)
+@mixin(DeveloperHelpers)
 export default class ChassisDetails extends Component {
 
   state = {chassis: null};

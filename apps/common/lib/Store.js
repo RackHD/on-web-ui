@@ -54,13 +54,13 @@ export default class Store extends EventEmitter {
 
   key = 'id';
 
-  collect(list) {
-    list.forEach(item => this.insert(item[this.key], item));
+  collect(list, silent) {
+    list.forEach(item => this.insert(item[this.key], item, silent));
   }
 
   recollect(list, silent) {
     this.empty(true);
-    this.collect(list);
+    this.collect(list, true);
     if (!silent) { this.publish(); }
   }
 
@@ -84,13 +84,13 @@ export default class Store extends EventEmitter {
     this.insert(id, Object.assign(this.get(id) || {}, newData));
   }
 
-  change(id, data) {
-    this.insert(id, data);
+  change(id, data, silent) {
+    this.insert(id, data, silent);
   }
 
-  remove(id) {
+  remove(id, silent) {
     if (!id) { return; }
-    this.insert(id, null);
+    this.insert(id, null, silent);
     this.removeAllListeners(this.event(id));
     this.removeAllListeners(this.event(id, 'error'));
   }

@@ -9,7 +9,7 @@ import MaterialUI from 'material-ui';
 import moment from 'moment';
 import React from 'react';
 import reactRouter from 'react-router';
-import reactMixin from 'react-mixin';
+import reactMixin from 'common-web-ui/lib/mixin';
 import reactTapEventPlugin from 'react-tap-event-plugin';
 
 var vendor = {

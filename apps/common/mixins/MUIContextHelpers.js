@@ -3,20 +3,13 @@
 'use strict';
 
 import { PropTypes } from 'react';
-import { Styles } from 'material-ui';
-
-const themeManager = new Styles.ThemeManager();
+import { ThemeManager } from 'material-ui/lib/styles';
+import lightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 
 export default {
 
-  get themeManager() {
-    this._themeManager = this._themeManager || themeManager;
-    return this._themeManager;
-  },
-
-  newThemeManager() {
-    this._themeManager = new Styles.ThemeManager();
-    return this._themeManager;
+  get muiTheme() {
+    return ThemeManager.getMuiTheme(this.customRawTheme || lightRawTheme);
   },
 
   muiContextTypes(contextTypes) {
@@ -27,7 +20,7 @@ export default {
 
   muiContext(context) {
     context = context || {};
-    context.muiTheme = this.themeManager.getCurrentTheme() || context.muiTheme;
+    context.muiTheme = this.muiTheme || context.muiTheme;
     return context;
   }
 

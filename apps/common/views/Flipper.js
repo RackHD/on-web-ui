@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import decorate from '../../lib/decorate';
 /* eslint-enable no-unused-vars */
 

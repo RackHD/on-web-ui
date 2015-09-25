@@ -5,7 +5,7 @@
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
 
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
@@ -22,7 +22,7 @@ import GCLinkElement from '../elements/Link';
     graphCanvas: PropTypes.any
   }
 })
-@mixin.decorate(DragEventHelpers)
+@mixin(DragEventHelpers)
 export default class GCLinksManager extends Component {
 
   get graphCanvas() {

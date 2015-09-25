@@ -6,7 +6,7 @@ import React, { // eslint-disable-line no-unused-vars
   Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
@@ -35,7 +35,7 @@ The `FileTreeBrowser` component is used to generate the documentation menu.
 */
 
 @radium
-@mixin.decorate(DeveloperHelpers)
+@mixin(DeveloperHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,

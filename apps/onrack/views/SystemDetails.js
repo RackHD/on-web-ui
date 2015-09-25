@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
@@ -28,9 +28,9 @@ import ChassisStore from '../stores/ChassisStore';
 let chassis = new ChassisStore();
 
 
-@mixin.decorate(PageHelpers)
-@mixin.decorate(FormatHelpers)
-@mixin.decorate(DeveloperHelpers)
+@mixin(PageHelpers)
+@mixin(FormatHelpers)
+@mixin(DeveloperHelpers)
 export default class SystemDetails extends Component {
 
   state = {

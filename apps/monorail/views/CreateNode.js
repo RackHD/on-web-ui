@@ -4,14 +4,14 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
 import EditNode from './EditNode';
 import {} from 'material-ui';
 
-@mixin.decorate(PageHelpers)
+@mixin(PageHelpers)
 export default class CreateNode extends Component {
 
   state = {

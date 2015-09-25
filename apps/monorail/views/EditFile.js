@@ -4,7 +4,7 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
@@ -23,11 +23,11 @@ import {
 import FileStore from '../stores/FileStore';
 let file = new FileStore();
 
-@mixin.decorate(DialogHelpers)
-@mixin.decorate(FormatHelpers)
-@mixin.decorate(EditorHelpers)
-@mixin.decorate(RouteHelpers)
-@mixin.decorate(GridHelpers)
+@mixin(DialogHelpers)
+@mixin(FormatHelpers)
+@mixin(EditorHelpers)
+@mixin(RouteHelpers)
+@mixin(GridHelpers)
 export default class EditFile extends Component {
 
   state = {

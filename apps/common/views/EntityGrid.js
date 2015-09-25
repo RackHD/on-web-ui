@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import decorate from '../lib/decorate';
-import mixin from 'react-mixin';
+import mixin from 'common-web-ui/lib/mixin';
 import DeveloperHelpers from '../mixins/DeveloperHelpers';
 /* eslint-enable no-unused-vars */
 
@@ -42,7 +42,7 @@ import DataTableToolbar from './DataTableToolbar';
     onSelectionChange: null
   }
 })
-@mixin.decorate(DeveloperHelpers)
+@mixin(DeveloperHelpers)
 export default class EntityGrid extends Component {
 
   state = {
