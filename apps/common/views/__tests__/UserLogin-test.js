@@ -23,7 +23,7 @@ describe('UserLogin', function() {
     });
 
     after(function(done) {
-      this.timeout(200);
+      this.timeout(500);
       setTimeout(() => this.wrapper.cleanup(done), 100);
     });
 
