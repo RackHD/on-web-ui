@@ -3,11 +3,15 @@
 'use strict';
 
 import {
+    Table,
+    TableHeader,
+    TableRow,
+    TableHeaderColumn,
+    TableBody,
+    TableRowColumn,
     Toolbar,
     ToolbarGroup
   } from 'material-ui';
-
-import Griddle from 'griddle-react';
 
 export default {
 
@@ -51,7 +55,35 @@ export default {
     if (mapper) {
       props.results = props.results.map(mapper);
     }
-    return <Griddle {...props} />;
+    props.fields = props.fields ||
+      Object.keys(props.results[0]).map(fieldName => ({name: fieldName}));
+    props.table = props.table || {};
+    props.header = props.header || {};
+    props.body = props.body || {};
+    let tableFields = props.fields.map(field => {
+      return <TableHeaderColumn>{field.name}</TableHeaderColumn>
+    })
+    let tableRows = props.results.map(item => {
+      return (
+        <TableRow>
+          {props.fields.map(field => {
+            return <TableRowColumn>{item[field.name]}</TableRowColumn>
+          })}
+        </TableRow>
+      );
+    });
+    return (
+      <Table {...props.table}>
+        <TableHeader displaySelectAll={false} adjustForCheckbox={false} {...props.header}>
+          <TableRow>
+            {tableFields}
+          </TableRow>
+        </TableHeader>
+        <TableBody stripedRows={true} displayRowCheckbox={false} {...props.body}>
+          {tableRows}
+        </TableBody>
+      </Table>
+    );
   }
 
 };
