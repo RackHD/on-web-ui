@@ -10,7 +10,7 @@ var superagent = require('superagent');
 
 server.set('port', 2000);
 
-var host = 'https://137.69.148.136',
+var host = 'https://137.69.148.83',
     api = host + '/rest/v1/';
 
 var methods = {

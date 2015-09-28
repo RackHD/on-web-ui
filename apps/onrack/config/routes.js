@@ -3,7 +3,7 @@
 'use strict';
 
 import React from 'react';
-import Router, { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
+import Router, { Route, /*Redirect,*/ NotFoundRoute, DefaultRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
 import { MenuItem } from 'material-ui';
@@ -12,13 +12,18 @@ import UserLogin from 'common-web-ui/views/UserLogin';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
-  { text: 'Dashboard', route: '/' },
-  { text: 'Login', route: 'login' },
-  { text: 'Objects', type: MenuItem.Types.SUBHEADER },
+  { text: 'OnRack API', type: MenuItem.Types.LINK, payload: 'https://' + window.location.hostname + '/rest/v1/api.html', target: '_blank' },
+  { text: 'OnRack Dashboard', route: 'dash' },
+  { text: 'OnRack Login', route: 'login' },
+  { text: 'Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Chassis', route: 'chassis' },
-  { text: 'Systems', route: 'systems' },
+  // { text: 'Systems', route: 'systems' },
   { text: 'Other', type: MenuItem.Types.SUBHEADER },
-  { text: 'EMC', type: MenuItem.Types.LINK, payload: 'http://emc.com' }
+  { text: 'MonoRail API', type: MenuItem.Types.LINK, payload: '/docs', target: '_blank' },
+  { text: 'MonoRail Dashboard', type: MenuItem.Types.LINK, payload: '/monorail', target: '_blank' },
+  { text: 'Workflow Editor', type: MenuItem.Types.LINK, payload: '/workflow_editor', target: '_blank' },
+  { text: '', type: MenuItem.Types.SUBHEADER },
+  { text: ['© 2015 EMC', <sup>2</sup>], type: MenuItem.Types.LINK, payload: 'http://emc.com', target: '_blank' }
 ];
 
 // Must be imported after navigation.
@@ -33,14 +38,14 @@ import Dashboard from '../views/Dashboard';
 // See http://rackt.github.io/react-router/
 let routes = (
   <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={Dashboard}/>
+    <DefaultRoute handler={UserLogin} />
     <Route name="chassis" handler={ChassisCollection} />
     <Route name="case" path="/chassis/:chassisId" handler={ChassisDetails} />
-    <Route name="systems" handler={SystemsCollection} />
-    <Route name="system" path="/systems/:systemId" handler={SystemDetails} />
+    {/*<Route name="systems" handler={SystemsCollection} />
+    <Route name="system" path="/systems/:systemId" handler={SystemDetails} />*/}
+    <Route name="dash" handler={Dashboard} />
     <Route name="login" handler={UserLogin} />
     <NotFoundRoute handler={NotFound}/>
-    <Redirect from="dash" to="/" />
   </Route>
 );
 

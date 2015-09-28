@@ -11,9 +11,10 @@ import NotFound from 'common-web-ui/views/NotFound';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
-  { text: 'MonoRail API', type: MenuItem.Types.LINK, payload: '/docs', target: '_blank'  },
+  { text: 'MonoRail API', type: MenuItem.Types.LINK, payload: '/docs', target: '_blank' },
   { text: 'MonoRail Dashboard', route: '/' },
   { text: 'Workflow Editor', type: MenuItem.Types.LINK, payload: '/workflow_editor', target: '_blank' },
+  { text: 'OnRack UI', type: MenuItem.Types.LINK, payload: '/onrack', target: '_blank' },
   { text: 'Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Catalogs', route: 'catalogs' },
   { text: 'Files', route: 'files' },
