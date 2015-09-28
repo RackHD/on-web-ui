@@ -13,7 +13,7 @@ import {
     Tab
   } from 'material-ui';
 
-import WEInspector from './Inspector';
+// import WEInspector from './Inspector';
 import WEWorkflowJSON from './WorkflowJSON';
 import WETasksLibrary from './TasksLibrary';
 import WETWorkflowsLibrary from './WorkflowsLibrary';
@@ -92,9 +92,9 @@ export default class WETray extends Component {
             className="fa fa-arrows-h"
             title="Resize Tray" />
         <Tabs ref="tabs" contentContainerStyle={{maxHeight: window.innerHeight - 86, overflow: 'auto'}}>
-          <Tab label="Inspector">
+          {/*<Tab label="Inspector">
             <WEInspector ref="inspector" />
-          </Tab>
+          </Tab>*/}
           <Tab label="JSON">
             <WEWorkflowJSON ref="json" />
           </Tab>
@@ -137,20 +137,20 @@ export default class WETray extends Component {
     window.addEventListener('mouseup', upHandler);
   }
 
-  viewInspector() {
+  // viewInspector() {
+  //   this.refs.tabs.setState({selectedIndex: 0});
+  // }
+
+  viewJSON() {
     this.refs.tabs.setState({selectedIndex: 0});
   }
 
-  viewJSON() {
+  viewTasks() {
     this.refs.tabs.setState({selectedIndex: 1});
   }
 
-  viewTasks() {
-    this.refs.tabs.setState({selectedIndex: 2});
-  }
-
   viewWorkflows() {
-    this.refs.tabs.setState({selectedIndex: 3});
+    this.refs.tabs.setState({selectedIndex: 2});
   }
 
 }

@@ -40,9 +40,8 @@ export default class WEFileMenu extends Component {
   render() {
     var fileMenuItems = [
       {text: 'File', type: MenuItem.Types.SUBHEADER},
-      {text: 'New'}//,
-      // {text: 'Clone'},
-      // {text: 'Load'}
+      {text: 'New'},
+      {text: 'Save'}
     ];
 
     return (
@@ -58,6 +57,9 @@ export default class WEFileMenu extends Component {
       this.context.editor.currentWorkflowGraph = null;
       this.context.layout.refreshWorkflow();
       this.routeTo('');
+    }
+    if (menuItem.text === 'Save') {
+      this.context.editor.refs.tray.refs.json.saveGraph();
     }
     if (selectedIndex !== 0) {
       setTimeout(() => {

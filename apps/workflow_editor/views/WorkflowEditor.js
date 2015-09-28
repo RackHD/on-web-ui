@@ -12,7 +12,7 @@ import decorate from 'common-web-ui/lib/decorate';
 
 import cloneDeep from 'lodash/lang/cloneDeep';
 
-import {} from 'material-ui';
+import { CircularProgress } from 'material-ui';
 
 import GraphCanvas, {
     GCGroup,
@@ -83,6 +83,7 @@ export default class WorkflowEditor extends Component {
   emitter = new EventEmitter();
 
   state = {
+    loading: true,
     trayWidth: window.innerWidth * 0.4,
     version: 0,
     canvasWidth: 1000,
@@ -96,6 +97,7 @@ export default class WorkflowEditor extends Component {
     },
 
     overlay: {
+      textAlign: 'center',
       position: 'absolute',
       height: 0,
       width: '100%',
@@ -172,7 +174,9 @@ export default class WorkflowEditor extends Component {
               initialWidth={this.state.trayWidth}
               onResize={this.updateTraySize.bind(this)} />
         </div>
-        <div ref="overlay" className="overlay" style={css.overlay}></div>
+        <div ref="overlay" className="overlay" style={css.overlay}>
+          {this.state.loading ? <CircularProgress mode="indeterminate" size={2} style={{marginTop: 200}}/> : null}
+        </div>
       </div>
     );
   }
@@ -193,7 +197,7 @@ export default class WorkflowEditor extends Component {
   }
 
   onSelect(selection) {
-    this.refs.tray.refs.inspector.update(selection);
+    // this.refs.tray.refs.inspector.update(selection);
   }
 
   resetWorkflow() {
@@ -221,7 +225,7 @@ export default class WorkflowEditor extends Component {
     };
     this.setState(prevState => ({version: prevState.version + 1}));
     try {
-      this.refs.tray.refs.inspector.refs.outline.setState({model: {}});
+      // this.refs.tray.refs.inspector.refs.outline.setState({model: {}});
       this.refs.tray.refs.json.setState({model: {}});
     } catch (err) {
       console.warn(err.stack || err);
@@ -246,18 +250,24 @@ export default class WorkflowEditor extends Component {
 
   loadWorkflowFromParams(props) {
     props = props || this.props;
-    if (props.params && props.params.workflow) {
-      let workflowName = decodeURIComponent(props.params.workflow);
-      this.taskDefinitionStore.list().then(() => {
-        this.workflowTemplateStore.list().then(() => {
+    this.setState({loading: true});
+    setTimeout(() => {
+      if (props.params && props.params.workflow) {
+        let workflowName = decodeURIComponent(props.params.workflow);
+        Promise.all([
+          this.taskDefinitionStore.list(),
+          this.workflowTemplateStore.list()
+        ]).then(() => {
+          this.setState({loading: false});
           let workflowTemplate = this.editor.getWorkflowTemplateByName(workflowName);
           if (workflowTemplate) { this.loadWorkflow(workflowTemplate, true); }
         });
-      });
-    }
-    else {
-      this.refreshWorkflow(this.currentWorkflowGraph);
-    }
+      }
+      else {
+        this.setState({loading: false});
+        this.refreshWorkflow(this.currentWorkflowGraph);
+      }
+    }, 50);
   }
 
   refreshWorkflow(callback) {
@@ -287,7 +297,7 @@ export default class WorkflowEditor extends Component {
   loadWorkflowGraph(workflowGraph,
       // workflowTemplate,
       callback) {
-    this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
+    // this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
     // this.refs.tray.refs.json.setState({model: workflowTemplate});
     this.loadWorkflowTemplate(workflowGraph,
       // workflowTemplate,
@@ -574,46 +584,11 @@ export default class WorkflowEditor extends Component {
         });
 
         // Specific Options Link Setup
-        Object.keys(workflowGraph.options).forEach(optionsKey => {
-          let associatedTask = taskMap[optionsKey];
-          if (associatedTask) {
-            let socketFrom = workflowGraph._.options.specificSocketIds.out,
-                socketTo = associatedTask._.optionsSocketIds.in;
-
-            React.withContext({
-              graphCanvas: this.refs.graphCanvas,
-              parentGCGroup: workflowGroupComponent
-            }, () => {
-              let optionsLinkId = GCLink.id();
-
-              let link = (
-                <GCLink key={optionsLinkId}
-                    from={socketFrom}
-                    to={socketTo}
-                    initialId={optionsLinkId}
-                    initialColor="#6fc" />
-              );
-
-              links[optionsLinkId] = link;
-
-              // TODO: add handler to remove this task from workflowGraph.tasks
-              workflowGroupComponent.appendChild(link);
-            });
-          }
-        });
-
-        // Default Options Link Setup
-        if (workflowGraph.options.defaults) {
-          Object.keys(workflowGraph.options.defaults).forEach(optionKey => {
-            let associatedTasks = [];
-            workflowGraph.tasks.forEach(task => {
-              let taskDefinition = task._.definition;
-              if (taskDefinition && taskDefinition.options && taskDefinition.options.hasOwnProperty(optionKey)) {
-                associatedTasks.push(task);
-              }
-            });
-            associatedTasks.forEach(associatedTask => {
-              let socketFrom = workflowGraph._.options.defaultSocketIds.out,
+        if (workflowGraph.options) {
+          Object.keys(workflowGraph.options).forEach(optionsKey => {
+            let associatedTask = taskMap[optionsKey];
+            if (associatedTask) {
+              let socketFrom = workflowGraph._.options.specificSocketIds.out,
                   socketTo = associatedTask._.optionsSocketIds.in;
 
               React.withContext({
@@ -635,8 +610,45 @@ export default class WorkflowEditor extends Component {
                 // TODO: add handler to remove this task from workflowGraph.tasks
                 workflowGroupComponent.appendChild(link);
               });
-            });
+            }
           });
+
+          // Default Options Link Setup
+          if (workflowGraph.options.defaults) {
+            Object.keys(workflowGraph.options.defaults).forEach(optionKey => {
+              let associatedTasks = [];
+              workflowGraph.tasks.forEach(task => {
+                let taskDefinition = task._.definition;
+                if (taskDefinition && taskDefinition.options && taskDefinition.options.hasOwnProperty(optionKey)) {
+                  associatedTasks.push(task);
+                }
+              });
+              associatedTasks.forEach(associatedTask => {
+                let socketFrom = workflowGraph._.options.defaultSocketIds.out,
+                    socketTo = associatedTask._.optionsSocketIds.in;
+
+                React.withContext({
+                  graphCanvas: this.refs.graphCanvas,
+                  parentGCGroup: workflowGroupComponent
+                }, () => {
+                  let optionsLinkId = GCLink.id();
+
+                  let link = (
+                    <GCLink key={optionsLinkId}
+                        from={socketFrom}
+                        to={socketTo}
+                        initialId={optionsLinkId}
+                        initialColor="#6fc" />
+                  );
+
+                  links[optionsLinkId] = link;
+
+                  // TODO: add handler to remove this task from workflowGraph.tasks
+                  workflowGroupComponent.appendChild(link);
+                });
+              });
+            });
+          }
         }
 
         if (callback) { setTimeout(callback, 32); }

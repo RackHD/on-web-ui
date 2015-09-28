@@ -128,11 +128,11 @@ export default class WEWorkflowJson extends Component {
   }
 
   saveGraph() {
-    let workflow = JSON.parse(this.refs.aceEditor.editor.getValue()),
-        id = workflow.injectableName || 'Graph.' + workflow.injectableName.replace(' ', '.');
-    this.workflowTemplateStore.create(id, workflow).catch(err => {
-      console.error(err);
-    });
+    let workflow = JSON.parse(this.refs.aceEditor.editor.getValue());
+    workflow.injectableName = workflow.injectableName || 'Graph.' + workflow.injectableName.replace(' ', '.');
+    this.workflowTemplateStore.create(workflow.injectableName, workflow).then(
+      () => {this.workflowTemplateStore.list()},
+      err => console.error(err));
   }
 
   compileJSON(newValue, delay) {

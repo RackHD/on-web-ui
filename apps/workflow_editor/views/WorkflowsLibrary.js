@@ -55,8 +55,12 @@ export default class WEWorkflowsLibrary extends Component {
   }
 
   componentDidMount() {
-    this.unwatchWorkflows = this.workflowTemplateStore.watchAll('workflowTemplates', this);
-    this.workflowTemplateStore.list();
+    this.unwatchWorkflows = this.workflowTemplateStore.watchAll('workflowTemplates', this, err => {
+      console.error(err);
+    });
+    setTimeout(() => {
+      this.workflowTemplateStore.list();
+    }, 0);
   }
 
   componentWillUnmount() {
