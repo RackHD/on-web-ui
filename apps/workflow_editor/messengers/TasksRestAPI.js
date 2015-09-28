@@ -5,7 +5,7 @@
 import { API } from '../config/index';
 import http from 'superagent';
 
-export default class WorkflowsRestAPI {
+export default class TasksRestAPI {
 
   api = API;
   entity = 'tasks';

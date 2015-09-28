@@ -56,7 +56,9 @@ export default class WEWorkflowJson extends Component {
     model: this.props.model
   };
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.workflowTemplateStore = this.context.editor.workflowTemplateStore;
+  }
 
   componentWillUnmount() {}
 
@@ -64,6 +66,7 @@ export default class WEWorkflowJson extends Component {
     return (
       <div>
         <RaisedButton label="Update Graph" onTouchTap={this.updateGraph.bind(this)}/>
+        <RaisedButton label="Save Graph" onTouchTap={this.saveGraph.bind(this)}/>
         {this.state.error}
         <AceEditor ref="aceEditor" key="aceEditor"
           mode="json"
@@ -122,6 +125,14 @@ export default class WEWorkflowJson extends Component {
   updateGraph() {
     // console.log('UPDATE GRAPH');
     this.compileJSON(this.refs.aceEditor.editor.getValue());
+  }
+
+  saveGraph() {
+    let workflow = JSON.parse(this.refs.aceEditor.editor.getValue()),
+        id = workflow.injectableName || 'Graph.' + workflow.injectableName.replace(' ', '.');
+    this.workflowTemplateStore.create(id, workflow).catch(err => {
+      console.error(err);
+    });
   }
 
   compileJSON(newValue, delay) {

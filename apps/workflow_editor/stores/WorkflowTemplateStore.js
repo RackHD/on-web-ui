@@ -27,7 +27,7 @@ export default class WorkflowTemplateStore extends Store {
   }
 
   create(id, data) {
-    return this.workflowsRestAPI.put(data)
+    return this.workflowsRestAPI.put(response)
       .then(() => this.insert(id, data))
       .catch(err => this.error(id, err));
   }
