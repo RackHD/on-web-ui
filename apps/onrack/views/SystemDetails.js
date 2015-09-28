@@ -139,74 +139,74 @@ export default class SystemDetails extends Component {
       return a && a.indexOf(type) !== -1;
     }
     var availableActions = [
-      {
-        filter: () => computerSystemResetActionTest('ForceOn'),
-        button: (
-          <li>
-            <FlatButton
-                label="Power On Server"
-                onClick={() =>
-                  systemResetActions.sendReset(this.systemId, 'ForceOn')
-                } />
-          </li>
-        )
-      },
-      {
-        filter: () => computerSystemResetActionTest('ForceOff'),
-        button: (
-          <li>
-            <FlatButton
-                label="Power Off Server"
-                onClick={() =>
-                  systemResetActions.sendReset(this.systemId, 'ForceOff')
-                } />
-          </li>
-        )
-      },
-      {
-        filter: () => computerSystemResetActionTest('ForceRestart'),
-        button: (
-          <li>
-            <FlatButton
-                label="Reset Server"
-                onClick={() =>
-                  systemResetActions.sendReset('ForceRestart')
-                } />
-          </li>
-        )
-      },
-      {
-        filter: () => computerSystemResetActionTest('GracefulRestart'),
-        button: (
-          <li>
-            <FlatButton
-                label="Restart Server"
-                onClick={() =>
-                  systemResetActions.sendReset(this.systemId, 'GracefulRestart')
-                } />
-          </li>
-        )
-      },
-      {
-        filter: () => true,
-        button: (
-          <li>
-            <FlatButton
-                label="Toggle Locator LED"
-                onClick={() => null} />
-          </li>
-        )
-      },
-      {
-        filter: () => false,
-        button: (
-          <li>
-            <FlatButton
-                label="Boot Image"
-                onClick={() => null} />
-          </li>
-        )
-      }
+        {
+          filter: () => computerSystemResetActionTest('ForceOn'),
+          button: (
+            <li>
+              <FlatButton
+                  label="Power On Server"
+                  onClick={() =>
+                    systemResetActions.sendReset(this.systemId, 'ForceOn')
+                  } />
+            </li>
+          )
+        },
+        {
+          filter: () => computerSystemResetActionTest('ForceOff'),
+          button: (
+            <li>
+              <FlatButton
+                  label="Power Off Server"
+                  onClick={() =>
+                    systemResetActions.sendReset(this.systemId, 'ForceOff')
+                  } />
+            </li>
+          )
+        },
+        {
+          filter: () => computerSystemResetActionTest('ForceRestart'),
+          button: (
+            <li>
+              <FlatButton
+                  label="Reset Server"
+                  onClick={() =>
+                    systemResetActions.sendReset('ForceRestart')
+                  } />
+            </li>
+          )
+        },
+        {
+          filter: () => computerSystemResetActionTest('GracefulRestart'),
+          button: (
+            <li>
+              <FlatButton
+                  label="Restart Server"
+                  onClick={() =>
+                    systemResetActions.sendReset(this.systemId, 'GracefulRestart')
+                  } />
+            </li>
+          )
+        },
+        {
+          filter: () => true,
+          button: (
+            <li>
+              <FlatButton
+                  label="Toggle Locator LED"
+                  onClick={() => null} />
+            </li>
+          )
+        },
+        {
+          filter: () => false,
+          button: (
+            <li>
+              <FlatButton
+                  label="Boot Image"
+                  onClick={() => null} />
+            </li>
+          )
+        }
     ];
     availableActions = availableActions.filter((action) => {
       return action.filter && action.filter();
