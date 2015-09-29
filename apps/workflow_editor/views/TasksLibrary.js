@@ -53,8 +53,12 @@ export default class WETasksLibrary extends Component {
   }
 
   componentDidMount() {
-    this.unwatchTasks = this.taskDefinitionStore.watchAll('taskDefinitions', this);
-    this.taskDefinitionStore.list();
+    this.unwatchTasks = this.taskDefinitionStore.watchAll('taskDefinitions', this, err => {
+      console.error(err);
+    });
+    setTimeout(() => {
+      this.taskDefinitionStore.list();
+    }, 0)
   }
 
   componentWillUnmount() {

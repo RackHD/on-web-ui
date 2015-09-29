@@ -131,40 +131,40 @@ export default class SystemsGrid extends Component {
     }
     var nowrap = {whiteSpace: 'nowrap'};
     var availableActions = [
-      {
-        text: <strong style={nowrap}>System Actions:</strong>,
-        test: () => true
-      },
-      {
-        text: <span style={nowrap}>Power On Server</span>,
-        test: (data) => computerSystemResetActionTest(data, 'ForceOn'),
-        take: (data) => systemResetActions.sendReset(data.id, 'ForceOn')
-      },
-      {
-        text: <span style={nowrap}>Power Off Server</span>,
-        test: (data) => computerSystemResetActionTest(data, 'ForceOff'),
-        take: (data) => systemResetActions.sendReset(data.id, 'ForceOff')
-      },
-      {
-        text: <span style={nowrap}>Reset Server</span>,
-        test: (data) => computerSystemResetActionTest(data, 'ForceRestart'),
-        take: (data) => systemResetActions.sendReset(data.id, 'ForceRestart')
-      },
-      {
-        text: <span style={nowrap}>Restart Server</span>,
-        test: (data) => computerSystemResetActionTest(data, 'GracefulRestart'),
-        take: (data) => systemResetActions.sendReset(data.id, 'GracefulRestart')
-      },
-      {
-        text: <span style={nowrap}>Toggle Locator LED</span>,
-        test: () => true,
-        take: () => null
-      },
-      {
-        text: <span style={nowrap}>Boot Image</span>,
-        test: () => false,
-        take: () => null
-      }
+        {
+          text: <strong style={nowrap}>System Actions:</strong>,
+          test: () => true
+        },
+        {
+          text: <span style={nowrap}>Power On Server</span>,
+          test: (data) => computerSystemResetActionTest(data, 'ForceOn'),
+          take: (data) => systemResetActions.sendReset(data.id, 'ForceOn')
+        },
+        {
+          text: <span style={nowrap}>Power Off Server</span>,
+          test: (data) => computerSystemResetActionTest(data, 'ForceOff'),
+          take: (data) => systemResetActions.sendReset(data.id, 'ForceOff')
+        },
+        {
+          text: <span style={nowrap}>Reset Server</span>,
+          test: (data) => computerSystemResetActionTest(data, 'ForceRestart'),
+          take: (data) => systemResetActions.sendReset(data.id, 'ForceRestart')
+        },
+        {
+          text: <span style={nowrap}>Restart Server</span>,
+          test: (data) => computerSystemResetActionTest(data, 'GracefulRestart'),
+          take: (data) => systemResetActions.sendReset(data.id, 'GracefulRestart')
+        },
+        {
+          text: <span style={nowrap}>Toggle Locator LED</span>,
+          test: () => true,
+          take: () => null
+        },
+        {
+          text: <span style={nowrap}>Boot Image</span>,
+          test: () => false,
+          take: () => null
+        }
     ];
     var selected = this.refs.entityGrid.selected;
     selected = Object.keys(selected).map((id) => selected[id]);

@@ -30,7 +30,7 @@ export default class WorkflowsRestAPI {
     return new Promise((resolve, reject) => {
       http.put(this.url)
         .accept('json')
-        .type('json')
+        .type('application/json')
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
