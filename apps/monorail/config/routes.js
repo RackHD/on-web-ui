@@ -27,6 +27,7 @@ export var navigation = [
   { text: 'Workflows', route: 'workflows' },
   { text: 'System', type: MenuItem.Types.SUBHEADER },
   { text: 'Config', route: 'config' },
+  { text: 'Logs', route: 'logs' },
   { text: 'Lookups', route: 'lookups' },
   { text: 'Schemas', route: 'schemas' },
   { text: 'Versions', route: 'versions' },
@@ -35,6 +36,7 @@ export var navigation = [
 ];
 
 // Must be imported after navigation.
+import AllLogs from '../views/AllLogs';
 import App from '../views/App';
 import Catalog from '../views/Catalog';
 import Catalogs from '../views/Catalogs';
@@ -80,6 +82,7 @@ let routes = (
     <Route name="fileN" path="/files/new" handler={CreateFile} />
     <Route name="file" path="/files/:fileId" handler={File} />
 
+    <Route name="logs" handler={AllLogs} />
     <Route name="lookups" handler={Lookups} />
 
     <Route name="nodes" handler={Nodes} />

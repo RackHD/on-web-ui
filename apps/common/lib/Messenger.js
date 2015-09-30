@@ -4,94 +4,112 @@
 
 import { EventEmitter } from 'events';
 
-export default class Messenger {
-  constructor(channel) {
-    this.channel = channel;
-    this.events = null;
-    this.wsConn = null;
-    this.reconnectInterval = 1000 * 30;
+export default class Messenger extends EventEmitter {
+  channel = null;
+  connection = null;
+  handlers = null;
+  host = null;
+  id = null;
+  isConnected = false;
+  isOpen = false;
+  reconnectInterval = 1000 * 30;
+  secure = false;
+  url = null;
+
+  constructor(channel, host, secure) {
+    super();
+    this.channel = channel || this.channel;
+    this.host = host || this.host ||
+      (window && window.location.host) || 'localhost';
+    this.secure = secure || this.secure;
+    this.url = 'ws';
+    if (this.secure) this.url += 's';
+    this.url += '://' + this.host;
+    if (this.url.charAt(this.url.length - 1) !== '/') this.url += '/';
+    if (this.channel) this.url += this.channel;
   }
 
-  connect(cb, setup) {
+  connect(cb) {
     if (this.isConnected) { return; }
     this.isConnected = true;
 
-    this.events = new EventEmitter();
-    // this.wsConn = new WebSocket('ws://localhost:8888');
-    this.wsConn = new WebSocket('ws://' + window.location.hostname + ':8888');
+    this.removeAllListeners();
 
-    if (setup) setup();
+    this.connection = new WebSocket(this.url);
 
-    this.events.once('init', (msg) => {
-      this.initMsg = msg;
+    if (this.handlers) {
+      this.handlers.forEach(name => this.on(name, this[name].bind(this)));
+    }
+
+    this.once('init', (msg) => {
       this.id = msg.id;
       if (cb) cb(msg);
     });
 
-    this.wsConn.onopen = (event) => {
+    this.connection.onopen = (event) => {
       this.isOpen = true;
-      this.events.emit('open', event);
+      this.emit('open', event);
+      this.connection.send('{"handler": "init"}');
     };
 
-    this.wsConn.onclose = (event) => {
+    this.connection.onclose = (event) => {
       this.isConnected = this.isOpen = false;
-      this.events.emit('close', event);
-      setTimeout(this.connect.bind(this, cb, setup), this.reconnectInterval);
+      this.emit('close', event);
+
+      setTimeout(this.connect.bind(this, cb), this.reconnectInterval);
     };
 
-    this.wsConn.onerror = (event) => {
+    this.connection.onerror = (event) => {
       this.isConnected = this.isOpen = false;
-      this.events.emit('error', event);
-      setTimeout(this.connect.bind(this, cb, setup), this.reconnectInterval);
+      try {
+        this.emit('error', event);
+      } catch (err) {
+        console.error(err, event);
+      }
+
+      setTimeout(this.connect.bind(this, cb), this.reconnectInterval);
     }
 
-    this.wsConn.onmessage = (event) => {
+    this.connection.onmessage = (event) => {
       var msg = JSON.parse(event.data);
-      this.events.emit('message', msg, event);
-      if (msg && msg.type) this.events.emit(msg.type, msg, event);
+      this.emit('message', msg, event);
+      if (msg && msg.handler) this.emit(msg.handler, msg, event);
     };
   }
 
   disconnect() {
-    this.wsConn.close();
+    this.connection.close();
     this.isConnected = this.isOpen = false;
   }
 
   ready(cb) {
-    this.isOpen ? cb() : this.events.once('open', cb);
+    this.isOpen ? cb() : this.once('open', cb);
   }
 
-  init(cb, setup) {
-    var shouldConnect = !this.isConnected;
-    if (shouldConnect) {
-      this.connect(cb, () => {
-        if (setup) setup();
-        this.ready(() => this.wsConn.send('{"type": "init"}'));
-      });
-      return;
-    }
-    this.initMsg ? cb(this.initMsg) : this.events.once('init', cb);
-  }
-
-  list(collection) {
-    this.wsConn.send('{"type": "list", "collection": "' + collection + '"}');
-  }
-
-  set(collection, position, size, params) {
-    this.init((msg) => {
-      let type = 'set',
-          id = this.id || msg.id;
-      this.wsConn.send(JSON.stringify({type, collection, id, item: {id, position, size, params}}));
+  exec(handler, params, resource) {
+    let payload = JSON.stringify({handler, resource, params});
+    this.ready(() => {
+      this.connection.send(payload);
     });
   }
 
-  pan(offset) {
-    let type = 'pan';
-    this.wsConn.send(JSON.stringify({type, offset}))
+  query(params, resource) {
+    this.exec('query', params, resource);
   }
 
-  move(collection, id, offset) {
-    let type = 'move';
-    this.wsConn.send(JSON.stringify({type, collection, id, offset}))
+  all(params, resource) {
+    this.exec('all', params, resource);
+  }
+
+  get(params, resource) {
+    this.exec('get', params, resource);
+  }
+
+  watch(params, resource) {
+    this.exec('watch', params, resource);
+  }
+
+  stop(params, resource) {
+    this.exec('stop', params, resource);
   }
 }
