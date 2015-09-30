@@ -35,7 +35,7 @@ export default class AllLogs extends Component {
   watch(props) {
     logs.listen(msg => {
       this.setState(state => {
-        return {logs: state.logs.concat([msg.data])};
+        return {logs: [msg.data].concat(state.logs)};
       });
     });
   }
@@ -51,13 +51,35 @@ export default class AllLogs extends Component {
   }
 
   render() {
+    let colors = {
+      emerge: 'red',
+      alert: 'yellow',
+      crit: 'red',
+      error: 'red',
+      warning: 'red',
+      notice: 'yellow',
+      info: 'green',
+      debug: 'blue',
+      silly: 'blue'
+    };
     return (
       <div className="AllLogs">
         {this.renderBreadcrumbs(
           {href: 'dash', label: 'Dashboard'},
           'All Logs'
         )}
-        {this.state.logs.map(data => (<p>{data.message}</p>))}
+        <div style={{background: 'black', padding: 5}}>
+          {this.state.logs.map(data => (
+            <p style={{color: colors[data.level]}}>
+              <b>{data.timestamp}</b>&nbsp;&nbsp;
+              <i>[{data.name}]</i>&nbsp;&nbsp;
+              <i>[{data.module}]</i>&nbsp;&nbsp;
+              <i>[{data.subject}]</i>&nbsp;--&nbsp;
+              <b>{data.message}</b>&nbsp;->&nbsp;
+              <u>{data.caller}</u>
+            </p>
+          ))}
+        </div>
       </div>
     );
   }
