@@ -114,7 +114,7 @@ else
     fi
 
     printf "\n\Create debian package for on-web-ui:\n\n"
-    ./package.sh
+    ./deb_package.sh
 
     # printf "\n\nDeploy on-web-ui:\n\n"
     # gulp deploy

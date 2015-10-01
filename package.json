@@ -72,7 +72,6 @@
     "gulp-util": "^3.0.6",
     "inquirer": "^0.10.0",
     "json-loader": "^0.5.2",
-    "json-server": "^0.8.0",
     "karma": "^0.13.4",
     "karma-chrome-launcher": "^0.2.0",
     "karma-cli": "^0.1.0",
