@@ -9,7 +9,9 @@ import lightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 export default {
 
   get muiTheme() {
-    return ThemeManager.getMuiTheme(this.customRawTheme || lightRawTheme);
+    let muiTheme = ThemeManager.getMuiTheme(this.customRawTheme || lightRawTheme);
+    muiTheme.tableRow.stripeColor = '#eceff1';
+    return muiTheme;
   },
 
   muiContextTypes(contextTypes) {
