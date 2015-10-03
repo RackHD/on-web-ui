@@ -10,6 +10,7 @@ export default {
   getChassisCollection() {
     return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Chassis')
+        .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -21,6 +22,7 @@ export default {
   getChassis(id) {
     return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Chassis/' + id)
+        .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

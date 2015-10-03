@@ -10,6 +10,7 @@ export default {
   getSystemsCollection() {
     return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Systems')
+        .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -21,6 +22,7 @@ export default {
   getSystem(id) {
     return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Systems/' + id)
+        .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

@@ -10,6 +10,7 @@ export default {
   getSystemResetActions(id) {
     return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Systems/' + id + '/Actions/ComputerSystem.Reset')
+        .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -21,6 +22,7 @@ export default {
   postSystemResetAction(id, reset_type) { // eslint-disable-line camelcase
     return new Promise((resolve, reject) => {
       http.post(API + 'ManagedSystems/Systems/' + id + '/Actions/ComputerSystem.Reset')
+        .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .type('json')
         .send({ reset_type }) // eslint-disable-line camelcase
@@ -34,6 +36,7 @@ export default {
   getSystemBootImages(id) {
     return new Promise((resolve, reject) => {
       http.get(API + 'ManagedSystems/Systems/' + id + '/OEM/OnRack/Actions/OnRack.BootImage')
+        .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -45,6 +48,7 @@ export default {
   postSystemBootImage(boot_image) { // eslint-disable-line camelcase
     return new Promise((resolve, reject) => {
       http.post(API + 'nodes')
+        .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .type('json')
         .send({ boot_image }) // eslint-disable-line camelcase

@@ -8,13 +8,11 @@ import onReady from 'common-web-ui/lib/onReady';
 
 import { MenuItem } from 'material-ui';
 import NotFound from 'common-web-ui/views/NotFound';
-import UserLogin from 'common-web-ui/views/UserLogin';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
   { text: 'OnRack API', type: MenuItem.Types.LINK, payload: 'https://' + window.location.hostname + '/rest/v1/api.html', target: '_blank' },
   { text: 'OnRack Dashboard', route: 'dash' },
-  { text: 'OnRack Login', route: 'login' },
   { text: 'Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Chassis', route: 'chassis' },
   // { text: 'Systems', route: 'systems' },
@@ -31,20 +29,21 @@ import App from '../views/App';
 
 import ChassisCollection from '../views/ChassisCollection';
 import ChassisDetails from '../views/ChassisDetails';
-import SystemsCollection from '../views/SystemsCollection';
-import SystemDetails from '../views/SystemDetails';
 import Dashboard from '../views/Dashboard';
+import OnRackUserLogin from '../views/OnRackUserLogin';
+import SystemDetails from '../views/SystemDetails';
+import SystemsCollection from '../views/SystemsCollection';
 
 // See http://rackt.github.io/react-router/
 let routes = (
   <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={UserLogin} />
+    <DefaultRoute handler={OnRackUserLogin} />
     <Route name="chassis" handler={ChassisCollection} />
     <Route name="case" path="/chassis/:chassisId" handler={ChassisDetails} />
     {/*<Route name="systems" handler={SystemsCollection} />
     <Route name="system" path="/systems/:systemId" handler={SystemDetails} />*/}
     <Route name="dash" handler={Dashboard} />
-    <Route name="login" handler={UserLogin} />
+    <Route name="login" handler={OnRackUserLogin} />
     <NotFoundRoute handler={NotFound}/>
   </Route>
 );
