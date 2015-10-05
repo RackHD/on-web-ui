@@ -8,7 +8,8 @@ import mixin from 'common-web-ui/lib/mixin';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 import UserLogin from 'common-web-ui/views/UserLogin';
 
-import LoginAPI from '../messengers/LoginAPI';
+import LoginRestAPI from '../messengers/LoginRestAPI';
+const loginRestAPI = new LoginRestAPI();
 
 @mixin(RouteHelpers)
 export default class OnRackUserLogin extends UserLogin {
@@ -28,7 +29,7 @@ export default class OnRackUserLogin extends UserLogin {
   }
 
   onSubmit() {
-    LoginAPI.auth(this.user, this.pass).then(
+    this.loginRestAPI.auth(this.user, this.pass).then(
       res => this.routeTo('dash'),
       err => console.error(err));
   }

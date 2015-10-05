@@ -3,13 +3,13 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default {
+export default class LoginRestAPI extends RestAPI {
 
   auth(user, pass) {
     return new Promise((resolve, reject) => {
-      http.post(API + 'login')
+      this.http.post(API + 'login')
         .accept('json')
         .type('json')
         .send({email: user, password: pass})

@@ -4,9 +4,11 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import SystemsAPI from '../messengers/SystemsAPI';
+import SystemsRestAPI from '../messengers/SystemsRestAPI';
 
 export default class SystemsStore extends Store {
+
+  systemsRestAPI = new SystemsRestAPI();
 
   list() {
     this.empty();
@@ -20,13 +22,13 @@ export default class SystemsStore extends Store {
         return { id };
       });
     }
-    return SystemsAPI.getSystemsCollection()
+    return this.systemsRestAPI.getSystemsCollection()
       .then(list => this.collect(map(list)))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return SystemsAPI.getSystem(id)
+    return this.systemsRestAPI.getSystem(id)
       .then(item => this.change(id, {
         url: item.id, // Why is this a url?
         id: item.Id,

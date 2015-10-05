@@ -4,19 +4,21 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import SystemsActionsAPI from '../messengers/SystemsActionsAPI';
+import SystemsActionsRestAPI from '../messengers/SystemsActionsRestAPI';
 
 export default class SystemResetTypesStore extends Store {
 
+  systemsActionsRestAPI = new SystemsActionsRestAPI();
+
   list(systemId) {
     this.empty();
-    return SystemsActionsAPI.getSystemResetActions(systemId)
+    return this.systemsActionsRestAPI.getSystemResetActions(systemId)
       .then(list => this.collect(list.map(id => ({ id }))))
       .catch(err => this.error(null, err));
   }
 
   sendReset(resetType) {
-    return SystemsActionsAPI.postSystemResetAction(resetType)
+    return this.systemsActionsRestAPI.postSystemResetAction(resetType)
       .catch(err => this.error(null, err));
   }
 

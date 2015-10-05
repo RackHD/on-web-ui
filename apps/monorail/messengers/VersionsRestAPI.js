@@ -3,21 +3,16 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default class VersionsRestAPI {
+export default class VersionsRestAPI extends RestAPI {
 
   api = API;
   entity = 'versions';
 
-  get url() {
-    if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
-    return this.api + this.entity + '/';
-  }
-
   get() {
     return new Promise((resolve, reject) => {
-      http.get(this.url)
+      this.http.get(this.url)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

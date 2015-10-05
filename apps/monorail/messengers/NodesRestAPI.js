@@ -3,21 +3,16 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default class NodesRestAPI {
+export default class NodesRestAPI extends RestAPI {
 
   api = API;
   entity = 'nodes';
 
-  get url() {
-    if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
-    return this.api + this.entity + '/';
-  }
-
   get(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id)
+      this.http.get(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -28,7 +23,7 @@ export default class NodesRestAPI {
 
   list() {
     return new Promise((resolve, reject) => {
-      http.get(this.url)
+      this.http.get(this.url)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -39,7 +34,7 @@ export default class NodesRestAPI {
 
   post(body) {
     return new Promise((resolve, reject) => {
-      http.post(this.url)
+      this.http.post(this.url)
         .accept('json')
         .type('json')
         .send(body)
@@ -52,7 +47,7 @@ export default class NodesRestAPI {
 
   patch(id, body) {
     return new Promise((resolve, reject) => {
-      http.patch(this.url + id)
+      this.http.patch(this.url + id)
         .accept('json')
         .type('json')
         .send(body)
@@ -65,7 +60,7 @@ export default class NodesRestAPI {
 
   delete(id) {
     return new Promise((resolve, reject) => {
-      http.del(this.url + id)
+      this.http.del(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -78,7 +73,7 @@ export default class NodesRestAPI {
 
   getObm(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/obm')
+      this.http.get(this.url + id + '/obm')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -89,7 +84,7 @@ export default class NodesRestAPI {
 
   updateObm(id, body) {
     return new Promise((resolve, reject) => {
-      http.post(this.url + id + '/obm')
+      this.http.post(this.url + id + '/obm')
         .accept('json')
         .type('json')
         .send(body)
@@ -110,7 +105,7 @@ export default class NodesRestAPI {
 
   toggleObmLight(id, value) {
     return new Promise((resolve, reject) => {
-      http.post(this.url + id + '/obm')
+      this.http.post(this.url + id + '/obm')
         .accept('json')
         .type('json')
         .send(value)
@@ -123,7 +118,7 @@ export default class NodesRestAPI {
 
   listCatalogs(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/catalogs')
+      this.http.get(this.url + id + '/catalogs')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -134,7 +129,7 @@ export default class NodesRestAPI {
 
   listSourceCatalogs(id, source) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/catalogs/' + source)
+      this.http.get(this.url + id + '/catalogs/' + source)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -145,7 +140,7 @@ export default class NodesRestAPI {
 
   listPollers(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/pollers')
+      this.http.get(this.url + id + '/pollers')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -156,7 +151,7 @@ export default class NodesRestAPI {
 
   postDHCPWhitelistMAC(macAddress) {
     return new Promise((resolve, reject) => {
-      http.post(this.url + macAddress + '/dhcp/whitelist')
+      this.http.post(this.url + macAddress + '/dhcp/whitelist')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -167,7 +162,7 @@ export default class NodesRestAPI {
 
   deleteDHCPWhitelistMAC(macAddress) {
     return new Promise((resolve, reject) => {
-      http.del(this.url + macAddress + '/dhcp/whitelist')
+      this.http.del(this.url + macAddress + '/dhcp/whitelist')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -178,7 +173,7 @@ export default class NodesRestAPI {
 
   listWorkflows(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/workflows')
+      this.http.get(this.url + id + '/workflows')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -189,7 +184,7 @@ export default class NodesRestAPI {
 
   postWorkflow(nodeId, body) {
     return new Promise((resolve, reject) => {
-      http.post(this.url + nodeId + '/workflows')
+      this.http.post(this.url + nodeId + '/workflows')
         .accept('json')
         .type('json')
         .send(body)
@@ -213,7 +208,7 @@ export default class NodesRestAPI {
 
   deleteActiveWorkflow(id) {
     return new Promise((resolve, reject) => {
-      http.del(this.url + id + '/workflows/active')
+      this.http.del(this.url + id + '/workflows/active')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

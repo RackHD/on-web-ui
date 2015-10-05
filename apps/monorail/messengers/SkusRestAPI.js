@@ -3,9 +3,9 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default class SkusRestAPI {
+export default class SkusRestAPI extends RestAPI {
 
   api = API;
   entity = 'skus';
@@ -17,7 +17,7 @@ export default class SkusRestAPI {
 
   get(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id)
+      this.http.get(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -28,7 +28,7 @@ export default class SkusRestAPI {
 
   list() {
     return new Promise((resolve, reject) => {
-      http.get(this.url)
+      this.http.get(this.url)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -39,7 +39,7 @@ export default class SkusRestAPI {
 
   post(body) {
     return new Promise((resolve, reject) => {
-      http.post(this.url)
+      this.http.post(this.url)
         .accept('json')
         .type('json')
         .send(body)
@@ -52,7 +52,7 @@ export default class SkusRestAPI {
 
   patch(id, body) {
     return new Promise((resolve, reject) => {
-      http.patch(this.url + id)
+      this.http.patch(this.url + id)
         .accept('json')
         .type('json')
         .send(body)
@@ -65,7 +65,7 @@ export default class SkusRestAPI {
 
   delete(id) {
     return new Promise((resolve, reject) => {
-      http.del(this.url + id)
+      this.http.del(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -76,7 +76,7 @@ export default class SkusRestAPI {
 
   listNodes() {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/nodes')
+      this.http.get(this.url + id + '/nodes')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

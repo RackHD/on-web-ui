@@ -3,13 +3,16 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default {
+export default class SystemsActionsAPI extends RestAPI {
+
+  api = API;
+  entity = 'ManagedSystems/Systems';
 
   getSystemResetActions(id) {
     return new Promise((resolve, reject) => {
-      http.get(API + 'ManagedSystems/Systems/' + id + '/Actions/ComputerSystem.Reset')
+      this.http.get(this.url + id + '/Actions/ComputerSystem.Reset')
         .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
@@ -17,11 +20,11 @@ export default {
           resolve(res && res.body);
         });
     });
-  },
+  }
 
   postSystemResetAction(id, reset_type) { // eslint-disable-line camelcase
     return new Promise((resolve, reject) => {
-      http.post(API + 'ManagedSystems/Systems/' + id + '/Actions/ComputerSystem.Reset')
+      this.http.post(this.url + id + '/Actions/ComputerSystem.Reset')
         .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .type('json')
@@ -31,11 +34,11 @@ export default {
           resolve(res && res.body);
         });
     });
-  },
+  }
 
   getSystemBootImages(id) {
     return new Promise((resolve, reject) => {
-      http.get(API + 'ManagedSystems/Systems/' + id + '/OEM/OnRack/Actions/OnRack.BootImage')
+      this.http.get(this.url + id + '/OEM/OnRack/Actions/OnRack.BootImage')
         .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
@@ -43,11 +46,11 @@ export default {
           resolve(res && res.body);
         });
     });
-  },
+  }
 
   postSystemBootImage(boot_image) { // eslint-disable-line camelcase
     return new Promise((resolve, reject) => {
-      http.post(API + 'nodes')
+      this.http.post(this.url + 'nodes')
         .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .type('json')

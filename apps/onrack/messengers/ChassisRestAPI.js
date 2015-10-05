@@ -3,13 +3,16 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default {
+export default class ChassisRestAPI extends RestAPI {
+
+  api = API;
+  entity = 'ManagedSystems/Chassis';
 
   getChassisCollection() {
     return new Promise((resolve, reject) => {
-      http.get(API + 'ManagedSystems/Chassis')
+      this.http.get(this.url)
         .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {
@@ -17,11 +20,11 @@ export default {
           resolve(res && res.body);
         });
     });
-  },
+  }
 
   getChassis(id) {
     return new Promise((resolve, reject) => {
-      http.get(API + 'ManagedSystems/Chassis/' + id)
+      this.http.get(this.url + id)
         .set('Authentication-Token', window.localStorage['onrack-auth-token'])
         .accept('json')
         .end((err, res) => {

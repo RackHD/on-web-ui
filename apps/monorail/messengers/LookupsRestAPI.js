@@ -3,22 +3,16 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
-import qs from 'querystring';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default class LookupsRestAPI {
+export default class LookupsRestAPI extends RestAPI {
 
   api = API;
   entity = 'lookups';
 
-  get url() {
-    if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
-    return this.api + this.entity + '/';
-  }
-
   get(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id)
+      this.http.get(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -30,7 +24,7 @@ export default class LookupsRestAPI {
   list(q) {
     q = q || '';
     return new Promise((resolve, reject) => {
-      http.get(this.url + '?' + qs.stringify({q}))
+      this.http.get(this.url + '?' + this.qs.stringify({q}))
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -41,7 +35,7 @@ export default class LookupsRestAPI {
 
   post(body) {
     return new Promise((resolve, reject) => {
-      http.post(this.url)
+      this.http.post(this.url)
         .accept('json')
         .type('json')
         .send(body)
@@ -54,7 +48,7 @@ export default class LookupsRestAPI {
 
   patch(id, body) {
     return new Promise((resolve, reject) => {
-      http.patch(this.url + id)
+      this.http.patch(this.url + id)
         .accept('json')
         .type('json')
         .send(body)
@@ -67,7 +61,7 @@ export default class LookupsRestAPI {
 
   delete(id) {
     return new Promise((resolve, reject) => {
-      http.del(this.url + id)
+      this.http.del(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
