@@ -3,9 +3,9 @@
   <head></head>
   <body>
     <script>
-        var location = window.location.toString();
-        if (location.charAt(location.length - 1) !== '/') location += '/';
-        window.location = location + 'monorail';
+        var pathname = window.location.pathname;
+        if (pathname.charAt(location.length - 1) !== '/') pathname += '/';
+        window.location.pathname = pathname + 'monorail';
     </script>
   </body>
 </html>
