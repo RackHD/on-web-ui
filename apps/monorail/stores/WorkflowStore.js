@@ -12,6 +12,9 @@ export default class WorkflowStore extends Store {
   workflowsRestAPI = new WorkflowsRestAPI();
   nodesRestAPI = new NodesRestAPI();
 
+  api = this.workflowsRestAPI.api;
+  resource = 'graphObjs';
+
   list() {
     return this.workflowsRestAPI.list()
       .then(list => this.recollect(list))

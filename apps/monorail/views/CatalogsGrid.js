@@ -31,12 +31,19 @@ export default class CatalogsGrid extends Component {
     loading: !this.props.catalogs
   };
 
+  componentWillMount() {
+    catalogs.startMessenger();
+  }
+
   componentDidMount() {
     this.unwatchCatlogs = catalogs.watchAll('catalogs', this);
     this.listCatalogs();
   }
 
-  componentWillUnmount() { this.unwatchCatlogs(); }
+  componentWillUnmount() {
+    catalogs.stopMessenger();
+    this.unwatchCatlogs();
+  }
 
   render() {
     return (

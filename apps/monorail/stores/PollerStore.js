@@ -12,6 +12,9 @@ export default class PollerStore extends Store {
   pollersRestAPI = new PollersRestAPI();
   nodesRestAPI = new NodesRestAPI();
 
+  api = this.pollersRestAPI.api;
+  resource = 'pollers';
+
   list() {
     return this.pollersRestAPI.list()
       .then(list => this.recollect(list))

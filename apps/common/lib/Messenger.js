@@ -41,7 +41,7 @@ export default class Messenger extends EventEmitter {
       this.handlers.forEach(name => this.on(name, this[name].bind(this)));
     }
 
-    this.once('init', (msg) => {
+    this.once('session', (msg) => {
       this.id = msg.id;
       if (cb) cb(msg);
     });
@@ -84,6 +84,10 @@ export default class Messenger extends EventEmitter {
 
   ready(cb) {
     this.isOpen ? cb() : this.once('open', cb);
+  }
+
+  session(cb) {
+    this.id ? cb() : this.once('session', cb);
   }
 
   exec(handler, params, resource) {

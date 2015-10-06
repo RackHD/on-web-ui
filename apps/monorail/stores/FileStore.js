@@ -10,6 +10,9 @@ export default class NodeStore extends Store {
 
   filesRestAPI = new FilesRestAPI();
 
+  api = this.filesRestAPI.api;
+  resource = 'files';
+
   key = 'uuid';
 
   list() {

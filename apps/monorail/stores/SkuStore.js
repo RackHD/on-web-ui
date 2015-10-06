@@ -10,6 +10,9 @@ export default class SkuStore extends Store {
 
   skusRestAPI = new SkusRestAPI();
 
+  api = this.skusRestAPI.api;
+  resource = 'skus';
+
   list() {
     return this.skusRestAPI.list()
       .then(list => this.recollect(list))

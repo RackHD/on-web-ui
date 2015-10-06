@@ -12,6 +12,9 @@ export default class CatalogStore extends Store {
   catalogsRestAPI =  new CatalogsRestAPI();
   nodesRestAPI = new NodesRestAPI();
 
+  api = this.catalogsRestAPI.api;
+  resource = 'catalogs';
+
   read(id) {
     return this.catalogsRestAPI.get(id)
       .then(item => this.change(id, item))

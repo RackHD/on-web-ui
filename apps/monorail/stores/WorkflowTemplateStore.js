@@ -10,6 +10,9 @@ export default class WorkflowTemplateStore extends Store {
 
   workflowsRestAPI = new WorkflowsRestAPI();
 
+  api = this.workflowsRestAPI.api;
+  resource = 'graphDefs';
+
   key = 'injectableName';
 
   list() {

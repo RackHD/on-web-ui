@@ -10,6 +10,9 @@ export default class ProfileStore extends Store {
 
   profilesRestAPI = new ProfilesRestAPI();
 
+  api = this.profilesRestAPI.api;
+  resource = 'profiles';
+
   list() {
     return this.profilesRestAPI.list()
       .then(list => this.recollect(list))
