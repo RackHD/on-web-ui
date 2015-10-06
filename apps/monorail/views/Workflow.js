@@ -13,6 +13,11 @@ import EditWorkflow from './EditWorkflow';
 import CreateWorkflow from './CreateWorkflow';
 export { CreateWorkflow, EditWorkflow };
 
+import LogsMessenger from '../messengers/LogsMessenger';
+import EventsMessenger from '../messengers/EventsMessenger';
+let logs = new LogsMessenger(),
+    events = new EventsMessenger();
+
 import {
     FlatButton,
     LinearProgress,
@@ -33,17 +38,58 @@ export default class Workflow extends Component {
 
   state = {
     workflow: null,
-    loading: true
+    loading: true,
+    state: 'Pending',
+    logs: []
   };
 
   componentDidMount() {
     this.unwatchWorkflow = workflows.watchOne(this.getWorkflowId(), 'workflow', this);
-    this.readWorkflow();
+    this.readWorkflow().then(() => {
+      logs.connect();
+      events.connect();
+      logs.listen(msg => {
+        console.log(msg);
+        this.setState(state => {
+          return {
+            logs: msg.data.subject === state.workflow.node ?
+              [msg.data].concat(state.logs) : state.logs
+          };
+        });
+      });
+      events.listen(msg => {
+        let pattern = msg.id.split('.'),
+            instanceId = this.state.workflow && this.state.workflow.instanceId;
+        if (pattern[0] === 'graph' && pattern[2] === instanceId) {
+          this.setState({
+            state: pattern[1] === 'finished' ? 'Finished' : 'Started'
+          });
+          this.readWorkflow();
+        }
+      });
+    });
   }
 
-  componentWillUnmount() { this.unwatchWorkflow(); }
+  componentWillUnmount() {
+    this.unwatchWorkflow();
+    logs.ignore();
+    events.ignore();
+    logs.disconnect();
+    events.disconnect();
+  }
 
   render() {
+    let colors = {
+      emerge: 'red',
+      alert: 'yellow',
+      crit: 'red',
+      error: 'red',
+      warning: 'red',
+      notice: 'yellow',
+      info: 'green',
+      debug: 'blue',
+      silly: 'blue'
+    };
     let workflow = this.state.workflow || {};
     return (
       <div className="Workflow">
@@ -70,9 +116,23 @@ export default class Workflow extends Component {
             <div className="cell">
               <List>
                 <ListItem
-                  primaryText={workflow._status || '(Unknown)'}
+                  primaryText={workflow._status || this.state.state || '(Unknown)'}
                   secondaryText="Status" />
               </List>
+              {this.state.logs && this.state.logs.length ?
+                <div style={{background: 'black', padding: 5}}>
+                  {this.state.logs.map(data => (
+                    <p style={{color: colors[data.level]}}>
+                      <b>{data.timestamp}</b>&nbsp;&nbsp;
+                      <i>[{data.name}]</i>&nbsp;&nbsp;
+                      <i>[{data.module}]</i>&nbsp;&nbsp;
+                      <i>[{data.subject}]</i>&nbsp;--&nbsp;
+                      <b>{data.message}</b>&nbsp;->&nbsp;
+                      <u>{data.caller}</u>
+                    </p>
+                  ))}
+                </div> : null
+              }
             </div>
             <div className="cell">
               <div style={{overflow: 'auto', margin: 10, maxHeight: 300}}>
@@ -92,7 +152,7 @@ export default class Workflow extends Component {
 
   readWorkflow() {
     this.setState({loading: true});
-    workflows.read(this.getWorkflowId()).then(() => this.setState({loading: false}));
+    return workflows.read(this.getWorkflowId()).then(() => this.setState({loading: false}));
   }
 
   deleteWorkflow() {

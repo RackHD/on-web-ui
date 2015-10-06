@@ -147,7 +147,10 @@ export default class EditWorkflow extends Component {
       workflows.update(this.state.workflow.id, this.state.workflow).then(() => this.enable());
     }
     else if (this.state.workflow.node) {
-      nodesRestAPI.postWorkflow(this.state.workflow.node, this.state.workflow).then(() => this.enable());
+      nodesRestAPI.postWorkflow(this.state.workflow.node, this.state.workflow).then(workflow => {
+        this.enable();
+        this.routeTo('workflows', workflow.id);
+      });
     }
     else {
       this.enable();
