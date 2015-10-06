@@ -17,6 +17,9 @@ import {
     LinearProgress
   } from 'material-ui';
 
+import NodesRestAPI from '../messengers/NodesRestAPI';
+let nodesRestAPI = new NodesRestAPI();
+
 import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
 
@@ -39,13 +42,20 @@ export default class WorkflowsGrid extends Component {
   componentWillUnmount() { this.unwatchWorkflows(); }
 
   render() {
+    let rightButtons = [
+      <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
+    ];
+    if (this.nodeId) {
+      rightButtons.unshift(
+        <RaisedButton label="Cancel Active Workflow" primary={true} onClick={this.cancelActiveWorkflow.bind(this)} />
+      );
+    }
     return (
       <div className="WorkflowsGrid">
         {this.renderGridToolbar({
           label: <a href={'#/workflows' + (this.nodeId ? '/n/' + this.nodeId : '')}>Workflows</a>,
           count: this.state.workflows && this.state.workflows.length || 0,
-          right:
-            <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
+          right: rightButtons
         })}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
@@ -82,6 +92,13 @@ export default class WorkflowsGrid extends Component {
   createWorkflow() {
     if (this.nodeId) return this.routeTo('workflows', 'new', this.nodeId);
     this.routeTo('workflows', 'new');
+  }
+
+  cancelActiveWorkflow() {
+    if (!this.nodeId) { return; }
+    nodesRestAPI.deleteActiveWorkflow(this.nodeId).then(() => {
+      this.listWorkflows();
+    });
   }
 
   // deleteWorkflow(id) {
