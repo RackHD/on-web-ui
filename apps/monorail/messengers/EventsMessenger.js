@@ -7,7 +7,7 @@ import { API } from '../config/index';
 
 import Messenger from 'common-web-ui/lib/Messenger';
 
-export default class WorkflowLogsMessenger extends Messenger {
+export default class EventsMessenger extends Messenger {
   handlers = ['item'];
 
   constructor(host, secure) {
