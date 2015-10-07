@@ -41,6 +41,7 @@ export default class JsonDiff extends Component {
   }
 
   render() {
+    console.log(this.state);
     return this.compareTree(this.state.objectA, this.state.objectB);
   }
 
@@ -64,7 +65,7 @@ export default class JsonDiff extends Component {
     if (a === undefined) {
       // property added
       label = (
-        <span style={{background: 'green'}}>
+        <span style={{background: '#9f9'}}>
           <span>{name}: {stringB} </span>
           <span style={{color: 'gray'}}>{typeB}</span>
         </span>
@@ -74,7 +75,7 @@ export default class JsonDiff extends Component {
     else if (b === undefined) {
       // property removed
       label = (
-        <span style={{background: 'red'}}>
+        <span style={{background: '#f99'}}>
           <span>{name}: {stringA} </span>
           <span style={{color: 'gray'}}>{typeA}</span>
         </span>
@@ -84,7 +85,7 @@ export default class JsonDiff extends Component {
     else if (typeA !== typeB || (typeA !== 'object' && typeA !== 'array' && a !== b)) {
       // property changed
       label = (
-        <span style={{background: 'yellow'}}>
+        <span style={{background: '#ff9'}}>
           <span>{name}: {stringA} </span>
           <span style={{color: 'gray'}}>{typeB}</span>
           <span> => {stringB} </span>
@@ -98,7 +99,7 @@ export default class JsonDiff extends Component {
       label = (
         <span style={{background: 'none'}}>
           <span>{name}: {stringA} </span>
-          <span style={{color: 'gray'}}>{typeA}</span>
+          <span style={{color: '#999'}}>{typeA}</span>
         </span>
       );
     }
