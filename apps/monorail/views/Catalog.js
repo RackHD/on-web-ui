@@ -10,6 +10,7 @@ import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 
 import CatalogsGrid from './CatalogsGrid';
 import JsonInspector from 'react-json-inspector';
+import JsonDiff from 'common-web-ui/views/JsonDiff';
 
 import {} from 'material-ui';
 
@@ -81,6 +82,7 @@ export default class Catalog extends Component {
         <JsonInspector
             isExpanded={() => true}
             data={this.state.catalog} />
+        <JsonDiff a={{lala: 'foofoo'}} b={this.state.catalog} />
       </div>;
     }
     else if (this.state.catalogs && this.state.catalogs.length) {
