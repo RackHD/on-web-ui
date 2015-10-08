@@ -10,6 +10,9 @@ export default class TemplateStore extends Store {
 
   templatesRestAPI = new TemplatesRestAPI();
 
+  api = this.templatesRestAPI.api;
+  resource = 'templates';
+
   list() {
     return this.templatesRestAPI.list()
       .then(list => this.recollect(list))

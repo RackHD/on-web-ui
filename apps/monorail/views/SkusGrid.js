@@ -30,12 +30,19 @@ export default class SkusGrid extends Component {
     loading: true
   };
 
+  componentWillMount() {
+    skus.startMessenger();
+  }
+
   componentDidMount() {
     this.unwatchSkus = skus.watchAll('skus', this);
     this.listSkus();
   }
 
-  componentWillUnmount() { this.unwatchSkus(); }
+  componentWillUnmount() {
+    skus.stopMessenger();
+    this.unwatchSkus();
+  }
 
   render() {
     return (

@@ -31,12 +31,19 @@ export default class NodesGrid extends Component {
     loading: true
   };
 
+  componentWillMount() {
+    nodes.startMessenger();
+  }
+
   componentDidMount() {
     this.unwatchNodes = nodes.watchAll('nodes', this);
     this.listNodes();
   }
 
-  componentWillUnmount() { this.unwatchNodes(); }
+  componentWillUnmount() {
+    nodes.stopMessenger();
+    this.unwatchNodes();
+  }
 
   render() {
     return (

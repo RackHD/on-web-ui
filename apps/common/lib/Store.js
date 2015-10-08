@@ -2,7 +2,9 @@
 
 'use strict';
 
+import url from 'url';
 import { EventEmitter } from 'events';
+import Messenger from './Messenger';
 
 export default class Store extends EventEmitter {
 
@@ -10,6 +12,45 @@ export default class Store extends EventEmitter {
     super();
     this.EntityClass = EntityClass || this.EntityClass;
     this.collection = {};
+  }
+
+  startMessenger(resource, host, secure) {
+    if (this.messenger) {
+      return console.error(new Error('A messenger already exists.').stack);
+    }
+    let api = this.api ? url.parse(this.api) : null;
+    resource = resource || this.resource;
+    host = host || api && api.host;
+    secure = secure || api.protocol === 'https:';
+    this.messenger = new Messenger(resource, host, secure);
+    this.messenger.connect(() => {
+      if (!this.messenger) {
+        return console.warn(new Error('A messenger connected after it was stopped.').stack);
+      }
+      this.messenger.on('message', msg => {
+        if (msg.handler === 'item') {
+          if (msg.id[0] === 'created') {
+            this.insert(msg.id[1], msg.data);
+          }
+          else if (msg.id[0] === 'updated') {
+            this.change(msg.id[1], msg.data);
+          }
+        }
+        if (msg.handler === 'remove') {
+          this.remove(msg.id);
+        }
+      });
+      this.messenger.watch();
+    });
+  }
+
+  stopMessenger() {
+    if (!this.messenger) {
+      return;
+    }
+    this.messenger.stop(null, null);
+    this.messenger.disconnect();
+    delete this.messenger;
   }
 
   list() { throw new Error('Store: Unimplemented list method.'); }
