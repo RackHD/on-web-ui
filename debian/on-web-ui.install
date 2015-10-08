@@ -1,11 +1,7 @@
-build/bundle/common.js /opt/monorail/static/http/bundle
-build/bundle/monorail.js /opt/monorail/static/http/bundle
-build/bundle/onrack.js /opt/monorail/static/http/bundle
-build/bundle/vendor.js /opt/monorail/static/http/bundle
-build/bundle/workflow_editor.js /opt/monorail/static/http/bundle
-build/common/* /opt/monorail/static/http/common
-build/monorail/* /opt/monorail/static/http/monorail
-build/onrack/* /opt/monorail/static/http/onrack
-build/workflow_editor/* /opt/monorail/static/http/workflow_editor
+build/bundle /opt/monorail/static/http
+build/common /opt/monorail/static/http
+build/monorail /opt/monorail/static/http
+build/onrack /opt/monorail/static/http
+build/workflow_editor /opt/monorail/static/http
 on-web-ui_commitstring.txt /opt/monorail/static/http/on-web-ui
 index.html /opt/monorail/static/http
