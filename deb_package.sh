@@ -28,8 +28,11 @@ if [ -n "$JENKINS_PROVISION" ]; then
   # ls -a ../
   # ls -a ./
   cp -avr ../build ./debian/tmp
+  cp -avr ../build ../debian/tmp
   cp -av ./index.html ./debian/tmp/index.html
+  cp -av ./index.html ../debian/tmp/index.html
   cp -av ./on-web-ui_commitstring.txt ./debian/tmp/on-web-ui_commitstring.txt
+  cp -av ./on-web-ui_commitstring.txt ../debian/tmp/on-web-ui_commitstring.txt
 fi
 
 dch -v ${PKG_VERSION} autobuild
