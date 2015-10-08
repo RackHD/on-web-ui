@@ -9,19 +9,24 @@ import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
 import CatalogsGrid from './CatalogsGrid';
+import JsonDiff from 'common-web-ui/views/JsonDiff';
 import JsonInspector from 'react-json-inspector';
+import Select from 'react-select';
 
 import {} from 'material-ui';
 
 import CatalogStore from '../stores/CatalogStore';
 let catalogs = new CatalogStore();
+let otherCatalogs = new CatalogStore();
 
 @mixin(PageHelpers)
 export default class Catalog extends Component {
 
   state = {
     catalog: null,
-    catalogs: []
+    catalogs: [],
+    otherCatalogs: [],
+    compareCatalog: null
   };
 
   getCatalogId(props=this.props) {
@@ -49,15 +54,19 @@ export default class Catalog extends Component {
   unwatch() {
     if (this.unwatchCatalog) this.unwatchCatalog();
     if (this.unwatchCatalogs) this.unwatchCatalogs();
+    this.unwatchOtherCatalogs();
   }
 
   watch(props) {
-    if (this.catalogId) {
-      this.unwatchCatalog = catalogs.watchOne(this.getCatalogId(props), 'catalog', this);
-    }
-    else {
-      this.unwatchCatalogs = catalogs.watchAll('catalogs', this);
-    }
+    this.unwatchOtherCatalogs = otherCatalogs.watchAll('otherCatalogs', this);
+    otherCatalogs.list().then(() => {
+      if (this.catalogId) {
+        this.unwatchCatalog = catalogs.watchOne(this.getCatalogId(props), 'catalog', this);
+      }
+      else {
+        this.unwatchCatalogs = catalogs.watchAll('catalogs', this);
+      }
+    });
   }
 
   componentDidMount() {
@@ -77,10 +86,42 @@ export default class Catalog extends Component {
     }
 
     if (this.catalogId && this.state.catalog) {
-      content = <div style={{overflow: 'auto', margin: 10}}>
-        <JsonInspector
-            isExpanded={() => true}
-            data={this.state.catalog} />
+      let otherCatalogsOptions = [];
+      if (this.state.otherCatalogs && this.state.otherCatalogs.length) {
+        this.state.otherCatalogs.forEach(otherCatalog => {
+          if (otherCatalog.id === this.state.catalogs.id) { return; }
+          otherCatalogsOptions.push({
+            label: 'Source: ' + otherCatalog.source + ', Node: ' + otherCatalog.node,
+            value: otherCatalog.id
+          });
+        })
+      }
+      content = <div style={{padding: 10}}>
+        <div style={{overflow: 'auto', margin: 10}}>
+          <JsonInspector
+              isExpanded={() => true}
+              data={this.state.catalog} />
+        </div>
+        <div>
+          <h5 style={{margin: '15px 0 5px', color: '#666'}}>Compare With Other Catalogs:</h5>
+          <Select
+              name="otherCatalogs"
+              value={this.state.compareCatalog && this.state.compareCatalog.id}
+              placeholder="Select a catalog to compare..."
+              options={otherCatalogsOptions}
+              onChange={(value) => {
+                let compareCatalog;
+                this.state.otherCatalogs.some(catalog => {
+                  if (catalog.id === value) {
+                    compareCatalog = catalog;
+                    return true;
+                  }
+                });
+                this.setState({ compareCatalog });
+              }} />
+          {this.state.catalog && this.state.compareCatalog ?
+            <JsonDiff a={this.state.catalog} b={this.state.compareCatalog} /> : null}
+        </div>
       </div>;
     }
     else if (this.state.catalogs && this.state.catalogs.length) {
