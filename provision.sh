@@ -42,7 +42,7 @@ if [ -z "$DOCKER_PROVISION" ]; then
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | NVM_DIR=/tmp/nvm bash
   nvm || . /tmp/nvm/nvm.sh
 
-  [ -z "$NODE_VERSION" ] && NODE_VERSION="0.12.5"
+  [ -z "$NODE_VERSION" ] && NODE_VERSION="4.1.1"
   CURRENT_NODE=`nvm current`
   if [ "v$NODE_VERSION" == "$CURRENT_NODE" ]; then
     printf "\n\nNode v$NODE_VERSION is current.\n\n"
@@ -89,7 +89,6 @@ else
   printf "\n\nInstall on-web-ui:\n\n"
   rm -rf node_modules
   npm install || true
-  npm install || true#
   ./scripts/link_project.sh
 
   if [ -n "$TEST_ON_WEB_UI" ]; then

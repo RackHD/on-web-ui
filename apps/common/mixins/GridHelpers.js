@@ -61,13 +61,13 @@ export default {
     props.header = props.header || {};
     props.body = props.body || {};
     let tableFields = props.fields.map(field => {
-      return <TableHeaderColumn>{field.name}</TableHeaderColumn>
+      return <TableHeaderColumn key={field.name + '-hc'}>{field.name}</TableHeaderColumn>
     })
-    let tableRows = props.results.map(item => {
+    let tableRows = props.results.map((item, i) => {
       return (
-        <TableRow>
+        <TableRow key={i}>
           {props.fields.map(field => {
-            return <TableRowColumn>{item[field.name]}</TableRowColumn>
+            return <TableRowColumn key={field.name + '-rc'}>{item[field.name]}</TableRowColumn>
           })}
         </TableRow>
       );
