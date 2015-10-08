@@ -27,9 +27,9 @@ export DEBFULLNAME="The HWIMO Robots"
 if [ -n "$JENKINS_PROVISION" ]; then
   # ls -a ../
   # ls -a ./
-  cp -avr ../build ./deabian/tmp
-  cp -av ./index.html ./deabian/tmp/index.html
-  cp -av ./on-web-ui_commitstring.txt ./deabian/tmp/on-web-ui_commitstring.txt
+  cp -avr ../build ./debian/tmp
+  cp -av ./index.html ./debian/tmp/index.html
+  cp -av ./on-web-ui_commitstring.txt ./debian/tmp/on-web-ui_commitstring.txt
 fi
 
 dch -v ${PKG_VERSION} autobuild
