@@ -3,21 +3,16 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default class CatalogsRestAPI {
+export default class CatalogsRestAPI extends RestAPI {
 
   api = API;
   entity = 'catalogs';
 
-  get url() {
-    if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
-    return this.api + this.entity + '/';
-  }
-
   get(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id)
+      this.http.get(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -28,7 +23,7 @@ export default class CatalogsRestAPI {
 
   list() {
     return new Promise((resolve, reject) => {
-      http.get(this.url)
+      this.http.get(this.url)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

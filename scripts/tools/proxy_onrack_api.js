@@ -14,7 +14,7 @@ server.use(bodyParser.json());
 
 server.set('port', 2000);
 
-var host = 'https://137.69.148.142',
+var host = 'https://137.69.149.30',
     api = host + '/rest/v1/';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -35,7 +35,11 @@ server.all('*', function(req, res) {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authentication-Token');
 
   var method = req.method.toLowerCase(),
-      url = req.url === '/login' ? host + '/login' : api + req.url;
+      url = req.url === '/login' ? host + '/login' : api + req.url.substr(1);
+
+  if (url.charAt(url.length - 1) === '/') {
+    url = url.substr(0, url.length - 1);
+  }
 
   console.log(method, url);
 

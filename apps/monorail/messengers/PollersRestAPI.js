@@ -3,21 +3,16 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default class PollersRestAPI {
+export default class PollersRestAPI extends RestAPI {
 
   api = API;
   entity = 'pollers';
 
-  get url() {
-    if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
-    return this.api + this.entity + '/';
-  }
-
   del(id) {
     return new Promise((resolve, reject) => {
-      http.del(this.url + id)
+      this.http.del(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -28,7 +23,7 @@ export default class PollersRestAPI {
 
   get(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id)
+      this.http.get(this.url + id)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -39,7 +34,7 @@ export default class PollersRestAPI {
 
   list() {
     return new Promise((resolve, reject) => {
-      http.get(this.url)
+      this.http.get(this.url)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -50,7 +45,7 @@ export default class PollersRestAPI {
 
   currentData(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/data/current')
+      this.http.get(this.url + id + '/data/current')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -61,7 +56,7 @@ export default class PollersRestAPI {
 
   library(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + 'library' + id ? '/' + id : '')
+      this.http.get(this.url + 'library' + id ? '/' + id : '')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -72,7 +67,7 @@ export default class PollersRestAPI {
 
   post(body) {
     return new Promise((resolve, reject) => {
-      http.post(this.url)
+      this.http.post(this.url)
         .accept('json')
         .type('application/json')
         .send(body)
@@ -85,7 +80,7 @@ export default class PollersRestAPI {
 
   patch(id, body) {
     return new Promise((resolve, reject) => {
-      http.put(this.url + id)
+      this.http.put(this.url + id)
         .accept('json')
         .type('application/json')
         .send(body)
@@ -98,7 +93,7 @@ export default class PollersRestAPI {
 
   pause(id, body) {
     return new Promise((resolve, reject) => {
-      http.put(this.url + id + '/pause')
+      this.http.put(this.url + id + '/pause')
         .accept('json')
         .type('application/json')
         .send(body)
@@ -111,7 +106,7 @@ export default class PollersRestAPI {
 
   resume(id, body) {
     return new Promise((resolve, reject) => {
-      http.put(this.url + id + '/resume')
+      this.http.put(this.url + id + '/resume')
         .accept('json')
         .type('application/json')
         .send(body)

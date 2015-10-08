@@ -3,21 +3,16 @@
 'use strict';
 
 import { API } from '../config/index';
-import http from 'superagent';
+import RestAPI from 'common-web-ui/lib/RestAPI';
 
-export default class FilesRestAPI {
+export default class FilesRestAPI extends RestAPI {
 
   api = API;
   entity = 'files';
 
-  get url() {
-    if (this.api.charAt(this.api.length - 1) !== '/') { this.api += '/'; }
-    return this.api + this.entity + '/';
-  }
-
   del(uuid) {
     return new Promise((resolve, reject) => {
-      http.del(this.url + uuid)
+      this.http.del(this.url + uuid)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -28,7 +23,7 @@ export default class FilesRestAPI {
 
   get(filename) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + filename)
+      this.http.get(this.url + filename)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -39,7 +34,7 @@ export default class FilesRestAPI {
 
   list() {
     return new Promise((resolve, reject) => {
-      http.get(this.url + 'list/all')
+      this.http.get(this.url + 'list/all')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -50,7 +45,7 @@ export default class FilesRestAPI {
 
   md5(filename) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + 'md5/' + filename)
+      this.http.get(this.url + 'md5/' + filename)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

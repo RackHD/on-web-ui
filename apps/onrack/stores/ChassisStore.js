@@ -4,9 +4,11 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import ChassisAPI from '../messengers/ChassisAPI';
+import ChassisRestAPI from '../messengers/ChassisRestAPI';
 
 export default class ChassisStore extends Store {
+
+  chassisRestAPI = new ChassisRestAPI();
 
   list() {
     this.empty();
@@ -20,13 +22,13 @@ export default class ChassisStore extends Store {
         return { id };
       });
     }
-    return ChassisAPI.getChassisCollection()
+    return this.chassisRestAPI.getChassisCollection()
       .then(list => this.collect(map(list)))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return ChassisAPI.getChassis(id)
+    return this.chassisRestAPI.getChassis(id)
       .then(item => this.change(id, {
         url: item.id, // Why is this a url?
         id: item.Id,
