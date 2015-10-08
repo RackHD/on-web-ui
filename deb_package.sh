@@ -25,11 +25,11 @@ export DEBFULLNAME="The HWIMO Robots"
 
 # TMP HACK: This is a temporary hack to get packaging to work on Jenkins until HeckJ can help me figure out why it trying to copy files from /tmp
 if [ -n "$JENKINS_PROVISION" ]; then
-  ls -a ../
-  ls -a ./
-  cp -avr ../build /tmp
-  cp -av ./index.html /tmp/index.html
-  cp -av ./on-web-ui_commitstring.txt /tmp/on-web-ui_commitstring.txt
+  # ls -a ../
+  # ls -a ./
+  cp -avr ../build ./deabian/tmp
+  cp -av ./index.html ./deabian/tmp/index.html
+  cp -av ./on-web-ui_commitstring.txt ./deabian/tmp/on-web-ui_commitstring.txt
 fi
 
 dch -v ${PKG_VERSION} autobuild
