@@ -26,7 +26,6 @@ gulp.task('bundle', function (done) {
 
       // other
       'gl-matrix',
-      'griddle-react',
       'react-chartist',
       'superagent'
     ]
