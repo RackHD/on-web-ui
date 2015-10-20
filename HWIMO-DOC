@@ -9,4 +9,4 @@ export JENKINS_PROVISION=1
 export VERBOSE_PROVISION=1
 
 export RUN_ON_WEB_UI=1
-provision.sh
+./dev/provision.sh

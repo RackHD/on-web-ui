@@ -87,9 +87,8 @@ if [ -n "$DOCKER_PROVISION" ]; then
   docker run on-web-ui
 else
   printf "\n\nInstall on-web-ui:\n\n"
-  rm -rf node_modules
-  npm install || true
-  ./scripts/link_project.sh
+  npm run-script uninstall
+  npm install
 
   if [ -n "$TEST_ON_WEB_UI" ]; then
     printf "\n\nLint on-web-ui:\n\n"
@@ -104,7 +103,7 @@ else
 
   if [ -n "$BUILD_ON_WEB_UI" ]; then
     printf "\n\nBuild on-web-ui:\n\n"
-    gulp build
+    gulp build --release
 
     if [ -n "$VAGRANT_PROVISION" ]; then
       printf "\n\nInstall packaging tools:\n\n"
@@ -113,7 +112,7 @@ else
     fi
 
     printf "\n\Create debian package for on-web-ui:\n\n"
-    ./deb_package.sh
+    ./dev/deb_package.sh
 
     # printf "\n\nDeploy on-web-ui:\n\n"
     # gulp deploy
