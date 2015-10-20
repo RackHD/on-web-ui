@@ -3,15 +3,16 @@
 'use strict';
 
 import React from 'react';
-import Router, { Route, NotFoundRoute, DefaultRoute } from 'react-router';
+import { render } from 'react-dom';
+import Router, { Route, IndexRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
 import NotFound from 'common-web-ui/views/NotFound';
 import { MenuItem } from 'material-ui';
 
 export var navigation = [
-  { text: 'API Documentation', route: '/docs' },
-  { text: 'Project Guide', route: '/guides' },
+  { text: 'API Documentation', route: 'docs' },
+  { text: 'Project Guide', route: 'guides' },
 
   { text: 'Technologies', type: MenuItem.Types.SUBHEADER },
   { text: 'React', type: MenuItem.Types.LINK,
@@ -39,25 +40,21 @@ import DocViewerPage from '../views/DocViewerPage';
 import GuideViewerPage from '../views/GuideViewerPage';
 
 let routes = (
-  <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={GuideViewerPage} />
-    <Route path="/docs" handler={DocViewerPage} />
-    <Route path="/docs/:doc" handler={DocViewerPage} />
-    <Route path="/guides" handler={GuideViewerPage} />
-    <Route path="/guides/:guide" handler={GuideViewerPage} />
-    <NotFoundRoute handler={NotFound} />
+  <Route path="/" name="root" component={App}>
+    <IndexRoute component={GuideViewerPage} />
+    <Route path="/docs" component={DocViewerPage} />
+    <Route path="/docs/:doc" component={DocViewerPage} />
+    <Route path="/guides" component={GuideViewerPage} />
+    <Route path="/guides/:guide" component={GuideViewerPage} />
+    <Route path="*" component={NotFound} />
   </Route>
 );
-
-let params = {
-  routes,
-  scrollBehavior: Router.ScrollToTopBehavior
-};
 
 // Run the application when both DOM is ready and page content is loaded
 onReady(() => {
   if (global.isTesting) { return; }
-  Router.create(params).run(Handler => {
-    React.render(<Handler />, document.body);
-  });
+  let container = document.createElement('div');
+  container.className = 'react-container';
+  document.body.appendChild(container);
+  render(<Router>{routes}</Router>, container);
 });
