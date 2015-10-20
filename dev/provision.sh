@@ -92,13 +92,10 @@ else
 
   if [ -n "$TEST_ON_WEB_UI" ]; then
     printf "\n\nLint on-web-ui:\n\n"
-    node_modules/.bin/eslint \
-      gulpfile.js karma.*conf.js apps scripts/gen* scripts/lib \
-      scripts/tasks scripts/test scripts/tools scripts/slushfile.js \
-      -f checkstyle -o checkstyle-result.xml || true
+    npm run-script lint
 
     printf "\n\nTest on-web-ui:\n\n"
-    karma start karma.ci.conf.js
+    npm run-script test-ci
   fi
 
   if [ -n "$BUILD_ON_WEB_UI" ]; then
