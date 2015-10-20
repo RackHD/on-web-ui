@@ -9,11 +9,14 @@ var webpackBundler = require('./webpack_bundler');
 var baseDir = path.join(__dirname, '..', '..');
 
 module.exports = function (config) {
-  var webpackConfig = webpackBundler.baseConfig();
-  webpackConfig.output = null;
-
-  var testsEntryPath = path.join(baseDir, 'scripts', 'test', 'webpack_requires.js'),
+  var testsEntryPath = path.join(baseDir, 'dev', 'apps_test', 'webpack_requires.js'),
       preprocessors = {};
+
+  var webpackConfig =  webpackBundler.clientConfig({
+    output: null
+  }, {
+    entry: testsEntryPath
+  });
 
   // preprocess with webpack and our sourcemap loader
   preprocessors[testsEntryPath] = [ 'webpack', 'sourcemap' ];

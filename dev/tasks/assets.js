@@ -16,8 +16,8 @@ gulp.task('assets', function() {
   // Copy app assets into build directory.
   var apps = getFolders(path.join(__dirname, '..', '..', 'apps'));
   apps.forEach(function (appName) {
-    var appDir = path.join('apps', appName),
-        target = path.join('build', appName);
+    var appDir = path.join('..', 'apps', appName),
+        target = path.join('..', 'build', appName);
     streams.push(
       gulp.src(path.join(appDir, 'assets', '**'))
         .pipe(changed(target))

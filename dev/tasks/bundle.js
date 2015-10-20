@@ -15,21 +15,7 @@ var rootDir = path.join(__dirname, '..', '..');
 gulp.task('bundle', function (done) {
   var bundles = getFolders(path.join(rootDir, 'apps'));
 
-  var entry = {
-    'vendor.js': [
-      // common
-      'material-ui',
-      'moment',
-      'react',
-      'react-router',
-      'react-tap-event-plugin',
-
-      // other
-      'gl-matrix',
-      'react-chartist',
-      'superagent'
-    ]
-  };
+  var entry = {};
 
   bundles = bundles.map(function (appName) {
     entry[appName] = path.join(rootDir, 'apps', appName, 'bundle.js');
@@ -39,8 +25,7 @@ gulp.task('bundle', function (done) {
     webpackBundler({
       entry: entry,
       commonsChunkPlugins: [
-        new webpack.optimize.CommonsChunkPlugin('vendor.js'),
-        new webpack.optimize.CommonsChunkPlugin('common.js', ['common'], 2)
+        new webpack.optimize.CommonsChunkPlugin('common', 'common.js')
       ]
     }),
     done);
@@ -56,7 +41,10 @@ function createBundle(config, callback) {
     }
 
     if (global.parameters.argv.verbose) {
-      gulpUtil.log('[webpack]', stats.toString({colors: true}));
+      gulpUtil.log('[webpack]', stats.toString({
+        colors: true,
+        chunks: false
+      }));
     }
 
     if (!started) {

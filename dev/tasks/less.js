@@ -37,8 +37,8 @@ gulp.task('less', function() {
   }
 
   apps.forEach(function (appName) {
-    var appDir = path.join('apps', appName),
-        target = path.join('build', appName);
+    var appDir = path.join('..', 'apps', appName),
+        target = path.join('..', 'build', appName);
     streams.push(
       compileLess(gulp.src(path.join(appDir, 'less', 'main.less')))
         .pipe(gulp.dest(target))

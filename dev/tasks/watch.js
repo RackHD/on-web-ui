@@ -16,7 +16,7 @@ gulp.task('watch', function(cb) {
 
   var apps = getFolders(path.join(__dirname, '..', '..', 'apps'));
   apps.forEach(function (appName) {
-    var appDir = path.join('apps', appName);
+    var appDir = path.join('..', 'apps', appName);
 
     assets.push(path.join(appDir, 'assets', '**'));
     less.push(path.join(appDir, 'less', '**', '*.{css,less}'));

@@ -13,30 +13,26 @@ process.on('uncaughtException', function (err) {
 global.gulp = require('gulp');
 global.path = require('path');
 
-global.parameters = require('./scripts/lib/parameters')(2);
+global.parameters = require('./lib/parameters')(2);
 global.browserSync = null;
 global.watch = false;
 
 // build
-require('./scripts/tasks/build');
-require('./scripts/tasks/clean');
+require('./tasks/build');
+require('./tasks/clean');
 
 // build assets
-require('./scripts/tasks/assets');
-require('./scripts/tasks/less');
+require('./tasks/assets');
+require('./tasks/less');
 
 // build bundle
-require('./scripts/tasks/bundle');
+require('./tasks/bundle');
 
 // build run
-require('./scripts/tasks/serve');
+require('./tasks/serve');
 
 // build run dev
-require('./scripts/tasks/sync');
-require('./scripts/tasks/watch');
-
-// build deploy
-require('./scripts/tasks/deploy');
-
+require('./tasks/sync');
+require('./tasks/watch');
 
 global.gulp.task('default', ['sync']);

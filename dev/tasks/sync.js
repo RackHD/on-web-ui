@@ -32,7 +32,7 @@ gulp.task('sync', ['serve'], function(cb) {
     browserSync.exit();
   });
 
-  gulp.watch(['build/**/*.*'].concat(
+  gulp.watch(['../build/**/*.*'].concat(
     global.serverSrc ? ['!' + global.serverSrc] : []
   ), function(file) {
     browserSync.reload(path.relative(

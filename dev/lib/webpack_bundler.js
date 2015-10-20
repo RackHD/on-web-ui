@@ -21,9 +21,6 @@ var GLOBALS = {
 exports = module.exports = function (options) {
   options = options || {};
   var bundles = [exports.clientConfig(options.client, options)];
-  if (options.server) {
-    bundles.push(exports.serverConfig(options.server, options));
-  }
   return bundles;
 };
 
@@ -38,21 +35,27 @@ exports.baseConfig = function (options) {
   var autoprefixer = options.hasOwnProperty('autoprefixer') ?
     (options.autoprefixer || '') : AUTOPREFIXER_LOADER;
 
-  var modulesDir = options.modulesDir ||
-    path.join(__dirname, '..', '..', 'node_modules');
+  var modulesDir = options.modulesDir || [
+    path.join(__dirname, '..', 'node_modules'),
+    path.join(__dirname, '..', '..', 'node_modules')
+  ];
 
   var outputPath = options.outputPath ||
     path.join(__dirname, '..', '..', 'build', options.appName || 'bundle');
 
   return {
     output: {
+      // library: 'onWebUI',
+      // libraryTarget: 'umd',
       path: outputPath,
-      publicPath: path.join(__dirname, '..'),
+      pathinfo: true,
+      publicPath: path.join(__dirname, '..', '..'),
       sourcePrefix: '  '
     },
 
     cache: DEBUG,
     debug: DEBUG,
+
     devtool: DEBUG ? '#inline-source-map' : false,
 
     stats: {
@@ -60,18 +63,21 @@ exports.baseConfig = function (options) {
       reasons: DEBUG
     },
 
+    // profile: DEBUG,
+
     plugins: [
       new webpack.optimize.OccurenceOrderPlugin()
     ],
 
     resolve: {
+      extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx'],
       fallback: modulesDir,
-      modulesDirectories: ['node_modules'],
-      extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
+      modulesDirectories: ['node_modules']
     },
 
     resolveLoader: {
-      fallback: modulesDir
+      fallback: modulesDir,
+      modulesDirectories: ['node_modules']
     },
 
     module: {
@@ -107,11 +113,14 @@ exports.baseConfig = function (options) {
 // -----------------------------------------------------------------------------
 
 exports.clientConfig = function (overrides, options) {
+  overrides = overrides || {};
+  options = options || {};
+
   var baseConfig = exports.baseConfig(options),
       localGlobals = _.merge(GLOBALS, {'__SERVER__': false}),
       globalsPlugin = new webpack.DefinePlugin(localGlobals),
       commonsChunkPlugins = options.commonsChunkPlugins || [],
-      entry = options.entry || path.join('.', 'apps', options.appName, 'bundle.js');
+      entry = options.entry || path.join('..', '..', 'apps', options.appName, 'bundle.js');
 
   return _.merge({}, baseConfig, {
     entry: entry,
@@ -126,42 +135,5 @@ exports.clientConfig = function (overrides, options) {
         new webpack.optimize.UglifyJsPlugin(),
         new webpack.optimize.AggressiveMergingPlugin()
       ])
-  }, overrides);
-};
-
-//
-// Configuration for the server-side bundle
-// -----------------------------------------------------------------------------
-
-exports.serverConfig = function (overrides, options) {
-  var baseConfig = exports.baseConfig(options),
-      localGlobals = _.merge(GLOBALS, {'__SERVER__': true}),
-      globalsPlugin = new webpack.DefinePlugin(localGlobals);
-
-  return _.merge({}, baseConfig, {
-    entry: options.entry || path.join('.', 'apps', options.appName, 'server.js'),
-    output: {
-      filename: 'server.js',
-      libraryTarget: 'commonjs2'
-    },
-    target: 'node',
-    externals: /^[a-z][a-z\.\-0-9]*$/,
-    node: {
-      console: false,
-      global: false,
-      process: false,
-      Buffer: false,
-      __filename: false,
-      __dirname: false
-    },
-    plugins: baseConfig.plugins.concat(globalsPlugin),
-    module: {
-      loaders: baseConfig.module.loaders.map(function(loader) {
-        // Remove style-loader
-        return _.merge(loader, {
-          loader: loader.loader = loader.loader.replace('style-loader!', '')
-        });
-      })
-    }
   }, overrides);
 };
