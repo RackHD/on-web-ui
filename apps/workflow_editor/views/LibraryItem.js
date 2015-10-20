@@ -11,10 +11,8 @@ import decorate from 'common-web-ui/lib/decorate';
 
 import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 
-import highlight from 'highlight.js';
-import 'highlight.js/lib/languages/json';
-
-highlight.initHighlightingOnLoad();
+import prismjs from 'prismjs';
+import 'prismjs/components/prism-javascript';
 
 /**
 # WELibraryItem
@@ -93,9 +91,9 @@ export default class WELibraryItem extends Component {
 
     let objectJSON = this.props.object && this.state.showJSON ? (
       <pre style={css.pre}>
-        <code style={css.code} className="hljs json"
+        <code style={css.code} className="language-json"
           dangerouslySetInnerHTML={{__html:
-            highlight.highlightAuto(JSON.stringify(this.props.object, ' ', 2)).value
+            prismjs.highlight(JSON.stringify(this.props.object, ' ', 2), prismjs.languages['javascript'], 'javascript')
           }}>
         </code>
       </pre>

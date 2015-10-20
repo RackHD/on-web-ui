@@ -4,6 +4,7 @@
 
 import React, { // eslint-disable-line no-unused-vars
   Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
@@ -100,7 +101,7 @@ export default class WETasksLibrary extends Component {
       title: 'Define Task Label:'
     };
     PromptDialog.create(promptProps,
-      React.findDOMNode(this.context.layout.refs.overlay));
+      findDOMNode(this.context.layout.refs.overlay));
   }
 
 }

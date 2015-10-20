@@ -3,7 +3,8 @@
 'use strict';
 
 import React from 'react';
-import Router, { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
+import { render } from 'react-dom';
+import Router, { Route, Redirect, IndexRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
 // import { MenuItem } from 'material-ui';
@@ -16,25 +17,26 @@ import ExampleGraphCanvas from 'graph-canvas-web-ui/views/Example';
 
 // See http://rackt.github.io/react-router/
 let routes = (
-  <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={WorkflowEditor} />
-    <Route path="/example" handler={ExampleGraphCanvas} />
-    <Route path="/edit/:workflow" handler={WorkflowEditor} />
-    <NotFoundRoute handler={NotFound} />
+  <Route path="/" name="root" component={App}>
+    <IndexRoute component={WorkflowEditor} />
+    <Route path="/example" component={ExampleGraphCanvas} />
+    <Route path="/edit/:workflow" component={WorkflowEditor} />
+    <Route path="*" component={NotFound} />
     <Redirect from="/edit" to="/edit/new" />
   </Route>
 );
 
 // Router configuration
-let params = {
-  routes,
-  scrollBehavior: Router.ScrollToTopBehavior
-};
+// let params = {
+//   routes,
+//   scrollBehavior: Router.ScrollToTopBehavior
+// };
 
 // Run the application when both DOM is ready and page content is loaded
 onReady(() => {
   if (global.isTesting) { return; }
-  Router.create(params).run(Handler => {
-    React.render(<Handler />, document.body);
-  });
+  let container = document.createElement('div');
+  container.className = 'react-container';
+  document.body.appendChild(container);
+  render(<Router>{routes}</Router>, container);
 });
