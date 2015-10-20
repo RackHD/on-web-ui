@@ -1,19 +1,16 @@
 {
-  "name": "common-web-ui",
+  "name": "workflow-editor-web-ui",
   "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
-  "description": "Common Web UI",
+  "description": "Workflow Editor Web UI",
   "repository": "",
   "license": "Apache-2.0",
   "engines": {
     "node": ">= 4.0",
     "npm": ">= 2.1"
   },
-  "dependencies": {
-    "brace": "^0.5.1",
-    "moment": "^2.10.6"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {}
 }
