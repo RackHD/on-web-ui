@@ -5,6 +5,7 @@
 /* eslint-disable no-unused-expressions */
 
 import React from 'react'; // eslint-disable-line no-unused-vars
+import { findDOMNode } from 'react-dom';
 
 import TestWrapper from 'common-web-ui/views/TestWrapper';
 import <%= file %> from '../<%= file %>';
@@ -28,7 +29,7 @@ describe('<%= name %> <%= file %>', function() {
     it('can be rendered.', function() {
       expect(this.wrapper).to.be.ok;
       expect(this.subject).to.be.ok;
-      expect(React.findDOMNode(this.subject)).to.be.ok;
+      expect(findDOMNode(this.subject)).to.be.ok;
     });
   });
 

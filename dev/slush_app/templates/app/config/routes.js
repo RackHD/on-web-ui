@@ -3,7 +3,8 @@
 'use strict';
 
 import React from 'react';
-import Router, { Route, Redirect, NotFoundRoute, DefaultRoute } from 'react-router';
+import { render } from 'react-dom';
+import Router, { Route, Redirect, IndexRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
 // import { MenuItem } from 'material-ui';
@@ -21,25 +22,20 @@ import App from '../views/App';
 
 // See http://rackt.github.io/react-router/
 let routes = (
-  <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={UserLogin} />
-    <Route name="404" handler={NotFound} />
-    <Route name="login" handler={UserLogin} />
-    <NotFoundRoute handler={NotFound} />
+  <Route path="/" name="root" component={App}>
+    <IndexRoute component={UserLogin} />
+    <Route path="/not_found" name="404" component={NotFound} />
+    <Route path="/login" name="login" component={UserLogin} />
+    <Route path="*" component={NotFound} />
     <Redirect from="home" to="/" />
   </Route>
 );
 
-// Router configuration
-let params = {
-  routes,
-  scrollBehavior: Router.ScrollToTopBehavior
-};
-
 // Run the application when both DOM is ready and page content is loaded
 onReady(() => {
   if (global.isTesting) { return; }
-  Router.create(params).run(Handler => {
-    React.render(<Handler />, document.body);
-  });
+  let container = document.createElement('div');
+  container.className = 'react-container';
+  document.body.appendChild(container);
+  render(<Router>{routes}</Router>, container);
 });
