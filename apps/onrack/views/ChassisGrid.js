@@ -49,8 +49,6 @@ export default class ChassisGrid extends Component {
     this.unwatchChassis();
   }
 
-  componentDidUnmount() { this.profileTime('EntityGrid', 'did-unmount'); }
-
   componentWillUpdate() { this.profileTime('ChassisGrid', 'will-update'); }
 
   componentDidUpdate() {
