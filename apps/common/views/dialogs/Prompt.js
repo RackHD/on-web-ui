@@ -4,9 +4,10 @@
 
 import React, { // eslint-disable-line no-unused-vars
   Component, PropTypes } from 'react';
+import { render, unmountComponentAtNode } from 'react-dom';
 
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
+import mixin from '../../lib/mixin';
 import decorate from '../../lib/decorate';
 
 import DeveloperHelpers from '../../mixins/DeveloperHelpers';
@@ -62,7 +63,7 @@ export default class PromptDialog extends Component {
     parent.appendChild(container);
 
     var component = <this {...props}/>;
-    return React.render(component, container);
+    return render(component, container);
   }
 
   state = {};
@@ -105,7 +106,7 @@ export default class PromptDialog extends Component {
 
   remove() {
     // TODO: dry this code
-    React.unmountComponentAtNode(this.props.container);
+    unmountComponentAtNode(this.props.container);
     this.props.container.parentNode.removeChild(this.props.container);
   }
 

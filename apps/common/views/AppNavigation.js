@@ -5,15 +5,17 @@
 import React, {// eslint-disable-line no-unused-vars
   Component,
   PropTypes } from 'react';
-import mixin from 'common-web-ui/lib/mixin';
+import mixin from '../lib/mixin';
 import radium from 'radium';
 import decorate from '../lib/decorate';
 import MUIStyleHelpers from '../mixins/MUIStyleHelpers';
+import RouteHelpers from '../mixins/RouteHelpers';
 
 import { LeftNav } from 'material-ui';
 
 @radium
 @mixin(MUIStyleHelpers)
+@mixin(RouteHelpers)
 @decorate({
   propTypes: {
     title: PropTypes.string,
@@ -24,9 +26,6 @@ import { LeftNav } from 'material-ui';
     title: 'On Web UI',
     menuItems: [],
     brandStyle: {}
-  },
-  contextTypes: {
-    router: PropTypes.func
   }
 })
 export default class AppMenuNav extends Component {
@@ -67,8 +66,9 @@ export default class AppMenuNav extends Component {
   }
 
   isActive(item) {
-    var router = this.context.router;
-    return item.route && router && router.isActive(item.route);
+    let end = window.location.hash.lastIndexOf('?'),
+        active = window.location.hash.substring(2, end).split('/')[0];
+    return item.route && item.route === active;
   }
 
   toggle() {
@@ -86,16 +86,14 @@ export default class AppMenuNav extends Component {
   }
 
   onLeftNavChange(e, key, payload) {
-    if (this.context.router) {
-      this.context.router.transitionTo(payload.route);
-    }
+    debugger;
+    this.routeTo(payload.route);
   }
 
   onHeaderClick() {
-    if (this.context.router) {
-      this.context.router.transitionTo('root');
-      this.refs.leftNav.close();
-    }
+    debugger;
+    this.routeTo('');
+    this.refs.leftNav.close();
   }
 
 }
