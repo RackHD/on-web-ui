@@ -34,7 +34,7 @@ export default class Config extends Component {
     return (
       <div className="Config">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           'Config'
         )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}

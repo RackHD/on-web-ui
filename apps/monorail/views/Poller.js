@@ -50,7 +50,7 @@ export default class Poller extends Component {
     return (
       <div className="Poller">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'pollers', label: 'Pollers'},
           this.getPollerId()
         )}

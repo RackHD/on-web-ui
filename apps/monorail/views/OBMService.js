@@ -35,7 +35,7 @@ export default class OBMService extends Component {
     return (
       <div className="OBMService">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'obms', label: 'OBM Services'},
           this.props.params.obmsId
         )}

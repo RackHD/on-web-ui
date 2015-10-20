@@ -17,7 +17,7 @@ export default class Templates extends Component {
   render() {
     return (
       <div className="Templates">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Templates')}
+        {this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Templates')}
         <TemplatesGrid />
       </div>
     );

@@ -15,18 +15,18 @@ import WorkflowsGrid from './WorkflowsGrid';
 export default class Workflows extends Component {
 
   render() {
-    this.props.params = this.props.params || {};
-    let nodeId = this.props.nodeId || this.props.params.nodeId;
+    let params = this.props.params || {};
+    let nodeId = this.props.nodeId || params.nodeId;
     return (
       <div className="Workflows">
         {nodeId ?
           this.renderBreadcrumbs(
-            {href: 'dash', label: 'Dashboard'},
+            {href: '', label: 'Dashboard'},
             {href: 'nodes', label: 'Nodes'},
             {href: 'nodes/' + nodeId, label: nodeId},
             'Workflows'
           ) :
-          this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Workflows')
+          this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Workflows')
         }
         <WorkflowsGrid nodeId={nodeId} />
       </div>

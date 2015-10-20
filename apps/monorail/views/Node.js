@@ -64,7 +64,7 @@ export default class Node extends Component {
     return (
       <div className="Node">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'nodes', label: 'Nodes'},
           this.getNodeId()
         )}

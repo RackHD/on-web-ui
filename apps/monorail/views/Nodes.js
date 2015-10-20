@@ -17,7 +17,7 @@ export default class Nodes extends Component {
   render() {
     return (
       <div className="Nodes">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Nodes')}
+        {this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Nodes')}
         <NodesGrid />
       </div>
     );

@@ -15,27 +15,27 @@ import CatalogsGrid from './CatalogsGrid';
 export default class Catalogs extends Component {
 
   render() {
-    this.props.params = this.props.params || {};
-    let nodeId = this.props.nodeId || this.props.params.nodeId,
-        source = this.props.source || this.props.params.source;
+    let params = this.props.params || {};
+    let nodeId = this.props.nodeId || params.nodeId,
+        source = this.props.source || params.source;
     return (
       <div className="Catalogs">
         {nodeId ?
           (source ?
             this.renderBreadcrumbs(
-              {href: 'dash', label: 'Dashboard'},
+              {href: '', label: 'Dashboard'},
               {href: 'nodes', label: 'Nodes'},
               {href: 'nodes/' + nodeId, label: nodeId},
               {href: 'catalogs/n/' + nodeId, label: 'Catalogs'},
               source
             ) :
             this.renderBreadcrumbs(
-              {href: 'dash', label: 'Dashboard'},
+              {href: '', label: 'Dashboard'},
               {href: 'nodes', label: 'Nodes'},
               {href: 'nodes/' + nodeId, label: nodeId},
               'Catalogs'
             )) :
-            this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Catalogs')
+            this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Catalogs')
         }
         <CatalogsGrid nodeId={nodeId} source={source} />
       </div>

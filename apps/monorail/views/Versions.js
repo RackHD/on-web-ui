@@ -17,7 +17,7 @@ export default class Versions extends Component {
   render() {
     return (
       <div className="Versions">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Versions')}
+        {this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Versions')}
         <VersionsGrid />
       </div>
     );

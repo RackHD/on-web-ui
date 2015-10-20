@@ -34,7 +34,7 @@ export default class Task extends Component {
     return (
       <div className="Task">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           'Task'
         )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}

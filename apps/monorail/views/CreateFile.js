@@ -26,7 +26,7 @@ export default class CreateFile extends Component {
     return (
       <div className="File">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'files', label: 'Files'},
           'Create File'
         )}

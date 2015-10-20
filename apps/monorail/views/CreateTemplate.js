@@ -26,7 +26,7 @@ export default class CreateTemplate extends Component {
     return (
       <div className="Template">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'templates', label: 'Templates'},
           'Create Template'
         )}

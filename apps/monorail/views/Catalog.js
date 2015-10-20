@@ -132,12 +132,12 @@ export default class Catalog extends Component {
       <div className="Catalog">
         {this.catalogId ?
           this.renderBreadcrumbs(
-            {href: 'dash', label: 'Dashboard'},
+            {href: '', label: 'Dashboard'},
             {href: 'catalogs', label: 'Catalogs'},
             this.catalogId
           ) :
           this.renderBreadcrumbs(
-            {href: 'dash', label: 'Dashboard'},
+            {href: '', label: 'Dashboard'},
             {href: 'nodes', label: 'Nodes'},
             {href: 'nodes/' + this.nodeId, label: this.nodeId},
             {href: 'catalogs', label: 'Catalogs'},

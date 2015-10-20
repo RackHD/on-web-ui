@@ -17,7 +17,7 @@ export default class Profiles extends Component {
   render() {
     return (
       <div className="Profiles">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Profiles')}
+        {this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Profiles')}
         <ProfilesGrid />
       </div>
     );

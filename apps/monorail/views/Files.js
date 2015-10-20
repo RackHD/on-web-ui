@@ -17,7 +17,7 @@ export default class Files extends Component {
   render() {
     return (
       <div className="Files">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Files')}
+        {this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Files')}
         <FilesGrid />
       </div>
     );

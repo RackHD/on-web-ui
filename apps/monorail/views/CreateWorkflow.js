@@ -27,13 +27,13 @@ export default class CreateWorkflow extends Component {
       <div className="Workflow">
         {this.props.params.nodeId ?
           this.renderBreadcrumbs(
-            {href: 'dash', label: 'Dashboard'},
+            {href: '', label: 'Dashboard'},
             {href: 'nodes', label: 'Nodes'},
             {href: 'nodes/' + this.props.params.nodeId, label: this.props.params.nodeId},
             {href: 'workflows/n/' + this.props.params.nodeId, label: 'Workflows'},
             'Create Workflow'
           ) : this.renderBreadcrumbs(
-            {href: 'dash', label: 'Dashboard'},
+            {href: '', label: 'Dashboard'},
             {href: 'workflows', label: 'Workflows'},
             'Create Workflow'
           )

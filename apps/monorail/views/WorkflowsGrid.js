@@ -43,11 +43,11 @@ export default class WorkflowsGrid extends Component {
 
   render() {
     let rightButtons = [
-      <RaisedButton label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
+      <RaisedButton key={0} label="Create Workflow" primary={true} onClick={this.createWorkflow.bind(this)} />
     ];
     if (this.nodeId) {
       rightButtons.unshift(
-        <RaisedButton label="Cancel Active Workflow" primary={true} onClick={this.cancelActiveWorkflow.bind(this)} />
+        <RaisedButton key={1} label="Cancel Active Workflow" primary={true} onClick={this.cancelActiveWorkflow.bind(this)} />
       );
     }
     return (
