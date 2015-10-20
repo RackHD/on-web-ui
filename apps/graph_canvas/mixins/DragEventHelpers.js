@@ -3,6 +3,7 @@
 'use strict';
 
 import React from 'react';
+import { findDOMNode } from 'react-dom';
 
 import Vector from '../lib/Vector';
 
@@ -18,7 +19,7 @@ export default {
   },
 
   findThisDOMNode() {
-    return React.findDOMNode(this);
+    return findDOMNode(this);
   },
 
   domOffsetXY(element) {

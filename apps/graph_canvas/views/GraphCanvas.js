@@ -154,13 +154,13 @@ export default class GraphCanvas extends Component {
       let props = this.props,
           css = [this.css.root, this.cssViewSize, props.css.root, props.style];
 
-      React.Children.forEach(props.children, child => {
+      let children = React.Children.map(props.children, child => {
         // NOTE: Context seems to be based on lexical scope, this will ensure Graph Canvas
         //       children have a graphCanvas in their context which is required for GC elements.
-        if (child && child._context) {
-          child._context.graphCanvas = this;
-        }
+        return React.cloneElement(child);
       });
+
+      // debugger;
 
       return (
         <div className={props.className} style={css}>
@@ -171,7 +171,7 @@ export default class GraphCanvas extends Component {
 
           <GCViewport ref="viewport">
             <GCWorld ref="world">
-              {props.children}
+              {children}
             </GCWorld>
           </GCViewport>
         </div>

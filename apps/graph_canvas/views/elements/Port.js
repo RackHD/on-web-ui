@@ -47,6 +47,12 @@ import generateId from '../../lib/generateId';
     graphCanvas: PropTypes.any,
     parentGCNode: PropTypes.any,
     parentGCGroup: PropTypes.any
+  },
+  childContextTypes: {
+    graphCanvas: PropTypes.any,
+    parentGCNode: PropTypes.any,
+    parentGCGroup: PropTypes.any,
+    parentGCPort: PropTypes.any
   }
 })
 export default class GCPortElement extends Component {
@@ -72,6 +78,15 @@ export default class GCPortElement extends Component {
   }
 
   id = this.props.initialId || this.constructor.id();
+
+  getChildContext() {
+    return {
+      graphCanvas: this.graphCanvas,
+      parentGCGroup: this.parentGroup,
+      parentGCNode: this.parentNode,
+      parentGCPort: this
+    }
+  }
 
   componentWillMount() {
     this.graphCanvas.register(this);
@@ -109,9 +124,7 @@ export default class GCPortElement extends Component {
     var sockets = [];
 
     var children = React.Children.map(this.props.children, child => {
-      if (child && child._context) {
-        child._context.parentGCPort = this;
-      }
+      child = React.cloneElement(child);
       let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
       if (gcTypeEnum && gcTypeEnum.socket) {
         sockets.push(child);
