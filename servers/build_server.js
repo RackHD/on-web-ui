@@ -10,7 +10,7 @@ var server = express();
 
 server.set('port', (process.env.ONWEBUI_PORT || 5000));
 
-var publicPath = path.join(__dirname, '..', '..', 'build');
+var publicPath = path.join(__dirname, '..', 'build');
 
 server.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
