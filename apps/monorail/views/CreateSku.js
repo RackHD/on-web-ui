@@ -26,7 +26,7 @@ export default class CreateSku extends Component {
     return (
       <div className="Sku">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'skus', label: 'Skus'},
           'Create Sku'
         )}

@@ -7,10 +7,12 @@
   "repository": "",
   "license": "",
   "engines": {
-    "node": ">= 0.10",
+    "node": ">= 4.0",
     "npm": ">= 2.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "page": "^1.6.3"
+  },
   "devDependencies": {},
   "scripts": {}
 }

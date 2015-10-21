@@ -4,4 +4,4 @@ build/monorail /opt/monorail/static/http
 build/onrack /opt/monorail/static/http
 build/workflow_editor /opt/monorail/static/http
 on-web-ui_commitstring.txt /opt/monorail/static/http/on-web-ui
-index.html /opt/monorail/static/http
+apps/index.html /opt/monorail/static/http

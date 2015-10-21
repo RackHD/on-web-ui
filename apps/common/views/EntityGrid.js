@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import decorate from '../lib/decorate';
-import mixin from 'common-web-ui/lib/mixin';
+import mixin from '../lib/mixin';
 import DeveloperHelpers from '../mixins/DeveloperHelpers';
 /* eslint-enable no-unused-vars */
 
@@ -57,8 +57,6 @@ export default class EntityGrid extends Component {
   componentDidMount() { this.profileTime('EntityGrid', 'did-mount'); }
 
   componentWillUnmount() { this.profileTime('EntityGrid', 'will-unmount'); }
-
-  componentDidUnmount() { this.profileTime('EntityGrid', 'did-unmount'); }
 
   componentWillUpdate() { this.profileTime('EntityGrid', 'will-update'); }
 

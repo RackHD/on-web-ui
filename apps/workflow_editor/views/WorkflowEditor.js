@@ -6,6 +6,7 @@ import { EventEmitter } from 'events';
 
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 import radium from 'radium';
 import decorate from 'common-web-ui/lib/decorate';
@@ -239,8 +240,8 @@ export default class WorkflowEditor extends Component {
   }
 
   updateCanvasSize() {
-    var canvasCell = React.findDOMNode(this.refs.canvasCell),
-        toolbarLine = React.findDOMNode(this.refs.toolbar),
+    var canvasCell = findDOMNode(this.refs.canvasCell),
+        toolbarLine = findDOMNode(this.refs.toolbar),
         footerSize = 38,
         canvasWidth = canvasCell.offsetWidth, //window.innerWidth - this.state.trayWidth,
         canvasHeight = window.innerHeight - toolbarLine.offsetHeight - footerSize;
@@ -317,343 +318,313 @@ export default class WorkflowEditor extends Component {
     this.workflowGraphs[workflowGroupId] = workflowGraph;
 
     workflowGraph._ = { isSubGraph//, template: workflowTemplate
-    };
+                                      };
     workflowGraph._.groupId = workflowGroupId;
 
-    // Setup Workflow
-    React.withContext({
-      graphCanvas: this.refs.graphCanvas
-    }, () => {
-      let taskCount = workflowGraph.tasks.length + 1;
-      let taskGutter = 30;
-      let taskSizeX = 320;
-      let taskSizeY = 220;
-      let taskWidth = taskGutter + taskSizeX;
-      let taskHeight = taskGutter + taskSizeY;
-      let minSizeX = taskGutter + taskWidth / 2;
-      let minSizeY = taskGutter + taskHeight / 2;
-      let columns = 4;
-      let sizeX = Math.max(minSizeX, taskGutter + (columns * taskWidth) / 2);
-      let sizeY = Math.max(minSizeY, taskGutter + (Math.ceil(taskCount / columns) * taskHeight) / 2) + 10;
+    let taskCount = workflowGraph.tasks.length + 1;
+    let taskGutter = 30;
+    let taskSizeX = 320;
+    let taskSizeY = 220;
+    let taskWidth = taskGutter + taskSizeX;
+    let taskHeight = taskGutter + taskSizeY;
+    let minSizeX = taskGutter + taskWidth / 2;
+    let minSizeY = taskGutter + taskHeight / 2;
+    let columns = 4;
+    let sizeX = Math.max(minSizeX, taskGutter + (columns * taskWidth) / 2);
+    let sizeY = Math.max(minSizeY, taskGutter + (Math.ceil(taskCount / columns) * taskHeight) / 2) + 10;
 
-      let workflowGroup = (
-        <GCGroup key={workflowGroupId}
-            initialBounds={isSubGraph ? [
-              0, 0, sizeX * 2, sizeY * 2
-            ] : [
-              1500 - sizeX, 1500 - sizeY,
-              1500 + sizeX, 1500 + sizeY
+    let workflowGroup = (
+      <GCGroup key={workflowGroupId}
+          initialBounds={isSubGraph ? [
+            0, 0, sizeX * 2, sizeY * 2
+          ] : [
+            1500 - sizeX, 1500 - sizeY,
+            1500 + sizeX, 1500 + sizeY
+          ]}
+          initialColor="#bbb"
+          initialName={workflowGraph.friendlyName}
+          initialId={workflowGroupId}
+          isRemovable={false}
+          onChange={this.changeTask.bind(this, workflowGraph)} />
+    );
+
+    workflowGraph._.groupElement = workflowGroup;
+
+    // TODO: add handler to remove from this.groups
+    if (isSubGraph) {
+      parentWorkflowGraph._.subGraphs = parentWorkflowGraph._.subGraphs || [];
+      parentWorkflowGraph._.subGraphs.push(workflowGraph);
+      parentWorkflowGraph._.groupComponent.appendChild(workflowGroup);
+    }
+    else {
+      this.refs.graphCanvas.refs.world.appendChild(workflowGroup);
+    }
+
+    setTimeout(() => {
+      let workflowGroupComponent = this.refs.graphCanvas.lookup(workflowGroupId);
+      workflowGraph._.groupComponent = workflowGroupComponent;
+
+      // Setup Workflow Nodes
+      let taskMap = workflowGraph._.taskMap = {};
+
+      let workflowOptions = workflowGraph._.options = {},
+          optionsNodeId = GCNode.id(),
+          defaultOptionsPortId = GCPort.id(),
+          defaultOptionsInId = GCSocket.id(),
+          defaultOptionsOutId = GCSocket.id(),
+          specificOptionsPortId = GCPort.id(),
+          specificOptionsInId = GCSocket.id(),
+          specificOptionsOutId = GCSocket.id();
+
+      workflowOptions.defaultOptionsPortId = defaultOptionsPortId;
+      workflowOptions.specificOptionsPortId = specificOptionsPortId;
+
+      workflowOptions.defaultSocketIds = {
+        in: defaultOptionsInId,
+        out: defaultOptionsOutId
+      };
+      workflowOptions.specificSocketIds = {
+        in: specificOptionsInId,
+        out: specificOptionsOutId
+      };
+
+      workflowOptions.element = (
+        <GCNode key={optionsNodeId}
+            initialBounds={[
+              0, 0,
+              taskWidth, taskHeight
             ]}
-            initialColor="#bbb"
-            initialName={workflowGraph.friendlyName}
-            initialId={workflowGroupId}
-            isRemovable={false}
-            onChange={this.changeTask.bind(this, workflowGraph)} />
+            initialColor="#6c8"
+            initialId={optionsNodeId}
+            initialName={'Options: ' + workflowGraph.friendlyName}
+            isRemovable={false}>
+          <GCPort key={defaultOptionsPortId}
+              initialColor="#496"
+              initialId={defaultOptionsPortId}
+              initialName="Workflow Options (Defaults)">
+            <GCSocket key={defaultOptionsInId}
+                dir={[-1, 0]}
+                initialColor="#294"
+                initialId={defaultOptionsInId}
+                initialName="In" />
+            <GCSocket key={defaultOptionsOutId}
+                dir={[1, 0]}
+                initialColor="#272"
+                initialId={defaultOptionsOutId}
+                initialName="Out" />
+          </GCPort>
+          <GCPort key={specificOptionsPortId}
+              initialColor="#496"
+              initialId={specificOptionsPortId}
+              initialName="Workflow Options (Specifics)">
+            <GCSocket key={specificOptionsInId}
+                dir={[-1, 0]}
+                initialColor="#294"
+                initialId={specificOptionsInId}
+                initialName="In" />
+            <GCSocket key={specificOptionsOutId}
+                dir={[1, 0]}
+                initialColor="#272"
+                initialId={specificOptionsOutId}
+                initialName="Out" />
+          </GCPort>
+        </GCNode>
       );
 
-      workflowGraph._.groupElement = workflowGroup;
+      workflowGroupComponent.appendChild(workflowOptions.element);
 
-      // TODO: add handler to remove from this.groups
-      if (isSubGraph) {
-        parentWorkflowGraph._.subGraphs = parentWorkflowGraph._.subGraphs || [];
-        parentWorkflowGraph._.subGraphs.push(workflowGraph);
-        parentWorkflowGraph._.groupComponent.appendChild(workflowGroup);
-      }
-      else {
-        this.refs.graphCanvas.refs.world.appendChild(workflowGroup);
-      }
+      workflowGraph.tasks.forEach((task, taskNumber) => {
+        taskNumber += 1;
+        taskMap[task.label] = task;
 
-      setTimeout(() => {
-        let workflowGroupComponent = this.refs.graphCanvas.lookup(workflowGroupId);
-        workflowGraph._.groupComponent = workflowGroupComponent;
+        let taskNodeId = GCNode.id(),
+            orderPortId = GCPort.id(),
+            waitOnId = GCSocket.id(),
+            failedId = GCSocket.id(),
+            succeededId = GCSocket.id(),
+            finishedId = GCSocket.id(),
+            optionsPortId = GCPort.id(),
+            optionsInId = GCSocket.id(),
+            optionsOutId = GCSocket.id();
 
-        // Setup Workflow Nodes
-        let taskMap = workflowGraph._.taskMap = {};
+        task._ = {};
+        task._.nodeId = taskNodeId;
+        task._.orderPortId = orderPortId;
+        task._.orderSocketIds = {
+          waitOn: waitOnId,
+          failed: failedId,
+          succeeded: succeededId,
+          finished: finishedId
+        };
+        task._.optionsPortId = optionsPortId;
+        task._.optionsSocketIds = {
+          in: optionsInId,
+          out: optionsOutId
+        };
 
-        React.withContext({
-          graphCanvas: this.refs.graphCanvas,
-          parentGCGroup: workflowGroupComponent
-        }, () => {
-          let workflowOptions = workflowGraph._.options = {},
-              optionsNodeId = GCNode.id(),
-              defaultOptionsPortId = GCPort.id(),
-              defaultOptionsInId = GCSocket.id(),
-              defaultOptionsOutId = GCSocket.id(),
-              specificOptionsPortId = GCPort.id(),
-              specificOptionsInId = GCSocket.id(),
-              specificOptionsOutId = GCSocket.id();
+        task._.definition = this.getTaskDefinitionFromTask(task);
+        // TODO: figure out how to link a nested workflow to a task.
+        // let definition = task._.definition
+        // if (definition && definition.implementsTask && definition.implementsTask.indexOf('Graph.Run') !== -1) {
+        //   let nestedWorkflowTemplate = this.getWorkflowTemplateByName(definition.options.graphName);
+        //   if (nestedWorkflowTemplate) {
+        //     this.loadWorkflow(nestedWorkflowTemplate, false, (linkedWorkflowGraph) => {
+        //       task._.linkedWorkflow = linkedWorkflowGraph;
+        //     });
+        //   }
+        // }
 
-          workflowOptions.defaultOptionsPortId = defaultOptionsPortId;
-          workflowOptions.specificOptionsPortId = specificOptionsPortId;
+        let row = Math.floor(taskNumber / columns),
+            col = taskNumber % columns;
 
-          workflowOptions.defaultSocketIds = {
-            in: defaultOptionsInId,
-            out: defaultOptionsOutId
-          };
-          workflowOptions.specificSocketIds = {
-            in: specificOptionsInId,
-            out: specificOptionsOutId
-          };
+        let taskNode = (
+          <GCNode key={taskNodeId}
+              initialBounds={[
+                taskGutter + (col * taskWidth), taskGutter + (row * taskHeight),
+                taskWidth + (col * taskWidth), taskHeight + (row * taskHeight)
+              ]}
+              initialColor="#999"
+              initialId={taskNodeId}
+              initialName={task.label}
+              onRemove={this.removeTask.bind(this, workflowGraph, task)}
+              onChange={this.changeTask.bind(this, workflowGraph, task)}>
+            <GCPort key={orderPortId}
+                initialColor="#469"
+                initialId={orderPortId}
+                initialName="Run Order">
+              <GCSocket key={waitOnId}
+                  dir={[-1, 0]}
+                  initialColor="#249"
+                  initialId={waitOnId}
+                  initialName="Wait On" />
+              <GCSocket key={failedId}
+                  dir={[1, 0]}
+                  initialColor="#227"
+                  initialId={failedId}
+                  initialName="Failed" />
+              <GCSocket key={succeededId}
+                  dir={[1, 0]}
+                  initialColor="#227"
+                  initialId={succeededId}
+                  initialName="Succeeded" />
+              <GCSocket key={finishedId}
+                  dir={[1, 0]}
+                  initialColor="#227"
+                  initialId={finishedId}
+                  initialName="Finished" />
+            </GCPort>
+            <GCPort key={optionsPortId}
+                initialColor="#496"
+                initialId={optionsPortId}
+                initialName="Task Options">
+              <GCSocket key={optionsInId}
+                  dir={[-1, 0]}
+                  initialColor="#294"
+                  initialId={optionsInId}
+                  initialName="In" />
+              <GCSocket key={optionsOutId}
+                  dir={[1, 0]}
+                  initialColor="#272"
+                  initialId={optionsOutId}
+                  initialName="Out" />
+            </GCPort>
+          </GCNode>
+        );
 
-          workflowOptions.element = (
-            <GCNode key={optionsNodeId}
-                initialBounds={[
-                  0, 0,
-                  taskWidth, taskHeight
-                ]}
-                initialColor="#6c8"
-                initialId={optionsNodeId}
-                initialName={'Options: ' + workflowGraph.friendlyName}
-                isRemovable={false}>
-              <GCPort key={defaultOptionsPortId}
-                  initialColor="#496"
-                  initialId={defaultOptionsPortId}
-                  initialName="Workflow Options (Defaults)">
-                <GCSocket key={defaultOptionsInId}
-                    dir={[-1, 0]}
-                    initialColor="#294"
-                    initialId={defaultOptionsInId}
-                    initialName="In" />
-                <GCSocket key={defaultOptionsOutId}
-                    dir={[1, 0]}
-                    initialColor="#272"
-                    initialId={defaultOptionsOutId}
-                    initialName="Out" />
-              </GCPort>
-              <GCPort key={specificOptionsPortId}
-                  initialColor="#496"
-                  initialId={specificOptionsPortId}
-                  initialName="Workflow Options (Specifics)">
-                <GCSocket key={specificOptionsInId}
-                    dir={[-1, 0]}
-                    initialColor="#294"
-                    initialId={specificOptionsInId}
-                    initialName="In" />
-                <GCSocket key={specificOptionsOutId}
-                    dir={[1, 0]}
-                    initialColor="#272"
-                    initialId={specificOptionsOutId}
-                    initialName="Out" />
-              </GCPort>
-            </GCNode>
-          );
+        task._.nodeElement = taskNode;
 
-          workflowGroupComponent.appendChild(workflowOptions.element);
-        });
+        // TODO: add handler to remove this task from workflowGraph.tasks
+        workflowGroupComponent.appendChild(taskNode);
+      });
 
-        workflowGraph.tasks.forEach((task, taskNumber) => {
-          taskNumber += 1;
-          taskMap[task.label] = task;
+      // Setup Workflow Links
+      let links = workflowGraph._.links = {};
+      workflowGraph.tasks.forEach(task => {
+        if (task.waitOn) {
+          Object.keys(task.waitOn).forEach(taskLabel => {
+            let state = task.waitOn[taskLabel],
+                linkedTask = taskMap[taskLabel],
+                socketFrom = task._.orderSocketIds.waitOn,
+                socketTo = linkedTask._.orderSocketIds[state];
 
-          let taskNodeId = GCNode.id(),
-              orderPortId = GCPort.id(),
-              waitOnId = GCSocket.id(),
-              failedId = GCSocket.id(),
-              succeededId = GCSocket.id(),
-              finishedId = GCSocket.id(),
-              optionsPortId = GCPort.id(),
-              optionsInId = GCSocket.id(),
-              optionsOutId = GCSocket.id();
+            let orderLinkId = GCLink.id();
 
-          task._ = {};
-          task._.nodeId = taskNodeId;
-          task._.orderPortId = orderPortId;
-          task._.orderSocketIds = {
-            waitOn: waitOnId,
-            failed: failedId,
-            succeeded: succeededId,
-            finished: finishedId
-          };
-          task._.optionsPortId = optionsPortId;
-          task._.optionsSocketIds = {
-            in: optionsInId,
-            out: optionsOutId
-          };
-
-          task._.definition = this.getTaskDefinitionFromTask(task);
-          // TODO: figure out how to link a nested workflow to a task.
-          // let definition = task._.definition
-          // if (definition && definition.implementsTask && definition.implementsTask.indexOf('Graph.Run') !== -1) {
-          //   let nestedWorkflowTemplate = this.getWorkflowTemplateByName(definition.options.graphName);
-          //   if (nestedWorkflowTemplate) {
-          //     this.loadWorkflow(nestedWorkflowTemplate, false, (linkedWorkflowGraph) => {
-          //       task._.linkedWorkflow = linkedWorkflowGraph;
-          //     });
-          //   }
-          // }
-
-          React.withContext({
-            graphCanvas: this.refs.graphCanvas,
-            parentGCGroup: workflowGroupComponent
-          }, () => {
-            let row = Math.floor(taskNumber / columns),
-                col = taskNumber % columns;
-
-            let taskNode = (
-              <GCNode key={taskNodeId}
-                  initialBounds={[
-                    taskGutter + (col * taskWidth), taskGutter + (row * taskHeight),
-                    taskWidth + (col * taskWidth), taskHeight + (row * taskHeight)
-                  ]}
-                  initialColor="#999"
-                  initialId={taskNodeId}
-                  initialName={task.label}
-                  onRemove={this.removeTask.bind(this, workflowGraph, task)}
-                  onChange={this.changeTask.bind(this, workflowGraph, task)}>
-                <GCPort key={orderPortId}
-                    initialColor="#469"
-                    initialId={orderPortId}
-                    initialName="Run Order">
-                  <GCSocket key={waitOnId}
-                      dir={[-1, 0]}
-                      initialColor="#249"
-                      initialId={waitOnId}
-                      initialName="Wait On" />
-                  <GCSocket key={failedId}
-                      dir={[1, 0]}
-                      initialColor="#227"
-                      initialId={failedId}
-                      initialName="Failed" />
-                  <GCSocket key={succeededId}
-                      dir={[1, 0]}
-                      initialColor="#227"
-                      initialId={succeededId}
-                      initialName="Succeeded" />
-                  <GCSocket key={finishedId}
-                      dir={[1, 0]}
-                      initialColor="#227"
-                      initialId={finishedId}
-                      initialName="Finished" />
-                </GCPort>
-                <GCPort key={optionsPortId}
-                    initialColor="#496"
-                    initialId={optionsPortId}
-                    initialName="Task Options">
-                  <GCSocket key={optionsInId}
-                      dir={[-1, 0]}
-                      initialColor="#294"
-                      initialId={optionsInId}
-                      initialName="In" />
-                  <GCSocket key={optionsOutId}
-                      dir={[1, 0]}
-                      initialColor="#272"
-                      initialId={optionsOutId}
-                      initialName="Out" />
-                </GCPort>
-              </GCNode>
+            let link = (
+              <GCLink key={orderLinkId}
+                  from={socketFrom}
+                  to={socketTo}
+                  initialId={orderLinkId}
+                  initialColor="#6cf" />
             );
 
-            task._.nodeElement = taskNode;
+            links[orderLinkId] = link;
 
             // TODO: add handler to remove this task from workflowGraph.tasks
-            workflowGroupComponent.appendChild(taskNode);
+            workflowGroupComponent.appendChild(link);
           });
-        });
+        }
+      });
 
-        // Setup Workflow Links
-        let links = workflowGraph._.links = {};
-        workflowGraph.tasks.forEach(task => {
-          if (task.waitOn) {
-            Object.keys(task.waitOn).forEach(taskLabel => {
-              let state = task.waitOn[taskLabel],
-                  linkedTask = taskMap[taskLabel],
-                  socketFrom = task._.orderSocketIds.waitOn,
-                  socketTo = linkedTask._.orderSocketIds[state];
+      // Specific Options Link Setup
+      if (workflowGraph.options) {
+        Object.keys(workflowGraph.options).forEach(optionsKey => {
+          let associatedTask = taskMap[optionsKey];
+          if (associatedTask) {
+            let socketFrom = workflowGraph._.options.specificSocketIds.out,
+                socketTo = associatedTask._.optionsSocketIds.in;
 
-              React.withContext({
-                graphCanvas: this.refs.graphCanvas,
-                parentGCGroup: workflowGroupComponent
-              }, () => {
-                let orderLinkId = GCLink.id();
+            let optionsLinkId = GCLink.id();
 
-                let link = (
-                  <GCLink key={orderLinkId}
-                      from={socketFrom}
-                      to={socketTo}
-                      initialId={orderLinkId}
-                      initialColor="#6cf" />
-                );
+            let link = (
+              <GCLink key={optionsLinkId}
+                  from={socketFrom}
+                  to={socketTo}
+                  initialId={optionsLinkId}
+                  initialColor="#6fc" />
+            );
 
-                links[orderLinkId] = link;
+            links[optionsLinkId] = link;
 
-                // TODO: add handler to remove this task from workflowGraph.tasks
-                workflowGroupComponent.appendChild(link);
-              });
-            });
+            // TODO: add handler to remove this task from workflowGraph.tasks
+            workflowGroupComponent.appendChild(link);
           }
         });
 
-        // Specific Options Link Setup
-        if (workflowGraph.options) {
-          Object.keys(workflowGraph.options).forEach(optionsKey => {
-            let associatedTask = taskMap[optionsKey];
-            if (associatedTask) {
-              let socketFrom = workflowGraph._.options.specificSocketIds.out,
+        // Default Options Link Setup
+        if (workflowGraph.options.defaults) {
+          Object.keys(workflowGraph.options.defaults).forEach(optionKey => {
+            let associatedTasks = [];
+            workflowGraph.tasks.forEach(task => {
+              let taskDefinition = task._.definition;
+              if (taskDefinition && taskDefinition.options && taskDefinition.options.hasOwnProperty(optionKey)) {
+                associatedTasks.push(task);
+              }
+            });
+            associatedTasks.forEach(associatedTask => {
+              let socketFrom = workflowGraph._.options.defaultSocketIds.out,
                   socketTo = associatedTask._.optionsSocketIds.in;
 
-              React.withContext({
-                graphCanvas: this.refs.graphCanvas,
-                parentGCGroup: workflowGroupComponent
-              }, () => {
-                let optionsLinkId = GCLink.id();
+              let optionsLinkId = GCLink.id();
 
-                let link = (
-                  <GCLink key={optionsLinkId}
-                      from={socketFrom}
-                      to={socketTo}
-                      initialId={optionsLinkId}
-                      initialColor="#6fc" />
-                );
+              let link = (
+                <GCLink key={optionsLinkId}
+                    from={socketFrom}
+                    to={socketTo}
+                    initialId={optionsLinkId}
+                    initialColor="#6fc" />
+              );
 
-                links[optionsLinkId] = link;
+              links[optionsLinkId] = link;
 
-                // TODO: add handler to remove this task from workflowGraph.tasks
-                workflowGroupComponent.appendChild(link);
-              });
-            }
-          });
-
-          // Default Options Link Setup
-          if (workflowGraph.options.defaults) {
-            Object.keys(workflowGraph.options.defaults).forEach(optionKey => {
-              let associatedTasks = [];
-              workflowGraph.tasks.forEach(task => {
-                let taskDefinition = task._.definition;
-                if (taskDefinition && taskDefinition.options && taskDefinition.options.hasOwnProperty(optionKey)) {
-                  associatedTasks.push(task);
-                }
-              });
-              associatedTasks.forEach(associatedTask => {
-                let socketFrom = workflowGraph._.options.defaultSocketIds.out,
-                    socketTo = associatedTask._.optionsSocketIds.in;
-
-                React.withContext({
-                  graphCanvas: this.refs.graphCanvas,
-                  parentGCGroup: workflowGroupComponent
-                }, () => {
-                  let optionsLinkId = GCLink.id();
-
-                  let link = (
-                    <GCLink key={optionsLinkId}
-                        from={socketFrom}
-                        to={socketTo}
-                        initialId={optionsLinkId}
-                        initialColor="#6fc" />
-                  );
-
-                  links[optionsLinkId] = link;
-
-                  // TODO: add handler to remove this task from workflowGraph.tasks
-                  workflowGroupComponent.appendChild(link);
-                });
-              });
+              // TODO: add handler to remove this task from workflowGraph.tasks
+              workflowGroupComponent.appendChild(link);
             });
-          }
+          });
         }
+      }
 
-        if (callback) { setTimeout(callback, 32); }
-      }, 32);
-    });
+      if (callback) { setTimeout(callback, 32); }
+    }, 32);
   }
 
   organizeWorkflowGraphs() {

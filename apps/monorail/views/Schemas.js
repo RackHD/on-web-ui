@@ -17,7 +17,7 @@ export default class Schemas extends Component {
   render() {
     return (
       <div className="Schemas">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Schemas')}
+        {this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Schemas')}
         <SchemasGrid />
       </div>
     );

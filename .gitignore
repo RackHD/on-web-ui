@@ -1,13 +1,13 @@
-# Include your project-specific ignores in this file
-# Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
-
 .DS_Store
 .vagrant
-build/
-node_modules/
-npm-debug.log
-xunit.xml
-checkstyle-result.xml
-
 apps/*/config/custom.json
+apps/*/node_modules
 apps/tutorial
+build
+checkstyle-result.xml
+dev/node_modules
+dev/slush_app/node_modules
+node_modules
+npm-debug.log
+servers/node_modules
+xunit.xml

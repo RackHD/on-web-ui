@@ -29,6 +29,9 @@ import GCVectorsLayer from './layers/Vectors';
   },
   contextTypes: {
     graphCanvas: PropTypes.any
+  },
+  childContextTypes: {
+    graphCanvas: PropTypes.any
   }
 })
 export default class GCWorld extends Component {
@@ -53,6 +56,12 @@ export default class GCWorld extends Component {
     return true;
   }
 
+  getChildContext() {
+    return {
+      graphCanvas: this.graphCanvas
+    };
+  }
+
   render() {
     let graphVectors = this.graphCanvas.vectors,
         graphElements = this.graphCanvas.elements;
@@ -64,6 +73,7 @@ export default class GCWorld extends Component {
     try {
       var cssWorldSpaceTransform = this.cssWorldSpaceTransform,
           cssWorldSize = this.graphCanvas.cssWorldSize;
+
       return (
         <div
             className={this.props.className}
@@ -104,22 +114,28 @@ export default class GCWorld extends Component {
       let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
       if (gcTypeEnum) {
         if (gcTypeEnum.vector) {
-          if (vectors.indexOf(child) === -1) { vectors.push(child); }
+          if (vectors.indexOf(child) === -1) {
+            vectors.push(React.cloneElement(child));
+          }
         }
         else {
-          if (elements.indexOf(child) === -1) { elements.push(child); }
+          if (elements.indexOf(child) === -1) {
+            elements.push(React.cloneElement(child));
+          }
         }
         return null;
       }
-      if (child && child.props) {
-        child.props.children = this.prepareChildren(child, vectors, elements);
-      }
-      return child;
+      // if (child && child.props) {
+      //   child.props.children = this.prepareChildren(child, vectors, elements);
+      // }
+      // return child;
+      return React.cloneElement(child, null, this.prepareChildren(child, vectors, elements));
     });
   }
 
   appendChild(component) {
-    let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
+    let gcTypeEnum = component && component.type &&
+      (component.type.GCTypeEnum || component.type.constructor.GCTypeEnum);
     if (!gcTypeEnum) {
       throw new Error('GraphCanvas: Cannot append a child that is not a valid element type.');
     }
@@ -138,7 +154,8 @@ export default class GCWorld extends Component {
   }
 
   removeChild(component) {
-    let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
+    let gcTypeEnum = component && component.type &&
+      (component.type.GCTypeEnum || component.type.constructor.GCTypeEnum);
     if (!gcTypeEnum) {
       throw new Error('GraphCanvas: Cannot remove a child that is not a valid element type.');
     }

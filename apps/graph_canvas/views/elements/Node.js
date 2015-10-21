@@ -50,6 +50,11 @@ import Panel from './Panel';
     graphCanvas: PropTypes.any,
     // graphCanvasOwner: PropTypes.any,
     parentGCGroup: PropTypes.any
+  },
+  childContextTypes: {
+    graphCanvas: PropTypes.any,
+    parentGCGroup: PropTypes.any,
+    parentGCNode: PropTypes.any
   }
 })
 export default class GCNodeElement extends Component {
@@ -73,6 +78,14 @@ export default class GCNodeElement extends Component {
   }
 
   id = this.props.initialId || this.constructor.id();
+
+  getChildContext() {
+    return {
+      graphCanvas: this.graphCanvas,
+      parentGCGroup: this.parentGroup,
+      parentGCNode: this
+    }
+  }
 
   componentWillMount() {
     this.graphCanvas.register(this);
@@ -98,7 +111,7 @@ export default class GCNodeElement extends Component {
   render() {
     // console.log('RENDER NODE');
 
-    this.prepareChildren();
+    let children = this.prepareChildren();
 
     let portsBounds = this.state.bounds.clone();
     // NOTE: 10,49 comes from Panel.js it is based on padding, borders, and the height of the header.
@@ -118,18 +131,15 @@ export default class GCNodeElement extends Component {
               height: portsBounds.height,
               overflow: 'auto'
             }}>
-          {this.props.children}
+          {children}
         </div>
       </Panel>
     );
   }
 
   prepareChildren() {
-    React.Children.forEach(this.props.children, child => {
-      if (child && child._context) {
-        child._context.parentGCNode = this;
-      }
-      return child;
+    return React.Children.map(this.props.children, child => {
+      return React.cloneElement(child);
     });
   }
 

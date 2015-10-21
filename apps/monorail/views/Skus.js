@@ -17,7 +17,7 @@ export default class Skus extends Component {
   render() {
     return (
       <div className="Skus">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'Skus')}
+        {this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'Skus')}
         <SkusGrid />
       </div>
     );

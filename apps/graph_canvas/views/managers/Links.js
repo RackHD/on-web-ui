@@ -4,9 +4,12 @@
 
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 import mixin from 'common-web-ui/lib/mixin';
 import decorate from 'common-web-ui/lib/decorate';
+
+// import ContextProvider from 'common-web-ui/views/ContextProvider';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 
@@ -72,7 +75,7 @@ export default class GCLinksManager extends Component {
       if (c && c.id && c.id.indexOf('node') === 0) {
         try {
           // HACK: get ports element of socket.
-          c = React.findDOMNode(c).childNodes[1].firstChild;
+          c = findDOMNode(c).childNodes[1].firstChild;
           // y -= Math.max(c.scrollTop,  (c.scrollHeight - c.offsetHeight - 15));
           y -= c.scrollTop;
           x -= c.scrollLeft;
@@ -100,7 +103,7 @@ export default class GCLinksManager extends Component {
     if (dom && dom.dataset.id && dom.dataset.id !== dragState.fromId) {
       return dom.dataset.id;
     } else {
-      let parent = React.findDOMNode(dragState.parentComponent);
+      let parent = findDOMNode(dragState.parentComponent);
       // console.log('PARENT', parent);
       return this.graphCanvas.getEventCoords(event, parent).sub([3, 39]);
     }
@@ -111,23 +114,22 @@ export default class GCLinksManager extends Component {
     event.stopPropagation();
     let fromPort = dragState.fromSocket.parentPort,
         fromGroup = fromPort.parentGroup || fromPort.parentNode.parentGroup;
-    React.withContext({
-      graphCanvas: this.graphCanvas,
-      parentGCGroup: fromGroup
-    }, () => {
-      dragState.parentComponent = fromGroup || this.graphCanvasWorld;
-      dragState.fromId = dragState.fromSocket.id;
-      let end = this.detectSocketFromEvent(event, dragState, e.target);
-      dragState.link = <GCLinkElement
-          key={generateId('key')}
-          from={dragState.fromSocket.id}
-          to={end}
-          isPartial={typeof end !== 'string'}
-          initialColor={dragState.fromSocket.state.color.rgbaString()}
-          initialId={generateId('link')} />;
-      dragState.parentComponent.appendChild(dragState.link);
-      dragState.originalLink = dragState.link;
-    });
+
+    dragState.parentComponent = fromGroup || this.graphCanvasWorld;
+    dragState.fromId = dragState.fromSocket.id;
+
+    let end = this.detectSocketFromEvent(event, dragState, e.target);
+
+    dragState.link = <GCLinkElement
+        key={generateId('key')}
+        from={dragState.fromSocket.id}
+        to={end}
+        isPartial={typeof end !== 'string'}
+        initialColor={dragState.fromSocket.state.color.rgbaString()}
+        initialId={generateId('link')} />;
+
+    dragState.parentComponent.appendChild(dragState.link);
+    dragState.originalLink = dragState.link;
   }
 
   drawLinkContinue(event, dragState, e) {

@@ -4,6 +4,8 @@
 
 import React, // eslint-disable-line no-unused-vars
   { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
+
 import decorate from 'common-web-ui/lib/decorate';
 
 import generateId from '../../lib/generateId';
@@ -210,7 +212,7 @@ export default class GCLinkElement extends Component {
 
     try {
       var fromSocket = this.graphCanvas.lookup(this.state.from),
-          fromSocketElement = React.findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
+          fromSocketElement = findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
           fromVector = this.linksManager.getSocketCenter(fromSocketElement);
 
       var toSocket, toSocketElement, toVector;
@@ -221,7 +223,7 @@ export default class GCLinkElement extends Component {
       }
       else {
         toSocket = this.graphCanvas.lookup(this.state.to);
-        toSocketElement = React.findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon');
+        toSocketElement = findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon');
         toVector = this.linksManager.getSocketCenter(toSocketElement);
         // if (this.newLink) {
         this.fromSocket = fromSocket;

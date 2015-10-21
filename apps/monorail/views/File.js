@@ -53,7 +53,7 @@ export default class File extends Component {
     return (
       <div className="File">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'files', label: 'Files'},
           this.getFileId()
         )}

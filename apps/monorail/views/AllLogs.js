@@ -65,7 +65,7 @@ export default class AllLogs extends Component {
     return (
       <div className="AllLogs">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           'All Logs'
         )}
         <div style={{background: 'black', padding: 5}}>

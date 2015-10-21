@@ -3,7 +3,6 @@
 'use strict';
 
 import { PropTypes } from 'react';
-import { canUseDOM } from 'react/lib/ExecutionEnvironment';
 
 export default {
 
@@ -29,7 +28,6 @@ export default {
   },
 
   watchViewport() {
-    if (!canUseDOM) { return; }
     var resizeTimer = null;
     this.handleResize = () => {
       clearTimeout(resizeTimer);
@@ -40,14 +38,12 @@ export default {
   },
 
   unwatchViewport() {
-    if (!canUseDOM) { return; }
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('orientationchange', this.handleResize);
     this.handleResize = null;
   },
 
   updateViewport() {
-    if (!canUseDOM) { return; }
     let viewport = {width: window.innerWidth, height: window.innerHeight};
     if (this.state.viewport.width !== viewport.width ||
       this.state.viewport.height !== viewport.height) {

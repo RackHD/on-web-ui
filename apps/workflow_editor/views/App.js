@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { Component } from 'react';
+import React, { Component } from 'react';
 
 import AppContainer from 'common-web-ui/views/AppContainer';
 

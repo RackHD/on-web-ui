@@ -17,7 +17,7 @@ export default class OBMServices extends Component {
   render() {
     return (
       <div className="OBMServices">
-        {this.renderBreadcrumbs({href: 'dash', label: 'Dashboard'}, 'OBM Services')}
+        {this.renderBreadcrumbs({href: '', label: 'Dashboard'}, 'OBM Services')}
         <OBMServicesGrid />
       </div>
     );

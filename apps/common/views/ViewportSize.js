@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
+import mixin from '../lib/mixin';
 
 import ViewportHelpers from '../mixins/ViewportHelpers';
 import decorate from '../lib/decorate';

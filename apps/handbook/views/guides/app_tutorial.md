@@ -10,7 +10,7 @@ The goal is to give developers who are new to front end development a straight f
 
 You can create a new web application using `slush` generators. Make sure your current working directory is the `on-web-ui` project directory.
 
-```shell
+```bash
 $ npm install slush -g
 $ slush app
 ```
@@ -23,7 +23,7 @@ There are other useful `slush app` generators and a few more of them will be cov
 
 You may have to restart `gulp` for the new app to build, and then it will be serve-able.
 
-```shell
+```bash
 $ gulp
 ```
 
@@ -35,6 +35,6 @@ The login form in the above screenshot is a placeholder view from `common-web-ui
 
 ## Create a new view.
 
-```shell
+```bash
 $ slush app:view
 ```

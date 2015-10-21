@@ -3,7 +3,8 @@
 'use strict';
 
 import React from 'react';
-import Router, { Route, /*Redirect,*/ NotFoundRoute, DefaultRoute } from 'react-router';
+import { render } from 'react-dom';
+import Router, { Route, IndexRoute } from 'react-router';
 import onReady from 'common-web-ui/lib/onReady';
 
 import { MenuItem } from 'material-ui';
@@ -12,7 +13,7 @@ import NotFound from 'common-web-ui/views/NotFound';
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
   { text: 'OnRack API', type: MenuItem.Types.LINK, payload: 'https://' + window.location.hostname + '/rest/v1/api.html', target: '_blank' },
-  { text: 'OnRack Dashboard', route: 'dash' },
+  { text: 'OnRack Dashboard', route: '' },
   { text: 'Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Chassis', route: 'chassis' },
   // { text: 'Systems', route: 'systems' },
@@ -36,28 +37,23 @@ import SystemsCollection from '../views/SystemsCollection';
 
 // See http://rackt.github.io/react-router/
 let routes = (
-  <Route name="root" path="/" handler={App}>
-    <DefaultRoute handler={OnRackUserLogin} />
-    <Route name="chassis" handler={ChassisCollection} />
-    <Route name="case" path="/chassis/:chassisId" handler={ChassisDetails} />
-    {/*<Route name="systems" handler={SystemsCollection} />
-    <Route name="system" path="/systems/:systemId" handler={SystemDetails} />*/}
-    <Route name="dash" handler={Dashboard} />
-    <Route name="login" handler={OnRackUserLogin} />
-    <NotFoundRoute handler={NotFound}/>
+  <Route path="/" name="root" component={App}>
+    <IndexRoute component={OnRackUserLogin} />
+    <Route path="/chassis" component={ChassisCollection} />
+    <Route path="/chassis/:chassisId" component={ChassisDetails} />
+    {/*<Route path="/systems" component={SystemsCollection} />
+    <Route path="/systems/:systemId" component={SystemDetails} />*/}
+    <Route path="/dash" component={Dashboard} />
+    <Route path="/login" component={OnRackUserLogin} />
+    <Route name="*" component={NotFound}/>
   </Route>
 );
-
-// Router configuration
-let params = {
-  routes,
-  scrollBehavior: Router.ScrollToTopBehavior
-};
 
 // Run the application when both DOM is ready and page content is loaded
 onReady(() => {
   if (global.isTesting) { return; }
-  Router.create(params).run(Handler => {
-    React.render(<Handler />, document.body);
-  });
+  let container = document.createElement('div');
+  container.className = 'react-container';
+  document.body.appendChild(container);
+  render(<Router>{routes}</Router>, container);
 });

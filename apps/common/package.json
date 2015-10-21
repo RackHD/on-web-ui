@@ -7,10 +7,13 @@
   "repository": "",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">= 0.10",
+    "node": ">= 4.0",
     "npm": ">= 2.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "brace": "^0.5.1",
+    "moment": "^2.10.6"
+  },
   "devDependencies": {},
   "scripts": {}
 }

@@ -94,7 +94,7 @@ export default class Workflow extends Component {
     return (
       <div className="Workflow">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'workflows', label: 'Workflows'},
           this.getWorkflowId()
         )}

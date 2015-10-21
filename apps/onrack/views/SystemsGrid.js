@@ -55,8 +55,6 @@ export default class SystemsGrid extends Component {
     this.unwatchSystems();
   }
 
-  componentDidUnmount() { this.profileTime('SystemGrid', 'did-unmount'); }
-
   componentWillUpdate() { this.profileTime('SystemGrid', 'will-update'); }
 
   componentDidUpdate() {

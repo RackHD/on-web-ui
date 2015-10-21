@@ -26,7 +26,7 @@ export default class CreateProfile extends Component {
     return (
       <div className="Profile">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'profiles', label: 'Profiles'},
           'Create Profile'
         )}

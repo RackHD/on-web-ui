@@ -7,6 +7,8 @@ const delay = 100;
 
 export default {
 
+  isActive() { /* TODO */ },
+
   routePath: (...path) => '#/' + path.join('/'),
 
   routeTo(...path) {

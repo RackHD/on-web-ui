@@ -4,7 +4,8 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import mixin from 'common-web-ui/lib/mixin';
+import { render, unmountComponentAtNode, findDOMNode } from 'react-dom';
+import mixin from '../lib/mixin';
 import decorate from '../lib/decorate';
 import MUIContextHelpers from '../mixins/MUIContextHelpers';
 /* eslint-enable no-unused-vars */
@@ -43,7 +44,7 @@ export default class TestWrapper extends Component {
         TestComponent={TestComponent}
         componentProps={componentProps}
         done={done} />;
-      return React.render(testWrapper, testContainer);
+      return render(testWrapper, testContainer);
     } catch (err) {
       console.log('TestWrapper error:');
       console.error(err);
@@ -53,7 +54,7 @@ export default class TestWrapper extends Component {
   static testCleanup(done) {
     clearTimeout(this.cleanupTimer);
     this.cleanupTimer = setTimeout(function() {
-      if (!React.unmountComponentAtNode(testContainer)) {
+      if (!unmountComponentAtNode(testContainer)) {
         throw new Error('TestWrapper: Container element is not mounted.');
       }
       if (done) { setTimeout(done, 0); }
@@ -67,7 +68,7 @@ export default class TestWrapper extends Component {
     if (!componentOnly) { TestWrapper.testCleanup(done); }
   }
 
-  getDOMNode() { return React.findDOMNode(this); }
+  getDOMNode() { return findDOMNode(this); }
 
   getChildContext() {
     if (!this.props.disableAutoTheme) { return this.muiContext(); }

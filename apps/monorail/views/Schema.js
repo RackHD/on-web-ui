@@ -34,7 +34,7 @@ export default class Schema extends Component {
     return (
       <div className="Schema">
         {this.renderBreadcrumbs(
-          {href: 'dash', label: 'Dashboard'},
+          {href: '', label: 'Dashboard'},
           {href: 'schemas', label: 'Schemas'},
           this.getSchemaId()
         )}

@@ -5,6 +5,7 @@
 /* eslint-disable no-unused-expressions */
 
 import React from 'react';
+import { findDOMNode } from 'react-dom';
 
 import TestWrapper from 'common-web-ui/views/TestWrapper';
 import GraphCanvas from '../GraphCanvas';
@@ -27,7 +28,7 @@ describe('GraphCanvas', function() {
     before(function(done) {
       var handler = (err, component) => {
         this.subject = component;
-        this.element = React.findDOMNode(this.subject);
+        this.element = findDOMNode(this.subject);
         done(err);
       };
       this.wrapper = TestWrapper.testRender(GraphCanvas, props, handler);

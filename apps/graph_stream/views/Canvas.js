@@ -82,15 +82,15 @@ export default class GSCanvas extends Component {
       setTimeout(websocket.list.bind(websocket, 'entities'), 100);
     }, () => {
       websocket.events.on('list', (msg) => {
-        this.refs.viewport.refs.world.updateList(msg.collection, msg.items);
+        this.refs.world.updateList(msg.collection, msg.items);
       });
 
       websocket.events.on('set', (msg) => {
-        this.refs.viewport.refs.world.upsertItem(msg);
+        this.refs.world.upsertItem(msg);
       });
 
       websocket.events.on('remove', (msg) => {
-        this.refs.viewport.refs.world.removeItem(msg);
+        this.refs.world.removeItem(msg);
       });
 
       websocket.events.on('pan', (msg) => {
@@ -101,7 +101,7 @@ export default class GSCanvas extends Component {
         if (msg.collection === 'viewers' && msg.id === this.state.id) {
           this.offsetPosition(new Vector(msg.offset).negate(), true);
         }
-        this.refs.viewport.refs.world.setState(state => {
+        this.refs.world.setState(state => {
           if (!state[msg.collection] || !state[msg.collection][msg.id]) return null;
           let position = state[[msg.collection]][msg.id].position;
           state[msg.collection][msg.id].position = [
@@ -192,13 +192,13 @@ export default class GSCanvas extends Component {
         ])
       };
     });
-    this.refs.viewport.refs.world.queueUpdate();
+    this.refs.world.queueUpdate();
     if (!noBroadcast) this.broadcastPan(offset);
   }
 
   updateScale(scale) {
     this.setState({ scale });
-    this.refs.viewport.refs.world.queueUpdate();
+    this.refs.world.queueUpdate();
   }
 
   broadcastPan(offset) {

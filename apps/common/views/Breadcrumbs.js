@@ -40,7 +40,7 @@ export default class Breadcrumbs extends Component {
       }
       if (typeof route === 'string') { route = {label: route}; }
       var { prefix = '#/', label, href } = route;
-      if (href) {
+      if (href !== undefined && href !== null) {
         href = prefix + href;
         route = <a href={href} key={'item-' + index}>{label}</a>;
       }

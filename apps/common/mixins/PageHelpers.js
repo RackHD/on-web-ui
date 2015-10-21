@@ -2,6 +2,8 @@
 
 'use strict';
 
+import React from 'react';
+
 import Breadcrumbs from '../views/Breadcrumbs';
 
 export default {

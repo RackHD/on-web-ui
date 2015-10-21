@@ -27,13 +27,13 @@ export default class CreatePoller extends Component {
       <div className="Poller">
         {this.props.params.nodeId ?
           this.renderBreadcrumbs(
-            {href: 'dash', label: 'Dashboard'},
+            {href: '', label: 'Dashboard'},
             {href: 'nodes', label: 'Nodes'},
             {href: 'nodes/' + this.props.params.nodeId, label: this.props.params.nodeId},
             {href: 'pollers/n/' + this.props.params.nodeId, label: 'Pollers'},
             'Create Poller'
           ) : this.renderBreadcrumbs(
-            {href: 'dash', label: 'Dashboard'},
+            {href: '', label: 'Dashboard'},
             {href: 'pollers', label: 'Pollers'},
             'Create Poller'
           )

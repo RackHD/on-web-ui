@@ -20,7 +20,6 @@ import TemplatesGrid from './TemplatesGrid';
 // import VersionsGrid from './VersionsGrid';
 import WorkflowsGrid from './WorkflowsGrid';
 
-// import Chart from './Chart';
 
 @mixin(PageHelpers)
 export default class Dashboard extends Component {
@@ -40,7 +39,6 @@ export default class Dashboard extends Component {
         {/*<SchemasGrid size={5} />*/}
         {/*<VersionsGrid size={5} />*/}
         <WorkflowsGrid size={5} />
-        {/*<Chart />*/}
       </div>
     );
   }

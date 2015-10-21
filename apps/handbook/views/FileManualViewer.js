@@ -24,16 +24,20 @@ import {
 
 import marked from 'marked';
 import cod from 'cod';
-import highlight from 'highlight.js';
-import 'highlight.js/lib/languages/javascript';
-
-highlight.initHighlightingOnLoad();
+import prismjs from 'prismjs';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-bash';
 
 marked.setOptions({
-  langPrefix: 'hljs ',
+  langPrefix: 'language-',
   highlight: function (code, lang) {
-    if (!lang) { return code; }
-    return highlight.highlightAuto(code).value;
+    lang = lang || 'javascript';
+    try {
+      return prismjs.highlight(code, prismjs.languages[lang], lang);
+    } catch (err) {
+      console.error(err.stack || err);
+      return code;
+    }
   }
 });
 

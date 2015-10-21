@@ -50,6 +50,10 @@ import Panel from './Panel';
   contextTypes: {
     graphCanvas: PropTypes.any
     // graphCanvasOwner: PropTypes.any
+  },
+  childContextTypes: {
+    graphCanvas: PropTypes.any,
+    parentGCGroup: PropTypes.any
   }
 })
 export default class GCGroupElement extends Component {
@@ -69,6 +73,13 @@ export default class GCGroupElement extends Component {
   // get linkManager() { return this.graphCanvas.refs.links; }
 
   id = this.props.initialId || this.constructor.id();
+
+  getChildContext() {
+    return {
+      graphCanvas: this.graphCanvas,
+      parentGCGroup: this
+    };
+  }
 
   componentWillMount() {
     this.graphCanvas.register(this);
@@ -133,9 +144,7 @@ export default class GCGroupElement extends Component {
     }
     return React.Children.map(component.props.children, child => {
       if (!child) { return null; }
-      if (child._context) {
-        child._context.parentGCGroup = this;
-      }
+      child = React.cloneElement(child);
       let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
       if (gcTypeEnum) {
         if (gcTypeEnum.vector) {
@@ -154,7 +163,8 @@ export default class GCGroupElement extends Component {
   }
 
   appendChild(component) {
-    let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
+    let gcTypeEnum = component && component.type &&
+      (component.type.GCTypeEnum || component.type.constructor.GCTypeEnum);
     if (!gcTypeEnum) {
       throw new Error('GraphCanvas: Cannot append a child that is not a valid element type.');
     }
@@ -173,7 +183,8 @@ export default class GCGroupElement extends Component {
   }
 
   removeChild(component) {
-    let gcTypeEnum = component && component.type && component.type.GCTypeEnum;
+    let gcTypeEnum = component && component.type &&
+      (component.type.GCTypeEnum || component.type.constructor.GCTypeEnum);
     if (!gcTypeEnum) {
       throw new Error('GraphCanvas: Cannot remove a child that is not a valid element type.');
     }

@@ -1,0 +1,16 @@
+{
+  "name": "netork-topology-web-ui",
+  "main": "bundle.js",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Network Topology Web UI",
+  "repository": "",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">= 4.0",
+    "npm": ">= 2.1"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {}
+}
