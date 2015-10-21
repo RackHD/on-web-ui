@@ -52,9 +52,6 @@ if [ -z "$DOCKER_PROVISION" ]; then
     nvm use "$NODE_VERSION"
     nvm alias default "$NODE_VERSION"
   fi
-
-  printf "\n\nInstall global npm dependencies:\n\n"
-  npm install -g gulp slush karma-cli babel eslint
 fi
 
 printf "\n\nDetect on-web-ui source:\n\n"
@@ -100,7 +97,9 @@ else
 
   if [ -n "$BUILD_ON_WEB_UI" ]; then
     printf "\n\nBuild on-web-ui:\n\n"
-    gulp build --release
+    pushd dev
+    ./node_modules/.bin/gulp build --release
+    popd
 
     if [ -n "$VAGRANT_PROVISION" ]; then
       printf "\n\nInstall packaging tools:\n\n"
@@ -110,9 +109,6 @@ else
 
     printf "\n\Create debian package for on-web-ui:\n\n"
     ./dev/deb_package.sh
-
-    # printf "\n\nDeploy on-web-ui:\n\n"
-    # gulp deploy
   fi
 
   if [ -n "$RUN_ON_WEB_UI" ]; then
