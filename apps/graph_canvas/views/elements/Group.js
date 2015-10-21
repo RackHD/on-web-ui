@@ -145,9 +145,6 @@ export default class GCGroupElement extends Component {
     return React.Children.map(component.props.children, child => {
       if (!child) { return null; }
       child = React.cloneElement(child);
-      // if (child._context) {
-      //   child._context.parentGCGroup = this;
-      // }
       let gcTypeEnum = child && child.type && child.type.GCTypeEnum;
       if (gcTypeEnum) {
         if (gcTypeEnum.vector) {
@@ -241,6 +238,3 @@ export default class GCGroupElement extends Component {
     if (this.graphCanvas) { this.graphCanvas.emitUnlink(link); }
   }
 }
-
-let thing = GCGroupElement;
-// debugger;

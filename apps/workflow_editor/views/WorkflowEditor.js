@@ -23,9 +23,6 @@ import GraphCanvas, {
     GCSocket
   } from 'graph-canvas-web-ui/views/GraphCanvas';
 
-let gc = GraphCanvas, thing = GCGroup;
-// debugger;
-
 import Rectangle from 'graph-canvas-web-ui/lib/Rectangle';
 
 import WEToolbar from './Toolbar';

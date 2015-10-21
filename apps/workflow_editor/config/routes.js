@@ -26,12 +26,6 @@ let routes = (
   </Route>
 );
 
-// Router configuration
-// let params = {
-//   routes,
-//   scrollBehavior: Router.ScrollToTopBehavior
-// };
-
 // Run the application when both DOM is ready and page content is loaded
 onReady(() => {
   if (global.isTesting) { return; }

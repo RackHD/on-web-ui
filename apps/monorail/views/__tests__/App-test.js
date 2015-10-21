@@ -10,7 +10,7 @@ import { findDOMNode } from 'react-dom';
 import TestWrapper from 'common-web-ui/views/TestWrapper';
 import App from '../App';
 
-xdescribe('MonoRail App', function() {
+describe('MonoRail App', function() {
   this.timeout(5000);
 
   describe('component', function() {

@@ -86,12 +86,10 @@ export default class AppMenuNav extends Component {
   }
 
   onLeftNavChange(e, key, payload) {
-    debugger;
     this.routeTo(payload.route);
   }
 
   onHeaderClick() {
-    debugger;
     this.routeTo('');
     this.refs.leftNav.close();
   }

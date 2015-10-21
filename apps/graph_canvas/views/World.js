@@ -115,7 +115,7 @@ export default class GCWorld extends Component {
       if (gcTypeEnum) {
         if (gcTypeEnum.vector) {
           if (vectors.indexOf(child) === -1) {
-            vectors.push(React.cloneLement(child));
+            vectors.push(React.cloneElement(child));
           }
         }
         else {
@@ -129,7 +129,7 @@ export default class GCWorld extends Component {
       //   child.props.children = this.prepareChildren(child, vectors, elements);
       // }
       // return child;
-      return React.cloneLement(child, null, this.prepareChildren(child, vectors, elements));
+      return React.cloneElement(child, null, this.prepareChildren(child, vectors, elements));
     });
   }
 
