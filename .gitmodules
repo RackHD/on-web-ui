@@ -4,3 +4,6 @@
 [submodule "apps/handbook"]
 	path = apps/handbook
 	url = https://eos2git.cec.lab.emc.com/poultr2/handbook.git
+[submodule "apps/redfish"]
+	path = apps/redfish
+	url = https://eos2git.cec.lab.emc.com/poultr2/redfish.git
