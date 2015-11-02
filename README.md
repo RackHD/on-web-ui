@@ -33,7 +33,10 @@ Once `npm start` is running with and the development server is running you can a
 ```bash
 $ git submodule update --remote
 # Or use --recusive flag when cloning on-web-ui.
-$ node apps/handbook/server/handbook_code_server.js
+$ npm run-script install-apps
+$ cd apps/handbook/server
+$ npm install
+$ node handbook_code_server.js
 ```
 
 Then, go to http://localhost:3000/handbook and you can learn more about On Web UI application development.
