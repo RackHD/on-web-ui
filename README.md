@@ -11,6 +11,7 @@ $ git clone https://github.com/RackHD/on-web-ui.git
 $ cd on-web-ui
 $ npm run uninstall             # Uninstall all node_modules from last install.
 $ npm install                   # Install Node.js modules.
+$ npm run install               # Run install script. (Not required on Mac)
 $ npm start                     # Start on-web-ui development environment.
 $ npm test                      # Runs all automated tests against On Web UI.
 ```
@@ -27,13 +28,17 @@ By default there will be two servers running. One on port `5000` which will be p
 
 Once `npm start` is running with and the development server is running you can access the handbook app for additional documentation.
 
-**First you need to run the `handbook_code_server.js`**
+**First you need to load git submodules and run the `handbook_code_server.js`**
 
 ```bash
-$ node servers/handbook_code_server.js
+$ git submodule update --remote
+# Or use --recusive flag when cloning on-web-ui.
+$ node apps/handbook/server/handbook_code_server.js
 ```
 
 Then, go to http://localhost:3000/handbook and you can learn more about On Web UI application development.
+
+You may have to restart on-web-ui by stopping and running `npm start` again.
 
 ### How to build On Web UI applications.
 

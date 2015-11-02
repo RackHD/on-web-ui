@@ -36,15 +36,15 @@
     "build": "./node_modules/.bin/gulp dev/gulpfile.js",
     "install-apps": "npm link ./apps/*/",
     "install-dev": "cd ./dev && npm install && cd .. && npm link ./dev/slush_app",
-    "install-servers": "cd ./servers && npm install",
-    "install": "npm run-script install-apps && npm run-script install-dev && npm run-script install-servers",
-    "lint": "./node_modules/.bin/eslint --ignore-path .gitignore --ignore-pattern dev/slush_app/templates apps dev servers -f checkstyle -o checkstyle-result.xml",
+    "install-server": "cd ./server && npm install",
+    "install": "npm run-script install-apps && npm run-script install-dev && npm run-script install-server",
+    "lint": "./node_modules/.bin/eslint --ignore-path .gitignore --ignore-pattern dev/slush_app/templates apps dev server -f checkstyle -o checkstyle-result.xml",
     "start": "cd ./dev && ./node_modules/.bin/gulp --verbose",
     "test": "cd dev && ../node_modules/.bin/karma start karma.conf.js",
     "test-ci": "cd dev && ../node_modules/.bin/karma start karma.ci.conf.js",
     "uninstall-apps": "rm -rf ./apps/*/node_modules",
     "uninstall-dev": "rm -rf ./dev/node_modules rm -rf ./dev/slush_app/node_modules",
-    "uninstall-servers": "rm -rf ./servers/node_modules",
+    "uninstall-server": "rm -rf ./server/node_modules",
     "uninstall": "rm -rf ./node_modules/ && npm run-script uninstall-apps && npm run-script uninstall-dev && npm run-script uninstall-servers"
   }
 }

@@ -11,10 +11,8 @@
     "npm": ">= 2.1"
   },
   "dependencies": {
-    "body-parser": "^1.14.1",
     "express": "^4.13.3",
-    "serve-index": "^1.7.2",
-    "ws": "^0.8.0"
+    "serve-index": "^1.7.2"
   },
   "devDependencies": {},
   "scripts": {}

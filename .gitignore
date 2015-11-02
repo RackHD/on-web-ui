@@ -9,5 +9,5 @@ dev/node_modules
 dev/slush_app/node_modules
 node_modules
 npm-debug.log
-servers/node_modules
+server/node_modules
 xunit.xml
