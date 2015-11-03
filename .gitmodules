@@ -7,3 +7,6 @@
 [submodule "apps/redfish"]
 	path = apps/redfish
 	url = https://eos2git.cec.lab.emc.com/poultr2/redfish.git
+[submodule "dev/slush_app"]
+	path = dev/slush_app
+	url = https://eos2git.cec.lab.emc.com/poultr2/dev_slush_app.git
