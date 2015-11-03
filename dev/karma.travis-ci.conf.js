@@ -4,4 +4,5 @@
 
 exports = module.exports = require('./lib/karma_ci');
 
-exports.browsers = [ 'Firefox' ];
+exports.browsers = exports.browsers.filter(browser => browser !== 'Chrome');
+exports.plugins = exports.plugins.filter(plugin => plugin !== 'karma-chrome-launcher');
