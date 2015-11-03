@@ -32,7 +32,7 @@ By default, builds run in debug mode. If you need to build in release mode, add 
 $ cd dev                        # Gulp tasks must be run from `dev/`.
 $ gulp build                    # Or, `gulp build --release`.
 ```
-This will generate a `builds/` directory at the project root. The contents of this directory can be served by any HTTP file server in order to deploy all the On Web UI applications.
+This will generate a `build/` directory at the project root. The contents of this directory can be served by any HTTP file server in order to deploy all the On Web UI applications.
 
 ```bash
 $ cd dev                        # Gulp tasks must be run from `dev/`.
@@ -42,7 +42,7 @@ $ gulp assets less bundle       # A more verbose way to build.
 The `build` task actually runs three different tasks sequentially.
  * `gulp assets` -- Copies all assets in `apps/[app]/assets` to `build/[app]`.
  * `gulp less` -- Compiles less/css files in `apps/[app]/less` to `build/[app]`.
- * `gulp bundle` -- Compiles and bundles es6/7 javascript code from `apps/[app]/bundle.js` into `builds/bundle/[app].js`.
+ * `gulp bundle` -- Compiles and bundles es6/7 javascript code from `apps/[app]/bundle.js` into `build/bundle/[app].js`.
 
 ### More on Automated Tests.
 
@@ -97,12 +97,7 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
 │   │
 │   ├── node_modules      # External development dependencies.
 │   │
-│   ├── slush_app         # Slush application generators.
-│   │   ├── generators    # Generator source code.
-│   │   ├── templates     # Template files for generators.
-│   │   ├── package.json  # Slush app NPM package, dependency file.
-│   │   ├── README.md     # Slush app documentation.
-│   │   └── slushfile.js  # Slush generator definition file.
+│   ├── slush_app         # [Optional] slush-app location.
 │   │
 │   ├── specs             # Specification documents.
 │   ├── tasks             # Gulp task definitions.
@@ -112,21 +107,21 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
 │   ├── Dockerfile        # Docker container configuration file.
 │   ├── gulpfile.js       # Gulp file for project gulp tasks.
 │   │
-│   ├── karma.ci.conf.js  # Karma configuration for continuous integration.
-│   ├── karma.conf.js     # Karma test running configuration for development.
+│   ├── karma.*ci.conf.js  # Karma configuration for continuous integration.
+│   ├── karma.conf.js      # Karma test running configuration for development.
 │   │
 │   ├── package.json      # Development NPM package, dependency file.
 │   ├── provision.sh      # Provision script for environment setup.
 │   ├── README.md         # Project development documentation.
 │   └── Vagrantfile       # Vagrant VM configuration file.
 │
-├── servers           # Helpful Node.js Web Servers
+├── server                # Build server.
 │   │
-│   ├── node_modules  # External server dependencies.
+│   ├── node_modules      # External server dependencies.
 │   │
-│   ├── {server}.js   # Node.js server source file.
-│   ├── package.json  # Servers NPM dependency file.
-│   └── README.md     # Servers documentation.
+│   ├── build_server.js   # Build server source file.
+│   ├── package.json      # Server NPM dependency file.
+│   └── README.md         # Server documentation.
 |
 ├── .babelrc          # BabelJS configuration file.
 ├── .eslintrc         # eslint configuration file.
@@ -148,5 +143,4 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
  * [BrowserSync](http://www.browsersync.io/)
  * [Webpack](http://webpack.github.io/)
  * [Gulp](http://gulpjs.com/)
- * [Slush](http://slushjs.github.io/)
  * [Karma](http://karma-runner.github.io/)

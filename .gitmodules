@@ -1,12 +1,12 @@
 [submodule "apps/graph_stream"]
 	path = apps/graph_stream
-	url = https://eos2git.cec.lab.emc.com/poultr2/graph_stream.git
+	url = ssh://git@eos2git.cec.lab.emc.com/poultr2/graph_stream.git
 [submodule "apps/handbook"]
 	path = apps/handbook
-	url = https://eos2git.cec.lab.emc.com/poultr2/handbook.git
+	url = ssh://git@eos2git.cec.lab.emc.com/poultr2/handbook.git
 [submodule "apps/redfish"]
 	path = apps/redfish
-	url = https://eos2git.cec.lab.emc.com/poultr2/redfish.git
+	url = ssh://git@eos2git.cec.lab.emc.com/poultr2/redfish.git
 [submodule "dev/slush_app"]
 	path = dev/slush_app
-	url = https://eos2git.cec.lab.emc.com/poultr2/dev_slush_app.git
+	url = ssh://git@eos2git.cec.lab.emc.com:poultr2/dev_slush_app.git
