@@ -11,6 +11,7 @@ $ git clone https://github.com/RackHD/on-web-ui.git
 $ cd on-web-ui
 $ npm run uninstall             # Uninstall all node_modules from last install.
 $ npm install                   # Install Node.js modules.
+$ npm run install               # Run install script. (Not required on Mac)
 $ npm start                     # Start on-web-ui development environment.
 $ npm test                      # Runs all automated tests against On Web UI.
 ```
@@ -23,18 +24,6 @@ By default there will be two servers running. One on port `5000` which will be p
  * http://localhost:3000/workflow_editor is the MonoRail Workflow Editor.
  * http://localhost:3000 is the On Web UI application directory.
 
-### Handbook App for documentation.
-
-Once `npm start` is running with and the development server is running you can access the handbook app for additional documentation.
-
-**First you need to run the `handbook_code_server.js`**
-
-```bash
-$ node servers/handbook_code_server.js
-```
-
-Then, go to http://localhost:3000/handbook and you can learn more about On Web UI application development.
-
 ### How to build On Web UI applications.
 
 By default, builds run in debug mode. If you need to build in release mode, add the `--release` flag.
@@ -43,7 +32,7 @@ By default, builds run in debug mode. If you need to build in release mode, add 
 $ cd dev                        # Gulp tasks must be run from `dev/`.
 $ gulp build                    # Or, `gulp build --release`.
 ```
-This will generate a `builds/` directory at the project root. The contents of this directory can be served by any HTTP file server in order to deploy all the On Web UI applications.
+This will generate a `build/` directory at the project root. The contents of this directory can be served by any HTTP file server in order to deploy all the On Web UI applications.
 
 ```bash
 $ cd dev                        # Gulp tasks must be run from `dev/`.
@@ -53,7 +42,7 @@ $ gulp assets less bundle       # A more verbose way to build.
 The `build` task actually runs three different tasks sequentially.
  * `gulp assets` -- Copies all assets in `apps/[app]/assets` to `build/[app]`.
  * `gulp less` -- Compiles less/css files in `apps/[app]/less` to `build/[app]`.
- * `gulp bundle` -- Compiles and bundles es6/7 javascript code from `apps/[app]/bundle.js` into `builds/bundle/[app].js`.
+ * `gulp bundle` -- Compiles and bundles es6/7 javascript code from `apps/[app]/bundle.js` into `build/bundle/[app].js`.
 
 ### More on Automated Tests.
 
@@ -108,12 +97,7 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
 │   │
 │   ├── node_modules      # External development dependencies.
 │   │
-│   ├── slush_app         # Slush application generators.
-│   │   ├── generators    # Generator source code.
-│   │   ├── templates     # Template files for generators.
-│   │   ├── package.json  # Slush app NPM package, dependency file.
-│   │   ├── README.md     # Slush app documentation.
-│   │   └── slushfile.js  # Slush generator definition file.
+│   ├── slush_app         # [Optional] slush-app location.
 │   │
 │   ├── specs             # Specification documents.
 │   ├── tasks             # Gulp task definitions.
@@ -123,21 +107,21 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
 │   ├── Dockerfile        # Docker container configuration file.
 │   ├── gulpfile.js       # Gulp file for project gulp tasks.
 │   │
-│   ├── karma.ci.conf.js  # Karma configuration for continuous integration.
-│   ├── karma.conf.js     # Karma test running configuration for development.
+│   ├── karma.*ci.conf.js  # Karma configuration for continuous integration.
+│   ├── karma.conf.js      # Karma test running configuration for development.
 │   │
 │   ├── package.json      # Development NPM package, dependency file.
 │   ├── provision.sh      # Provision script for environment setup.
 │   ├── README.md         # Project development documentation.
 │   └── Vagrantfile       # Vagrant VM configuration file.
 │
-├── servers           # Helpful Node.js Web Servers
+├── server                # Build server.
 │   │
-│   ├── node_modules  # External server dependencies.
+│   ├── node_modules      # External server dependencies.
 │   │
-│   ├── {server}.js   # Node.js server source file.
-│   ├── package.json  # Servers NPM dependency file.
-│   └── README.md     # Servers documentation.
+│   ├── build_server.js   # Build server source file.
+│   ├── package.json      # Server NPM dependency file.
+│   └── README.md         # Server documentation.
 |
 ├── .babelrc          # BabelJS configuration file.
 ├── .eslintrc         # eslint configuration file.
@@ -159,5 +143,4 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
  * [BrowserSync](http://www.browsersync.io/)
  * [Webpack](http://webpack.github.io/)
  * [Gulp](http://gulpjs.com/)
- * [Slush](http://slushjs.github.io/)
  * [Karma](http://karma-runner.github.io/)

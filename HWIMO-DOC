@@ -1,12 +1,3 @@
 #!/bin/bash
 
 # Copyright 2015, EMC, Inc.
-
-# Documentation for On-Web-UI is not compiled ahead of time. Please run development server using "gulp" command.
-# This will host the handbook application which contains documentation.
-
-export JENKINS_PROVISION=1
-export VERBOSE_PROVISION=1
-
-export RUN_ON_WEB_UI=1
-./dev/provision.sh
