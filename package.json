@@ -48,6 +48,6 @@
     "uninstall-dev-slush-app": "rm -rf ./dev/slush_app/node_modules",
     "uninstall-dev": "rm -rf ./dev/node_modules",
     "uninstall-server": "rm -rf ./server/node_modules",
-    "uninstall": "rm -rf ./node_modules/ && npm run-script uninstall-apps && npm run-script uninstall-dev && npm run-script uninstall-servers"
+    "uninstall": "rm -rf ./node_modules/ && npm run-script uninstall-apps && npm run-script uninstall-dev && npm run-script uninstall-server"
   }
 }
