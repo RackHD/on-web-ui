@@ -10,7 +10,6 @@ import color from 'color';
 import lodashAssign from 'lodash/object/assign';
 import lodashCloneDeep from 'lodash/lang/cloneDeep';
 import lodashMerge from 'lodash/object/merge';
-import machReact from 'mach-react';
 import MaterialUI from 'material-ui';
 import moment from 'moment';
 import prismjs from 'prismjs';
@@ -30,7 +29,6 @@ const vendor = {
   lodashAssign,
   lodashCloneDeep,
   lodashMerge,
-  machReact,
   MaterialUI,
   moment,
   prismjs,

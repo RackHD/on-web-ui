@@ -2,7 +2,10 @@
 
 'use strict';
 
-exports = module.exports = require('./lib/karma_ci');
+let karmaCI = require('./lib/karma_ci');
 
-exports.browsers = exports.browsers.filter(browser => browser !== 'Chrome');
-exports.plugins = exports.plugins.filter(plugin => plugin !== 'karma-chrome-launcher');
+module.exports = function (config) {
+  karmaCI(config);
+  config.browsers = config.browsers.filter(browser => browser !== 'Chrome');
+  config.plugins = config.plugins.filter(plugin => plugin !== 'karma-chrome-launcher');
+};
