@@ -24,25 +24,6 @@ By default there will be two servers running. One on port `5000` which will be p
  * http://localhost:3000/workflow_editor is the MonoRail Workflow Editor.
  * http://localhost:3000 is the On Web UI application directory.
 
-### Handbook App for documentation.
-
-Once `npm start` is running with and the development server is running you can access the handbook app for additional documentation.
-
-**First you need to load git submodules and run the `handbook_code_server.js`**
-
-```bash
-$ git submodule update --remote
-# Or use --recusive flag when cloning on-web-ui.
-$ npm run-script install-apps
-$ cd apps/handbook/server
-$ npm install
-$ node handbook_code_server.js
-```
-
-Then, go to http://localhost:3000/handbook and you can learn more about On Web UI application development.
-
-You may have to restart on-web-ui by stopping and running `npm start` again.
-
 ### How to build On Web UI applications.
 
 By default, builds run in debug mode. If you need to build in release mode, add the `--release` flag.
