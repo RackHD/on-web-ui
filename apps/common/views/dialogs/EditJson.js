@@ -34,11 +34,11 @@ import JsonEditor from '../JsonEditor';
 @mixin(MUIContextHelpers)
 @decorate({
   propTypes: {
-    callback: PropTypes.string,
+    callback: PropTypes.func,
     className: PropTypes.string,
     modal: PropTypes.bool,
     object: PropTypes.object,
-    openImmediately: PropTypes.bool,
+    defaultOpen: PropTypes.bool,
     style: PropTypes.any,
     title: PropTypes.string,
     updateParentState: PropTypes.func
@@ -49,7 +49,7 @@ import JsonEditor from '../JsonEditor';
     className: '',
     modal: false,
     object: null,
-    openImmediately: true,
+    defaultOpen: true,
     style: {},
     title: 'Prompt',
     updateParentState: null
@@ -96,7 +96,7 @@ export default class EditJsonDialog extends Component {
         contentClassName={this.props.className}
         contentStyle={this.props.style}
         modal={this.props.modal}
-        openImmediately={this.props.openImmediately}
+        defaultOpen={this.props.defaultOpen}
         title={this.props.title}>
         {this.props.children}
         <div>
