@@ -14,14 +14,15 @@
   "dependencies": {
     "color": "^0.10.1",
     "lodash": "^3.10.1",
-    "material-ui": "^0.13.0",
+    "material-ui": "^0.13.2",
     "prismjs": "^1.2.0",
     "radium": "^0.14.3",
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0",
+    "react-dom": "^0.14.2",
     "react-json-inspector": "^6.0.0",
-    "react-router": "^1.0.0-rc3",
+    "react-router": "^1.0.0",
     "react-select": "^0.8.0",
+    "react-tap-event-plugin": "^0.2.1",
+    "react": "^0.14.2",
     "superagent": "^1.4.0"
   },
   "devDependencies": {
@@ -45,7 +46,7 @@
     "test-ci": "cd dev && ../node_modules/.bin/karma start karma.ci.conf.js",
     "test-travis-ci": "cd dev && ../node_modules/.bin/karma start karma.travis-ci.conf.js",
     "uninstall-apps": "rm -rf ./apps/*/node_modules",
-    "uninstall-dev-slush-app": "rm -rf ./dev/slush_app/node_modules",
+    "uninstall-dev-slush-app": "rm -rf ./dev/slush_app",
     "uninstall-dev": "rm -rf ./dev/node_modules",
     "uninstall-server": "rm -rf ./server/node_modules",
     "uninstall": "rm -rf ./node_modules/ && npm run-script uninstall-apps && npm run-script uninstall-dev && npm run-script uninstall-server"
