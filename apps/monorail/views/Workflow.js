@@ -13,11 +13,6 @@ import EditWorkflow from './EditWorkflow';
 import CreateWorkflow from './CreateWorkflow';
 export { CreateWorkflow, EditWorkflow };
 
-import LogsMessenger from '../messengers/LogsMessenger';
-import EventsMessenger from '../messengers/EventsMessenger';
-let logs = new LogsMessenger(),
-    events = new EventsMessenger();
-
 import {
     FlatButton,
     LinearProgress,
@@ -28,6 +23,9 @@ import {
   } from 'material-ui';
 
 import JsonInspector from 'react-json-inspector';
+
+import Console from 'common-web-ui/views/Console';
+import WorkflowMonitor from '../lib/WorkflowMonitor';
 
 import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
@@ -46,24 +44,14 @@ export default class Workflow extends Component {
   componentDidMount() {
     this.unwatchWorkflow = workflows.watchOne(this.getWorkflowId(), 'workflow', this);
     this.readWorkflow().then(() => {
-      logs.connect();
-      events.connect();
-      logs.listen(msg => {
-        console.log(msg);
-        this.setState(state => {
-          return {
-            logs: msg.data.subject === state.workflow.node ?
-              [msg.data].concat(state.logs) : state.logs
-          };
-        });
-      });
-      events.listen(msg => {
-        let pattern = msg.id.split('.'),
-            instanceId = this.state.workflow && this.state.workflow.instanceId;
-        if (pattern[0] === 'graph' && pattern[2] === instanceId) {
-          this.setState({
-            state: pattern[1] === 'finished' ? 'Finished' : 'Started'
+      this.workflowMonitor = new WorkflowMonitor(this.state.workflow, {
+        logs: msg => {
+          this.setState(state => {
+            return {logs: [msg.data].concat(state.logs)}
           });
+        },
+        events: (msg, pattern) => {
+          this.setState({state: pattern[1] === 'finished' ? 'Finished' : 'Started'});
           this.readWorkflow();
         }
       });
@@ -72,24 +60,12 @@ export default class Workflow extends Component {
 
   componentWillUnmount() {
     this.unwatchWorkflow();
-    logs.ignore();
-    events.ignore();
-    logs.disconnect();
-    events.disconnect();
+    if (this.workflowMonitor) {
+      this.workflowMonitor.disconnect();
+    }
   }
 
   render() {
-    let colors = {
-      emerge: 'red',
-      alert: 'yellow',
-      crit: 'red',
-      error: 'red',
-      warning: 'red',
-      notice: 'yellow',
-      info: 'green',
-      debug: 'blue',
-      silly: 'blue'
-    };
     let workflow = this.state.workflow || {};
     return (
       <div className="Workflow">
@@ -119,20 +95,16 @@ export default class Workflow extends Component {
                   primaryText={workflow._status || this.state.state || '(Unknown)'}
                   secondaryText="Status" />
               </List>
-              {this.state.logs && this.state.logs.length ?
-                <div style={{background: 'black', padding: 5}}>
-                  {this.state.logs.map(data => (
-                    <p style={{color: colors[data.level]}}>
-                      <b>{data.timestamp}</b>&nbsp;&nbsp;
-                      <i>[{data.name}]</i>&nbsp;&nbsp;
-                      <i>[{data.module}]</i>&nbsp;&nbsp;
-                      <i>[{data.subject}]</i>&nbsp;--&nbsp;
-                      <b>{data.message}</b>&nbsp;->&nbsp;
-                      <u>{data.caller}</u>
-                    </p>
-                  ))}
-                </div> : null
-              }
+              <Console rows={this.state.logs} mapper={data => (
+                <p style={{color: Console.colors[data.level]}}>
+                  <b>{data.timestamp}</b>&nbsp;&nbsp;
+                  <i>[{data.name}]</i>&nbsp;&nbsp;
+                  <i>[{data.module}]</i>&nbsp;&nbsp;
+                  <i>[{data.subject}]</i>&nbsp;--&nbsp;
+                  <b>{data.message}</b>&nbsp;->&nbsp;
+                  <u>{data.caller}</u>
+                </p>
+              )} />
             </div>
             <div className="cell">
               <div style={{overflow: 'auto', margin: 10, maxHeight: 300}}>
