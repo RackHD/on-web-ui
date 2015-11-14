@@ -28,17 +28,10 @@ export default class Dashboard extends Component {
     return (
       <div className="Dashboard" style={{overflow: 'hidden'}}>
         {this.renderBreadcrumbs('Dashboard')}
-        <CatalogsGrid size={5}/>
-        <FilesGrid size={5} />
         <NodesGrid size={5} />
-        <OBMServiceGrid size={5} />
-        <PollersGrid size={5} />
-        <ProfilesGrid size={5} />
-        <SkusGrid size={5} />
-        <TemplatesGrid size={5} />
-        {/*<SchemasGrid size={5} />*/}
-        {/*<VersionsGrid size={5} />*/}
-        <WorkflowsGrid size={5} />
+        <WorkflowsGrid
+          filter={(workflow) => workflow.node}
+          limit={5} />
       </div>
     );
   }
