@@ -51,15 +51,15 @@ export default class PollersGrid extends Component {
           this.renderGrid({
             results: this.state.pollers,
             resultsPerPage: this.props.size || 50
-          }, poller => (
-            {
-              ID: <a href={this.routePath('pollers', poller.id)}>{this.shortId(poller.id)}</a>,
-              Node: <a href={this.routePath('nodes', poller.node)}>{this.shortId(poller.node)}</a>,
-              Name: poller.name,
-              Created: this.fromNow(poller.createdAt),
-              Updated: this.fromNow(poller.updatedAt)
+          }, poller => {
+            let row = {};
+            row.Name = <a href={this.routePath('pollers', poller.id)}>{poller.name}</a>;
+            if (!this.nodeId) {
+              row.Node = <a href={this.routePath('nodes', poller.node)}>{this.shortId(poller.node)}</a>;
             }
-          ), 'No pollers.')
+            row.Updated = this.fromNow(poller.updatedAt);
+            return row;
+          }, 'No pollers.')
         }
       </div>
     );

@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
+import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 /* eslint-enable no-unused-vars */
 
 import EditNode from './EditNode';
@@ -28,32 +29,46 @@ import {
 
 import JsonInspector from 'react-json-inspector';
 
+import Console from 'common-web-ui/views/Console';
+import NodeMonitor from '../lib/NodeMonitor';
+
 import NodeStore from '../stores/NodeStore';
 let nodes = new NodeStore();
 let nodesRestAPI = nodes.nodesRestAPI;
 
 @mixin(DialogHelpers)
 @mixin(PageHelpers)
+@mixin(RouteHelpers)
 export default class Node extends Component {
 
   state = {
+    logs: [],
     obm: null,
     node: null,
     loading: true
   };
 
+  componentWillMount() {
+    this.nodeMonitor = new NodeMonitor(this.getNodeId(), msg => {
+      this.setState(state => {
+        return {logs: [msg.data].concat(state.logs)}
+      });
+    });
+  }
+
   componentDidMount() {
     this.unwatchNode = nodes.watchOne(this.getNodeId(), 'node', this, (err) => {
-      // console.log('GOT HERE', err);
       if (err.message.indexOf('Not Found') !== -1) {
-        // this.routeTo('notFound');
         this.showError('Unable to locate node.');
       }
     });
     this.readNode();
   }
 
-  componentWillUnmount() { this.unwatchNode(); }
+  componentWillUnmount() {
+    this.nodeMonitor.disconnect();
+    this.unwatchNode();
+  }
 
   componentDidUpdate() {
     if (this.state.error) { this.refs.error.show(); }
@@ -69,57 +84,76 @@ export default class Node extends Component {
           this.getNodeId()
         )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
-        <Toolbar>
-          <ToolbarGroup key={0} float="left">
-            <ToolbarTitle text="Node Details" />
-          </ToolbarGroup>
-          <ToolbarGroup key={1} float="right">
-            <FlatButton
-                className="button"
-                label="Clone Node"
-                onClick={this.cloneNode.bind(this)}
-                disabled={true || this.state.loading} />
-            <RaisedButton
-                label="Delete Node"
-                primary={true}
-                onClick={this.deleteNode.bind(this)}
-                disabled={this.state.loading} />
-          </ToolbarGroup>
-        </Toolbar>
         <div className="ungrid">
           <div className="line">
-            <div className="cell">
+            <div className="cell" style={{borderRight: '1px solid black'}}>
+              <Toolbar>
+                <ToolbarGroup key={0} float="left">
+                  <ToolbarTitle text="Node Details" />
+                </ToolbarGroup>
+                <ToolbarGroup key={1} float="right">
+                  <FlatButton
+                      className="button"
+                      label="Clone Node"
+                      onClick={this.cloneNode.bind(this)}
+                      disabled={true || this.state.loading} />
+                  <RaisedButton
+                      label="Delete Node"
+                      primary={true}
+                      onClick={this.deleteNode.bind(this)}
+                      disabled={this.state.loading} />
+                </ToolbarGroup>
+              </Toolbar>
               <List>
                 <ListItem
                   primaryText={node.name || '(Untitled)'}
                   secondaryText="Name" />
-              </List>
-            </div>
-            <div className="cell">
-              <List>
                 <ListItem
                   primaryText={node.type || '(Unknown)'}
                   secondaryText="Type" />
               </List>
+              <div style={{overflow: 'auto', margin: 10}}>
+                <h3>{this.state.obm ? 'OBM' : 'OBM Not Found'}</h3>
+                {this.state.obm && <div style={{overflow: 'auto', margin: 10}}><JsonInspector
+                      search={false}
+                      isExpanded={() => true}
+                      data={this.state.obm || {}} /></div>}
+              </div>
+            </div>
+            <div className="cell">
+              <WorkflowsGrid nodeId={this.getNodeId()} />
+              <CatalogsGrid nodeId={this.getNodeId()} />
+            </div>
+          </div>
+          <div className="line">
+            <div className="cell">
+              <Console rows={this.state.logs} mapper={data => (
+                <p style={{
+                  color: Console.colors[data.level],
+                  borderTop: '1px dotted #888',
+                  padding: '5px 0',
+                  margin: 0
+                }}>
+                  <b>{data.timestamp}</b>&nbsp;&nbsp;
+                  <i>[{data.name}]</i>&nbsp;&nbsp;
+                  <i>[{data.module}]</i>&nbsp;&nbsp;
+                  <i>[{data.subject}]</i>&nbsp;--&nbsp;
+                  <b>{data.message}</b>&nbsp;->&nbsp;
+                  <u>{data.caller}</u>
+                </p>
+              )} />
+            </div>
+            <div className="cell">
+              <PollersGrid nodeId={this.getNodeId()} />
+              <EditNode node={this.state.node} />
             </div>
           </div>
         </div>
-        <div style={{overflow: 'auto', margin: 10}}>
-          <h3>{this.state.obm ? 'OBM' : 'OBM Not Found'}</h3>
-          {this.state.obm && <div style={{overflow: 'auto', margin: 10}}><JsonInspector
-                search={false}
-                isExpanded={() => true}
-                data={this.state.obm || {}} /></div>}
-        </div>
-        <CatalogsGrid nodeId={this.getNodeId()} />
-        <PollersGrid nodeId={this.getNodeId()} />
-        <WorkflowsGrid nodeId={this.getNodeId()} />
-        <EditNode node={this.state.node} />
         <Snackbar
           ref="error"
           action="dismiss"
           message={this.state.error || 'Unknown error.'}
-          onActionTouchTap={this.dismissError.bind(this)} />
+          onActionClick={this.dismissError.bind(this)} />
       </div>
     );
   }

@@ -11,6 +11,8 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
+import moment from 'common-web-ui/node_modules/moment';
+
 import {
     // IconButton,
     // RaisedButton,
@@ -46,26 +48,67 @@ export default class CatalogsGrid extends Component {
   }
 
   render() {
+    let catalogsByNode = [];
+    if (this.state.catalogs && this.state.catalogs.length) {
+      catalogsByNode = {};
+      this.state.catalogs.sort(
+        (a, b) => moment(b.updatedAt).unix() - moment(a.updatedAt).unix()
+      ).forEach(catalog => {
+        let branch = catalogsByNode[catalog.node] = catalogsByNode[catalog.node] || [],
+            list = branch[branch.length - 1],
+            check = false;
+        if (list) {
+          check = list.some(item => item.source === catalog.source);
+          if (!check) {
+            list.push(catalog);
+          }
+          else {
+            branch.push([catalog]);
+          }
+        }
+        else {
+          branch.push([catalog]);
+        }
+      });
+      catalogsByNode = Object.keys(catalogsByNode).map(node => {
+        let branch = catalogsByNode[node];
+        return branch.map(list => {
+          list = list.sort((a, b) =>
+            (a.source < b.source) ? -1 : (a.source > b.source) ? 1 : 0);
+          return {
+            node: node,
+            sources: list,
+            updatedAt: list[list.length - 1].updatedAt
+          }
+        });
+      }).reduce((prev, curr) => prev.concat(curr), []);
+    }
     return (
       <div className="CatalogsGrid">
         {this.renderGridToolbar({
           label: <a href={'#/catalogs' + (this.nodeId ? '/n/' + this.nodeId : '')}>Catalogs</a>,
-          count: this.state.catalogs && this.state.catalogs.length || 0
+          count: catalogsByNode && catalogsByNode.length || 0
         })}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
-            results: this.state.catalogs,
+            results: catalogsByNode,
             resultsPerPage: this.props.size || 50
-          }, catalog => (
-            {
-              ID: <a href={this.routePath('catalogs', catalog.id)}>{this.shortId(catalog.id)}</a>,
-              Node: <a href={this.routePath('nodes', catalog.node)}>{this.shortId(catalog.node)}</a>,
-              Source: <a href={this.routePath('catalogs/n', catalog.node, 's', catalog.source)}>{catalog.source}</a>,
-              Created: this.fromNow(catalog.createdAt),
-              Updated: this.fromNow(catalog.updatedAt),
+          }, catalog => {
+            let row = {};
+            row.Sources = catalog.sources.map(source => (
+              <a
+                  href={this.routePath('catalogs', source.id)}
+                  style={{display: 'inline-block', margin: '0 5px'}}>
+                {source.source.toUpperCase()}
+              </a>
+            ));
+            if (!this.nodeId) {
+              row.Node = <a href={this.routePath('nodes', catalog.node)}>{this.shortId(catalog.node)}</a>;
             }
-          ), 'No catalogs.')
+            row.Updated = this.fromNow(catalog.updatedAt);
+            return row;
+          }, 'No catalogs.')
         }
       </div>
     );
