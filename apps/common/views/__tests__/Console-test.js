@@ -30,8 +30,6 @@ describe('Console', function() {
     it('can be rendered.', function() {
       expect(this.wrapper).to.be.ok;
       expect(this.console).to.be.ok;
-      // expect(TestUtils.findRenderedDOMComponentWithClass(
-      //   this.console, 'Console')).to.be.ok;
     });
 
     describe('rows', function () {
@@ -41,11 +39,8 @@ describe('Console', function() {
         this.console.addRows(['a', 'b', 'c']);
         this.console.state.rows.length.should.equal(3);
         var element = findDOMNode(this.console);
-        element.childNodes.length.should.equal(3);
-        element.childNodes[0].className.should.equal('ConsoleRow');
-        element.childNodes[0].innerHTML.should.equal('a');
-        element.childNodes[1].innerHTML.should.equal('b');
-        element.childNodes[2].innerHTML.should.equal('c');
+        element.childNodes.length.should.equal(2);
+        element.childNodes[1].childNodes.length.should.equal(3);
       });
 
     });
