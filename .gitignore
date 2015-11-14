@@ -9,7 +9,7 @@ apps/tutorial
 build
 checkstyle-result.xml
 dev/node_modules
-dev/slush_app/node_modules
+dev/slush_app
 node_modules
 npm-debug.log
 server/node_modules
