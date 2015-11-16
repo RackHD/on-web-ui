@@ -32,10 +32,10 @@ import {
 @mixin(MUIContextHelpers)
 @decorate({
   propTypes: {
-    callback: PropTypes.string,
+    callback: PropTypes.func,
     className: PropTypes.string,
     modal: PropTypes.bool,
-    openImmediately: PropTypes.bool,
+    defaultOpen: PropTypes.bool,
     style: PropTypes.any,
     title: PropTypes.string
   },
@@ -44,7 +44,7 @@ import {
     callback: null,
     className: '',
     modal: false,
-    openImmediately: true,
+    defaultOpen: true,
     style: {},
     title: 'Confirm'
   },
@@ -90,7 +90,7 @@ export default class ConfirmDialog extends Component {
         contentClassName={this.props.className}
         contentStyle={this.props.style}
         modal={this.props.modal}
-        openImmediately={this.props.openImmediately}
+        defaultOpen={this.props.defaultOpen}
         title={this.props.title}>
         {this.props.children}
       </Dialog>
