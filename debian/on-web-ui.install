@@ -1,7 +1,2 @@
-build/bundle /opt/monorail/static/http
-build/common /opt/monorail/static/http
-build/monorail /opt/monorail/static/http
-build/onrack /opt/monorail/static/http
-build/workflow_editor /opt/monorail/static/http
+build /opt/monorail/static/http
 on-web-ui_commitstring.txt /opt/monorail/static/http/on-web-ui
-apps/index.html /opt/monorail/static/http

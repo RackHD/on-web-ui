@@ -8,6 +8,8 @@ var express = require('express'),
 
 var server = express();
 
+module.exports = server;
+
 server.set('port', (process.env.ONWEBUI_PORT || 5000));
 
 var publicPath = path.join(__dirname, '..', 'build');

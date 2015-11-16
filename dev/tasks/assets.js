@@ -13,6 +13,15 @@ var getFolders = require('../lib/getFolders');
 gulp.task('assets', function() {
   var streams = [];
 
+  var indexSource = path.join('..', 'apps', 'index.html'),
+      indexTarget = path.join('..', 'build');
+  streams.push(
+    gulp.src(indexSource)
+      .pipe(changed(indexTarget))
+      .pipe(gulp.dest(indexTarget))
+      .pipe(size({title: 'index.html'}))
+  );
+
   // Copy app assets into build directory.
   var apps = getFolders(path.join(__dirname, '..', '..', 'apps'));
   apps.forEach(function (appName) {

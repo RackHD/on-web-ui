@@ -1,3 +1,4 @@
+# TODO: turn this into a shell script
 [submodule "apps/graph_stream"]
 	path = apps/graph_stream
 	url = ssh://git@eos2git.cec.lab.emc.com/poultr2/graph_stream.git
