@@ -12,6 +12,8 @@ import JsonInspector from 'react-json-inspector';
 
 import {} from 'material-ui';
 
+import Console from 'common-web-ui/views/Console';
+
 import LogsMessenger from '../messengers/LogsMessenger';
 let logs = new LogsMessenger();
 
@@ -51,35 +53,22 @@ export default class AllLogs extends Component {
   }
 
   render() {
-    let colors = {
-      emerge: 'red',
-      alert: 'yellow',
-      crit: 'red',
-      error: 'red',
-      warning: 'red',
-      notice: 'yellow',
-      info: 'green',
-      debug: 'blue',
-      silly: 'blue'
-    };
     return (
       <div className="AllLogs">
         {this.renderBreadcrumbs(
           {href: '', label: 'Dashboard'},
           'All Logs'
         )}
-        <div style={{background: 'black', padding: 5}}>
-          {this.state.logs.map(data => (
-            <p style={{color: colors[data.level]}}>
-              <b>{data.timestamp}</b>&nbsp;&nbsp;
-              <i>[{data.name}]</i>&nbsp;&nbsp;
-              <i>[{data.module}]</i>&nbsp;&nbsp;
-              <i>[{data.subject}]</i>&nbsp;--&nbsp;
-              <b>{data.message}</b>&nbsp;->&nbsp;
-              <u>{data.caller}</u>
-            </p>
-          ))}
-        </div>
+        <Console rows={this.state.logs} mapper={data => (
+          <p style={{color: Console.colors[data.level]}}>
+            <b>{data.timestamp}</b>&nbsp;&nbsp;
+            <i>[{data.name}]</i>&nbsp;&nbsp;
+            <i>[{data.module}]</i>&nbsp;&nbsp;
+            <i>[{data.subject}]</i>&nbsp;--&nbsp;
+            <b>{data.message}</b>&nbsp;->&nbsp;
+            <u>{data.caller}</u>
+          </p>
+        )} />
       </div>
     );
   }

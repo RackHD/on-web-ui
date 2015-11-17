@@ -8,6 +8,8 @@ import mixin from 'common-web-ui/lib/mixin';
 import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 /* eslint-enable no-unused-vars */
 
+import moment from 'common-web-ui/node_modules/moment';
+
 import CatalogsGrid from './CatalogsGrid';
 import JsonDiff from 'common-web-ui/views/JsonDiff';
 import JsonInspector from 'react-json-inspector';
@@ -89,9 +91,12 @@ export default class Catalog extends Component {
       let otherCatalogsOptions = [];
       if (this.state.otherCatalogs && this.state.otherCatalogs.length) {
         this.state.otherCatalogs.forEach(otherCatalog => {
-          if (otherCatalog.id === this.state.catalogs.id) { return; }
+          if (otherCatalog.id === this.state.catalog.id) { return; }
+          if (otherCatalog.source !== this.state.catalog.source) { return; }
+          let isSameNode = otherCatalog.node === this.state.catalog.node,
+              fromNow = moment(otherCatalog.updatedAt).fromNow();
           otherCatalogsOptions.push({
-            label: 'Source: ' + otherCatalog.source + ', Node: ' + otherCatalog.node,
+            label: isSameNode ? fromNow : fromNow + ', from ' + otherCatalog.node,
             value: otherCatalog.id
           });
         })

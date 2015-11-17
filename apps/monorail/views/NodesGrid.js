@@ -61,9 +61,7 @@ export default class NodesGrid extends Component {
             resultsPerPage: this.props.size || 50
           }, node => (
             {
-              ID: <a href={this.routePath('nodes', node.id)}>{this.shortId(node.id)}</a>,
-              Name: node.name,
-              Created: this.fromNow(node.createdAt),
+              Name: <a href={this.routePath('nodes', node.id)}>{node.name}</a>,
               Updated: this.fromNow(node.updatedAt)//,
               // Actions: [
               //   <IconButton iconClassName="fa fa-edit"

@@ -23,23 +23,36 @@ let nodesRestAPI = new NodesRestAPI();
 import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
 
+import moment from 'common-web-ui/node_modules/moment';
+
 @mixin(DialogHelpers)
 @mixin(FormatHelpers)
 @mixin(RouteHelpers)
 @mixin(GridHelpers)
 export default class WorkflowsGrid extends Component {
 
+  static defaultProps = {
+    sort: (a, b) => moment(b.updatedAt).unix() - moment(a.updatedAt).unix()
+  }
+
   state = {
     workflows: null,
     loading: true
   };
+
+  componentWillMount() {
+    workflows.startMessenger();
+  }
 
   componentDidMount() {
     this.unwatchWorkflows = workflows.watchAll('workflows', this);
     this.listWorkflows();
   }
 
-  componentWillUnmount() { this.unwatchWorkflows(); }
+  componentWillUnmount() {
+    workflows.stopMessenger();
+    this.unwatchWorkflows();
+  }
 
   render() {
     let rightButtons = [
@@ -50,27 +63,42 @@ export default class WorkflowsGrid extends Component {
         <RaisedButton key={1} label="Cancel Active Workflow" primary={true} onClick={this.cancelActiveWorkflow.bind(this)} />
       );
     }
+    let workflows = this.state.workflows;
+    if (workflows) {
+      if (typeof this.props.filter === 'function') {
+        workflows = workflows.filter(this.props.filter);
+      }
+      if (typeof this.props.sort === 'function') {
+        workflows = workflows.sort(this.props.sort);
+      }
+      if (this.props.limit && workflows.length > this.props.limit) {
+        workflows.length = this.props.limit;
+      }
+    }
     return (
       <div className="WorkflowsGrid">
         {this.renderGridToolbar({
           label: <a href={'#/workflows' + (this.nodeId ? '/n/' + this.nodeId : '')}>Workflows</a>,
-          count: this.state.workflows && this.state.workflows.length || 0,
+          count: workflows && workflows.length || 0,
           right: rightButtons
         })}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
         {
           this.renderGrid({
-            results: this.state.workflows,
+            results: workflows,
             resultsPerPage: this.props.size || 50
-          }, workflow => (
-            {
-              ID: <a href={this.routePath('workflows', workflow.id)}>{this.shortId(workflow.id)}</a>,
-              Node: <a href={this.routePath('nodes', workflow.node)}>{this.shortId(workflow.node)}</a>,
-              Name: workflow.name,
-              Created: this.fromNow(workflow.createdAt),
-              Updated: this.fromNow(workflow.updatedAt)
+          }, workflow => {
+            let row = {};
+            row.Name = <a href={this.routePath('workflows', workflow.id)}>{workflow.name}</a>;
+            if (!this.nodeId) {
+              row.Node = <a href={this.routePath('nodes', workflow.node)}>{this.shortId(workflow.node)}</a>;
             }
-          ), 'No workflows.')
+            row.Status = workflow.completeEventString || (workflow.cancelled ? 'cancelled' : workflow._status);
+            row['Pending Tasks'] = workflow.pendingTasks.length;
+            row['Finished Tasks'] = workflow.finishedTasks.length;
+            row.Updated = this.fromNow(workflow.updatedAt);
+            return row;
+          }, 'No workflows.')
         }
       </div>
     );
