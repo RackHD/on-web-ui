@@ -77,7 +77,7 @@ export default class AppContainer extends Component {
     let css = this.props.css || {};
 
     let breadcrumbs = this.renderBreadcrumbs(),
-        titleStyle = {fontWeight: 'normal', fontSize: '1.2em', paddingTop: '0.45em'},
+        titleStyle = {fontWeight: 'normal', fontSize: '1.2em', margin: 0},
         title = <h1 style={titleStyle}>{breadcrumbs}</h1>;
 
     return (
