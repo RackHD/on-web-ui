@@ -70,12 +70,12 @@ export default class GCGridElement extends Component {
           xmlns="http://www.w3.org/2000/svg">
         <g>
           <defs>
-            <pattern id="smallGrid" width="25" height="25" patternUnits="userSpaceOnUse">
-              <path d="M 25 0 L 0 0 0 25 25 25 Z" fill="none" stroke="#ddd" strokeWidth="0.25"/>
+            <pattern id="smallGrid" width="500" height="500" patternUnits="userSpaceOnUse">
+              <path d="M 500 0 L 0 0 0 500 500 500 Z" fill="none" stroke="rgba(127, 127, 127, 0.25)" strokeWidth="2"/>
             </pattern>
-            <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-              <rect width="100" height="100" x="0" y="0" fill="url(#smallGrid)"/>
-              <path d="M 100 0 L 0 0 0 100 100 100 Z" fill="none" stroke="#bbb" strokeWidth="0.5"/>
+            <pattern id="grid" width="1000" height="1000" patternUnits="userSpaceOnUse">
+              <rect width="1000" height="1000" x="0" y="0" fill="url(#smallGrid)"/>
+              <path d="M 1000 0 L 0 0 0 1000 1000 1000 Z" fill="none" stroke="rgba(127, 127, 127, 0.5)" strokeWidth="4"/>
             </pattern>
           </defs>
           <rect
