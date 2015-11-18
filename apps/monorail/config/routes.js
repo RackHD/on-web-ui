@@ -5,7 +5,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import Router, { Route, IndexRoute } from 'react-router';
+import Router, { Route, Redirect, IndexRoute } from 'react-router';
 import { createHashHistory, useBasename } from 'history'
 
 import onReady from 'common-web-ui/lib/onReady';
@@ -17,8 +17,7 @@ import NotFound from 'common-web-ui/views/NotFound';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
-  { text: 'MonoRail Dashboard', route: '' },
-  { text: 'Workflow Editor', type: MenuItem.Types.LINK, payload: '/workflow_editor', target: '_blank' },
+  { text: 'Workflow Editor', route: 'workflow_editor' },
   { text: 'Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Catalogs', route: 'catalogs' },
   { text: 'Files', route: 'files' },
@@ -32,8 +31,8 @@ export var navigation = [
   { text: 'System', type: MenuItem.Types.SUBHEADER },
   { text: 'Config', route: 'config' },
   { text: 'Logs', route: 'logs' },
-  { text: 'Lookups', route: 'lookups' },
-  { text: 'Schemas', route: 'schemas' },
+  // { text: 'Lookups', route: 'Lookups' },
+  // { text: 'Schemas', route: 'Schemas' },
   { text: 'Versions', route: 'versions' },
   { text: '', type: MenuItem.Types.SUBHEADER },
   { text: ['© 2015 EMC', <sup>2</sup>], type: MenuItem.Types.LINK, payload: 'http://emc.com', target: '_blank' }
@@ -48,7 +47,7 @@ import Config from '../views/Config';
 import Dashboard from '../views/Dashboard';
 import File, { CreateFile } from '../views/File';
 import Files from '../views/Files';
-import Lookups from '../views/Lookups';
+// import Lookups from '../views/Lookups';
 import Node, { CreateNode } from '../views/Node';
 import Nodes from '../views/Nodes';
 import OBMService from '../views/OBMService';
@@ -57,8 +56,8 @@ import Poller, { CreatePoller } from '../views/Poller';
 import Pollers from '../views/Pollers';
 import Profile, { CreateProfile } from '../views/Profile';
 import Profiles from '../views/Profiles';
-import Schema from '../views/Schema';
-import Schemas from '../views/Schemas';
+// import Schema from '../views/Schema';
+// import Schemas from '../views/Schemas';
 import Sku, { CreateSku } from '../views/Sku';
 import Skus from '../views/Skus';
 import Template, { CreateTemplate } from '../views/Template';
@@ -67,10 +66,16 @@ import Versions from '../views/Versions';
 import Workflow, { CreateWorkflow } from '../views/Workflow';
 import Workflows from '../views/Workflows';
 
+import WorkflowEditor from 'workflow-editor-web-ui/views/WorkflowEditor';
+
 // See http://rackt.github.io/react-router/
 let routes = (
   <Route name="MonoRail" path="/" component={App}>
     <IndexRoute name="Dashboard" component={Dashboard}/>
+
+    <Route name="Workflow Editor" path="/workflow_editor/:workflow" component={WorkflowEditor} />
+    <Redirect from="/workflow_editor" to="/workflow_editor/New Workflow" />
+    <Redirect from="/edit/:workflow" to="/workflow_editor/:workflow" />
 
     <Route name="Catalogs" path="/catalogs" component={Catalogs} />
     <Route path="/catalogs/n/:nodeId" component={Catalogs} />
@@ -87,7 +92,7 @@ let routes = (
     <Route name="Files" path="/files/:fileId" component={File} />
 
     <Route name="All Logs" path="/logs" component={AllLogs} />
-    <Route name="Lookups" path="/lookups" component={Lookups} />
+    {/*<Route name="Lookups" path="/lookups" component={Lookups} />*/}
 
     <Route name="Nodes" path="/nodes" component={Nodes} />
     <Route name="New Node" path="/nodes/new" component={CreateNode} />
@@ -106,8 +111,8 @@ let routes = (
     <Route name="New Profile" path="/profiles/new" component={CreateProfile} />
     <Route name="Profiles" path="/profiles/:profileId" component={Profile} />
 
-    <Route name="Schemas" path="/schemas" component={Schemas} />
-    <Route name="Schemas" path="/schemas/:schemaId" component={Schema} />
+    {/*<Route name="Schemas" path="/schemas" component={Schemas} />
+    <Route name="Schemas" path="/schemas/:schemaId" component={Schema} />*/}
 
     <Route name="SKUs" path="/skus" component={Skus} />
     <Route name="New SKU" path="/skus/new" component={CreateSku} />
