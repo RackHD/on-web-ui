@@ -21,7 +21,7 @@ export default class AppMenuNav extends Component {
   };
 
   static defaultProps = {
-    title: 'On Web UI',
+    title: 'Dashboard',
     menuItems: [],
     brandStyle: {}
   };
