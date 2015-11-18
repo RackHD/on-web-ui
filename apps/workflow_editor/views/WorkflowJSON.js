@@ -12,8 +12,8 @@ import decorate from 'common-web-ui/lib/decorate';
 // import JsonEditor from 'common-web-ui/views/JsonEditor';
 
 import AceEditor from 'common-web-ui/views/AceEditor';
-import 'common-web-ui/node_modules/brace/mode/json';
-import 'common-web-ui/node_modules/brace/theme/github';
+import 'brace/mode/json';
+import 'brace/theme/github';
 
 import {
     RaisedButton

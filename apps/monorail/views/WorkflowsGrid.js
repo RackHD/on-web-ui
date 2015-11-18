@@ -23,7 +23,7 @@ let nodesRestAPI = new NodesRestAPI();
 import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
 
-import moment from 'common-web-ui/node_modules/moment';
+import moment from 'moment';
 
 @mixin(DialogHelpers)
 @mixin(FormatHelpers)

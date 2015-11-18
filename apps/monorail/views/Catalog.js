@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import JsonInspector from 'react-json-inspector';
 import Select from 'react-select';
 
-import moment from 'common-web-ui/node_modules/moment';
+import moment from 'moment';
 import JsonDiff from 'common-web-ui/views/JsonDiff';
 
 import CatalogsGrid from './CatalogsGrid';

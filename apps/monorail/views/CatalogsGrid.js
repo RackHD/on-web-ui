@@ -11,7 +11,7 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 /* eslint-enable no-unused-vars */
 
-import moment from 'common-web-ui/node_modules/moment';
+import moment from 'moment';
 
 import {
     // IconButton,
