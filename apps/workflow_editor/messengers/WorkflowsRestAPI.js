@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { API } from '../config/index';
+import { API } from 'monorail-web-ui/config/index';
 import RestAPI from 'common-web-ui/lib/RestAPI';
 
 export default class WorkflowsRestAPI extends RestAPI {
