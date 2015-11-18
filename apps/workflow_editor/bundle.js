@@ -2,7 +2,9 @@
 
 'use strict';
 
+import reactTapEventPlugin from 'react-tap-event-plugin';
+reactTapEventPlugin();
+
 // bootstrap bundle
 import './config/index';
-import './config/colors';
 import './config/routes';
