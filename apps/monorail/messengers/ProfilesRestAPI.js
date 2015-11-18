@@ -2,12 +2,12 @@
 
 'use strict';
 
-import { API } from '../config/index';
+import { MONORAIL_API } from '../config/index';
 import RestAPI from 'common-web-ui/lib/RestAPI';
 
 export default class ProfilesRestAPI extends RestAPI {
 
-  api = API;
+  api = MONORAIL_API;
   entity = 'profiles';
 
   get(id) {
