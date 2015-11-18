@@ -31,6 +31,10 @@ export default class TestWrapper extends Component {
     componentProps: {}
   };
 
+  static childContextTypes = {
+    muiTheme: PropTypes.any
+  };
+
   static testRender(TestComponent, componentProps, done, disableAutoTheme) {
     try {
       var testWrapper = <TestWrapper
@@ -42,6 +46,7 @@ export default class TestWrapper extends Component {
     } catch (err) {
       console.log('TestWrapper error:');
       console.error(err);
+      done(err)
     }
   }
 

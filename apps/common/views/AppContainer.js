@@ -117,7 +117,7 @@ export default class AppContainer extends Component {
   }
 
   renderBreadcrumbs() {
-    if (this.props.disableAppBar) return [];
+    if (this.props.disableAppBar || !this.props.routes) return [];
 
     let breadcrumbs = [],
         title = this.title,
