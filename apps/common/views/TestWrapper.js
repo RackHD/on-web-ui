@@ -2,14 +2,10 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
 import { render, unmountComponentAtNode, findDOMNode } from 'react-dom';
-import mixin from '../lib/mixin';
-import decorate from '../lib/decorate';
-import MUIContextHelpers from '../mixins/MUIContextHelpers';
-/* eslint-enable no-unused-vars */
 
+import mixin from '../lib/mixin';
 import onReady from '../lib/onReady';
 
 var testContainer = document.createElement('div');
@@ -19,23 +15,21 @@ onReady(function() {
   document.body.appendChild(testContainer);
 });
 
-@decorate({
-  propTypes: {
+export default class TestWrapper extends Component {
+
+  static propTypes = {
     disableAutoTheme: PropTypes.bool,
     TestComponent: PropTypes.func,
     componentProps: PropTypes.object,
     doneDelay: PropTypes.number,
     done: PropTypes.func
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     doneDelay: 16,
     disableAutoTheme: false,
     componentProps: {}
-  },
-  childContextTypes: MUIContextHelpers.muiContextTypes()
-})
-@mixin(MUIContextHelpers)
-export default class TestWrapper extends Component {
+  };
 
   static testRender(TestComponent, componentProps, done, disableAutoTheme) {
     try {
@@ -71,7 +65,9 @@ export default class TestWrapper extends Component {
   getDOMNode() { return findDOMNode(this); }
 
   getChildContext() {
-    if (!this.props.disableAutoTheme) { return this.muiContext(); }
+    if (!this.props.disableAutoTheme) {
+      return {muiTheme: require('../lib/emcTheme')};
+    }
     return {};
   }
 
