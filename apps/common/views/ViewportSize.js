@@ -2,32 +2,26 @@
 
 'use strict';
 
-import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import mixin from '../lib/mixin';
-
-import ViewportHelpers from '../mixins/ViewportHelpers';
-import decorate from '../lib/decorate';
 
 @radium
-@mixin(ViewportHelpers)
-@decorate({
-
-  propTypes: ViewportHelpers.viewportPropTypes({
-    className: PropTypes.string,
-    style: PropTypes.any
-  }),
-
-  defaultProps: ViewportHelpers.viewportDefaultProps({
-    className: '',
-    style: {}
-  })
-
-})
 export default class ViewportSize extends Component {
 
-  state = this.viewportState()
+  static propTypes = {
+    initialViewport: PropTypes.shape({
+      width: PropTypes.number,
+      height: PropTypes.number
+    })
+  };
+
+  static defaultProps = {
+    initialViewport: {width: 1024, height: 768}
+  };
+
+  state = {
+    viewport: this.props.initialViewport
+  }
 
   componentDidMount() {
     this.updateViewport();
@@ -51,6 +45,30 @@ export default class ViewportSize extends Component {
   printViewportSize() {
     var viewport = this.state && this.state.viewport || this.props.initialViewport;
     return 'Viewport: ' + viewport.width + 'x' + viewport.height;
+  }
+
+  watchViewport() {
+    var resizeTimer = null;
+    this.handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(this.updateViewport.bind(this), 300);
+    };
+    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('orientationchange', this.handleResize);
+  }
+
+  unwatchViewport() {
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('orientationchange', this.handleResize);
+    this.handleResize = null;
+  }
+
+  updateViewport() {
+    let viewport = {width: window.innerWidth, height: window.innerHeight};
+    if (this.state.viewport.width !== viewport.width ||
+      this.state.viewport.height !== viewport.height) {
+      this.setState({viewport: viewport});
+    }
   }
 
 }
