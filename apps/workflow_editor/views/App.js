@@ -6,35 +6,24 @@ import React, { Component } from 'react';
 
 import AppContainer from 'common-web-ui/views/AppContainer';
 
+import { navigation } from '../config/routes';
+
 export default class App extends Component {
 
   state = {
-    title: this.title
+    navigation
   };
 
   render() {
+    document.body.style.overflow = 'hidden';
     return (
       <AppContainer
           ref="container"
-          className="app"
-          header={null}
-          title={this.state.title}
-          children={this.props.children}
-          styles={{content: {padding: 0}}} />
+          disableAppBar={true}
+          disableTabPadding={true}
+          navigation={this.state.navigation}
+          {...this.props} />
     );
-  }
-
-  get title() {
-    return this.findTitle().innerHTML;
-  }
-
-  set title(title) {
-    this.setState({ title });
-    this.findTitle().innerHTML = title;
-  }
-
-  findTitle() {
-    return document.head.querySelector('title');
   }
 
 }

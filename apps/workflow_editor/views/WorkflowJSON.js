@@ -9,7 +9,6 @@ import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
-import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 // import JsonEditor from 'common-web-ui/views/JsonEditor';
 
 import AceEditor from 'common-web-ui/views/AceEditor';
@@ -31,7 +30,6 @@ import {
 */
 
 @radium
-@mixin(DeveloperHelpers)
 @decorate({
   propTypes: {
     className: PropTypes.string,

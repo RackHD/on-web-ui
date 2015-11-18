@@ -9,7 +9,6 @@ import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
 import decorate from 'common-web-ui/lib/decorate';
 
-import DeveloperHelpers from 'common-web-ui/mixins/DeveloperHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
 import Library from './Library';
@@ -26,7 +25,6 @@ import LibraryItem from './LibraryItem';
 */
 
 @radium
-@mixin(DeveloperHelpers)
 @mixin(RouteHelpers)
 @decorate({
   propTypes: {
