@@ -2,12 +2,10 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
 
 import EditFile from './EditFile';
 import CreateFile from './CreateFile';
@@ -25,7 +23,6 @@ import FileStore from '../stores/FileStore';
 let file = new FileStore();
 
 @mixin(DialogHelpers)
-@mixin(PageHelpers)
 export default class File extends Component {
 
   state = {
@@ -52,11 +49,6 @@ export default class File extends Component {
     let file = this.state.file || {};
     return (
       <div className="File">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          {href: 'files', label: 'Files'},
-          this.getFileId()
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <Toolbar>
           <ToolbarGroup key={0} float="left">

@@ -41,8 +41,7 @@ export default {
             fontSize: '20px',
             display: 'inline-block',
             position: 'relative',
-            float: 'left',
-            color: '#666'
+            float: 'left'
           }}>{params.label} &nbsp; {params.count}</span>
         </ToolbarGroup>
         {rightToolbar}

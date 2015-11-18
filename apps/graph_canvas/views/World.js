@@ -17,6 +17,7 @@ import GCVectorsLayer from './layers/Vectors';
     className: PropTypes.string,
     css: PropTypes.object,
     elements: PropTypes.array,
+    grid: PropTypes.object,
     style: PropTypes.object,
     vectors: PropTypes.array
   },
@@ -24,6 +25,7 @@ import GCVectorsLayer from './layers/Vectors';
     className: 'GraphCanvasWorld',
     css: {},
     elements: [],
+    grid: {},
     style: {},
     vectors: []
   },
@@ -80,7 +82,7 @@ export default class GCWorld extends Component {
             onDoubleClick={this.touchWorld.bind(this)}
             style={[cssWorldSize, cssWorldSpaceTransform]}>
 
-          <GCVectorsLayer ref="vectors" key="vectors" grid={{}}>
+          <GCVectorsLayer ref="vectors" key="vectors" grid={this.props.grid}>
             {vectors}
           </GCVectorsLayer>
 

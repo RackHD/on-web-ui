@@ -2,20 +2,13 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'common-web-ui/lib/mixin';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
-
 import { LinearProgress } from 'material-ui';
-
 import JsonInspector from 'react-json-inspector';
 
 import ConfigStore from '../stores/ConfigStore';
 let config = new ConfigStore();
 
-@mixin(PageHelpers)
 export default class Config extends Component {
 
   state = {
@@ -33,10 +26,6 @@ export default class Config extends Component {
   render() {
     return (
       <div className="Config">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          'Config'
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <div style={{overflow: 'auto', margin: 10}}>
           <JsonInspector

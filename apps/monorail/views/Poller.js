@@ -2,13 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
 
 import EditPoller from './EditPoller';
 import CreatePoller from './CreatePoller';
@@ -28,9 +26,7 @@ import JsonInspector from 'react-json-inspector';
 import PollerStore from '../stores/PollerStore';
 let poller = new PollerStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(PageHelpers)
+@mixin(DialogHelpers, FormatHelpers)
 export default class Poller extends Component {
 
   state = {
@@ -49,11 +45,6 @@ export default class Poller extends Component {
     let poller = this.state.poller || {};
     return (
       <div className="Poller">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          {href: 'pollers', label: 'Pollers'},
-          this.getPollerId()
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <Toolbar>
           <ToolbarGroup key={0} float="left">

@@ -56,6 +56,7 @@ export { GCSocketElement as GCSocket };
     className: PropTypes.string,
     css: PropTypes.object,
     enableMarks: PropTypes.bool,
+    grid: PropTypes.object,
     initialScale: PropTypes.number,
     initialX: PropTypes.number,
     initialY: PropTypes.number,
@@ -72,6 +73,7 @@ export { GCSocketElement as GCSocket };
     className: 'GraphCanvas',
     css: {},
     enableMarks: false,
+    grid: {},
     initialScale: 1,
     initialX: 0,
     initialY: 0,
@@ -170,7 +172,7 @@ export default class GraphCanvas extends Component {
           {this.props.enableMarks && <GCMarksManager ref="marks" />}
 
           <GCViewport ref="viewport">
-            <GCWorld ref="world">
+            <GCWorld ref="world" grid={this.props.grid}>
               {children}
             </GCWorld>
           </GCViewport>

@@ -2,13 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
 
 import EditTemplate from './EditTemplate';
 import CreateTemplate from './CreateTemplate';
@@ -25,9 +23,7 @@ import {
 import TemplateStore from '../stores/TemplateStore';
 let templates = new TemplateStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(PageHelpers)
+@mixin(DialogHelpers, FormatHelpers)
 export default class Template extends Component {
 
   state = {
@@ -46,11 +42,6 @@ export default class Template extends Component {
     let template = this.state.template || {};
     return (
       <div className="Template">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          {href: 'templates', label: 'Templates'},
-          this.getTemplateId()
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <Toolbar>
           <ToolbarGroup key={0} float="left">

@@ -2,68 +2,41 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
-import mixin from '../lib/mixin';
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import decorate from '../lib/decorate';
-import MUIContextHelpers from '../mixins/MUIContextHelpers';
+import { RouteHandler, Link } from 'react-router';
 
-import { RouteHandler } from 'react-router';
-import { AppCanvas, Snackbar } from 'material-ui';
-import AppHeader from './AppHeader';
-import AppFooter from './AppFooter';
-import emcColors from '../lib/emcColors';
+import { AppBar, AppCanvas, Snackbar } from 'material-ui';
+import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
 
-let defaultStyles = {
-  root: {},
+import AppNavigation from './AppNavigation';
+import EMCTab from './EMCTab';
 
-  header: {
-    background: emcColors.mediumGrey.hexString(),
-    color: emcColors.offWhite.hexString()
-  },
+import emcTheme from '../lib/emcTheme';
 
-  content: {
-    color: emcColors.black.hexString(),
-    background: emcColors.white.hexString(),
-    padding: '64px 0 0 0'
-  },
-
-  footer: {
-    color: emcColors.offWhite.hexString(),
-    background: emcColors.darkGrey.hexString(),
-    padding: '10px'
-  }
-};
-
+@ThemeDecorator(emcTheme)
 @radium
-@mixin(MUIContextHelpers)
-@decorate({
-  propTypes: {
-    className: PropTypes.string,
-    navigation: PropTypes.array,
-    header: PropTypes.any,
-    footer: PropTypes.any,
-    styles: PropTypes.object,
-    title: PropTypes.string
-  },
-
-  defaultProps: {
-    className: '',
-    navigation: [],
-    header: undefined,
-    footer: undefined,
-    styles: {},
-    title: 'On Web UI'
-  },
-
-  childContextTypes: MUIContextHelpers.muiContextTypes()
-})
 export default class AppContainer extends Component {
 
-  state = {};
+  static propTypes = {
+    className: PropTypes.string,
+    css: PropTypes.object,
+    disableAppBar: PropTypes.bool,
+    disableTabPadding: PropTypes.bool,
+    navigation: PropTypes.array
+  };
 
-  getChildContext() { return this.muiContext(); }
+  static defaultProps = {
+    className: 'app-container',
+    css: {},
+    disableAppBar: false,
+    disableTabPadding: false,
+    navigation: []
+  };
+
+  state = {
+    title: this.title
+  };
 
   componentWillMount() {
     this.handleError = this.onError.bind(this)
@@ -78,46 +51,125 @@ export default class AppContainer extends Component {
     if (this.state.error) { this.refs.error.show(); }
   }
 
+  css = {
+    root: {
+      paddingBottom: this.props.disableTabPadding ? 0 : 64
+    },
+
+    appBar: {
+      color: 'inherit',
+      background: 'inherit',
+      position: 'fixed'
+    },
+
+    content: {
+      paddingTop: this.props.disableAppBar ? 0 : 64
+    },
+
+    footer: {
+      // color: emcColors.offWhite.hexString(),
+      // background: emcColors.darkGrey.hexString(),
+      padding: 10
+    }
+  };
+
   render() {
-    var styles = this.props.styles,
-        header = this.props.header,
-        footer = this.props.footer;
+    let css = this.props.css || {};
 
-    if (header === undefined) {
-      header = <AppHeader
-        className="header"
-        navigation={this.props.navigation}
-        style={[defaultStyles.header, styles.header]}
-        title={this.props.title} />;
-    }
-
-    if (footer === undefined) {
-      footer = <AppFooter
-          className="footer"
-          style={[defaultStyles.footer, styles.footer]} />;
-    }
+    let breadcrumbs = this.renderBreadcrumbs(),
+        titleStyle = {fontWeight: 'normal', fontSize: '1.2em', margin: 0},
+        title = <h1 style={titleStyle}>{breadcrumbs}</h1>;
 
     return (
       <div
-          className={this.props.className}
-          style={[defaultStyles.root, styles.root]}>
-        <AppCanvas
-            predefinedLayout={1}>
-          {header}
-          <div
-              className="content"
-              style={[defaultStyles.content, styles.content]}>
-            <Snackbar
+          className={this.props.className + ' app-canvas'}
+          style={[this.css.root, css.root]}>
+        <AppCanvas>
+          {this.props.disableAppBar ? null : <AppBar
+              onLeftIconButtonTouchTap={this.toggleLeftNavigation.bind(this)}
+              title={title}
+              style={this.css.appBar}
+              zDepth={0} />}
+
+          {this.props.navigation && <AppNavigation
+              ref="navigation"
+              title={this.props.title}
+              menuItems={this.props.navigation} />}
+
+          <div ref="content" style={[this.css.content, css.content]}>
+            {this.props.children}
+          </div>
+
+          <Snackbar
               ref="error"
               action="dismiss"
               message={this.state.error || 'Unknown error.'}
               onActionTouchTap={this.dismissError.bind(this)} />
-            {this.props.children || <RouteHandler />}
-          </div>
-          {footer}
+
+          <footer style={[this.css.footer, css.footer]}>
+            <span key={0}>© 2015 EMC<sup>2</sup></span>
+          </footer>
+
+          <EMCTab ref="emcTab" />
         </AppCanvas>
       </div>
     );
+  }
+
+  renderBreadcrumbs() {
+    if (this.props.disableAppBar || !this.props.routes) return [];
+
+    let breadcrumbs = [],
+        title = this.title,
+        depth = this.props.routes.length;
+
+    this.props.routes.forEach((item, index) => {
+      let path = (item.path || '').split('/');
+
+      let showLastParam = path[path.length - 1].charAt(0) === ':',
+          isNotLast = (index + 1) < depth;
+
+      path = path.map(segment => {
+        if (segment.charAt(0) === ':') {
+          return this.props.params[segment.slice(1)];
+        }
+        return segment;
+      });
+
+      let targetPath = path.slice(0);
+      targetPath.pop();
+      let target = targetPath.join('/');
+
+      title += item.name || item.component.name;
+      breadcrumbs.push(
+        <Link key={'l' + index} to={target}
+              style={{textDecoration: 'none'}}>
+          {item.name || item.component.name}
+        </Link>
+      );
+
+      if (isNotLast) {
+        title += ' > ';
+        breadcrumbs.push(<span key={'s' + index}>&nbsp;{'>'}&nbsp;</span>);
+      }
+
+      else if (showLastParam) {
+        title += ' > ' + path[path.length - 1];
+        breadcrumbs.push(<span key={'s' + (index + 1)}>&nbsp;{'>'}&nbsp;</span>);
+        breadcrumbs.push(
+          <Link key={'l' + (index + 1)} to={path.join('/')}
+              style={{textDecoration: 'none'}}>
+            {path[path.length - 1]}
+          </Link>
+        );
+      }
+    });
+
+    return breadcrumbs;
+  }
+
+  toggleLeftNavigation() {
+    this.refs.navigation.toggleLeftNav();
   }
 
   onError(errorMsg) {
@@ -129,6 +181,19 @@ export default class AppContainer extends Component {
   dismissError() {
     this.refs.error.dismiss();
     this.setState({error: null});
+  }
+
+  get title() {
+    return this.findTitle().innerHTML;
+  }
+
+  set title(title) {
+    this.setState({ title });
+    this.findTitle().innerHTML = title;
+  }
+
+  findTitle() {
+    return document.head.querySelector('title');
   }
 
 }

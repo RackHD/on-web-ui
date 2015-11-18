@@ -187,6 +187,7 @@ export default class WorkflowEditor extends Component {
     return <GraphCanvas
         key={'graphCanvas' + this.state.version}
         ref="graphCanvas"
+        grid={null}
         initialScale={0.5}
         viewWidth={this.state.canvasWidth}
         viewHeight={this.state.canvasHeight}

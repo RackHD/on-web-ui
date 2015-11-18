@@ -2,20 +2,14 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'common-web-ui/lib/mixin';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
 
 import { LinearProgress } from 'material-ui';
-
 import JsonInspector from 'react-json-inspector';
 
 import OBMServiceStore from '../stores/OBMServiceStore';
 let obmService = new OBMServiceStore();
 
-@mixin(PageHelpers)
 export default class OBMService extends Component {
 
   state = {
@@ -34,11 +28,6 @@ export default class OBMService extends Component {
     console.log(this.state.obmService);
     return (
       <div className="OBMService">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          {href: 'obms', label: 'OBM Services'},
-          this.props.params.obmsId
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <div style={{overflow: 'auto', margin: 10}}>
           <JsonInspector

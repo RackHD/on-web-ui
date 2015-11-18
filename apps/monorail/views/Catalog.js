@@ -2,26 +2,20 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'common-web-ui/lib/mixin';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
 
-import moment from 'common-web-ui/node_modules/moment';
-
-import CatalogsGrid from './CatalogsGrid';
-import JsonDiff from 'common-web-ui/views/JsonDiff';
 import JsonInspector from 'react-json-inspector';
 import Select from 'react-select';
 
-import {} from 'material-ui';
+import moment from 'common-web-ui/node_modules/moment';
+import JsonDiff from 'common-web-ui/views/JsonDiff';
 
+import CatalogsGrid from './CatalogsGrid';
 import CatalogStore from '../stores/CatalogStore';
+
 let catalogs = new CatalogStore();
 let otherCatalogs = new CatalogStore();
 
-@mixin(PageHelpers)
 export default class Catalog extends Component {
 
   state = {
@@ -135,20 +129,6 @@ export default class Catalog extends Component {
 
     return (
       <div className="Catalog">
-        {this.catalogId ?
-          this.renderBreadcrumbs(
-            {href: '', label: 'Dashboard'},
-            {href: 'catalogs', label: 'Catalogs'},
-            this.catalogId
-          ) :
-          this.renderBreadcrumbs(
-            {href: '', label: 'Dashboard'},
-            {href: 'nodes', label: 'Nodes'},
-            {href: 'nodes/' + this.nodeId, label: this.nodeId},
-            {href: 'catalogs', label: 'Catalogs'},
-            this.source
-          )
-        }
         {content}
       </div>
     );

@@ -2,20 +2,12 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 
 import radium from 'radium';
-import mixin from '../../lib/mixin';
-import decorate from '../../lib/decorate';
 
-import DeveloperHelpers from '../../mixins/DeveloperHelpers';
-import MUIContextHelpers from '../../mixins/MUIContextHelpers';
-
-import {
-    Dialog
-  } from 'material-ui';
+import { Dialog } from 'material-ui';
 
 /**
 # ConfirmDialog
@@ -28,29 +20,25 @@ import {
 */
 
 @radium
-@mixin(DeveloperHelpers)
-@mixin(MUIContextHelpers)
-@decorate({
-  propTypes: {
+export default class ConfirmDialog extends Component {
+
+  static propTypes = {
     callback: PropTypes.func,
     className: PropTypes.string,
     modal: PropTypes.bool,
     defaultOpen: PropTypes.bool,
     style: PropTypes.any,
     title: PropTypes.string
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     callback: null,
     className: '',
     modal: false,
     defaultOpen: true,
     style: {},
     title: 'Confirm'
-  },
-  childContextTypes: MUIContextHelpers.muiContextTypes()
-})
-export default class ConfirmDialog extends Component {
+  };
 
   static create(props, parent) {
     // TODO: dry this code
@@ -70,10 +58,6 @@ export default class ConfirmDialog extends Component {
   componentDidMount() {}
 
   componentWillUnmount() {}
-
-  getChildContext() {
-    return this.muiContext();
-  }
 
   render() {
     let confirmActions = [

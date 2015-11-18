@@ -2,12 +2,10 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
 
 import EditSku from './EditSku';
 import CreateSku from './CreateSku';
@@ -28,7 +26,6 @@ import SkuStore from '../stores/SkuStore';
 let skus = new SkuStore();
 
 @mixin(DialogHelpers)
-@mixin(PageHelpers)
 export default class Sku extends Component {
 
   state = {
@@ -47,11 +44,6 @@ export default class Sku extends Component {
     let sku = this.state.sku || {};
     return (
       <div className="Sku">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          {href: 'skus', label: 'Skus'},
-          this.getSkuId()
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <Toolbar>
           <ToolbarGroup key={0} float="left">

@@ -2,35 +2,31 @@
 
 'use strict';
 
-import React, {// eslint-disable-line no-unused-vars
-  Component,
-  PropTypes } from 'react';
-import mixin from '../lib/mixin';
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import decorate from '../lib/decorate';
-import MUIStyleHelpers from '../mixins/MUIStyleHelpers';
+
+import mixin from '../lib/mixin';
 import RouteHelpers from '../mixins/RouteHelpers';
 
 import { LeftNav } from 'material-ui';
 
 @radium
-@mixin(MUIStyleHelpers)
 @mixin(RouteHelpers)
-@decorate({
-  propTypes: {
+export default class AppMenuNav extends Component {
+
+  static propTypes = {
     title: PropTypes.string,
     menuItems: PropTypes.array,
     brandStyle: PropTypes.object
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     title: 'On Web UI',
     menuItems: [],
     brandStyle: {}
-  }
-})
-export default class AppMenuNav extends Component {
+  };
 
-  toggle = this.toggle.bind(this);
+  toggleLeftNav = this.toggleLeftNav.bind(this);
   getSelectedIndex = this.getSelectedIndex.bind(this);
   onLeftNavChange = this.onLeftNavChange.bind(this);
   onHeaderClick = this.onHeaderClick.bind(this);
@@ -39,7 +35,7 @@ export default class AppMenuNav extends Component {
     var header = (
       <a
           onClick={this.onHeaderClick}
-          style={this.mergeAndPrefix({
+          style={[{
             color: '#fff',
             display: 'block',
             background: '#000',
@@ -47,7 +43,7 @@ export default class AppMenuNav extends Component {
             fontWeight: 'bold',
             textAlign: 'center',
             borderBottom: '1px solid #ddd'
-          }, this.props.brandStyle)}>
+          }, this.props.brandStyle]}>
         {this.props.title}
       </a>
     );
@@ -71,7 +67,7 @@ export default class AppMenuNav extends Component {
     return item.route && item.route === active;
   }
 
-  toggle() {
+  toggleLeftNav() {
     this.refs.leftNav.toggle();
   }
 

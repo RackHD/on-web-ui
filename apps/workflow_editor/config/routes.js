@@ -17,11 +17,16 @@ import ExampleGraphCanvas from 'graph-canvas-web-ui/views/Example';
 
 // See http://rackt.github.io/react-router/
 let routes = (
-  <Route path="/" name="root" component={App}>
-    <IndexRoute component={WorkflowEditor} />
-    <Route path="/example" component={ExampleGraphCanvas} />
-    <Route path="/edit/:workflow" component={WorkflowEditor} />
-    <Route path="*" component={NotFound} />
+  <Route name="MonoRail" path="/" component={App}>
+
+    <IndexRoute name="Workflow Editor" component={WorkflowEditor} />
+
+    <Route name="Graph Canvas Example" path="/example" component={ExampleGraphCanvas} />
+
+    <Route name="Workflow Editor" path="/edit/:workflow" component={WorkflowEditor} />
+
+    <Route name="Not Found" path="*" component={NotFound} />
+
     <Redirect from="/edit" to="/edit/new" />
   </Route>
 );

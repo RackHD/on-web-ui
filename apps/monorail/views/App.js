@@ -11,7 +11,6 @@ import { navigation } from '../config/routes';
 export default class App extends Component {
 
   state = {
-    title: this.title,
     navigation
   };
 
@@ -19,24 +18,9 @@ export default class App extends Component {
     return (
       <AppContainer
           ref="container"
-          className="app"
-          title={this.state.title}
           navigation={this.state.navigation}
-          children={this.props.children} />
+          {...this.props} />
     );
-  }
-
-  get title() {
-    return this.findTitle().innerHTML;
-  }
-
-  set title(title) {
-    this.setState({ title });
-    this.findTitle().innerHTML = title;
-  }
-
-  findTitle() {
-    return document.head.querySelector('title');
   }
 
 }

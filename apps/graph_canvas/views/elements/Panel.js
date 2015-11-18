@@ -247,8 +247,8 @@ export default class GCPanelElement extends Component {
       text = color.clone();
     }
 
-    if (color.dark()) { text.lighten(0.75); }
-    else { text.darken(0.75); }
+    if (color.dark()) { text.lighten(2); }
+    else { text.darken(2); }
 
     return {
       content: [
@@ -257,7 +257,7 @@ export default class GCPanelElement extends Component {
           overflow: this.state.selected ? 'visible' : 'hidden',
           height: bounds.height - this.css.header.height - 6,
           borderColor: color.rgbString(),
-          backgroundColor: color.clone().alpha(this.state.hover ? 0.5 : 0.25).lighten(0.25).rgbaString()
+          backgroundColor: color.clone().alpha(this.state.hover ? 0.7 : 0.35).darken(0.5).rgbaString()
         },
         props.css.content
       ],
