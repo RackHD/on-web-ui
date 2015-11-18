@@ -2,12 +2,8 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import { TextField } from 'material-ui';
 
@@ -22,20 +18,19 @@ import { TextField } from 'material-ui';
 */
 
 @radium
-@decorate({
-  propTypes: {
+export default class WELibrary extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     style: PropTypes.any
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: '',
     css: {},
     style: {}
-  }
-})
-export default class WELibrary extends Component {
+  };
 
   state = {
     filteredChildren: null

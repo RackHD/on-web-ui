@@ -2,28 +2,25 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from '../lib/decorate';
-/* eslint-enable no-unused-vars */
 
 // Based on http://www.mbates.com/play/ReactJsonEditor/
 
-@decorate({
-  propTypes: {
+export default class JsonEditor extends Component {
+
+  static propTypes = {
     rows: PropTypes.number,
     cols: PropTypes.number,
     disabled: PropTypes.bool,
     initialValue: PropTypes.any,
     updateParentState: PropTypes.func
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     rows: 12,
     cols: 120,
     disabled: false
-  }
-})
-export default class JsonEditor extends Component {
+  };
 
   state = {
     value: null,

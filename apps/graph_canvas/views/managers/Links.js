@@ -2,14 +2,10 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
-
-// import ContextProvider from 'common-web-ui/views/ContextProvider';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 
@@ -18,15 +14,12 @@ import Vector from '../../lib/Vector';
 
 import GCLinkElement from '../elements/Link';
 
-@decorate({
-  propTypes: {},
-  defaultProps: {},
-  contextTypes: {
-    graphCanvas: PropTypes.any
-  }
-})
 @mixin(DragEventHelpers)
 export default class GCLinksManager extends Component {
+
+  static contextTypes = {
+    graphCanvas: PropTypes.any
+  };
 
   get graphCanvas() {
     return this.context.graphCanvas;

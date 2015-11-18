@@ -2,12 +2,9 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import DragEventHelpers from '../mixins/DragEventHelpers';
 
@@ -25,22 +22,23 @@ import Vector from '../lib/Vector';
 
 @radium
 @mixin(DragEventHelpers)
-@decorate({
-  propTypes: {
+export default class GCViewport extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     style: PropTypes.object
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: 'GraphCanvasViewport',
     css: {},
     style: {}
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any
-  }
-})
-export default class GCViewport extends Component {
+  };
 
   get graphCanvas() {
     return this.context.graphCanvas;

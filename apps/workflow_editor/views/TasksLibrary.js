@@ -2,13 +2,9 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
-
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import PromptDialog from 'common-web-ui/views/dialogs/Prompt';
 
@@ -26,23 +22,22 @@ import LibraryItem from './LibraryItem';
 */
 
 @radium
-@decorate({
-  propTypes: {
+export default class WETasksLibrary extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     style: PropTypes.any
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: '',
     style: {}
-  },
+  };
 
-  contextTypes: {
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WETasksLibrary extends Component {
+  };
 
   state = {taskDefinitions: []};
 

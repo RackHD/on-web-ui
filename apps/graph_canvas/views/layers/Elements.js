@@ -2,33 +2,30 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import decorate from 'common-web-ui/lib/decorate';
 
 @radium
-@decorate({
-  propTypes: {
+export default class GCElementsLayer extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     style: PropTypes.object,
     width: PropTypes.any
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: 'GraphCanvasElementsLayer',
     css: {},
     style: {},
     width: 'auto'
-  },
+  };
 
-  contextTypes: {
+  static contextTypes = {
     graphCanvas: PropTypes.any
-  }
-})
-export default class GCElementsLayer extends Component {
+  };
 
   get graphCanvas() {
     return this.context.graphCanvas;

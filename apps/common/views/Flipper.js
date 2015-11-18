@@ -2,21 +2,8 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import mixin from '../lib/mixin';
-import decorate from '../lib/decorate';
-/* eslint-enable no-unused-vars */
 
-import {
-  } from 'material-ui';
-
-@decorate({
-  propTypes: {
-  },
-  defaultProps: {
-  }
-})
 export default class Flipper extends Component {
 
   state = {};
@@ -54,3 +41,96 @@ export default class Flipper extends Component {
   }
 
 }
+
+// TODO:
+// .FlipperRoot {
+//   width: 100%;
+//   height: 100%;
+//   position: relative;
+//   perspective: 1000;
+//
+//   .flipper, .front, .back {
+//     width: 100%;
+//     height: 100%;
+//     border-bottom-left-radius: 5px;
+//     border-bottom-right-radius: 5px;
+//   }
+//
+//   .flipper {
+//     width: 100%;
+//     height: 100%;
+//     position: relative;
+//   }
+//
+//   .front, .back {
+//     overflow: auto;
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//   }
+//
+//   .front {
+//     background: rgba(255, 255, 255, 0.75);
+//     z-index: 2;
+//   }
+//
+//   .back {
+//     color: #fff;
+//     background: rgba(0, 0, 0, 0.75);
+//     display: none;
+//   }
+//
+//   &.flip {
+//     .front {
+//       display: none;
+//     }
+//     .back {
+//       display: block;
+//     }
+//   }
+//
+//   &.flippingFront, &.flippingBack {
+//     .flipper {
+//       transition: transform 0.75s cubic-bezier(0.23, 1, 0.32, 1) 0s;
+//       transform-style: preserve-3d;
+//       transform: rotateY(0deg);
+//     }
+//
+//     .front, .back {
+//       display: block;
+//       backface-visibility: hidden;
+//     }
+//   }
+//
+//   &.flippingFront {
+//     .flipper {
+//       transform: rotateY(180deg);
+//     }
+//
+//     .front {
+//       display: block;
+//       transform: rotateY(0deg);
+//     }
+//
+//     .back {
+//       display: block;
+//       transform: rotateY(180deg);
+//     }
+//   }
+//
+//   &.flippingBack {
+//     .flipper {
+//       transform: rotateY(-180deg);
+//     }
+//
+//     .front {
+//       display: block;
+//       transform: rotateY(-180deg);
+//     }
+//
+//     .back {
+//       display: block;
+//       transform: rotateY(0deg);
+//     }
+//   }
+// }

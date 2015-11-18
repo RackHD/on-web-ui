@@ -2,10 +2,7 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from '../lib/mixin';
-/* eslint-enable no-unused-vars */
 
 import {
     TextField,

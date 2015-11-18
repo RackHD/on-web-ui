@@ -2,14 +2,9 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component } from 'react';
+import React, { Component } from 'react';
 
 import radium from 'radium';
-import decorate from 'common-web-ui/lib/decorate';
-
-import {
-  } from 'material-ui';
 
 import GraphCanvas, {
     GCGroup,
@@ -20,10 +15,6 @@ import GraphCanvas, {
   } from 'graph-canvas-web-ui/views/GraphCanvas';
 
 @radium
-@decorate({
-  propTypes: {},
-  defaultProps: {}
-})
 export default class ExampleGraphCanvas extends Component {
 
   componentWillMount() {}

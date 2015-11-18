@@ -2,12 +2,8 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import prismjs from 'prismjs';
 import 'prismjs/components/prism-javascript';
@@ -22,23 +18,21 @@ import 'prismjs/components/prism-javascript';
   @desc
 */
 
-@radium
-@decorate({
-  propTypes: {
+export default class WELibraryItem extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     onSelect: PropTypes.func,
     style: PropTypes.any
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: '',
     css: {},
     onSelect: function () {},
     style: {}
-  }
-})
-export default class WELibraryItem extends Component {
+  };
 
   state = {
     showJSON: false

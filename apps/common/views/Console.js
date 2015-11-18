@@ -2,22 +2,19 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from '../lib/decorate';
-/* eslint-enable no-unused-vars */
 
-@decorate({
-  propTypes: {
+export default class Console extends Component {
+
+  static propTypes = {
     rows: PropTypes.array,
     mapper: PropTypes.func
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     rows: [],
     mapper: item => <div>{JSON.stringify(item)}</div>
-  }
-})
-export default class Console extends Component {
+  };
 
   static colors = {
     emerge: 'red',

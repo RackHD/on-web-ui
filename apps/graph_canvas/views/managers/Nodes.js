@@ -2,11 +2,9 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 
@@ -15,15 +13,12 @@ import DragEventHelpers from '../../mixins/DragEventHelpers';
 // import Node from '../../lib/Graph/Node';
 // import GraphCanvasNode from '../elements/Node';
 
-@decorate({
-  propTypes: {},
-  defaultProps: {},
-  contextTypes: {
-    graphCanvas: PropTypes.any
-  }
-})
 @mixin(DragEventHelpers)
 export default class GCNodesManager extends Component {
+
+  static contextTypes = {
+    graphCanvas: PropTypes.any
+  };
 
   get graphCanvas() {
     return this.context.graphCanvas;

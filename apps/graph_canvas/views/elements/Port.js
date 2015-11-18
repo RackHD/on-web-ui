@@ -2,18 +2,14 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import Color from 'color';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
-
-import {} from 'material-ui';
 
 import Rectangle from '../../lib/Rectangle';
 
@@ -21,8 +17,9 @@ import generateId from '../../lib/generateId';
 
 @radium
 @mixin(DragEventHelpers)
-@decorate({
-  propTypes: {
+export default class GCPortElement extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     initialColor: PropTypes.string,
@@ -32,8 +29,9 @@ import generateId from '../../lib/generateId';
     onLink: PropTypes.func,
     onUnlink: PropTypes.func,
     style: PropTypes.any
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: 'GCPortElement',
     css: {},
     initialColor: 'black',
@@ -42,20 +40,20 @@ import generateId from '../../lib/generateId';
     onLink: null,
     onUnlink: null,
     style: null
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any,
     parentGCNode: PropTypes.any,
     parentGCGroup: PropTypes.any
-  },
-  childContextTypes: {
+  };
+
+  static childContextTypes = {
     graphCanvas: PropTypes.any,
     parentGCNode: PropTypes.any,
     parentGCGroup: PropTypes.any,
     parentGCPort: PropTypes.any
-  }
-})
-export default class GCPortElement extends Component {
+  };
 
   static GCTypeEnum = {element: true, port: true};
 

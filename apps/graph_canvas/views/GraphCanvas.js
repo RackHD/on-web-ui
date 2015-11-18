@@ -4,12 +4,10 @@
 
 // import { EventEmitter } from 'events';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import CoordinateHelpers from '../mixins/CoordinateHelpers';
 
@@ -51,8 +49,9 @@ export { GCSocketElement as GCSocket };
 
 @radium
 @mixin(CoordinateHelpers)
-@decorate({
-  propTypes: {
+export default class GraphCanvas extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     enableMarks: PropTypes.bool,
@@ -68,8 +67,9 @@ export { GCSocketElement as GCSocket };
     onSelect: PropTypes.func,
     onLink: PropTypes.func,
     onUnlink: PropTypes.func
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: 'GraphCanvas',
     css: {},
     enableMarks: false,
@@ -85,12 +85,11 @@ export { GCSocketElement as GCSocket };
     onSelect: null,
     onLink: null,
     onUnlink: null
-  },
-  childContextTypes: {
+  };
+
+  static childContextTypes = {
     graphCanvas: PropTypes.any
-  }
-})
-export default class GraphCanvas extends Component {
+  };
 
   get graphCanvas() {
     return this;

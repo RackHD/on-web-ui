@@ -2,12 +2,8 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 // import JsonEditor from 'common-web-ui/views/JsonEditor';
 
@@ -15,9 +11,7 @@ import AceEditor from 'common-web-ui/views/AceEditor';
 import 'brace/mode/json';
 import 'brace/theme/github';
 
-import {
-    RaisedButton
-  } from 'material-ui';
+import { RaisedButton } from 'material-ui';
 
 /**
 # WEWorkflowJSON
@@ -30,25 +24,24 @@ import {
 */
 
 @radium
-@decorate({
-  propTypes: {
+export default class WEWorkflowJson extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     model: PropTypes.object,
     style: PropTypes.any
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: 'WorkflowJson',
     model: null,
     style: {}
-  },
+  };
 
-  contextTypes: {
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WEWorkflowJson extends Component {
+  };
 
   state = {
     model: this.props.model

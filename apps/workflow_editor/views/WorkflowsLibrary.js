@@ -2,12 +2,9 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 
@@ -26,25 +23,24 @@ import LibraryItem from './LibraryItem';
 
 @radium
 @mixin(RouteHelpers)
-@decorate({
-  propTypes: {
+export default class WEWorkflowsLibrary extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     editor: PropTypes.any,
     style: PropTypes.any
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: '',
     editor: null,
     style: {}
-  },
+  };
 
-  contextTypes: {
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WEWorkflowsLibrary extends Component {
+  };
 
   state = {workflowTemplates: []};
 

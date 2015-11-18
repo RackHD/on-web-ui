@@ -2,31 +2,25 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from '../lib/decorate';
-/* eslint-enable no-unused-vars */
 
-import {
-    Toolbar,
-    ToolbarGroup
-  } from 'material-ui';
+import { Toolbar, ToolbarGroup } from 'material-ui';
 
-@decorate({
-  propTypes: {
+export default class DataTableToolbar extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     count: PropTypes.number,
     label: PropTypes.any,
     style: PropTypes.object
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: '',
     label: 'Header',
     count: 0,
     style: {}
-  }
-})
-export default class DataTableToolbar extends Component {
+  };
 
   render() {
     return (

@@ -2,25 +2,16 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import decorate from 'common-web-ui/lib/decorate';
+import { DropDownMenu, MenuItem } from 'material-ui';
 
-import {
-    DropDownMenu,
-    MenuItem
-  } from 'material-ui';
+export default class WEEditMenu extends Component {
 
-@decorate({
-  propTypes: {},
-  defaultProps: {},
-  contextTypes: {
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WEEditMenu extends Component {
+  };
 
   state = {};
 
