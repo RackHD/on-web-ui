@@ -17,23 +17,23 @@ import NotFound from 'common-web-ui/views/NotFound';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
+  { text: 'Nodes', route: 'nodes' },
+  { text: 'Workflows', route: 'workflows' },
   { text: 'Workflow Editor', route: 'workflow_editor' },
   { text: 'Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Catalogs', route: 'catalogs' },
   { text: 'Files', route: 'files' },
-  { text: 'Nodes', route: 'nodes' },
   { text: 'OBM Services', route: 'obmServices' },
   { text: 'Pollers', route: 'pollers' },
   { text: 'Profiles', route: 'profiles' },
   { text: 'Skus', route: 'skus' },
   { text: 'Templates', route: 'templates' },
-  { text: 'Workflows', route: 'workflows' },
   { text: 'System', type: MenuItem.Types.SUBHEADER },
   { text: 'Config', route: 'config' },
   { text: 'Logs', route: 'logs' },
   // { text: 'Lookups', route: 'Lookups' },
   // { text: 'Schemas', route: 'Schemas' },
-  { text: 'Versions', route: 'versions' },
+  // { text: 'Versions', route: 'versions' },
   { text: '', type: MenuItem.Types.SUBHEADER },
   { text: ['© 2015 EMC', <sup>2</sup>], type: MenuItem.Types.LINK, payload: 'http://emc.com', target: '_blank' }
 ];
@@ -62,7 +62,7 @@ import Sku, { CreateSku } from '../views/Sku';
 import Skus from '../views/Skus';
 import Template, { CreateTemplate } from '../views/Template';
 import Templates from '../views/Templates';
-import Versions from '../views/Versions';
+// import Versions from '../views/Versions';
 import Workflow, { CreateWorkflow } from '../views/Workflow';
 import Workflows from '../views/Workflows';
 
@@ -122,7 +122,7 @@ let routes = (
     <Route name="New Template" path="/templates/new" component={CreateTemplate} />
     <Route name="Templates" path="/templates/:templateId" component={Template} />
 
-    <Route name="Versions" path="/versions" component={Versions} />
+    {/*<Route name="Versions" path="/versions" component={Versions} />*/}
 
     <Route name="Workflows" path="/workflows" component={Workflows} />
     <Route name="Node Workflows" path="/workflows/n/:nodeId" component={Workflows} />
