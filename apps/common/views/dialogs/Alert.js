@@ -2,20 +2,12 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 
 import radium from 'radium';
-import mixin from '../../lib/mixin';
-import decorate from '../../lib/decorate';
 
-import DeveloperHelpers from '../../mixins/DeveloperHelpers';
-import MUIContextHelpers from '../../mixins/MUIContextHelpers';
-
-import {
-    Dialog
-  } from 'material-ui';
+import { Dialog } from 'material-ui';
 
 /**
 # AlertDialog
@@ -28,10 +20,9 @@ import {
 */
 
 @radium
-@mixin(DeveloperHelpers)
-@mixin(MUIContextHelpers)
-@decorate({
-  propTypes: {
+export default class AlertDialog extends Component {
+
+  static propTypes = {
     callback: PropTypes.func,
     className: PropTypes.string,
     container: PropTypes.any,
@@ -39,9 +30,9 @@ import {
     defaultOpen: PropTypes.bool,
     style: PropTypes.any,
     title: PropTypes.string
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     callback: null,
     className: '',
     container: null,
@@ -49,10 +40,7 @@ import {
     defaultOpen: true,
     style: {},
     title: 'Alert'
-  },
-  childContextTypes: MUIContextHelpers.muiContextTypes()
-})
-export default class AlertDialog extends Component {
+  };
 
   static create(props, parent) {
     // TODO: dry this code
@@ -72,10 +60,6 @@ export default class AlertDialog extends Component {
   componentDidMount() {}
 
   componentWillUnmount() {}
-
-  getChildContext() {
-    return this.muiContext();
-  }
 
   render() {
     let alertActions = [
