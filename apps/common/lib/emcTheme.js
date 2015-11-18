@@ -26,26 +26,35 @@ let muiTheme = ThemeManager.getMuiTheme({
   fontFamily: 'Roboto, sans-serif',
 
   palette: {
-    primary1Color: muiColors.lightBlueA200,
-    primary2Color: muiColors.lightBlueA700,
-    primary3Color: emcColors.mediumGrey,
-    accent1Color: muiColors.blueA200,
-    accent2Color: emcColors.emcBlue,
-    accent3Color: muiColors.indigoA200,
-    textColor: emcColors.offWhite,
-    alternateTextColor: emcColors.lightGrey,
-    canvasColor: emcColors.darkGrey,
-    borderColor: new Color(emcColors.lightGrey).darken(0.3).hexString(),
-    disabledColor: new Color(emcColors.lightGrey).darken(0.3).hexString(),
+    primary1Color: new Color(emcColors.emcBlue).hexString(),
+    primary2Color: new Color(emcColors.emcBlue).darken(0.1).hexString(),
+    primary3Color: new Color(emcColors.emcBlue).darken(0.2).hexString(),
+    accent1Color: new Color(emcColors.emcBlue).lighten(0.2).hexString(),
+    accent2Color: new Color(emcColors.emcBlue).lighten(0.1).hexString(),
+    accent3Color: new Color(emcColors.emcBlue).hexString(),
+    textColor: new Color(emcColors.offWhite).hexString(),
+    alternateTextColor: new Color(emcColors.offWhite).lighten(0.1).hexString(),
+    canvasColor: new Color(emcColors.darkGrey).hexString(),
+    borderColor: new Color(emcColors.mediumGrey).hexString(),
+    disabledColor: new Color(emcColors.lightGrey).hexString(),
   }
 });
 
 muiTheme.snackbar.textColor = muiColors.black;
 
+// console.log(muiTheme);
+
 muiTheme.tableRow.stripeColor =
-  new Color(emcColors.darkGrey).lighten(0.3).hexString();
+  new Color(emcColors.darkGrey).lighten(0.4).hexString();
 
 muiTheme.tableRow.borderColor =
-  new Color(emcColors.darkGrey).lighten(0.6).hexString();
+  new Color(emcColors.darkGrey).lighten(0.8).hexString();
+
+muiTheme.raisedButton.disabledColor =
+  new Color(emcColors.mediumGrey).lighten(0.4).hexString();
+
+muiTheme.flatButton.disabledTextColor =
+muiTheme.raisedButton.disabledTextColor =
+  new Color(emcColors.mediumGrey).lighten(0.8).hexString();
 
 export default muiTheme;

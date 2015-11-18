@@ -83,11 +83,6 @@ export default class Node extends Component {
                   <ToolbarTitle text="Node Details" />
                 </ToolbarGroup>
                 <ToolbarGroup key={1} float="right">
-                  <FlatButton
-                      className="button"
-                      label="Clone Node"
-                      onClick={this.cloneNode.bind(this)}
-                      disabled={true || this.state.loading} />
                   <RaisedButton
                       label="Delete Node"
                       primary={true}
@@ -176,7 +171,5 @@ export default class Node extends Component {
     this.confirmDialog('Are you sure want to delete: ' + id,
       (confirmed) => confirmed ? nodes.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
   }
-
-  cloneNode() {}
 
 }
