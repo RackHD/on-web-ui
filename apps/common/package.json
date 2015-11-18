@@ -10,10 +10,7 @@
     "node": ">= 4.0",
     "npm": ">= 2.1"
   },
-  "dependencies": {
-    "brace": "^0.5.1",
-    "moment": "^2.10.6"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {}
 }
