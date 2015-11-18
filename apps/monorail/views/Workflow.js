@@ -2,12 +2,10 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
 
 import EditWorkflow from './EditWorkflow';
 import CreateWorkflow from './CreateWorkflow';
@@ -31,7 +29,6 @@ import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
 
 @mixin(DialogHelpers)
-@mixin(PageHelpers)
 export default class Workflow extends Component {
 
   state = {
@@ -69,11 +66,6 @@ export default class Workflow extends Component {
     let workflow = this.state.workflow || {};
     return (
       <div className="Workflow">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          {href: 'workflows', label: 'Workflows'},
-          this.getWorkflowId()
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <Toolbar>
           <ToolbarGroup key={0} float="left">

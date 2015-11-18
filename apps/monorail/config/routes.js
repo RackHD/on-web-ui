@@ -4,10 +4,15 @@
 
 import React from 'react';
 import { render } from 'react-dom';
+
 import Router, { Route, IndexRoute } from 'react-router';
+import { createHashHistory, useBasename } from 'history'
+
 import onReady from 'common-web-ui/lib/onReady';
 
 import { MenuItem } from 'material-ui';
+
+import AppContainer from 'common-web-ui/views/AppContainer';
 import NotFound from 'common-web-ui/views/NotFound';
 
 // See http://material-ui.com/#/components/left-nav
@@ -64,64 +69,63 @@ import Workflows from '../views/Workflows';
 
 // See http://rackt.github.io/react-router/
 let routes = (
-  <Route path="/" name="root" component={App}>
-    <IndexRoute component={Dashboard}/>
+  <Route name="MonoRail" path="/" component={App}>
+    <IndexRoute name="Dashboard" component={Dashboard}/>
 
-    <Route path="/catalogs" name="catalogs" component={Catalogs} />
+    <Route name="Catalogs" path="/catalogs" component={Catalogs} />
     <Route path="/catalogs/n/:nodeId" component={Catalogs} />
     <Route path="/catalogs/n/:nodeId/s/:source" component={Catalog} />
     <Route path="/catalogs/i/:catalogId" component={Catalog} />
-    <Route path="/catalogs/:catalogId" name="catalog" component={Catalog} />
+    <Route name="Catalogs" path="/catalogs/:catalogId" component={Catalog} />
 
-    <Route path="/config" name="config" component={Config} />
+    <Route name="Config" path="/config" component={Config} />
 
-    <Route path="/dashboard" name="dashboard" component={Dashboard} />
+    <Route name="Dashboard" path="/dashboard" component={Dashboard} />
 
-    <Route path="/files" name="files" component={Files} />
-    <Route path="/files/new" name="newFile" component={CreateFile} />
-    <Route path="/files/:fileId" name="file" component={File} />
+    <Route name="Files" path="/files" component={Files} />
+    <Route name="New File" path="/files/new" component={CreateFile} />
+    <Route name="Files" path="/files/:fileId" component={File} />
 
-    <Route path="/logs" name="logs" component={AllLogs} />
-    <Route path="/lookups" name="lookups" component={Lookups} />
+    <Route name="All Logs" path="/logs" component={AllLogs} />
+    <Route name="Lookups" path="/lookups" component={Lookups} />
 
-    <Route path="/nodes" name="nodes" component={Nodes} />
-    <Route path="/nodes/new" name="newNode" component={CreateNode} />
-    <Route path="/nodes/:nodeId" name="node" component={Node} />
+    <Route name="Nodes" path="/nodes" component={Nodes} />
+    <Route name="New Node" path="/nodes/new" component={CreateNode} />
+    <Route name="Nodes" path="/nodes/:nodeId" component={Node} />
 
-    <Route path="/obms" name="obmServices" component={OBMServices} />
-    <Route path="/obms/:obmsId" name="obmService" component={OBMService} />
+    <Route name="OBM Services" path="/obms" component={OBMServices} />
+    <Route name="OBM Services" path="/obms/:obmsId" component={OBMService} />
 
-    <Route path="/pollers" name="pollers" component={Pollers} />
+    <Route name="Pollers" path="/pollers" component={Pollers} />
     <Route path="/pollers/n/:nodeId" component={Pollers} />
     <Route path="/pollers/new/:nodeId" component={CreatePoller} />
     <Route path="/pollers/new" component={CreatePoller} />
-    <Route path="/pollers/:pollerId" name="poller" component={Poller} />
+    <Route name="Pollers" path="/pollers/:pollerId" component={Poller} />
 
-    <Route path="/profiles" name="profiles" component={Profiles} />
-    <Route path="/profiles/new" name="newProfile" component={CreateProfile} />
-    <Route path="/profiles/:profileId" name="profile" component={Profile} />
+    <Route name="Profiles" path="/profiles" component={Profiles} />
+    <Route name="New Profile" path="/profiles/new" component={CreateProfile} />
+    <Route name="Profiles" path="/profiles/:profileId" component={Profile} />
 
-    <Route path="/schemas" name="schemas" component={Schemas} />
-    <Route path="/schemas/:schemaId" name="schema" component={Schema} />
+    <Route name="Schemas" path="/schemas" component={Schemas} />
+    <Route name="Schemas" path="/schemas/:schemaId" component={Schema} />
 
-    <Route path="/skus" name="skus" component={Skus} />
-    <Route path="/skus/new" name="newSku" component={CreateSku} />
-    <Route path="/skus/:skuId" name="sku" component={Sku} />
+    <Route name="SKUs" path="/skus" component={Skus} />
+    <Route name="New SKU" path="/skus/new" component={CreateSku} />
+    <Route name="SKUs" path="/skus/:skuId" component={Sku} />
 
-    <Route path="/templates" name="templates" component={Templates} />
-    <Route path="/templates/new" name="newTemplate" component={CreateTemplate} />
-    <Route path="/templates/:templateId" name="template" component={Template} />
+    <Route name="Templates" path="/templates" component={Templates} />
+    <Route name="New Template" path="/templates/new" component={CreateTemplate} />
+    <Route name="Templates" path="/templates/:templateId" component={Template} />
 
-    <Route path="/versions" name="versions" component={Versions} />
+    <Route name="Versions" path="/versions" component={Versions} />
 
-    <Route path="/workflows" name="workflows" component={Workflows} />
-    <Route path="/workflows/n/:nodeId" component={Workflows} />
-    <Route path="/workflows/new/:nodeId" component={CreateWorkflow} />
-    <Route path="/workflows/new" component={CreateWorkflow} />
-    <Route path="/workflows/:workflowId" name="workflow" component={Workflow} />
+    <Route name="Workflows" path="/workflows" component={Workflows} />
+    <Route name="Node Workflows" path="/workflows/n/:nodeId" component={Workflows} />
+    <Route name="New Workflow" path="/workflows/new/:nodeId" component={CreateWorkflow} />
+    <Route name="New Workflow" path="/workflows/new" component={CreateWorkflow} />
+    <Route name="Workflows" path="/workflows/:workflowId" component={Workflow} />
 
-    <Route path="/notFound" name="notFound" component={NotFound} />
-    <Route path="*" component={NotFound} />
+    <Route name="Not Found" path="*" component={NotFound} />
   </Route>
 );
 

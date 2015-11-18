@@ -2,22 +2,14 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-import mixin from 'common-web-ui/lib/mixin';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
-
-import JsonInspector from 'react-json-inspector';
-
-import {} from 'material-ui';
 
 import Console from 'common-web-ui/views/Console';
-
+import JsonInspector from 'react-json-inspector';
 import LogsMessenger from '../messengers/LogsMessenger';
+
 let logs = new LogsMessenger();
 
-@mixin(PageHelpers)
 export default class AllLogs extends Component {
 
   state = {
@@ -55,10 +47,6 @@ export default class AllLogs extends Component {
   render() {
     return (
       <div className="AllLogs">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          'All Logs'
-        )}
         <Console rows={this.state.logs} mapper={data => (
           <p style={{color: Console.colors[data.level]}}>
             <b>{data.timestamp}</b>&nbsp;&nbsp;

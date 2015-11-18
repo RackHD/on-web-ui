@@ -2,13 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
-/* eslint-enable no-unused-vars */
 
 import EditProfile from './EditProfile';
 import CreateProfile from './CreateProfile';
@@ -25,9 +23,7 @@ import {
 import ProfileStore from '../stores/ProfileStore';
 let profiles = new ProfileStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(PageHelpers)
+@mixin(DialogHelpers, FormatHelpers)
 export default class Profile extends Component {
 
   state = {
@@ -46,11 +42,6 @@ export default class Profile extends Component {
     let profile = this.state.profile || {};
     return (
       <div className="Profile">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          {href: 'profiles', label: 'Profiles'},
-          this.props.params.profileId
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <Toolbar>
           <ToolbarGroup key={0} float="left">

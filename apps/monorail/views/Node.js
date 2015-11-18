@@ -2,13 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import PageHelpers from 'common-web-ui/mixins/PageHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-/* eslint-enable no-unused-vars */
 
 import EditNode from './EditNode';
 import CreateNode from './CreateNode';
@@ -36,9 +34,7 @@ import NodeStore from '../stores/NodeStore';
 let nodes = new NodeStore();
 let nodesRestAPI = nodes.nodesRestAPI;
 
-@mixin(DialogHelpers)
-@mixin(PageHelpers)
-@mixin(RouteHelpers)
+@mixin(DialogHelpers, RouteHelpers)
 export default class Node extends Component {
 
   state = {
@@ -78,11 +74,6 @@ export default class Node extends Component {
     let node = this.state.node || {};
     return (
       <div className="Node">
-        {this.renderBreadcrumbs(
-          {href: '', label: 'Dashboard'},
-          {href: 'nodes', label: 'Nodes'},
-          this.getNodeId()
-        )}
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
         <div className="ungrid">
           <div className="line">
