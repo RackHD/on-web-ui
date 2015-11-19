@@ -6,13 +6,15 @@ import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 import { RouteHandler, Link } from 'react-router';
 
-import { AppBar, AppCanvas, Snackbar } from 'material-ui';
+import { AppBar, AppCanvas, FontIcon } from 'material-ui';
 import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
 
 import AppNavigation from './AppNavigation';
 import EMCTab from './EMCTab';
 import ErrorNotification from './ErrorNotification';
 import ViewportSize from './ViewportSize';
+
+import FormatHelpers from '../mixins/FormatHelpers';
 
 import emcTheme from '../lib/emcTheme';
 
@@ -21,24 +23,34 @@ import emcTheme from '../lib/emcTheme';
 export default class AppContainer extends Component {
 
   static propTypes = {
+    afterBreadcrumbs: PropTypes.any,
+    afterContent: PropTypes.any,
+    beforeBreadcrumbs: PropTypes.any,
+    beforeContent: PropTypes.any,
     className: PropTypes.string,
     css: PropTypes.object,
     disableAppBar: PropTypes.bool,
     disableTabPadding: PropTypes.bool,
-    navigation: PropTypes.array
+    navigation: PropTypes.array,
+    rightAppBarIconElement: PropTypes.any,
+    title: PropTypes.string
   };
 
   static defaultProps = {
+    afterBreadcrumbs: null,
+    afterContent: null,
+    beforeBreadcrumbs: null,
+    beforeContent: null,
     className: 'app-container',
     css: {},
     disableAppBar: false,
     disableTabPadding: false,
-    navigation: []
+    navigation: [],
+    rightAppBarIconElement: null,
+    title: '',
   };
 
-  state = {
-    title: this.title
-  };
+  state = {};
 
   componentWillMount() {
     this.handleError = this.onError.bind(this)
@@ -78,7 +90,13 @@ export default class AppContainer extends Component {
 
     let breadcrumbs = this.renderBreadcrumbs(),
         titleStyle = {fontWeight: 'normal', fontSize: '1em', margin: 0},
-        title = <h1 style={titleStyle}>{breadcrumbs}</h1>;
+        title = this.props.title || [
+          <h1 key={0} style={titleStyle}>
+            {this.props.beforeBreadcrumbs}
+            {breadcrumbs}
+            {this.props.afterBreadcrumbs}
+          </h1>
+        ];
 
     return (
       <div
@@ -87,6 +105,7 @@ export default class AppContainer extends Component {
         <AppCanvas>
           {this.props.disableAppBar ? null : <AppBar
               onLeftIconButtonTouchTap={this.toggleLeftNavigation.bind(this)}
+              iconElementRight={this.props.rightAppBarIconElement}
               title={title}
               style={this.css.appBar}
               zDepth={0} />}
@@ -96,9 +115,13 @@ export default class AppContainer extends Component {
               title={this.props.title}
               menuItems={this.props.navigation} />}
 
+          {this.props.beforeContent}
+
           <div ref="content" style={[this.css.content, css.content]}>
             {this.props.children}
           </div>
+
+          {this.props.afterContent}
 
           <ErrorNotification ref="error" />
 
@@ -117,10 +140,12 @@ export default class AppContainer extends Component {
     if (this.props.disableAppBar || !this.props.routes) return [];
 
     let breadcrumbs = [],
-        title = this.title,
+        title = 'MonoRail » ',
         depth = this.props.routes.length;
 
     this.props.routes.forEach((item, index) => {
+      if (index === 0) return;
+
       let path = (item.path || '').split('/');
 
       let showLastParam = path[path.length - 1].charAt(0) === ':',
@@ -135,32 +160,36 @@ export default class AppContainer extends Component {
 
       let targetPath = path.slice(0);
       targetPath.pop();
-      let target = targetPath.join('/');
+      add(targetPath.join('/'), item.name || item.component.name, index);
 
-      title += item.name || item.component.name;
-      breadcrumbs.push(
-        <Link key={'l' + index} to={target}
-              style={{textDecoration: 'none'}}>
-          {item.name || item.component.name}
-        </Link>
-      );
-
-      if (isNotLast) {
-        title += ' > ';
-        breadcrumbs.push(<span key={'s' + index}>&nbsp;{'>'}&nbsp;</span>);
-      }
-
-      else if (showLastParam) {
-        title += ' > ' + path[path.length - 1];
-        breadcrumbs.push(<span key={'s' + (index + 1)}>&nbsp;{'>'}&nbsp;</span>);
-        breadcrumbs.push(
-          <Link key={'l' + (index + 1)} to={path.join('/')}
-              style={{textDecoration: 'none'}}>
-            {path[path.length - 1]}
-          </Link>
-        );
+      if (isNotLast || showLastParam) { divide(index + 1); }
+      if (showLastParam) {
+        add(path.join('/'), last(path[path.length - 1]), index + 2);
       }
     });
+
+    function add(target, name, index) {
+      title += name;
+      breadcrumbs.push(
+        <Link key={'l' + index} to={target} style={{textDecoration: 'none'}}>
+          {name}
+        </Link>
+      );
+    }
+
+    function divide(index) {
+      title += ' » ';
+      breadcrumbs.push(<span key={'s' + index}>&nbsp;{'»'}&nbsp;</span>);
+    }
+
+    function last(name) {
+      if (name.length === 24 && !((/\s/).test(name))) {
+        name = FormatHelpers.shortId(name);
+      }
+      return name;
+    }
+
+    this.title = title;
 
     return breadcrumbs;
   }
@@ -169,7 +198,11 @@ export default class AppContainer extends Component {
     this.refs.navigation.toggleLeftNav();
   }
 
-  onError(errorMsg) {
+  onError(errorMsg, tries=0) {
+    if (!this.refs.error) {
+      if (tries > 10) { throw new Error(errorMsg); }
+      return setTimeout(this.onError.bind(this, errorMsg, tries + 1), 100);
+    }
     this.refs.error.showError(errorMsg);
   }
 
@@ -178,7 +211,6 @@ export default class AppContainer extends Component {
   }
 
   set title(title) {
-    this.setState({ title });
     this.findTitle().innerHTML = title;
   }
 

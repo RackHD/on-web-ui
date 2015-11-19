@@ -42,8 +42,6 @@ let muiTheme = ThemeManager.getMuiTheme({
 
 muiTheme.snackbar.textColor = muiColors.black;
 
-// console.log(muiTheme);
-
 muiTheme.tableRow.stripeColor =
   new Color(emcColors.darkGrey).lighten(0.4).hexString();
 
