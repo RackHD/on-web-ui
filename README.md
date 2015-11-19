@@ -1,6 +1,6 @@
-Copyright 2015, EMC, Inc.
+# On Web UI [![Build Status](https://travis-ci.org/RackHD/on-web-ui.svg?branch=master)](https://travis-ci.org/RackHD/on-web-ui) [![Code Climate](https://codeclimate.com/github/RackHD/on-web-ui/badges/gpa.svg)](https://codeclimate.com/github/RackHD/on-web-ui) [![Coverage Status](https://coveralls.io/repos/RackHD/on-web-ui/badge.svg?branch=master&service=github)](https://coveralls.io/github/RackHD/on-web-ui?branch=master)
 
-# On Web UI
+Copyright 2015, EMC, Inc.
 
 ### Quick getting started guide.
 
