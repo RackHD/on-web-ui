@@ -21,10 +21,11 @@ import {
   } from 'material-ui';
 
 import ProfileStore from '../stores/ProfileStore';
-let profiles = new ProfileStore();
 
 @mixin(DialogHelpers, FormatHelpers)
 export default class Profile extends Component {
+
+  profiles = new ProfileStore();
 
   state = {
     profile: null,
@@ -32,7 +33,7 @@ export default class Profile extends Component {
   };
 
   componentDidMount() {
-    this.unwatchProfile = profiles.watchOne(this.getProfileId(), 'profile', this);
+    this.unwatchProfile = this.profiles.watchOne(this.getProfileId(), 'profile', this);
     this.readProfile();
   }
 
@@ -80,7 +81,7 @@ export default class Profile extends Component {
 
   readProfile() {
     this.setState({loading: true});
-    profiles.read(this.getProfileId()).then(() => this.setState({loading: false}));
+    this.profiles.read(this.getProfileId()).then(() => this.setState({loading: false}));
   }
 
 }

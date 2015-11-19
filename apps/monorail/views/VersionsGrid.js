@@ -13,10 +13,11 @@ import { LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import VersionStore from '../stores/VersionStore';
-let versions = new VersionStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class VersionsGrid extends Component {
+
+  versions = new VersionStore();
 
   state = {
     versions: null,
@@ -24,7 +25,7 @@ export default class VersionsGrid extends Component {
   };
 
   componentDidMount() {
-    this.unwatchVersions = versions.watchAll('versions', this);
+    this.unwatchVersions = this.versions.watchAll('versions', this);
     this.listVersions();
   }
 
@@ -49,7 +50,7 @@ export default class VersionsGrid extends Component {
 
   listVersions() {
     this.setState({loading: true});
-    versions.list().then(() => this.setState({loading: false}));
+    this.versions.list().then(() => this.setState({loading: false}));
   }
 
 }

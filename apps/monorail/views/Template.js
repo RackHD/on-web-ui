@@ -21,10 +21,11 @@ import {
   } from 'material-ui';
 
 import TemplateStore from '../stores/TemplateStore';
-let templates = new TemplateStore();
 
 @mixin(DialogHelpers, FormatHelpers)
 export default class Template extends Component {
+
+  templates = new TemplateStore();
 
   state = {
     template: null,
@@ -32,7 +33,7 @@ export default class Template extends Component {
   };
 
   componentDidMount() {
-    this.unwatchTemplate = templates.watchOne(this.getTemplateId(), 'template', this);
+    this.unwatchTemplate = this.templates.watchOne(this.getTemplateId(), 'template', this);
     this.readTemplate();
   }
 
@@ -80,7 +81,7 @@ export default class Template extends Component {
 
   readTemplate() {
     this.setState({loading: true});
-    templates.read(this.getTemplateId()).then(() => this.setState({loading: false}));
+    this.templates.read(this.getTemplateId()).then(() => this.setState({loading: false}));
   }
 
 }

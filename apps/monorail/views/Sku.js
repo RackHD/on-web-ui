@@ -23,10 +23,11 @@ import {
 import JsonInspector from 'react-json-inspector';
 
 import SkuStore from '../stores/SkuStore';
-let skus = new SkuStore();
 
 @mixin(DialogHelpers)
 export default class Sku extends Component {
+
+  skus = new SkuStore();
 
   state = {
     sku: null,
@@ -34,7 +35,7 @@ export default class Sku extends Component {
   };
 
   componentDidMount() {
-    this.unwatchSku = skus.watchOne(this.getSkuId(), 'sku', this);
+    this.unwatchSku = this.skus.watchOne(this.getSkuId(), 'sku', this);
     this.readSku();
   }
 
@@ -85,14 +86,14 @@ export default class Sku extends Component {
 
   readSku() {
     this.setState({loading: true});
-    skus.read(this.getSkuId()).then(() => this.setState({loading: false}));
+    this.skus.read(this.getSkuId()).then(() => this.setState({loading: false}));
   }
 
   deleteSku() {
     var id = this.state.sku.id;
     this.setState({loading: true});
     this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? skus.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+      (confirmed) => confirmed ? this.skus.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
   }
 
 }

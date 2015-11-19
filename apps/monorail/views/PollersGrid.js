@@ -13,10 +13,11 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import PollerStore from '../stores/PollerStore';
-let pollers = new PollerStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class PollersGrid extends Component {
+
+  pollers = new PollerStore();
 
   state = {
     pollers: null,
@@ -24,7 +25,7 @@ export default class PollersGrid extends Component {
   };
 
   componentDidMount() {
-    this.unwatchPollers = pollers.watchAll('pollers', this);
+    this.unwatchPollers = this.pollers.watchAll('pollers', this);
     this.listPollers();
   }
 
@@ -57,9 +58,9 @@ export default class PollersGrid extends Component {
     this.setState({loading: true});
     let nodeId = this.nodeId
     if (nodeId) {
-      return pollers.listNode(nodeId).then(() => this.setState({loading: false}));
+      return this.pollers.listNode(nodeId).then(() => this.setState({loading: false}));
     }
-    pollers.list().then(() => this.setState({loading: false}));
+    this.pollers.list().then(() => this.setState({loading: false}));
   }
 
   createPoller() {

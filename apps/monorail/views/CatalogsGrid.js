@@ -15,10 +15,11 @@ import { LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import CatalogStore from '../stores/CatalogStore';
-let catalogs = new CatalogStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class CatalogsGrid extends Component {
+
+  catalogs = new CatalogStore();
 
   state = {
     catalogs: this.props.catalogs,
@@ -26,16 +27,16 @@ export default class CatalogsGrid extends Component {
   };
 
   componentWillMount() {
-    catalogs.startMessenger();
+    this.catalogs.startMessenger();
   }
 
   componentDidMount() {
-    this.unwatchCatlogs = catalogs.watchAll('catalogs', this);
+    this.unwatchCatlogs = this.catalogs.watchAll('catalogs', this);
     this.listCatalogs();
   }
 
   componentWillUnmount() {
-    catalogs.stopMessenger();
+    this.catalogs.stopMessenger();
     this.unwatchCatlogs();
   }
 
@@ -141,9 +142,9 @@ export default class CatalogsGrid extends Component {
         source = this.source;
     if (nodeId) {
       if (source) return catalogs.listNodeSource(nodeId, source).then(() => this.setState({loading: false}));
-      return catalogs.listNode(nodeId).then(() => this.setState({loading: false}));
+      return this.catalogs.listNode(nodeId).then(() => this.setState({loading: false}));
     }
-    catalogs.list().then(() => this.setState({loading: false}));
+    this.catalogs.list().then(() => this.setState({loading: false}));
   }
 
 }

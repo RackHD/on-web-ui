@@ -13,15 +13,16 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import ProfileStore from '../stores/ProfileStore';
-let profiles = new ProfileStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class ProfilesGrid extends Component {
 
+  profiles = new ProfileStore();
+
   state = {profiles: null};
 
   componentDidMount() {
-    this.unwatchProfiles = profiles.watchAll('profiles', this);
+    this.unwatchProfiles = this.profiles.watchAll('profiles', this);
     this.listProfiles();
   }
 
@@ -49,7 +50,7 @@ export default class ProfilesGrid extends Component {
 
   listProfiles() {
     this.setState({loading: true})
-    profiles.list().then(() => this.setState({loading: false}));
+    this.profiles.list().then(() => this.setState({loading: false}));
   }
 
   createProfile() { this.routeTo('profiles', 'new'); }

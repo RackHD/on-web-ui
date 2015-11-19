@@ -8,9 +8,10 @@ import { LinearProgress } from 'material-ui';
 import JsonInspector from 'react-json-inspector';
 
 import OBMServiceStore from '../stores/OBMServiceStore';
-let obmService = new OBMServiceStore();
 
 export default class OBMService extends Component {
+
+  obmService = new OBMServiceStore();
 
   state = {
     obmService: null,
@@ -18,14 +19,13 @@ export default class OBMService extends Component {
   };
 
   componentDidMount() {
-    this.unwatchOBMService = obmService.watchOne(this.getOBMServiceId(), 'obmService', this);
+    this.unwatchOBMService = this.obmService.watchOne(this.getOBMServiceId(), 'obmService', this);
     this.readOBMService();
   }
 
   componentWillUnmount() { this.unwatchOBMService(); }
 
   render() {
-    console.log(this.state.obmService);
     return (
       <div className="OBMService">
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
@@ -43,7 +43,7 @@ export default class OBMService extends Component {
 
   readOBMService() {
     this.setState({loading: true});
-    obmService.read(this.getOBMServiceId()).then(() => this.setState({loading: false}));
+    this.obmService.read(this.getOBMServiceId()).then(() => this.setState({loading: false}));
   }
 
 }

@@ -13,10 +13,11 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import SkuStore from '../stores/SkuStore';
-let skus = new SkuStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class SkusGrid extends Component {
+
+  skus = new SkuStore();
 
   state = {
     skus: null,
@@ -24,16 +25,16 @@ export default class SkusGrid extends Component {
   };
 
   componentWillMount() {
-    skus.startMessenger();
+    this.skus.startMessenger();
   }
 
   componentDidMount() {
-    this.unwatchSkus = skus.watchAll('skus', this);
+    this.unwatchSkus = this.skus.watchAll('skus', this);
     this.listSkus();
   }
 
   componentWillUnmount() {
-    skus.stopMessenger();
+    this.skus.stopMessenger();
     this.unwatchSkus();
   }
 
@@ -59,7 +60,7 @@ export default class SkusGrid extends Component {
 
   listSkus() {
     this.setState({loading: true});
-    skus.list().then(() => this.setState({loading: false}));
+    this.skus.list().then(() => this.setState({loading: false}));
   }
 
   createSku() { this.routeTo('skus', 'new'); }

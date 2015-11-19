@@ -13,10 +13,10 @@ import JsonDiff from 'common-web-ui/views/JsonDiff';
 import CatalogsGrid from './CatalogsGrid';
 import CatalogStore from '../stores/CatalogStore';
 
-let catalogs = new CatalogStore();
-let otherCatalogs = new CatalogStore();
-
 export default class Catalog extends Component {
+
+  catalogs = new CatalogStore();
+  otherCatalogs = new CatalogStore();
 
   state = {
     catalog: null,
@@ -55,12 +55,12 @@ export default class Catalog extends Component {
 
   watch(props) {
     this.unwatchOtherCatalogs = otherCatalogs.watchAll('otherCatalogs', this);
-    otherCatalogs.list().then(() => {
+    this.otherCatalogs.list().then(() => {
       if (this.catalogId) {
-        this.unwatchCatalog = catalogs.watchOne(this.getCatalogId(props), 'catalog', this);
+        this.unwatchCatalog = this.catalogs.watchOne(this.getCatalogId(props), 'catalog', this);
       }
       else {
-        this.unwatchCatalogs = catalogs.watchAll('catalogs', this);
+        this.unwatchCatalogs = this.catalogs.watchAll('catalogs', this);
       }
     });
   }
@@ -135,9 +135,9 @@ export default class Catalog extends Component {
   }
 
   readCatalog() {
-    if (this.catalogId) return catalogs.read(this.catalogId);
+    if (this.catalogId) return this.catalogs.read(this.catalogId);
     if (this.nodeId && this.source) {
-      return catalogs.listNodeSource(this.nodeId, this.source);
+      return this.catalogs.listNodeSource(this.nodeId, this.source);
     }
     throw new Error('Bad catalog params.');
   }

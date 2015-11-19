@@ -13,10 +13,11 @@ import { LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import OBMServiceStore from '../stores/OBMServiceStore';
-let obmServices = new OBMServiceStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class OBMServicesGrid extends Component {
+
+  obmServices = new OBMServiceStore();
 
   state = {
     obmServices: null,
@@ -24,7 +25,7 @@ export default class OBMServicesGrid extends Component {
   };
 
   componentDidMount() {
-    this.unwatchOBMServices = obmServices.watchAll('obmServices', this);
+    this.unwatchOBMServices = this.obmServices.watchAll('obmServices', this);
     this.listOBMServices();
   }
 
@@ -49,7 +50,7 @@ export default class OBMServicesGrid extends Component {
 
   listOBMServices() {
     this.setState({loading: true});
-    obmServices.list().then(() => this.setState({loading: false}));
+    this.obmServices.list().then(() => this.setState({loading: false}));
   }
 
 }

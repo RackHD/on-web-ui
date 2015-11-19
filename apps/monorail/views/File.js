@@ -20,10 +20,11 @@ import {
   } from 'material-ui';
 
 import FileStore from '../stores/FileStore';
-let file = new FileStore();
 
 @mixin(DialogHelpers)
 export default class File extends Component {
+
+  files = new FileStore();
 
   state = {
     file: null,
@@ -31,7 +32,7 @@ export default class File extends Component {
   };
 
   componentDidMount() {
-    this.unwatchFile = file.watchOne(this.getFileId(), 'file', this, (err) => {
+    this.unwatchFile = this.files.watchOne(this.getFileId(), 'file', this, (err) => {
       if (err.message.indexOf('Not Found') !== -1) {
         this.showError('Unable to locate file.');
       }
@@ -113,8 +114,8 @@ export default class File extends Component {
 
   readFile() {
     this.setState({loading: true});
-    file.list().then(() => {
-      file.read(this.getFileId()).then(() => this.setState({loading: false}));
+    this.files.list().then(() => {
+      this.files.read(this.getFileId()).then(() => this.setState({loading: false}));
     });
   }
 
@@ -122,7 +123,7 @@ export default class File extends Component {
     var id = this.state.file.id;
     this.setState({loading: true});
     this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? files.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+      (confirmed) => confirmed ? this.files.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
   }
 
 }

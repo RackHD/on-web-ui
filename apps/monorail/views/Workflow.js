@@ -26,10 +26,11 @@ import Console from 'common-web-ui/views/Console';
 import WorkflowMonitor from '../lib/WorkflowMonitor';
 
 import WorkflowStore from '../stores/WorkflowStore';
-let workflows = new WorkflowStore();
 
 @mixin(DialogHelpers)
 export default class Workflow extends Component {
+
+  workflows = new WorkflowStore();
 
   state = {
     workflow: null,
@@ -39,7 +40,7 @@ export default class Workflow extends Component {
   };
 
   componentDidMount() {
-    this.unwatchWorkflow = workflows.watchOne(this.getWorkflowId(), 'workflow', this);
+    this.unwatchWorkflow = this.workflows.watchOne(this.getWorkflowId(), 'workflow', this);
     this.readWorkflow().then(() => {
       this.workflowMonitor = new WorkflowMonitor(this.state.workflow, {
         logs: msg => {
@@ -116,14 +117,14 @@ export default class Workflow extends Component {
 
   readWorkflow() {
     this.setState({loading: true});
-    return workflows.read(this.getWorkflowId()).then(() => this.setState({loading: false}));
+    return this.workflows.read(this.getWorkflowId()).then(() => this.setState({loading: false}));
   }
 
   deleteWorkflow() {
     var id = this.state.workflow.id;
     this.setState({loading: true});
     this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? workflows.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+      (confirmed) => confirmed ? this.workflows.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
   }
 
 }

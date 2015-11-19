@@ -89,7 +89,7 @@ export default class App extends Component {
 
   updateSettings() {
     this.monorailAPI = this.state.monorailAPI;
-    this.forceUpdate();
+    this.setState({activePopover: null});
   }
 
   showPopover(key, e) {
@@ -102,7 +102,7 @@ export default class App extends Component {
 
   closePopover(key) {
     if (this.state.activePopover !== key) { return; }
-    this.setState({activePopover: 'none'});
+    this.setState({activePopover: null});
   }
 
 }

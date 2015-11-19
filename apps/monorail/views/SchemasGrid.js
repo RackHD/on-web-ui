@@ -13,10 +13,11 @@ import { LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import SchemaStore from '../stores/SchemaStore';
-let schemas = new SchemaStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class SchemasGrid extends Component {
+
+  schemas = new SchemaStore();
 
   state = {
     schemas: null,
@@ -24,7 +25,7 @@ export default class SchemasGrid extends Component {
   };
 
   componentDidMount() {
-    this.unwatchSchemas = schemas.watchAll('schemas', this);
+    this.unwatchSchemas = this.schemas.watchAll('schemas', this);
     this.listSchemas();
   }
 
@@ -51,7 +52,7 @@ export default class SchemasGrid extends Component {
 
   listSchemas() {
     this.setState({loading: true});
-    schemas.list().then(() => this.setState({loading: false}));
+    this.schemas.list().then(() => this.setState({loading: false}));
   }
 
 }

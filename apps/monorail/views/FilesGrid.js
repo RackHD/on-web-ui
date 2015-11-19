@@ -14,10 +14,11 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import FileStore from '../stores/FileStore';
-let files = new FileStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class FilesGrid extends Component {
+
+  files = new FileStore();
 
   state = {
     files: null,
@@ -25,7 +26,7 @@ export default class FilesGrid extends Component {
   };
 
   componentDidMount() {
-    this.unwatchFiles = files.watchAll('files', this);
+    this.unwatchFiles = this.files.watchAll('files', this);
     this.listFiles();
   }
 
@@ -53,7 +54,7 @@ export default class FilesGrid extends Component {
 
   listFiles() {
     this.setState({loading: true});
-    files.list().then(() => this.setState({loading: false}));
+    this.files.list().then(() => this.setState({loading: false}));
   }
 
   createNode() { this.routeTo('files', 'new'); }

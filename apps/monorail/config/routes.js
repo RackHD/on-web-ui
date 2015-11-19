@@ -17,14 +17,15 @@ import NotFound from 'common-web-ui/views/NotFound';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
-  { text: 'Nodes', route: 'nodes' },
-  { text: 'Workflows', route: 'workflows' },
   { text: 'Workflow Editor', route: 'workflow_editor' },
-  { text: 'Resources', type: MenuItem.Types.SUBHEADER },
+  { text: 'Main Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Catalogs', route: 'catalogs' },
+  { text: 'Nodes', route: 'nodes' },
+  { text: 'Pollers', route: 'pollers' },
+  { text: 'Workflows', route: 'workflows' },
+  { text: 'Other Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Files', route: 'files' },
   { text: 'OBM Services', route: 'obms' },
-  { text: 'Pollers', route: 'pollers' },
   { text: 'Profiles', route: 'profiles' },
   { text: 'Skus', route: 'skus' },
   { text: 'Templates', route: 'templates' },

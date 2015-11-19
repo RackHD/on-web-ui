@@ -31,11 +31,12 @@ import Console from 'common-web-ui/views/Console';
 import NodeMonitor from '../lib/NodeMonitor';
 
 import NodeStore from '../stores/NodeStore';
-let nodes = new NodeStore();
-let nodesRestAPI = nodes.nodesRestAPI;
 
 @mixin(DialogHelpers, RouteHelpers)
 export default class Node extends Component {
+
+  nodes = new NodeStore();
+  nodesRestAPI = this.nodes.nodesRestAPI;
 
   state = {
     logs: [],
@@ -53,7 +54,7 @@ export default class Node extends Component {
   }
 
   componentDidMount() {
-    this.unwatchNode = nodes.watchOne(this.getNodeId(), 'node', this, (err) => {
+    this.unwatchNode = this.nodes.watchOne(this.getNodeId(), 'node', this, (err) => {
       if (err.message.indexOf('Not Found') !== -1) {
         this.showError('Unable to locate node.');
       }
@@ -155,9 +156,9 @@ export default class Node extends Component {
 
   readNode() {
     this.setState({loading: true});
-    nodes.read(this.getNodeId()).then(node => {
+    this.nodes.read(this.getNodeId()).then(node => {
       if (this.state.node && this.state.node.id) {
-        nodesRestAPI.getObm(this.state.node.id).then(
+        this.nodesRestAPI.getObm(this.state.node.id).then(
           obm => this.setState({obm: obm, loading: false}),
           () => this.setState({loading: false}));
       }
@@ -169,7 +170,7 @@ export default class Node extends Component {
     var id = this.state.node.id;
     this.setState({loading: true});
     this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? nodes.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+      (confirmed) => confirmed ? this.nodes.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
   }
 
 }

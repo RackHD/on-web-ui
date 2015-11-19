@@ -7,9 +7,10 @@ import { LinearProgress } from 'material-ui';
 import JsonInspector from 'react-json-inspector';
 
 import SchemaStore from '../stores/SchemaStore';
-let schema = new SchemaStore();
 
 export default class Schema extends Component {
+
+  schema = new SchemaStore();
 
   state = {
     schema: null,
@@ -17,7 +18,7 @@ export default class Schema extends Component {
   };
 
   componentDidMount() {
-    this.unwatchSchema = schema.watchOne(this.getSchemaId(), 'schema', this);
+    this.unwatchSchema = this.schema.watchOne(this.getSchemaId(), 'schema', this);
     this.readSchema();
   }
 
@@ -41,7 +42,7 @@ export default class Schema extends Component {
 
   readSchema() {
     this.setState({loading: true});
-    schema.read(this.getSchemaId()).then(() => this.setState({loading: false}));
+    this.schema.read(this.getSchemaId()).then(() => this.setState({loading: false}));
   }
 
 }

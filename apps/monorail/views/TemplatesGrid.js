@@ -18,13 +18,15 @@ let templates = new TemplateStore();
 @mixin(FormatHelpers, RouteHelpers)
 export default class TemplatesGrid extends Component {
 
+  templates = new TemplateStore();
+
   state = {
     templates: null,
     loading: true
   };
 
   componentDidMount() {
-    this.unwatchTemplates = templates.watchAll('templates', this);
+    this.unwatchTemplates = this.templates.watchAll('templates', this);
     this.listTemplates();
   }
 
@@ -52,7 +54,7 @@ export default class TemplatesGrid extends Component {
 
   listTemplates() {
     this.setState({loading: true});
-    templates.list().then(() => this.setState({loading: false}));
+    this.templates.list().then(() => this.setState({loading: false}));
   }
 
   createTemplate() { this.routeTo('templates', 'new'); }

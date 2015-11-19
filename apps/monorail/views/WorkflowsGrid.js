@@ -16,10 +16,8 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import NodesRestAPI from '../messengers/NodesRestAPI';
-let nodesRestAPI = new NodesRestAPI();
 
 import WorkflowStore from '../stores/WorkflowStore';
-let workflows = new WorkflowStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class WorkflowsGrid extends Component {
@@ -28,22 +26,25 @@ export default class WorkflowsGrid extends Component {
     sort: (a, b) => moment(b.updatedAt).unix() - moment(a.updatedAt).unix()
   }
 
+  nodesRestAPI = new NodesRestAPI();
+  workflows = new WorkflowStore();
+
   state = {
     workflows: null,
     loading: true
   };
 
   componentWillMount() {
-    workflows.startMessenger();
+    this.workflows.startMessenger();
   }
 
   componentDidMount() {
-    this.unwatchWorkflows = workflows.watchAll('workflows', this);
+    this.unwatchWorkflows = this.workflows.watchAll('workflows', this);
     this.listWorkflows();
   }
 
   componentWillUnmount() {
-    workflows.stopMessenger();
+    this.workflows.stopMessenger();
     this.unwatchWorkflows();
   }
 
@@ -88,9 +89,9 @@ export default class WorkflowsGrid extends Component {
     this.setState({loading: true});
     let nodeId = this.nodeId
     if (nodeId) {
-      return workflows.listNode(nodeId).then(() => this.setState({loading: false}));
+      return this.workflows.listNode(nodeId).then(() => this.setState({loading: false}));
     }
-    workflows.list().then(() => this.setState({loading: false}));
+    this.workflows.list().then(() => this.setState({loading: false}));
   }
 
   createWorkflow() {
@@ -100,7 +101,7 @@ export default class WorkflowsGrid extends Component {
 
   cancelActiveWorkflow() {
     if (!this.nodeId) { return; }
-    nodesRestAPI.deleteActiveWorkflow(this.nodeId).then(() => {
+    this.nodesRestAPI.deleteActiveWorkflow(this.nodeId).then(() => {
       this.listWorkflows();
     });
   }

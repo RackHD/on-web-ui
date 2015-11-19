@@ -24,10 +24,11 @@ import {
 import JsonInspector from 'react-json-inspector';
 
 import PollerStore from '../stores/PollerStore';
-let poller = new PollerStore();
 
 @mixin(DialogHelpers, FormatHelpers)
 export default class Poller extends Component {
+
+  poller = new PollerStore();
 
   state = {
     poller: null,
@@ -35,7 +36,7 @@ export default class Poller extends Component {
   };
 
   componentDidMount() {
-    this.unwatchPoller = poller.watchOne(this.getPollerId(), 'poller', this);
+    this.unwatchPoller = this.poller.watchOne(this.getPollerId(), 'poller', this);
     this.readPoller();
   }
 
@@ -92,14 +93,14 @@ export default class Poller extends Component {
 
   readPoller() {
     this.setState({loading: true});
-    poller.read(this.getPollerId()).then(() => this.setState({loading: false}));
+    this.poller.read(this.getPollerId()).then(() => this.setState({loading: false}));
   }
 
   deletePoller() {
     var id = this.state.poller.id;
     this.setState({loading: true});
     this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? pollers.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+      (confirmed) => confirmed ? this.pollers.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
   }
 
 }

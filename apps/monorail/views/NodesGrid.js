@@ -14,10 +14,11 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import NodeStore from '../stores/NodeStore';
-let nodes = new NodeStore();
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class NodesGrid extends Component {
+
+  nodes = new NodeStore();
 
   state = {
     nodes: null,
@@ -25,16 +26,16 @@ export default class NodesGrid extends Component {
   };
 
   componentWillMount() {
-    nodes.startMessenger();
+    this.nodes.startMessenger();
   }
 
   componentDidMount() {
-    this.unwatchNodes = nodes.watchAll('nodes', this);
+    this.unwatchNodes = this.nodes.watchAll('nodes', this);
     this.listNodes();
   }
 
   componentWillUnmount() {
-    nodes.stopMessenger();
+    this.nodes.stopMessenger();
     this.unwatchNodes();
   }
 
@@ -59,7 +60,7 @@ export default class NodesGrid extends Component {
 
   listNodes() {
     this.setState({loading: true});
-    nodes.list().then(() => this.setState({loading: false}));
+    this.nodes.list().then(() => this.setState({loading: false}));
   }
 
   createNode() { this.routeTo('nodes', 'new'); }
