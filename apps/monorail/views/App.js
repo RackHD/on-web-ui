@@ -89,7 +89,10 @@ export default class App extends Component {
 
   updateSettings() {
     this.monorailAPI = this.state.monorailAPI;
-    this.setState({activePopover: null});
+    window.localStorage.setItem('monorail-config', JSON.stringify(config));
+    this.setState({activePopover: null}, () => {
+      setTimeout(() => window.location.reload(), 250);
+    });
   }
 
   showPopover(key, e) {
