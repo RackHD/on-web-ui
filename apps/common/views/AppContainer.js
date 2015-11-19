@@ -11,6 +11,8 @@ import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
 
 import AppNavigation from './AppNavigation';
 import EMCTab from './EMCTab';
+import ErrorNotification from './ErrorNotification';
+import ViewportSize from './ViewportSize';
 
 import emcTheme from '../lib/emcTheme';
 
@@ -67,8 +69,6 @@ export default class AppContainer extends Component {
     },
 
     footer: {
-      // color: emcColors.offWhite.hexString(),
-      // background: emcColors.darkGrey.hexString(),
       padding: 10
     }
   };
@@ -100,14 +100,11 @@ export default class AppContainer extends Component {
             {this.props.children}
           </div>
 
-          <Snackbar
-              ref="error"
-              action="dismiss"
-              message={this.state.error || 'Unknown error.'}
-              onActionTouchTap={this.dismissError.bind(this)} />
+          <ErrorNotification ref="error" />
 
           <footer style={[this.css.footer, css.footer]}>
             <span key={0}>© 2015 EMC<sup>2</sup></span>
+            <ViewportSize style={{float: 'right'}} />
           </footer>
 
           <EMCTab ref="emcTab" />
@@ -173,14 +170,7 @@ export default class AppContainer extends Component {
   }
 
   onError(errorMsg) {
-    this.showError(errorMsg);
-  }
-
-  showError(error) { this.setState({error: error.message || error || 'Unknown Error'}); }
-
-  dismissError() {
-    this.refs.error.dismiss();
-    this.setState({error: null});
+    this.refs.error.showError(errorMsg);
   }
 
   get title() {

@@ -2,28 +2,21 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
-import {
-    // IconButton,
-    RaisedButton,
-    LinearProgress
-  } from 'material-ui';
+import { RaisedButton, LinearProgress } from 'material-ui';
+
+import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import NodeStore from '../stores/NodeStore';
 let nodes = new NodeStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(FormatHelpers, RouteHelpers)
 export default class NodesGrid extends Component {
 
   state = {
@@ -47,36 +40,19 @@ export default class NodesGrid extends Component {
 
   render() {
     return (
-      <div className="NodesGrid">
-        {this.renderGridToolbar({
-          label: <a href="#/nodes">Nodes</a>,
-          count: this.state.nodes && this.state.nodes.length || 0,
-          right:
-            <RaisedButton label="Create Node" primary={true} onClick={this.createNode.bind(this)} />
-        })}
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
-        {
-          this.renderGrid({
-            results: this.state.nodes,
-            resultsPerPage: this.props.size || 50
-          }, node => (
+      <ResourceTable
+          initialEntities={this.state.nodes}
+          routeName="nodes"
+          emptyContent="No nodes."
+          headerContent="Nodes"
+          toolbarContent={<RaisedButton label="Create Node" primary={true} onClick={this.createNode.bind(this)} />}
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          mapper={node => (
             {
               Name: <a href={this.routePath('nodes', node.id)}>{node.name}</a>,
-              Updated: this.fromNow(node.updatedAt)//,
-              // Actions: [
-              //   <IconButton iconClassName="fa fa-edit"
-              //               tooltip="Edit Node"
-              //               touch={true}
-              //               onClick={this.editNode.bind(this, node.id)} />,
-              //   <IconButton iconClassName="fa fa-remove"
-              //               tooltip="Remove Node"
-              //               touch={true}
-              //               onClick={this.deleteNode.bind(this, node.id)} />
-              // ]
+              Updated: this.fromNow(node.updatedAt)
             }
-          ), 'No nodes.')
-        }
-      </div>
+          )} />
     );
   }
 
@@ -85,13 +61,6 @@ export default class NodesGrid extends Component {
     nodes.list().then(() => this.setState({loading: false}));
   }
 
-  // editNode(id) { this.routeTo('nodes', id); }
-
   createNode() { this.routeTo('nodes', 'new'); }
-
-  // deleteNode(id) {
-  //   this.confirmDialog('Are you sure want to delete: ' + id,
-  //     (confirmed) => confirmed && nodes.destroy(id));
-  // }
 
 }

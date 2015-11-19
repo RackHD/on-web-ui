@@ -2,20 +2,18 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
+
 import React, { Component } from 'react';
+
+import moment from 'moment';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
-import {
-    // IconButton,
-    RaisedButton,
-    LinearProgress
-  } from 'material-ui';
+import { RaisedButton, LinearProgress } from 'material-ui';
+
+import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import NodesRestAPI from '../messengers/NodesRestAPI';
 let nodesRestAPI = new NodesRestAPI();
@@ -23,12 +21,7 @@ let nodesRestAPI = new NodesRestAPI();
 import WorkflowStore from '../stores/WorkflowStore';
 let workflows = new WorkflowStore();
 
-import moment from 'moment';
-
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(FormatHelpers, RouteHelpers)
 export default class WorkflowsGrid extends Component {
 
   static defaultProps = {
@@ -63,31 +56,15 @@ export default class WorkflowsGrid extends Component {
         <RaisedButton key={1} label="Cancel Active Workflow" primary={true} onClick={this.cancelActiveWorkflow.bind(this)} />
       );
     }
-    let workflows = this.state.workflows;
-    if (workflows) {
-      if (typeof this.props.filter === 'function') {
-        workflows = workflows.filter(this.props.filter);
-      }
-      if (typeof this.props.sort === 'function') {
-        workflows = workflows.sort(this.props.sort);
-      }
-      if (this.props.limit && workflows.length > this.props.limit) {
-        workflows.length = this.props.limit;
-      }
-    }
     return (
-      <div className="WorkflowsGrid">
-        {this.renderGridToolbar({
-          label: <a href={'#/workflows' + (this.nodeId ? '/n/' + this.nodeId : '')}>Workflows</a>,
-          count: workflows && workflows.length || 0,
-          right: rightButtons
-        })}
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
-        {
-          this.renderGrid({
-            results: workflows,
-            resultsPerPage: this.props.size || 50
-          }, workflow => {
+      <ResourceTable
+          initialEntities={this.state.workflows}
+          routeName="workflows"
+          emptyContent="No workflows."
+          headerContent="Workflows"
+          toolbarContent={rightButtons}
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          mapper={workflow => {
             let row = {};
             row.Name = <a href={this.routePath('workflows', workflow.id)}>{workflow.name}</a>;
             if (!this.nodeId) {
@@ -98,9 +75,10 @@ export default class WorkflowsGrid extends Component {
             row['Finished Tasks'] = workflow.finishedTasks.length;
             row.Updated = this.fromNow(workflow.updatedAt);
             return row;
-          }, 'No workflows.')
-        }
-      </div>
+          }}
+          filter={this.props.filter}
+          sort={this.props.sort}
+          limit={this.props.limit} />
     );
   }
 
@@ -115,8 +93,6 @@ export default class WorkflowsGrid extends Component {
     workflows.list().then(() => this.setState({loading: false}));
   }
 
-  // editWorkflow(id) { this.routeTo('workflows', id); }
-
   createWorkflow() {
     if (this.nodeId) return this.routeTo('workflows', 'new', this.nodeId);
     this.routeTo('workflows', 'new');
@@ -128,10 +104,5 @@ export default class WorkflowsGrid extends Component {
       this.listWorkflows();
     });
   }
-
-  // deleteWorkflow(id) {
-  //   this.confirmDialog('Are you sure want to delete: ' + id,
-  //     (confirmed) => confirmed && workflows.destroy(id));
-  // }
 
 }

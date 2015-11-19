@@ -4,25 +4,19 @@
 
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
-import {
-    RaisedButton,
-    LinearProgress
-  } from 'material-ui';
+import { RaisedButton, LinearProgress } from 'material-ui';
+
+import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import FileStore from '../stores/FileStore';
 let files = new FileStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(FormatHelpers, RouteHelpers)
 export default class FilesGrid extends Component {
 
   state = {
@@ -39,28 +33,21 @@ export default class FilesGrid extends Component {
 
   render() {
     return (
-      <div className="FilesGrid">
-        {this.renderGridToolbar({
-          label: <a href="#/files">Files</a>,
-          count: this.state.files && this.state.files.length || 0,
-          right:
-            <RaisedButton label="Create File" primary={true} onClick={this.createNode.bind(this)} />
-        })}
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
-        {
-          this.renderGrid({
-            results: this.state.files,
-            resultsPerPage: this.props.size || 50
-          }, file => (
+      <ResourceTable
+          initialEntities={this.state.files}
+          routeName="files"
+          emptyContent="No files."
+          headerContent="Files"
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          toolbarContent={<RaisedButton label="Create File" primary={true} onClick={this.createNode.bind(this)} />}
+          mapper={file => (
             {
               ID: <a href={this.routePath('files', file.uuid)}>{this.shortId(file.uuid)}</a>,
               Name: file.basename,
               MD5: file.md5,
               Version: file.version
             }
-          ), 'No files.')
-        }
-      </div>
+          )} />
     );
   }
 

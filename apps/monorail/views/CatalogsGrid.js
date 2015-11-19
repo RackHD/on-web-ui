@@ -2,30 +2,22 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
 import moment from 'moment';
 
-import {
-    // IconButton,
-    // RaisedButton,
-    LinearProgress
-  } from 'material-ui';
+import { LinearProgress } from 'material-ui';
+
+import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import CatalogStore from '../stores/CatalogStore';
 let catalogs = new CatalogStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(FormatHelpers, RouteHelpers)
 export default class CatalogsGrid extends Component {
 
   state = {
@@ -83,6 +75,31 @@ export default class CatalogsGrid extends Component {
         });
       }).reduce((prev, curr) => prev.concat(curr), []);
     }
+
+    return (
+      <ResourceTable
+          initialEntities={catalogsByNode}
+          routeName="catalogs"
+          emptyContent="No catalogs."
+          headerContent="Catalogs"
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          mapper={catalog => {
+            let row = {};
+            row.Sources = catalog.sources.map(source => (
+              <a
+                  href={this.routePath('catalogs', source.id)}
+                  style={{display: 'inline-block', margin: '0 5px'}}>
+                {source.source.toUpperCase()}
+              </a>
+            ));
+            if (!this.nodeId) {
+              row.Node = <a href={this.routePath('nodes', catalog.node)}>{this.shortId(catalog.node)}</a>;
+            }
+            row.Updated = this.fromNow(catalog.updatedAt);
+            return row;
+          }} />
+    )
+
     return (
       <div className="CatalogsGrid">
         {this.renderGridToolbar({

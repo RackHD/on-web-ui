@@ -7,7 +7,7 @@ import merge from 'lodash/object/merge';
 let env = (typeof process !== 'undefined') && process.env || {};
 
 let defaults = {
-  "MONORAIL_API": env.MONORAIL_API || "http://localhost/api/1.1/"
+  MONORAIL_API: env.MONORAIL_API || 'http://localhost/api/1.1/'
 };
 
 let custom;

@@ -23,7 +23,7 @@ export var navigation = [
   { text: 'Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Catalogs', route: 'catalogs' },
   { text: 'Files', route: 'files' },
-  { text: 'OBM Services', route: 'obmServices' },
+  { text: 'OBM Services', route: 'obms' },
   { text: 'Pollers', route: 'pollers' },
   { text: 'Profiles', route: 'profiles' },
   { text: 'Skus', route: 'skus' },

@@ -2,27 +2,20 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
-import {
-    RaisedButton,
-    LinearProgress
-  } from 'material-ui';
+import { RaisedButton, LinearProgress } from 'material-ui';
+
+import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import SkuStore from '../stores/SkuStore';
 let skus = new SkuStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(FormatHelpers, RouteHelpers)
 export default class SkusGrid extends Component {
 
   state = {
@@ -46,28 +39,21 @@ export default class SkusGrid extends Component {
 
   render() {
     return (
-      <div className="SkusGrid">
-        {this.renderGridToolbar({
-          label: <a href="#/skus">Skus</a>,
-          count: this.state.skus && this.state.skus.length || 0,
-          right:
-            <RaisedButton label="Create SKU" primary={true} onClick={this.createSku.bind(this)} />
-        })}
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
-        {
-          this.renderGrid({
-            results: this.state.skus,
-            resultsPerPage: this.props.size || 50
-          }, sku => (
+      <ResourceTable
+          initialEntities={this.state.pollers}
+          routeName="skus"
+          emptyContent="No skus."
+          headerContent="SKUs"
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          toolbarContent={<RaisedButton label="Create SKU" primary={true} onClick={this.createSku.bind(this)} />}
+          mapper={sku => (
             {
               ID: <a href={this.routePath('skus', sku.id)}>{this.shortId(sku.id)}</a>,
               Name: sku.name,
               Created: this.fromNow(sku.createdAt),
               Updated: this.fromNow(sku.updatedAt)
             }
-          ), 'No skus.')
-        }
-      </div>
+          )} />
     );
   }
 

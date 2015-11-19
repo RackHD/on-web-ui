@@ -2,26 +2,20 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
-import {
-    LinearProgress
-  } from 'material-ui';
+import { LinearProgress } from 'material-ui';
+
+import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import VersionStore from '../stores/VersionStore';
 let versions = new VersionStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(FormatHelpers, RouteHelpers)
 export default class VersionsGrid extends Component {
 
   state = {
@@ -38,24 +32,18 @@ export default class VersionsGrid extends Component {
 
   render() {
     return (
-      <div className="VersionsGrid">
-        {this.renderGridToolbar({
-          label: <a href="#/versions">Versions</a>,
-          count: this.state.versions && this.state.versions.length || 0
-        })}
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
-        {
-          this.renderGrid({
-            results: this.state.versions,
-            resultsPerPage: this.props.size || 50
-          }, version => (
+      <ResourceTable
+          initialEntities={this.state.versions}
+          routeName="versions"
+          emptyContent="No versions."
+          headerContent="Versions"
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          mapper={version => (
             {
               Package: version.package,
               Version: version.version
             }
-          ), 'No versions.')
-        }
-      </div>
+          )} />
     );
   }
 

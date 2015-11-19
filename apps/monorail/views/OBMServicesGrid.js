@@ -2,26 +2,20 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
-import {
-    LinearProgress
-  } from 'material-ui';
+import { LinearProgress } from 'material-ui';
+
+import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import OBMServiceStore from '../stores/OBMServiceStore';
 let obmServices = new OBMServiceStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(FormatHelpers, RouteHelpers)
 export default class OBMServicesGrid extends Component {
 
   state = {
@@ -38,24 +32,18 @@ export default class OBMServicesGrid extends Component {
 
   render() {
     return (
-      <div className="OBMServicesGrid">
-        {this.renderGridToolbar({
-          label: <a href="#/obms">OBM Services</a>,
-          count: this.state.obmServices && this.state.obmServices.length || 0
-        })}
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
-        {
-          this.renderGrid({
-            results: this.state.obmServices,
-            resultsPerPage: this.props.size || 50
-          }, obmService => (
+      <ResourceTable
+          initialEntities={this.state.obmServices}
+          routeName="obms"
+          emptyContent="No OBM Services."
+          headerContent="OBM Services"
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          mapper={obmService => (
             {
               'Service Name': <a href={this.routePath('obms', obmService.service)}>{obmService.service}</a>,
               'Config Keys': Object.keys(obmService.config).join(', ')
             }
-          ), 'No OBM Services.')
-        }
-      </div>
+          )} />
     );
   }
 

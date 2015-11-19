@@ -2,28 +2,20 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
-import {
-    // IconButton,
-    RaisedButton,
-    LinearProgress
-  } from 'material-ui';
+import { RaisedButton, LinearProgress } from 'material-ui';
+
+import ResourceTable from 'common-web-ui/views/ResourceTable';
 
 import ProfileStore from '../stores/ProfileStore';
 let profiles = new ProfileStore();
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(FormatHelpers, RouteHelpers)
 export default class ProfilesGrid extends Component {
 
   state = {profiles: null};
@@ -37,34 +29,21 @@ export default class ProfilesGrid extends Component {
 
   render() {
     return (
-      <div className="ProfilesGrid">
-        {this.renderGridToolbar({
-          label: <a href="#/profiles">Profiles</a>,
-          count: this.state.profiles && this.state.profiles.length || 0,
-          right:
-            <RaisedButton label="Create Profile" primary={true} onClick={this.createProfile.bind(this)} />
-        })}
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
-        {
-          this.renderGrid({
-            results: this.state.profiles,
-            resultsPerPage: this.props.size || 50
-          }, profile => (
+      <ResourceTable
+          initialEntities={this.state.profiles}
+          routeName="profiles"
+          emptyContent="No profiles."
+          headerContent="Profiles"
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          toolbarContent={<RaisedButton label="Create Profile" primary={true} onClick={this.createProfile.bind(this)} />}
+          mapper={profile => (
             {
               ID: <a href={this.routePath('profiles', profile.name)}>{this.shortId(profile.id)}</a>,
               Name: profile.name,
               Created: this.fromNow(profile.createdAt),
-              Updated: this.fromNow(profile.updatedAt)//,
-              // Actions: [
-              //   <IconButton iconClassName="fa fa-edit"
-              //               tooltip="Edit Profile"
-              //               touch={true}
-              //               onClick={this.editProfile.bind(this, profile.name)} />
-              // ]
+              Updated: this.fromNow(profile.updatedAt)
             }
-          ), 'No profiles.')
-        }
-      </div>
+          )} />
     );
   }
 
@@ -73,13 +52,6 @@ export default class ProfilesGrid extends Component {
     profiles.list().then(() => this.setState({loading: false}));
   }
 
-  // editProfile(id) { this.routeTo('profiles', id); }
-
   createProfile() { this.routeTo('profiles', 'new'); }
-
-  // deleteProfile(id) {
-  //   this.confirmDialog('Are you sure want to delete: ' + id,
-  //     (confirmed) => confirmed && profiles.destroy(id));
-  // }
 
 }
