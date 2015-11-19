@@ -50,6 +50,7 @@ export default class NodesGrid extends Component {
           mapper={node => (
             {
               Name: <a href={this.routePath('nodes', node.id)}>{node.name}</a>,
+              Type: node.type,
               Updated: this.fromNow(node.updatedAt)
             }
           )} />
