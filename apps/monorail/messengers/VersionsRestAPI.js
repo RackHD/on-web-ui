@@ -2,12 +2,12 @@
 
 'use strict';
 
-import { MONORAIL_API } from '../config/index';
+import config from '../config/index';
 import RestAPI from 'common-web-ui/lib/RestAPI';
 
 export default class VersionsRestAPI extends RestAPI {
 
-  api = MONORAIL_API;
+  api = config.MONORAIL_API;
   entity = 'versions';
 
   get() {

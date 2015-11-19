@@ -3,7 +3,7 @@
 'use strict';
 
 import url from 'url';
-import { MONORAIL_API } from '../config/index';
+import config from '../config/index';
 
 import Messenger from 'common-web-ui/lib/Messenger';
 
@@ -11,7 +11,7 @@ export default class EventsMessenger extends Messenger {
   handlers = ['item'];
 
   constructor(host, secure) {
-    let api = url.parse(MONORAIL_API);
+    let api = url.parse(config.MONORAIL_API);
     super('mq', host || api.host, secure || api.protocol === 'https:');
   }
 

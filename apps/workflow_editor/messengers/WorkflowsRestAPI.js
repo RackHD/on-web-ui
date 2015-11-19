@@ -2,12 +2,12 @@
 
 'use strict';
 
-import { MONORAIL_API } from 'monorail-web-ui/config/index';
+import config from 'monorail-web-ui/config/index';
 import RestAPI from 'common-web-ui/lib/RestAPI';
 
 export default class WorkflowsRestAPI extends RestAPI {
 
-  api = MONORAIL_API;
+  api = config.MONORAIL_API;
   entity = 'workflows';
 
   get workflowsUrl() { return this.getResourceUrl('workflows'); }
