@@ -33,9 +33,7 @@ export var navigation = [
   { text: 'Logs', route: 'logs' },
   // { text: 'Lookups', route: 'Lookups' },
   // { text: 'Schemas', route: 'Schemas' },
-  // { text: 'Versions', route: 'versions' },
-  { text: '', type: MenuItem.Types.SUBHEADER },
-  { text: ['© 2015 EMC', <sup>2</sup>], type: MenuItem.Types.LINK, payload: 'http://emc.com', target: '_blank' }
+  // { text: 'Versions', route: 'versions' }
 ];
 
 // Must be imported after navigation.
