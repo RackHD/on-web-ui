@@ -20,9 +20,7 @@ This will start a development server that will automatically refresh when code c
 
 By default there will be two servers running. One on port `5000` which will be proxied by another on port `3000`.
 
- * http://localhost:3000/monorail is the MonoRail Web UI.
- * http://localhost:3000/workflow_editor is the MonoRail Workflow Editor.
- * http://localhost:3000 is the On Web UI application directory.
+ * http://localhost:3000 is the MonoRail Web UI.
 
 ### How to build On Web UI applications.
 
