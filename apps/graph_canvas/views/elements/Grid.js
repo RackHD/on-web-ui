@@ -2,13 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from 'common-web-ui/lib/decorate';
-/* eslint-enable no-unused-vars */
 
-@decorate({
-  propTypes: {
+export default class GCGridElement extends Component {
+
+  static propTypes = {
     bounds: PropTypes.shape({
       top: PropTypes.number,
       left: PropTypes.number,
@@ -17,17 +15,17 @@ import decorate from 'common-web-ui/lib/decorate';
     }),
     className: PropTypes.string,
     style: PropTypes.object
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     bounds: null,
     className: 'GraphCanvasGridElement',
     style: {}
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any
-  }
-})
-export default class GCGridElement extends Component {
+  };
 
   get graphCanvas() {
     return this.context.graphCanvas;

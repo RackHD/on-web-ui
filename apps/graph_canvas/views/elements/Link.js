@@ -2,11 +2,8 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
-
-import decorate from 'common-web-ui/lib/decorate';
 
 import generateId from '../../lib/generateId';
 
@@ -15,29 +12,30 @@ import Rectangle from '../../lib/Rectangle';
 
 import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 
-@decorate({
-  propTypes: {
+export default class GCLinkElement extends Component {
+
+  static propTypes = {
     from: PropTypes.string,
     to: PropTypes.any,
     isPartial: PropTypes.bool,
     initialColor: PropTypes.string,
     initialId: PropTypes.string,
     onRemove: PropTypes.func
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     from: null,
     to: null,
     isPartial: false,
     initialColor: 'black',
     initialId: null,
     onRemove: null
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any,
     parentGCGroup: PropTypes.any
   }
-})
-export default class GCLinkElement extends Component {
 
   static GCTypeEnum = {vector: true, link: true};
 

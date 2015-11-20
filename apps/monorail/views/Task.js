@@ -9,9 +9,10 @@ import { LinearProgress } from 'material-ui';
 import JsonInspector from 'react-json-inspector';
 
 import TaskStore from '../stores/TaskStore';
-let task = new TaskStore();
 
 export default class Task extends Component {
+
+  tasks = new TaskStore();
 
   state = {
     task: null,
@@ -41,7 +42,7 @@ export default class Task extends Component {
 
   readTask() {
     this.setState({loading: true});
-    task.read().then(() => this.setState({loading: false}));
+    this.task.read().then(() => this.setState({loading: false}));
   }
 
 }

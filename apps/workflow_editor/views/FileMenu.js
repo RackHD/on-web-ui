@@ -2,30 +2,21 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-/* eslint-enable no-unused-vars */
 
-import {
-    DropDownMenu,
-    MenuItem
-  } from 'material-ui';
+import { DropDownMenu, MenuItem } from 'material-ui';
 
 @mixin(RouteHelpers)
-@decorate({
-  propTypes: {},
-  defaultProps: {},
-  contextTypes: {
+export default class WEFileMenu extends Component {
+
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WEFileMenu extends Component {
+  };
 
   get weLayout() {
     return this.context.weLayout;

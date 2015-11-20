@@ -2,22 +2,21 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
-import decorate from 'common-web-ui/lib/decorate';
+import React, { Component, PropTypes } from 'react';
 
-@decorate({
-  propTypes: {
-    initialMarks: PropTypes.array
-  },
-  defaultProps: {
-    initialMarks: []
-  },
-  contextTypes: {
-    graphCanvas: PropTypes.any
-  }
-})
 export default class GCMarksManager extends Component {
+
+  static propTypes = {
+    initialMarks: PropTypes.array
+  };
+
+  static defaultProps = {
+    initialMarks: []
+  };
+
+  static contextTypes = {
+    graphCanvas: PropTypes.any
+  };
 
   get graphCanvas() {
     return this.context.graphCanvas;

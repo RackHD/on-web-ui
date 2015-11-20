@@ -42,13 +42,19 @@ let muiTheme = ThemeManager.getMuiTheme({
 
 muiTheme.snackbar.textColor = muiColors.black;
 
-// console.log(muiTheme);
-
 muiTheme.tableRow.stripeColor =
   new Color(emcColors.darkGrey).lighten(0.4).hexString();
 
 muiTheme.tableRow.borderColor =
   new Color(emcColors.darkGrey).lighten(0.8).hexString();
+
+muiTheme.flatButton.color =
+muiTheme.raisedButton.color =
+  new Color(emcColors.mediumGrey).lighten(0.8).hexString();
+
+muiTheme.flatButton.textColor =
+muiTheme.raisedButton.textColor =
+  new Color(emcColors.offWhite).hexString();
 
 muiTheme.raisedButton.disabledColor =
   new Color(emcColors.mediumGrey).lighten(0.4).hexString();

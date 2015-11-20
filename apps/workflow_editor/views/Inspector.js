@@ -2,26 +2,18 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import decorate from 'common-web-ui/lib/decorate';
-
-import {
-    RaisedButton
-  } from 'material-ui';
+import { RaisedButton } from 'material-ui';
 
 import WEWorkflowOutline from './WorkflowOutline';
 
-@decorate({
-  propTypes: {},
-  defaultProps: {},
-  contextTypes: {
+export default class WEInspector extends Component {
+
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WEInspector extends Component {
+  };
 
   state = {selected: []};
 

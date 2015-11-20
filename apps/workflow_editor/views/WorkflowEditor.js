@@ -4,12 +4,9 @@
 
 import { EventEmitter } from 'events';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
-
 import radium from 'radium';
-import decorate from 'common-web-ui/lib/decorate';
 
 import cloneDeep from 'lodash/lang/cloneDeep';
 
@@ -35,25 +32,24 @@ import TaskDefinitionStore from '../stores/TaskDefinitionStore';
 import WorkflowTemplateStore from '../stores/WorkflowTemplateStore';
 
 @radium
-@decorate({
-  propTypes: {
+export default class WorkflowEditor extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     styles: PropTypes.object
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: '',
     css: {},
     styles: {}
-  },
+  };
 
-  childContextTypes: {
+  static childContextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WorkflowEditor extends Component {
+  };
 
   taskDefinitionStore = new TaskDefinitionStore(TaskDefinition);
   workflowTemplateStore = new WorkflowTemplateStore(WorkflowTemplate);

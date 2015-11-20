@@ -2,12 +2,12 @@
 
 'use strict';
 
-import { API } from '../config/index';
+import config from '../config/index';
 import RestAPI from 'common-web-ui/lib/RestAPI';
 
 export default class NodesRestAPI extends RestAPI {
 
-  api = API;
+  api = config.MONORAIL_API;
   entity = 'nodes';
 
   get(id) {
@@ -197,7 +197,7 @@ export default class NodesRestAPI extends RestAPI {
 
   getActiveWorkflow(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/workflows/active')
+      this.http.get(this.url + id + '/workflows/active')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

@@ -21,7 +21,7 @@ export default class AppMenuNav extends Component {
   };
 
   static defaultProps = {
-    title: 'On Web UI',
+    title: 'Dashboard',
     menuItems: [],
     brandStyle: {}
   };
@@ -29,32 +29,14 @@ export default class AppMenuNav extends Component {
   toggleLeftNav = this.toggleLeftNav.bind(this);
   getSelectedIndex = this.getSelectedIndex.bind(this);
   onLeftNavChange = this.onLeftNavChange.bind(this);
-  onHeaderClick = this.onHeaderClick.bind(this);
 
   render() {
-    var header = (
-      <a
-          onClick={this.onHeaderClick}
-          style={[{
-            color: '#fff',
-            display: 'block',
-            background: '#000',
-            padding: '10px 0',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            borderBottom: '1px solid #ddd'
-          }, this.props.brandStyle]}>
-        {this.props.title}
-      </a>
-    );
-
     return (
       <LeftNav
         className="AppMenuNav"
         ref="leftNav"
         docked={false}
         isInitiallyOpen={false}
-        header={header}
         menuItems={this.props.menuItems}
         selectedIndex={this.getSelectedIndex()}
         onChange={this.onLeftNavChange} />

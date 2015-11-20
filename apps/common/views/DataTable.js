@@ -2,102 +2,92 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from '../lib/decorate';
-/* eslint-enable no-unused-vars */
 
-@decorate({
-  propTypes: {
+import {
+    Table,
+    TableHeader,
+    TableRow,
+    TableHeaderColumn,
+    TableBody,
+    TableRowColumn
+  } from 'material-ui';
+
+export default class DataTable extends Component {
+
+  static propTypes = {
+    body: PropTypes.object,
     className: PropTypes.string,
     dataKey: PropTypes.string,
     emptyContent: PropTypes.string,
     fields: PropTypes.array,
+    header: PropTypes.object,
     initialData: PropTypes.array,
-    uniqueName: PropTypes.string,
-    style: PropTypes.object
-  },
-  defaultProps: {
+    style: PropTypes.object,
+    table: PropTypes.object,
+    uniqueName: PropTypes.string
+  };
+
+  static defaultProps = {
+    body: {},
     className: '',
     dataKey: 'id',
     emptyContent: 'No data.',
-    fields: {},
-    initialData: [],
-    uniqueName: '',
-    style: {}
-  }
-})
-export default class DataTable extends Component {
+    fields: null,
+    header: {},
+    initialData: null,
+    style: {},
+    table: {},
+    uniqueName: ''
+  };
 
   state = {data: this.props.initialData};
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.initialData) this.update(nextProps.initialData);
+  }
 
   update(data) {
     this.setState({data: data});
   }
 
   render() {
-    if (this.state.data.length === 0) {
+    let data = this.state.data;
+
+    if (!data || !data.length) {
       return (
-        <div className={'empty ' + this.props.className} style={this.props.style}>
+        <div className={'empty center' + this.props.className} style={this.props.style}>
           {this.props.emptyContent}
         </div>
       );
     }
-    return (
-      <table className={this.props.className} style={this.props.style}>
-        <thead>
-          <tr>
-            {this.fieldElements}
-          </tr>
-        </thead>
-        <tbody>
-          {this.rowElements}
-        </tbody>
-      </table>
-    );
-  }
 
-  get fieldElements() {
-    return this.props.fields.map((field, i) => {
-      var key = field.property ? field.property.replace('.', '-') : 'h' + i;
-      if (this.props.uniqueName) { key = this.props.uniqueName + key; }
+    let fields = this.props.fields ||
+      Object.keys(data[0]).map(fieldName => ({name: fieldName}));
+
+    let tableFields = fields.map(field => {
+      return <TableHeaderColumn key={field.name + '-field'}>{field.name}</TableHeaderColumn>
+    });
+
+    let tableRows = data.map((item, i) => {
       return (
-        <th key={key} className={field.className} style={field.style}>{field.label}</th>
+        <TableRow key={i}>
+          {fields.map(field => {
+            return <TableRowColumn key={field.name + '-row'}>{item[field.name]}</TableRowColumn>
+          })}
+        </TableRow>
       );
     });
-  }
 
-  get rowElements() {
-    if (!this.state.data || !this.state.data.map) {
-      throw new Error('Invalid data supplied to DataTable.');
-    }
-    var dataKey = this.props.dataKey;
-    return this.state.data.map((data, ri) => {
-      var cells = this.props.fields.map((field, ci) => {
-        return this.getCellElement(field, data, ri, ci);
-      });
-      return (
-        <tr key={(data[dataKey] || '') + 'r' + ri}>{cells}</tr>
-      );
-    });
-  }
-
-  getCellElement(field, data, ri, ci) {
-    var prop = field.property;
-    if (!prop && !field.func) { return null; }
-    if (prop && prop.indexOf('.') !== -1) {
-      var props = prop.split('.'), p;
-      prop = props.pop();
-      do {
-        p = props.shift();
-        data = p && data && data[p];
-      } while(data && props.length);
-    }
-    var value = prop ? data && data[prop] : (field.func && data);
-    if (field.func) { value = field.func(value); }
-    value = value || field.default;
     return (
-      <td key={'c' + (prop || '') + ci + ri} className={field.className} style={field.style}>{value}</td>
+      <Table className={this.props.className} style={this.props.style} {...this.props.table}>
+        <TableHeader displaySelectAll={false} adjustForCheckbox={false} {...this.props.header}>
+          <TableRow>{tableFields}</TableRow>
+        </TableHeader>
+        <TableBody stripedRows={true} displayRowCheckbox={false} {...this.props.body}>
+          {tableRows}
+        </TableBody>
+      </Table>
     );
   }
 

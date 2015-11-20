@@ -1,0 +1,3 @@
+# HoundCI does not support ESLint.
+javascript:
+  enabled: false

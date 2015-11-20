@@ -4,4 +4,5 @@
 
 import 'babel/polyfill';
 import React from 'react';
+
 global.React = React;

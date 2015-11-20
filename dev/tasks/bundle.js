@@ -23,10 +23,10 @@ gulp.task('bundle', function (done) {
 
   createBundle(// eslint-disable-line no-use-before-define
     webpackBundler({
-      entry: entry//,
-      // commonsChunkPlugins: [
-      //   new webpack.optimize.CommonsChunkPlugin('common', 'common.js')
-      // ]
+      entry: entry,
+      commonsChunkPlugins: [
+        new webpack.optimize.CommonsChunkPlugin('common', 'common.js')
+      ]
     }),
     done);
 });

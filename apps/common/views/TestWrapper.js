@@ -5,7 +5,6 @@
 import React, { Component, PropTypes } from 'react';
 import { render, unmountComponentAtNode, findDOMNode } from 'react-dom';
 
-import mixin from '../lib/mixin';
 import onReady from '../lib/onReady';
 
 var testContainer = document.createElement('div');

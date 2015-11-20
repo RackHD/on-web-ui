@@ -2,11 +2,9 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import decorate from 'common-web-ui/lib/decorate';
 
 import Vector from '../../lib/Vector';
 import Rectangle from '../../lib/Rectangle';
@@ -14,28 +12,27 @@ import Rectangle from '../../lib/Rectangle';
 import GCGridElement from '../elements/Grid';
 
 @radium
-@decorate({
-  propTypes: {
+export default class GCVectorsLayer extends Component {
+
+  static propTypes = {
     bounds: PropTypes.object,
     className: PropTypes.string,
     css: PropTypes.object,
     grid: PropTypes.object,
     style: PropTypes.object
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     bounds: null,
     className: 'GraphCanvasVectorsLayer',
     css: {},
     grid: null,
     style: {}
-  },
+  };
 
-  contextTypes: {
+  static contextTypes = {
     graphCanvas: PropTypes.any
-  }
-})
-export default class GCVectorsLayer extends Component {
+  };
 
   get graphCanvas() {
     return this.context.graphCanvas;

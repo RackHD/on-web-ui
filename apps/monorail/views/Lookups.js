@@ -2,12 +2,12 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-/* eslint-enable no-unused-vars */
+
 
 import {
     TextField
@@ -23,6 +23,7 @@ export default class Lookups extends Component {
     searchQuery: this.props.initialSearchQuery,
     lookups: []
   };
+
   lookups = new LookupStore();
 
   componentDidMount() {

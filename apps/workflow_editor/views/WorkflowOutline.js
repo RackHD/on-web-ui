@@ -2,12 +2,8 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import JsonInspector from 'react-json-inspector';
 import InteractiveSelection from 'react-json-inspector/example/interactive-selection';
@@ -35,25 +31,24 @@ import WETaskOutline from './TaskOutline';
 */
 
 @radium
-@decorate({
-  propTypes: {
+export default class WEWorkflowOutline extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     model: PropTypes.object,
     style: PropTypes.any
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: 'WorkflowOutline',
     model: null,
     style: {}
-  },
+  };
 
-  contextTypes: {
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WEWorkflowOutline extends Component {
+  };
 
   state = {
     model: this.props.model/*,

@@ -3,28 +3,22 @@
 'use strict';
 
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import Color from 'color';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 
-import {} from 'material-ui';
-
-// import Rectangle from '../../lib/Rectangle';
-// import Vector from '../../lib/Vector';
-
 import generateId from '../../lib/generateId';
 
 @radium
 @mixin(DragEventHelpers)
-@decorate({
-  propTypes: {
+export default class GCSocketElement extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     id: PropTypes.string,
@@ -35,8 +29,9 @@ import generateId from '../../lib/generateId';
     onLink: PropTypes.func,
     onUnlink: PropTypes.func,
     style: PropTypes.any
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: 'GCSocketElement',
     css: {},
     dir: [1, 0],
@@ -46,13 +41,12 @@ import generateId from '../../lib/generateId';
     onLink: null,
     onUnlink: null,
     style: null
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any,
     parentGCPort: PropTypes.any
-  }
-})
-export default class GCSocketElement extends Component {
+  };
 
   static GCTypeEnum = {element: true, socket: true};
 

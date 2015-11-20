@@ -2,18 +2,14 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import Color from 'color';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
-
-import {} from 'material-ui';
 
 import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 
@@ -24,8 +20,9 @@ import Vector from '../../lib/Vector';
 
 @radium
 @mixin(DragEventHelpers)
-@decorate({
-  propTypes: {
+export default class GCPanelElement extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     initialBounds: PropTypes.any,
@@ -38,8 +35,9 @@ import Vector from '../../lib/Vector';
     onRemovePanel: PropTypes.func,
     onUpdateBounds: PropTypes.func,
     style: PropTypes.object
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: 'GCPanelElement',
     css: {},
     initialBounds: [0, 0, 750, 500],
@@ -52,15 +50,14 @@ import Vector from '../../lib/Vector';
     onRemovePanel: null,
     onUpdateBounds: null,
     style: {}
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any,
     // graphCanvasOwner: PropTypes.any,
     parentGCNode: PropTypes.any,
     parentGCGroup: PropTypes.any
-  }
-})
-export default class GCPanelElement extends Component {
+  };
 
   static GCTypeEnum = {element: true, panel: true};
 

@@ -2,28 +2,25 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from '../lib/decorate';
-/* eslint-enable no-unused-vars */
 
 import { Snackbar } from 'material-ui';
 
-@decorate({
-  propTypes: {
+export default class ErrorNotification extends Component {
+
+  static propTypes = {
     autoDismiss: PropTypes.number,
     className: PropTypes.string,
     initialError: PropTypes.any,
     style: PropTypes.object
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     autoDismiss: 10000,
     className: '',
     initialError: '',
     style: {}
-  }
-})
-export default class ErrorNotification extends Component {
+  };
 
   state = {error: this.props.initialError};
 

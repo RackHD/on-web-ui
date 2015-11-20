@@ -2,21 +2,8 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import mixin from '../lib/mixin';
-import decorate from '../lib/decorate';
-/* eslint-enable no-unused-vars */
 
-import {
-  } from 'material-ui';
-
-@decorate({
-  propTypes: {
-  },
-  defaultProps: {
-  }
-})
 export default class Flipper extends Component {
 
   state = {};

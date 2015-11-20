@@ -2,41 +2,40 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import decorate from 'common-web-ui/lib/decorate';
 
 import GCElementsLayer from './layers/Elements';
 import GCVectorsLayer from './layers/Vectors';
 
 @radium
-@decorate({
-  propTypes: {
+export default class GCWorld extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     elements: PropTypes.array,
     grid: PropTypes.object,
     style: PropTypes.object,
     vectors: PropTypes.array
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: 'GraphCanvasWorld',
     css: {},
     elements: [],
     grid: {},
     style: {},
     vectors: []
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any
-  },
-  childContextTypes: {
+  };
+
+  static childContextTypes = {
     graphCanvas: PropTypes.any
-  }
-})
-export default class GCWorld extends Component {
+  };
 
   get graphCanvas() {
     return this.context.graphCanvas;

@@ -2,11 +2,10 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 
-import NodesGrid from './NodesGrid';
-import WorkflowsGrid from './WorkflowsGrid';
+import NodesGrid from './nodes/NodesGrid';
+import WorkflowsGrid from './workflows/WorkflowsGrid';
 
 export default class Dashboard extends Component {
 

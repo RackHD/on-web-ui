@@ -2,12 +2,8 @@
 
 'use strict';
 
-import React, { // eslint-disable-line no-unused-vars
-  Component, PropTypes } from 'react';
-
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
-import decorate from 'common-web-ui/lib/decorate';
 
 import {
     List,
@@ -29,27 +25,26 @@ import {
 */
 
 @radium
-@decorate({
-  propTypes: {
+export default class WETaskOutline extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     editor: PropTypes.object,
     model: PropTypes.object,
     style: PropTypes.any
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: '',
     editor: null,
     model: null,
     style: {}
-  },
+  };
 
-  contextTypes: {
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WETaskOutline extends Component {
+  };
 
   state = {};
 

@@ -2,16 +2,10 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
-// import mixin from 'common-web-ui/lib/mixin';
+import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import decorate from 'common-web-ui/lib/decorate';
 
-import {
-    Tabs,
-    Tab
-  } from 'material-ui';
+import { Tabs, Tab } from 'material-ui';
 
 // import WEInspector from './Inspector';
 import WEWorkflowJSON from './WorkflowJSON';
@@ -19,31 +13,30 @@ import WETasksLibrary from './TasksLibrary';
 import WETWorkflowsLibrary from './WorkflowsLibrary';
 
 @radium
-@decorate({
-  propTypes: {
+export default class WETray extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     editor: PropTypes.object,
     styles: PropTypes.object,
     initialWidth: PropTypes.number,
     onResize: PropTypes.func
-  },
+  };
 
-  defaultProps: {
+  static defaultProps = {
     className: '',
     css: {},
     editor: null,
     styles: {},
     initialWidth: 400,
     onResize: null
-  },
+  };
 
-  contextTypes: {
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WETray extends Component {
+  };
 
   state = {
     size: this.props.initialWidth,

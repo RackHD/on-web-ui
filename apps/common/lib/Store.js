@@ -159,9 +159,9 @@ export default class Store extends EventEmitter {
     if (failure) {
       this.once(this.event(id, 'error'), failure);
     }
-    else {
-      console.warn(new Error('Store subscribed once to change without error handler.').stack);
-    }
+    // else {
+    //   console.warn(new Error('Store subscribed once to change without error handler.').stack);
+    // }
   }
 
   subscribe(id, success, failure) {
@@ -169,9 +169,9 @@ export default class Store extends EventEmitter {
     if (failure) {
       this.on(this.event(id, 'error'), failure);
     }
-    else {
-      console.warn(new Error('Store subscribed to change without error handler.').stack);
-    }
+    // else {
+    //   console.warn(new Error('Store subscribed to change without error handler.').stack);
+    // }
   }
 
   unsubscribe(id, success, failure) {

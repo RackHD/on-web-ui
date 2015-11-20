@@ -2,12 +2,12 @@
 
 'use strict';
 
-import { API } from '../config/index';
+import config from '../config/index';
 import RestAPI from 'common-web-ui/lib/RestAPI';
 
 export default class FilesRestAPI extends RestAPI {
 
-  api = API;
+  api = config.MONORAIL_API;
   entity = 'files';
 
   del(uuid) {
@@ -56,7 +56,7 @@ export default class FilesRestAPI extends RestAPI {
 
   metadata(filename) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + 'metadata/' + filename)
+      this.http.get(this.url + 'metadata/' + filename)
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -67,7 +67,7 @@ export default class FilesRestAPI extends RestAPI {
 
   put(filename, body) {
     return new Promise((resolve, reject) => {
-      http.put(this.url + filename)
+      this.http.put(this.url + filename)
         .accept('json')
         .type('application/octet-stream')
         .send(body)

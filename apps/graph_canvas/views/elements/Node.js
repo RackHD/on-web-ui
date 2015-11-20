@@ -2,13 +2,9 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import decorate from 'common-web-ui/lib/decorate';
-
-import {} from 'material-ui';
 
 import generateId from '../../lib/generateId';
 
@@ -17,8 +13,9 @@ import Rectangle from '../../lib/Rectangle';
 import Panel from './Panel';
 
 @radium
-@decorate({
-  propTypes: {
+export default class GCNodeElement extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     initialBounds: PropTypes.any,
@@ -31,8 +28,9 @@ import Panel from './Panel';
     onLink: PropTypes.func,
     onUnlink: PropTypes.func,
     style: PropTypes.object
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: 'GCNodeElement',
     css: {},
     initialBounds: [50, 50, 350, 350],
@@ -45,19 +43,19 @@ import Panel from './Panel';
     onLink: null,
     onUnlink: null,
     style: {}
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any,
     // graphCanvasOwner: PropTypes.any,
     parentGCGroup: PropTypes.any
-  },
-  childContextTypes: {
+  };
+
+  static childContextTypes = {
     graphCanvas: PropTypes.any,
     parentGCGroup: PropTypes.any,
     parentGCNode: PropTypes.any
-  }
-})
-export default class GCNodeElement extends Component {
+  };
 
   static GCTypeEnum = {element: true, node: true};
 

@@ -2,10 +2,7 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
-
-import decorate from 'common-web-ui/lib/decorate';
+import React, { Component, PropTypes } from 'react';
 
 import {
     Toolbar,
@@ -16,15 +13,12 @@ import WEFileMenu from './FileMenu';
 import WEEditMenu from './EditMenu';
 import WEViewMenu from './ViewMenu';
 
-@decorate({
-  propTypes: {},
-  defaultProps: {},
-  contextTypes: {
+export default class WEToolbar extends Component {
+
+  static contextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
-  }
-})
-export default class WEToolbar extends Component {
+  };
 
   state = {};
 

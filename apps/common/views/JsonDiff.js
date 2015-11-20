@@ -2,24 +2,19 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component, PropTypes } from 'react';
-import decorate from '../lib/decorate';
-/* eslint-enable no-unused-vars */
 
-// Based on http://tlrobinson.net/projects/javascript-fun/jsondiff/
+export default class JsonDiff extends Component {
 
-@decorate({
-  propTypes: {
+  static propTypes = {
     a: PropTypes.any,
     b: PropTypes.any
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     a: null,
     b: null
-  }
-})
-export default class JsonDiff extends Component {
+  };
 
   state = {
     objectA: this.props.a,

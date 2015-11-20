@@ -7,4 +7,4 @@ reactTapEventPlugin();
 
 // bootstrap bundle
 import './config/index';
-import './config/routes';
+import './routes';

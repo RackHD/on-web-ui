@@ -2,12 +2,12 @@
 
 'use strict';
 
-import { API } from '../config/index';
+import config from '../config/index';
 import RestAPI from 'common-web-ui/lib/RestAPI';
 
 export default class SkusRestAPI extends RestAPI {
 
-  api = API;
+  api = config.MONORAIL_API;
   entity = 'skus';
 
   get url() {

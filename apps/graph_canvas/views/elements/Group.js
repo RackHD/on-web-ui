@@ -2,13 +2,9 @@
 
 'use strict';
 
-import React, // eslint-disable-line no-unused-vars
-  { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import decorate from 'common-web-ui/lib/decorate';
-
-import {} from 'material-ui';
 
 import generateId from '../../lib/generateId';
 import Rectangle from '../../lib/Rectangle';
@@ -19,8 +15,9 @@ import GCVectorsLayer from '../layers/Vectors';
 import Panel from './Panel';
 
 @radium
-@decorate({
-  propTypes: {
+export default class GCGroupElement extends Component {
+
+  static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
     initialBounds: PropTypes.any,
@@ -33,8 +30,9 @@ import Panel from './Panel';
     onLink: PropTypes.func,
     onUnlink: PropTypes.func,
     style: PropTypes.object
-  },
-  defaultProps: {
+  };
+
+  static defaultProps = {
     className: 'GCGroupElement',
     css: {},
     initialBounds: [0, 0, 750, 500],
@@ -46,17 +44,17 @@ import Panel from './Panel';
     onLink: null,
     onUnlink: null,
     style: {}
-  },
-  contextTypes: {
+  };
+
+  static contextTypes = {
     graphCanvas: PropTypes.any
     // graphCanvasOwner: PropTypes.any
-  },
-  childContextTypes: {
+  };
+
+  static childContextTypes = {
     graphCanvas: PropTypes.any,
     parentGCGroup: PropTypes.any
-  }
-})
-export default class GCGroupElement extends Component {
+  };
 
   static GCTypeEnum = {element: true, group: true};
 
