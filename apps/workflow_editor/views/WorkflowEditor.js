@@ -46,6 +46,10 @@ export default class WorkflowEditor extends Component {
     styles: {}
   };
 
+  static contextTypes = {
+    appContainer: PropTypes.any
+  };
+
   static childContextTypes = {
     layout: PropTypes.any,
     editor: PropTypes.any
@@ -110,6 +114,7 @@ export default class WorkflowEditor extends Component {
   }
 
   componentWillMount() {
+    this.context.appContainer.fullscreenMode(true);
     this.loadWorkflowFromParams();
   }
 
@@ -127,6 +132,7 @@ export default class WorkflowEditor extends Component {
   }
 
   componentWillUnmount() {
+    this.context.appContainer.fullscreenMode(false);
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('orientationchange', this.handleResize);
     this.handleResize = null;

@@ -2,6 +2,7 @@
 
 'use strict';
 
+import merge from 'lodash/object/merge';
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 import { RouteHandler, Link } from 'react-router';
@@ -50,7 +51,15 @@ export default class AppContainer extends Component {
     title: '',
   };
 
+  static childContextTypes = {
+    appContainer: PropTypes.any
+  };
+
   state = {};
+
+  getChildContext() {
+    return {appContainer: this};
+  }
 
   componentWillMount() {
     this.handleError = this.onError.bind(this)
@@ -65,9 +74,11 @@ export default class AppContainer extends Component {
     if (this.state.error) { this.refs.error.show(); }
   }
 
+  gutter = 64;
+
   css = {
     root: {
-      paddingBottom: this.props.disableTabPadding ? 0 : 64
+      paddingBottom: this.props.disableTabPadding ? 0 : this.gutter
     },
 
     appBar: {
@@ -77,7 +88,7 @@ export default class AppContainer extends Component {
     },
 
     content: {
-      paddingTop: this.props.disableAppBar ? 0 : 64
+      paddingTop: this.props.disableAppBar ? 0 : this.gutter
     },
 
     footer: {
@@ -86,7 +97,32 @@ export default class AppContainer extends Component {
   };
 
   render() {
-    let css = this.props.css || {};
+    let css = {
+      root: [
+        this.css.root,
+        this.state.fullscreenMode ? {paddingBottom: 0} : null,
+        this.props.css.root,
+        this.props.style
+      ],
+
+      // AppBar does not support Radium style
+      appBar: merge(
+        this.css.appBar,
+        this.state.fullscreenMode ? {position: 'relative'} : null,
+        this.props.css.appBar
+      ),
+
+      content: [
+        this.css.content,
+        this.state.fullscreenMode ? {paddingTop: 0, height: window.innerHeight - (this.gutter * 2)} : null,
+        this.props.css.content
+      ],
+
+      footer: [
+        this.css.footer,
+        this.props.css.footer
+      ]
+    };
 
     let breadcrumbs = this.renderBreadcrumbs(),
         titleStyle = {fontWeight: 'normal', fontSize: '1em', margin: 0},
@@ -101,23 +137,25 @@ export default class AppContainer extends Component {
     return (
       <div
           className={this.props.className + ' app-canvas'}
-          style={[this.css.root, css.root]}>
+          style={css.root}>
         <AppCanvas>
-          {this.props.disableAppBar ? null : <AppBar
-              onLeftIconButtonTouchTap={this.toggleLeftNavigation.bind(this)}
-              iconElementRight={this.props.rightAppBarIconElement}
-              title={title}
-              style={this.css.appBar}
-              zDepth={0} />}
+          <header>
+            {this.props.disableAppBar ? null : <AppBar
+                onLeftIconButtonTouchTap={this.toggleLeftNavigation.bind(this)}
+                iconElementRight={this.props.rightAppBarIconElement}
+                title={title}
+                style={css.appBar}
+                zDepth={0} />}
 
-          {this.props.navigation && <AppNavigation
-              ref="navigation"
-              title={this.props.title}
-              menuItems={this.props.navigation} />}
+            {this.props.navigation && <AppNavigation
+                ref="navigation"
+                title={this.props.title}
+                menuItems={this.props.navigation} />}
+          </header>
 
           {this.props.beforeContent}
 
-          <div ref="content" style={[this.css.content, css.content]}>
+          <div ref="content" style={css.content}>
             {this.props.children}
           </div>
 
@@ -125,9 +163,9 @@ export default class AppContainer extends Component {
 
           <ErrorNotification ref="error" />
 
-          <footer style={[this.css.footer, css.footer]}>
+          <footer style={css.footer}>
             <span key={0}>© 2015 EMC<sup>2</sup></span>
-            <ViewportSize style={{float: 'right'}} />
+            {this.state.fullscreenMode ? null : <ViewportSize style={{float: 'right'}} />}
           </footer>
 
           <EMCTab ref="emcTab" />
@@ -216,6 +254,10 @@ export default class AppContainer extends Component {
 
   findTitle() {
     return document.head.querySelector('title');
+  }
+
+  fullscreenMode(enable) {
+    this.setState({fullscreenMode: enable});
   }
 
 }
