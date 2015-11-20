@@ -19,7 +19,7 @@ import {
     Snackbar
   } from 'material-ui';
 
-import FileStore from '../stores/FileStore';
+import FileStore from '../../stores/FileStore';
 
 @mixin(DialogHelpers)
 export default class File extends Component {

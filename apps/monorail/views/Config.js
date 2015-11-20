@@ -7,9 +7,10 @@ import { LinearProgress } from 'material-ui';
 import JsonInspector from 'react-json-inspector';
 
 import ConfigStore from '../stores/ConfigStore';
-let config = new ConfigStore();
 
 export default class Config extends Component {
+
+  config = new ConfigStore();
 
   state = {
     config: null,
@@ -17,7 +18,7 @@ export default class Config extends Component {
   };
 
   componentDidMount() {
-    this.unwatchConfig = config.watchOne('config', 'config', this);
+    this.unwatchConfig = this.config.watchOne('config', 'config', this);
     this.readConfig();
   }
 
@@ -38,7 +39,7 @@ export default class Config extends Component {
 
   readConfig() {
     this.setState({loading: true});
-    config.read().then(() => this.setState({loading: false}));
+    this.config.read().then(() => this.setState({loading: false}));
   }
 
 }

@@ -16,16 +16,15 @@ import {
     LinearProgress,
     List, ListItem,
     RaisedButton,
-    Snackbar,
     Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
 import JsonInspector from 'react-json-inspector';
 
 import Console from 'common-web-ui/views/Console';
-import WorkflowMonitor from '../lib/WorkflowMonitor';
 
-import WorkflowStore from '../stores/WorkflowStore';
+import WorkflowMonitor from '../../lib/WorkflowMonitor';
+import WorkflowStore from '../../stores/WorkflowStore';
 
 @mixin(DialogHelpers)
 export default class Workflow extends Component {

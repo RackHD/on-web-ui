@@ -6,11 +6,12 @@ import React, { Component } from 'react';
 
 import Console from 'common-web-ui/views/Console';
 import JsonInspector from 'react-json-inspector';
+
 import LogsMessenger from '../messengers/LogsMessenger';
 
-let logs = new LogsMessenger();
-
 export default class AllLogs extends Component {
+
+  logs = new LogsMessenger();
 
   state = {
     logs: []
@@ -23,11 +24,11 @@ export default class AllLogs extends Component {
   }
 
   unwatch() {
-    logs.ignore();
+    this.logs.ignore();
   }
 
   watch(props) {
-    logs.listen(msg => {
+    this.logs.listen(msg => {
       this.setState(state => {
         return {logs: [msg.data].concat(state.logs)};
       });
@@ -35,13 +36,13 @@ export default class AllLogs extends Component {
   }
 
   componentDidMount() {
-    logs.connect();
+    this.logs.connect();
     this.watch();
   }
 
   componentWillUnmount() {
     this.unwatch();
-    logs.disconnect();
+    this.logs.disconnect();
   }
 
   render() {

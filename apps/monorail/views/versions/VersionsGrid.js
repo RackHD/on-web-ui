@@ -12,7 +12,7 @@ import { LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import VersionStore from '../stores/VersionStore';
+import VersionStore from '../../stores/VersionStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class VersionsGrid extends Component {

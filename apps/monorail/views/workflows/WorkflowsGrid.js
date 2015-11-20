@@ -15,9 +15,8 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import NodesRestAPI from '../messengers/NodesRestAPI';
-
-import WorkflowStore from '../stores/WorkflowStore';
+import NodesRestAPI from '../../messengers/NodesRestAPI';
+import WorkflowStore from '../../stores/WorkflowStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class WorkflowsGrid extends Component {

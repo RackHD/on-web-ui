@@ -23,7 +23,7 @@ import {
 
 import JsonInspector from 'react-json-inspector';
 
-import PollerStore from '../stores/PollerStore';
+import PollerStore from '../../stores/PollerStore';
 
 @mixin(DialogHelpers, FormatHelpers)
 export default class Poller extends Component {

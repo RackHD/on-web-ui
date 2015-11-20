@@ -2,15 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
 import {
     FlatButton,
@@ -22,15 +18,12 @@ import {
 
 import JsonEditor from 'common-web-ui/views/JsonEditor';
 
-import SkuStore from '../stores/SkuStore';
-let skus = new SkuStore();
+import SkuStore from '../../stores/SkuStore';
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(EditorHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(EditorHelpers, RouteHelpers)
 export default class EditSku extends Component {
+
+  skus = new SkuStore();
 
   state = {
     sku: null,
@@ -88,17 +81,11 @@ export default class EditSku extends Component {
   saveSku() {
     this.disable();
     if (this.state.sku.id) {
-      skus.update(this.state.sku.id, this.state.sku).then(() => this.enable());
+      this.skus.update(this.state.sku.id, this.state.sku).then(() => this.enable());
     }
     else {
-      skus.create(this.state.sku).then(() => this.routeBack());
+      this.skus.create(this.state.sku).then(() => this.routeBack());
     }
   }
-
-  // resetSku() {
-  //   this.disable();
-  //   skus.read(this.state.sku.id)
-  //     .then(sku => this.setState({sku: sku, disabled: false}));
-  // }
 
 }

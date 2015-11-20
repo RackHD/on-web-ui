@@ -2,15 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
 import {
     FlatButton,
@@ -20,15 +16,12 @@ import {
     Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
-import FileStore from '../stores/FileStore';
-let file = new FileStore();
+import FileStore from '../../stores/FileStore';
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(EditorHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(EditorHelpers, RouteHelpers)
 export default class EditFile extends Component {
+
+  files = new FileStore();
 
   state = {
     file: this.props.file,
@@ -86,7 +79,7 @@ export default class EditFile extends Component {
     this.setState({loading: true});
     this.disable();
     let isNewFile = !this.state.file.uuid;
-    file.update(this.state.file.basename, this.state.file.body).then(() => {
+    this.files.update(this.state.file.basename, this.state.file.body).then(() => {
       this.enable()
       this.setState({loading: false});
       if (isNewFile) this.routeBack();

@@ -12,7 +12,7 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import PollerStore from '../stores/PollerStore';
+import PollerStore from '../../stores/PollerStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class PollersGrid extends Component {
@@ -42,7 +42,8 @@ export default class PollersGrid extends Component {
           toolbarContent={<RaisedButton label="Create Poller" primary={true} onClick={this.createPoller.bind(this)} />}
           mapper={poller => {
             let row = {};
-            row.Name = <a href={this.routePath('pollers', poller.id)}>{poller.name}</a>;
+            console.log(poller);
+            row.Type = <a href={this.routePath('pollers', poller.id)}>{poller.type.toUpperCase()}</a>;
             if (!this.nodeId) {
               row.Node = <a href={this.routePath('nodes', poller.node)}>{this.shortId(poller.node)}</a>;
             }

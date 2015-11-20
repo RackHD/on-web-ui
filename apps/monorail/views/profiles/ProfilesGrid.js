@@ -12,7 +12,7 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import ProfileStore from '../stores/ProfileStore';
+import ProfileStore from '../../stores/ProfileStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class ProfilesGrid extends Component {

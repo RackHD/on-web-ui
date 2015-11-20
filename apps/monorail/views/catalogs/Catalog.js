@@ -11,7 +11,7 @@ import moment from 'moment';
 import JsonDiff from 'common-web-ui/views/JsonDiff';
 
 import CatalogsGrid from './CatalogsGrid';
-import CatalogStore from '../stores/CatalogStore';
+import CatalogStore from '../../stores/CatalogStore';
 
 export default class Catalog extends Component {
 
@@ -54,7 +54,7 @@ export default class Catalog extends Component {
   }
 
   watch(props) {
-    this.unwatchOtherCatalogs = otherCatalogs.watchAll('otherCatalogs', this);
+    this.unwatchOtherCatalogs = this.otherCatalogs.watchAll('otherCatalogs', this);
     this.otherCatalogs.list().then(() => {
       if (this.catalogId) {
         this.unwatchCatalog = this.catalogs.watchOne(this.getCatalogId(props), 'catalog', this);
@@ -96,11 +96,6 @@ export default class Catalog extends Component {
         })
       }
       content = <div style={{padding: 10}}>
-        <div style={{overflow: 'auto', margin: 10}}>
-          <JsonInspector
-              isExpanded={() => true}
-              data={this.state.catalog} />
-        </div>
         <div>
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Compare With Other Catalogs:</h5>
           <Select
@@ -120,6 +115,11 @@ export default class Catalog extends Component {
               }} />
           {this.state.catalog && this.state.compareCatalog ?
             <JsonDiff a={this.state.catalog} b={this.state.compareCatalog} /> : null}
+        </div>
+        <div style={{overflow: 'auto', margin: 10}}>
+          <JsonInspector
+              isExpanded={() => true}
+              data={this.state.catalog} />
         </div>
       </div>;
     }

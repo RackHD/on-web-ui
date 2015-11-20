@@ -20,7 +20,7 @@ import {
     Snackbar
   } from 'material-ui';
 
-import TemplateStore from '../stores/TemplateStore';
+import TemplateStore from '../../stores/TemplateStore';
 
 @mixin(DialogHelpers, FormatHelpers)
 export default class Template extends Component {

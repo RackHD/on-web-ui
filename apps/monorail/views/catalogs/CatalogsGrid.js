@@ -14,7 +14,7 @@ import { LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import CatalogStore from '../stores/CatalogStore';
+import CatalogStore from '../../stores/CatalogStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class CatalogsGrid extends Component {

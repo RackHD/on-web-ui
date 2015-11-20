@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { LinearProgress } from 'material-ui';
 import JsonInspector from 'react-json-inspector';
 
-import SchemaStore from '../stores/SchemaStore';
+import SchemaStore from '../../stores/SchemaStore';
 
 export default class Schema extends Component {
 

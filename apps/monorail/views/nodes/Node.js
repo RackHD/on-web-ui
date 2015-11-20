@@ -12,9 +12,9 @@ import EditNode from './EditNode';
 import CreateNode from './CreateNode';
 export { CreateNode, EditNode };
 
-import CatalogsGrid from './CatalogsGrid';
-import PollersGrid from './PollersGrid';
-import WorkflowsGrid from './WorkflowsGrid';
+import CatalogsGrid from '../catalogs/CatalogsGrid';
+import PollersGrid from '../pollers/PollersGrid';
+import WorkflowsGrid from '../workflows/WorkflowsGrid';
 
 import {
     FlatButton,
@@ -28,9 +28,9 @@ import {
 import JsonInspector from 'react-json-inspector';
 
 import Console from 'common-web-ui/views/Console';
-import NodeMonitor from '../lib/NodeMonitor';
 
-import NodeStore from '../stores/NodeStore';
+import NodeMonitor from '../../lib/NodeMonitor';
+import NodeStore from '../../stores/NodeStore';
 
 @mixin(DialogHelpers, RouteHelpers)
 export default class Node extends Component {

@@ -13,7 +13,7 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import FileStore from '../stores/FileStore';
+import FileStore from '../../stores/FileStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class FilesGrid extends Component {

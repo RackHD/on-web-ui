@@ -2,15 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
 import Select from 'react-select';
 
@@ -24,22 +20,17 @@ import {
 
 import JsonEditor from 'common-web-ui/views/JsonEditor';
 
-import WorkflowTemplateStore from '../stores/WorkflowTemplateStore';
-let workflowTemplates = new WorkflowTemplateStore();
+import WorkflowTemplateStore from '../../stores/WorkflowTemplateStore';
+import WorkflowStore from '../../stores/WorkflowStore';
+import NodeStore from '../../stores/NodeStore';
 
-import WorkflowStore from '../stores/WorkflowStore';
-let workflows = new WorkflowStore();
-
-import NodeStore from '../stores/NodeStore';
-let nodes = new NodeStore();
-let nodesRestAPI = nodes.nodesRestAPI;
-
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(EditorHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(EditorHelpers, RouteHelpers)
 export default class EditWorkflow extends Component {
+
+  workflowTemplates = new WorkflowTemplateStore();
+  workflows = new WorkflowStore();
+  nodes = new NodeStore();
+  nodesRestAPI = this.nodes.nodesRestAPI;
 
   state = {
     nodes: [],
@@ -54,9 +45,9 @@ export default class EditWorkflow extends Component {
   }
 
   componentWillMount() {
-    this.unwatchWorkflowTemplates = workflowTemplates.watchAll('library', this);
-    this.unwatchNodes = nodes.watchAll('nodes', this);
-    Promise.all([workflowTemplates.list(), nodes.list()]).then(() => this.setState({disabled: false}));
+    this.unwatchWorkflowTemplates = this.workflowTemplates.watchAll('library', this);
+    this.unwatchNodes = this.nodes.watchAll('nodes', this);
+    Promise.all([this.workflowTemplates.list(), this.nodes.list()]).then(() => this.setState({disabled: false}));
   }
 
   componentWillUnmount() {
@@ -144,10 +135,10 @@ export default class EditWorkflow extends Component {
   saveWorkflow() {
     this.disable();
     if (this.state.workflow.id) {
-      workflows.update(this.state.workflow.id, this.state.workflow).then(() => this.enable());
+      this.workflows.update(this.state.workflow.id, this.state.workflow).then(() => this.enable());
     }
     else if (this.state.workflow.node) {
-      nodesRestAPI.postWorkflow(this.state.workflow.node, this.state.workflow).then(workflow => {
+      this.nodesRestAPI.postWorkflow(this.state.workflow.node, this.state.workflow).then(workflow => {
         this.enable();
         this.routeTo('workflows', workflow.id);
       });
@@ -156,11 +147,5 @@ export default class EditWorkflow extends Component {
       this.enable();
     }
   }
-
-  // resetWorkflow() {
-  //   this.disable();
-  //   workflows.read(this.state.workflow.id)
-  //     .then(workflow => this.setState({workflow: workflow, disabled: false}));
-  // }
 
 }

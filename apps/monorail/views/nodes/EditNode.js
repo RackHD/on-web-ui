@@ -2,15 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-/* eslint-enable no-unused-vars */
 
 import Select from 'react-select';
 
@@ -24,15 +20,12 @@ import {
 
 import JsonEditor from 'common-web-ui/views/JsonEditor';
 
-import NodeStore from '../stores/NodeStore';
-let nodes = new NodeStore();
+import NodeStore from '../../stores/NodeStore';
 
-@mixin(FormatHelpers)
-@mixin(DialogHelpers)
-@mixin(EditorHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(EditorHelpers, RouteHelpers)
 export default class EditNode extends Component {
+
+  nodes = new NodeStore();
 
   state = {
     node: this.props.node,
@@ -109,17 +102,11 @@ export default class EditNode extends Component {
   saveNode() {
     this.disable();
     if (this.state.node.id) {
-      nodes.update(this.state.node.id, this.state.node).then(() => this.enable());
+      this.nodes.update(this.state.node.id, this.state.node).then(() => this.enable());
     }
     else {
-      nodes.create(this.state.node).then(() => this.routeBack());
+      this.nodes.create(this.state.node).then(() => this.routeBack());
     }
   }
-
-  // resetNode() {
-  //   this.disable();
-  //   nodes.read(this.state.node.id)
-  //     .then(node => this.setState({node: node, disabled: false}));
-  // }
 
 }

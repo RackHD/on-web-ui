@@ -2,15 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
 import Select from 'react-select';
 
@@ -24,18 +20,14 @@ import {
 
 import JsonEditor from 'common-web-ui/views/JsonEditor';
 
-import PollerStore from '../stores/PollerStore';
-let pollers = new PollerStore();
+import PollerStore from '../../stores/PollerStore';
+import NodeStore from '../../stores/NodeStore';
 
-import NodeStore from '../stores/NodeStore';
-let nodes = new NodeStore();
-
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(EditorHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(EditorHelpers, RouteHelpers)
 export default class EditPoller extends Component {
+
+  pollers = new PollerStore();
+  nodes = new NodeStore()
 
   state = {
     poller: this.props.poller,
@@ -44,8 +36,8 @@ export default class EditPoller extends Component {
   };
 
   componentWillMount() {
-    this.unwatchNodes = nodes.watchAll('nodes', this);
-    nodes.list().then(() => this.setState({disabled: false}));
+    this.unwatchNodes = this.nodes.watchAll('nodes', this);
+    this.nodes.list().then(() => this.setState({disabled: false}));
   }
 
   componentWillUnmount() {
@@ -158,17 +150,11 @@ export default class EditPoller extends Component {
   savePoller() {
     this.disable();
     if (this.state.poller.id) {
-      pollers.update(this.state.poller.id, this.state.poller).then(() => this.enable());
+      this.pollers.update(this.state.poller.id, this.state.poller).then(() => this.enable());
     }
     else {
-      pollers.create(this.state.poller).then(() => this.routeBack());
+      this.pollers.create(this.state.poller).then(() => this.routeBack());
     }
   }
-
-  // resetPoller() {
-  //   this.disable();
-  //   pollers.read(this.state.poller.id)
-  //     .then(poller => this.setState({poller: poller, disabled: false}));
-  // }
 
 }

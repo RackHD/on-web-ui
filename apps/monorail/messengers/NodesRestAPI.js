@@ -197,7 +197,7 @@ export default class NodesRestAPI extends RestAPI {
 
   getActiveWorkflow(id) {
     return new Promise((resolve, reject) => {
-      http.get(this.url + id + '/workflows/active')
+      this.http.get(this.url + id + '/workflows/active')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }

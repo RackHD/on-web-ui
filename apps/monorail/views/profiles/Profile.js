@@ -16,11 +16,10 @@ import {
     LinearProgress,
     List, ListItem,
     RaisedButton,
-    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle,
-    Snackbar
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
-import ProfileStore from '../stores/ProfileStore';
+import ProfileStore from '../../stores/ProfileStore';
 
 @mixin(DialogHelpers, FormatHelpers)
 export default class Profile extends Component {

@@ -12,8 +12,7 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import TemplateStore from '../stores/TemplateStore';
-let templates = new TemplateStore();
+import TemplateStore from '../../stores/TemplateStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class TemplatesGrid extends Component {

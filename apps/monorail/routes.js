@@ -31,39 +31,32 @@ export var navigation = [
   { text: 'Templates', route: 'templates' },
   { text: 'System', type: MenuItem.Types.SUBHEADER },
   { text: 'Config', route: 'config' },
-  { text: 'Logs', route: 'logs' },
-  // { text: 'Lookups', route: 'Lookups' },
-  // { text: 'Schemas', route: 'Schemas' },
-  // { text: 'Versions', route: 'versions' }
+  { text: 'Logs', route: 'logs' }
 ];
 
 // Must be imported after navigation.
-import AllLogs from '../views/AllLogs';
-import App from '../views/App';
-import Catalog from '../views/Catalog';
-import Catalogs from '../views/Catalogs';
-import Config from '../views/Config';
-import Dashboard from '../views/Dashboard';
-import File, { CreateFile } from '../views/File';
-import Files from '../views/Files';
-// import Lookups from '../views/Lookups';
-import Node, { CreateNode } from '../views/Node';
-import Nodes from '../views/Nodes';
-import OBMService from '../views/OBMService';
-import OBMServices from '../views/OBMServices';
-import Poller, { CreatePoller } from '../views/Poller';
-import Pollers from '../views/Pollers';
-import Profile, { CreateProfile } from '../views/Profile';
-import Profiles from '../views/Profiles';
-// import Schema from '../views/Schema';
-// import Schemas from '../views/Schemas';
-import Sku, { CreateSku } from '../views/Sku';
-import Skus from '../views/Skus';
-import Template, { CreateTemplate } from '../views/Template';
-import Templates from '../views/Templates';
-// import Versions from '../views/Versions';
-import Workflow, { CreateWorkflow } from '../views/Workflow';
-import Workflows from '../views/Workflows';
+import AllLogs from './views/AllLogs';
+import App from './views/App';
+import Catalog from './views/catalogs/Catalog';
+import Catalogs from './views/catalogs/Catalogs';
+import Config from './views/Config';
+import Dashboard from './views/Dashboard';
+import File, { CreateFile } from './views/files/File';
+import Files from './views/files/Files';
+import Node, { CreateNode } from './views/nodes/Node';
+import Nodes from './views/nodes/Nodes';
+import OBMService from './views/obms/OBMService';
+import OBMServices from './views/obms/OBMServices';
+import Poller, { CreatePoller } from './views/pollers/Poller';
+import Pollers from './views/pollers/Pollers';
+import Profile, { CreateProfile } from './views/profiles/Profile';
+import Profiles from './views/profiles/Profiles';
+import Sku, { CreateSku } from './views/skus/Sku';
+import Skus from './views/skus/Skus';
+import Template, { CreateTemplate } from './views/templates/Template';
+import Templates from './views/templates/Templates';
+import Workflow, { CreateWorkflow } from './views/workflows/Workflow';
+import Workflows from './views/workflows/Workflows';
 
 import WorkflowEditor from 'workflow-editor-web-ui/views/WorkflowEditor';
 
@@ -91,7 +84,6 @@ let routes = (
     <Route name="Files" path="/files/:fileId" component={File} />
 
     <Route name="All Logs" path="/logs" component={AllLogs} />
-    {/*<Route name="Lookups" path="/lookups" component={Lookups} />*/}
 
     <Route name="Nodes" path="/nodes" component={Nodes} />
     <Route name="New Node" path="/nodes/new" component={CreateNode} />
@@ -110,9 +102,6 @@ let routes = (
     <Route name="New Profile" path="/profiles/new" component={CreateProfile} />
     <Route name="Profiles" path="/profiles/:profileId" component={Profile} />
 
-    {/*<Route name="Schemas" path="/schemas" component={Schemas} />
-    <Route name="Schemas" path="/schemas/:schemaId" component={Schema} />*/}
-
     <Route name="SKUs" path="/skus" component={Skus} />
     <Route name="New SKU" path="/skus/new" component={CreateSku} />
     <Route name="SKUs" path="/skus/:skuId" component={Sku} />
@@ -120,8 +109,6 @@ let routes = (
     <Route name="Templates" path="/templates" component={Templates} />
     <Route name="New Template" path="/templates/new" component={CreateTemplate} />
     <Route name="Templates" path="/templates/:templateId" component={Template} />
-
-    {/*<Route name="Versions" path="/versions" component={Versions} />*/}
 
     <Route name="Workflows" path="/workflows" component={Workflows} />
     <Route name="Node Workflows" path="/workflows/n/:nodeId" component={Workflows} />

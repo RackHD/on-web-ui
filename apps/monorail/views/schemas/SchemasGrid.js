@@ -12,7 +12,7 @@ import { LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import SchemaStore from '../stores/SchemaStore';
+import SchemaStore from '../../stores/SchemaStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class SchemasGrid extends Component {

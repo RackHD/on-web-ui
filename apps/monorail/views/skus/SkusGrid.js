@@ -12,7 +12,7 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import SkuStore from '../stores/SkuStore';
+import SkuStore from '../../stores/SkuStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class SkusGrid extends Component {
@@ -41,7 +41,7 @@ export default class SkusGrid extends Component {
   render() {
     return (
       <ResourceTable
-          initialEntities={this.state.pollers}
+          initialEntities={this.state.skus}
           routeName="skus"
           emptyContent="No skus."
           headerContent="SKUs"

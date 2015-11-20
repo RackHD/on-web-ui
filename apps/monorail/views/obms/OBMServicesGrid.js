@@ -12,7 +12,7 @@ import { LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import OBMServiceStore from '../stores/OBMServiceStore';
+import OBMServiceStore from '../../stores/OBMServiceStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class OBMServicesGrid extends Component {

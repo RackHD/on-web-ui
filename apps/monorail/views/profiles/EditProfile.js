@@ -2,15 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
 import {
     FlatButton,
@@ -20,15 +16,12 @@ import {
     Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
-import ProfileStore from '../stores/ProfileStore';
-let profiles = new ProfileStore();
+import ProfileStore from '../../stores/ProfileStore';
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(EditorHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(EditorHelpers, RouteHelpers)
 export default class EditProfile extends Component {
+
+  profiles = new ProfileStore();
 
   state = {
     profile: this.props.profile,
@@ -90,7 +83,7 @@ export default class EditProfile extends Component {
     this.setState({loading: true});
     this.disable();
     let isNewProfile = !this.state.profile.id;
-    templates.update(this.state.profile.name, this.state.profile.contents).then(() => {
+    this.profiles.update(this.state.profile.name, this.state.profile.contents).then(() => {
       this.enable()
       this.setState({loading: false});
       if (isNewProfile) this.routeBack();

@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { LinearProgress } from 'material-ui';
 import JsonInspector from 'react-json-inspector';
 
-import OBMServiceStore from '../stores/OBMServiceStore';
+import OBMServiceStore from '../../stores/OBMServiceStore';
 
 export default class OBMService extends Component {
 

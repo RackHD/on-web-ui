@@ -13,7 +13,7 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import NodeStore from '../stores/NodeStore';
+import NodeStore from '../../stores/NodeStore';
 
 @mixin(FormatHelpers, RouteHelpers)
 export default class NodesGrid extends Component {

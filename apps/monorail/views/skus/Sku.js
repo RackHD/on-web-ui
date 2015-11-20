@@ -16,13 +16,12 @@ import {
     LinearProgress,
     List, ListItem,
     RaisedButton,
-    Snackbar,
     Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
 import JsonInspector from 'react-json-inspector';
 
-import SkuStore from '../stores/SkuStore';
+import SkuStore from '../../stores/SkuStore';
 
 @mixin(DialogHelpers)
 export default class Sku extends Component {

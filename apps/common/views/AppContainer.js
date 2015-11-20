@@ -183,7 +183,7 @@ export default class AppContainer extends Component {
     }
 
     function last(name) {
-      if (name.length === 24 && !((/\s/).test(name))) {
+      if ((name.length === 24 || name.length === 36) && !((/\s/).test(name))) {
         name = FormatHelpers.shortId(name);
       }
       return name;

@@ -2,15 +2,11 @@
 
 'use strict';
 
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
+
 import mixin from 'common-web-ui/lib/mixin';
-import DialogHelpers from 'common-web-ui/mixins/DialogHelpers';
-import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
 import EditorHelpers from 'common-web-ui/mixins/EditorHelpers';
 import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-import GridHelpers from 'common-web-ui/mixins/GridHelpers';
-/* eslint-enable no-unused-vars */
 
 import {
     FlatButton,
@@ -20,15 +16,12 @@ import {
     Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
-import TemplateStore from '../stores/TemplateStore';
-let templates = new TemplateStore();
+import TemplateStore from '../../stores/TemplateStore';
 
-@mixin(DialogHelpers)
-@mixin(FormatHelpers)
-@mixin(EditorHelpers)
-@mixin(RouteHelpers)
-@mixin(GridHelpers)
+@mixin(EditorHelpers, RouteHelpers)
 export default class EditTemplate extends Component {
+
+  templates = new TemplateStore();
 
   state = {
     template: this.props.template,
@@ -90,7 +83,7 @@ export default class EditTemplate extends Component {
     this.setState({loading: true});
     this.disable();
     let isNewTemplate = !this.state.template.id;
-    templates.update(this.state.template.name, this.state.template.contents).then(() => {
+    this.templates.update(this.state.template.name, this.state.template.contents).then(() => {
       this.enable()
       this.setState({loading: false});
       if (isNewTemplate) this.routeBack();

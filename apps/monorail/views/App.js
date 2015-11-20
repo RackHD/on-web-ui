@@ -18,7 +18,7 @@ import AppContainer from 'common-web-ui/views/AppContainer';
 import emcTheme from 'common-web-ui/lib/emcTheme';
 
 import config from '../config/index';
-import { navigation } from '../config/routes';
+import { navigation } from '../routes';
 
 export default class App extends Component {
 
