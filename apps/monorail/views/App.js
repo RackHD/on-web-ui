@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import {
@@ -18,9 +18,18 @@ import AppContainer from 'common-web-ui/views/AppContainer';
 import emcTheme from 'common-web-ui/lib/emcTheme';
 
 import config from '../config/index';
+import icons from '../icons';
 import { navigation } from '../routes';
 
 export default class App extends Component {
+
+  static childContextTypes = {
+    icons: PropTypes.any
+  };
+
+  getChildContext() {
+    return { icons };
+  }
 
   state = {
     navigation,
@@ -71,7 +80,7 @@ export default class App extends Component {
             <IconButton onClick={this.showPopover.bind(this, 'settings')}>
               <FontIcon className="fa fa-cog"
                 color={emcTheme.rawTheme.palette.alternateTextColor}
-                hoverColor={emcTheme.rawTheme.palette.textColor}/>
+                hoverColor={emcTheme.rawTheme.palette.textColor} />
             </IconButton>
           }
           {...this.props} />

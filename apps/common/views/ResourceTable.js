@@ -4,7 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import { Checkbox, Snackbar } from 'material-ui';
+import { Checkbox, FontIcon } from 'material-ui';
 
 import DataTable from './DataTable';
 import DataTableToolbar from './DataTableToolbar';
@@ -43,6 +43,11 @@ export default class ResourceTable extends Component {
     toolbarContent: null
   };
 
+  static contextTypes = {
+    icons: PropTypes.any,
+    muiTheme: PropTypes.any
+  };
+
   state = {
     entities: this.props.initialEntities,
   };
@@ -78,11 +83,22 @@ export default class ResourceTable extends Component {
       }
     }
 
+    let emcTheme = this.context.muiTheme,
+        icons = this.context.icons,
+        icon = icons && icons[this.props.routeName];
+
+    if (icon) {
+      icon = <FontIcon className={icon}
+          color={emcTheme.rawTheme.palette.textColor}
+          hoverColor={null} />
+    }
+
     return (
       <div
           className={'ResourceTable ' + this.props.className}
           style={this.props.style}>
         <DataTableToolbar
+            icon={icon}
             label={<a href={'#/' + this.props.routeName}>{this.props.headerContent}</a>}
             count={data && data.length || 0}>
           {this.props.toolbarContent}
