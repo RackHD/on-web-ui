@@ -222,8 +222,8 @@ export default class GraphCanvas extends Component {
     this.setState({ position });
   }
 
-  updateScale(scale) {
-    this.setState({ scale });
+  updateScale(scale, callback) {
+    this.setState({ scale }, callback);
   }
 
   updateSelection(selected, element) {
