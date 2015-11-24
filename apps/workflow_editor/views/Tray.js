@@ -53,9 +53,8 @@ export default class WETray extends Component {
     },
     root: {
       position: 'relative',
-      background: 'white',
       verticalAlign: 'top',
-      borderLeft: '2px solid #eee'
+      borderLeft: '2px solid rgba(255,255,255,0.5)'
     }
   }
 
@@ -84,7 +83,7 @@ export default class WETray extends Component {
             onMouseDown={this.resizeTray.bind(this)}
             className="fa fa-arrows-h"
             title="Resize Tray" />
-        <Tabs ref="tabs" contentContainerStyle={{maxHeight: window.innerHeight - 86, overflow: 'auto'}}>
+        <Tabs ref="tabs" contentContainerStyle={{height: window.innerHeight - 112, background: '#222', overflow: 'auto'}}>
           {/*<Tab label="Inspector">
             <WEInspector ref="inspector" />
           </Tab>*/}

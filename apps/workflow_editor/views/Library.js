@@ -39,7 +39,7 @@ export default class WELibrary extends Component {
   css = {
     root: {
       padding: 10,
-      background: '#fff'
+      // background: '#fff'
     },
     search: {
       marginTop: '-20px'

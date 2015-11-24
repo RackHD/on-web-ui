@@ -245,9 +245,8 @@ export default class WorkflowEditor extends Component {
   updateCanvasSize() {
     var canvasCell = findDOMNode(this.refs.canvasCell),
         toolbarLine = findDOMNode(this.refs.toolbar),
-        footerSize = 38,
-        canvasWidth = canvasCell.offsetWidth, //window.innerWidth - this.state.trayWidth,
-        canvasHeight = window.innerHeight - toolbarLine.offsetHeight - footerSize;
+        canvasWidth = canvasCell.offsetWidth,
+        canvasHeight = window.innerHeight - 120
     if (this.state.canvasWidth !== canvasWidth) { this.setState({ canvasWidth }); }
     if (this.state.canvasHeight !== canvasHeight) { this.setState({ canvasHeight }); }
   }
