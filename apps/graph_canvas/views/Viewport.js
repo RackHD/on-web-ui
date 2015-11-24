@@ -177,19 +177,38 @@ export default class GCViewport extends Component {
     };
   }
 
+  scrollBuffer = null;
   scaleWorld(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    this.offsetEventXY(event);
-    var scale = this.graphCanvas.scale,
-        force = Math.max(0.05, scale / 5);
-    if (event.deltaY < 0) {
-      scale = Math.max(0.2, scale - force);
+    if (event.stopPropagation) { event.stopPropagation(); }
+    if (event.preventDefault) { event.preventDefault(); }
+    event.timeStamp = event.timeStamp || Date.now();
+    if (!this.scrollBuffer) {
+      this.scrollBuffer = [];
+      this.scrollBuffer.timeStamp = event.timeStamp + 100;
+    }
+    if (this.scrollBuffer.wait) { return; }
+    if (event.deltaY) { this.scrollBuffer.push(event.deltaY); }
+    clearTimeout(this.scrollBuffer.timer);
+    if (this.scrollBuffer.timeStamp <= event.timeStamp) {
+      let scale = this.graphCanvas.scale,
+          factor = 1.5,
+          force = this.scrollBuffer.length && this.scrollBuffer.reduce((a, b) => a + b);
+      scale = Math.max(0.0001, Math.min(100,
+        Math.abs(force < 0 ? scale / factor : scale * factor)
+      ));
+      if (isNaN(scale) || !isFinite(scale)) {
+        scale = this.graphCanvas.scale;
+      }
+      this.scrollBuffer.wait = true;
+      this.graphCanvas.updateScale(Math.abs(scale), () => {
+        this.scrollBuffer = null;
+      });
     }
     else {
-      scale = Math.min(8, scale + force);
+      this.scrollBuffer.timer = setTimeout(
+        this.scaleWorld.bind(this, {deltaY: 0, timeStamp: this.scrollBuffer.timeStamp}),
+        this.scrollBuffer.timeStamp - event.timeStamp);
     }
-    this.graphCanvas.updateScale(scale);
   }
 
 }
