@@ -10,8 +10,6 @@ import {
   } from 'material-ui';
 
 import WEFileMenu from './FileMenu';
-import WEEditMenu from './EditMenu';
-import WEViewMenu from './ViewMenu';
 
 export default class WEToolbar extends Component {
 
@@ -31,8 +29,6 @@ export default class WEToolbar extends Component {
       <Toolbar style={{background: '#333', borderBottom: '2px solid #999'}}>
         <ToolbarGroup key={0} float="left" style={{height: 'inherit'}}>
           <WEFileMenu ref="file" />
-          {/*<WEEditMenu ref="edit" />
-          <WEViewMenu ref="view" />*/}
         </ToolbarGroup>
       </Toolbar>
     );

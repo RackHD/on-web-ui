@@ -8,16 +8,6 @@ import radium from 'radium';
 import prismjs from 'prismjs';
 import 'prismjs/components/prism-javascript';
 
-/**
-# WELibraryItem
-
-@object
-  @type class
-  @extends React.Component
-  @name FileTreeBrowser
-  @desc
-*/
-
 export default class WELibraryItem extends Component {
 
   static propTypes = {

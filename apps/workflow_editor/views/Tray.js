@@ -7,7 +7,6 @@ import radium from 'radium';
 
 import { Tabs, Tab } from 'material-ui';
 
-// import WEInspector from './Inspector';
 import WEWorkflowJSON from './WorkflowJSON';
 import WETasksLibrary from './TasksLibrary';
 import WETWorkflowsLibrary from './WorkflowsLibrary';
@@ -53,9 +52,8 @@ export default class WETray extends Component {
     },
     root: {
       position: 'relative',
-      background: 'white',
       verticalAlign: 'top',
-      borderLeft: '2px solid #eee'
+      borderLeft: '2px solid rgba(255,255,255,0.5)'
     }
   }
 
@@ -84,10 +82,7 @@ export default class WETray extends Component {
             onMouseDown={this.resizeTray.bind(this)}
             className="fa fa-arrows-h"
             title="Resize Tray" />
-        <Tabs ref="tabs" contentContainerStyle={{maxHeight: window.innerHeight - 86, overflow: 'auto'}}>
-          {/*<Tab label="Inspector">
-            <WEInspector ref="inspector" />
-          </Tab>*/}
+        <Tabs ref="tabs" contentContainerStyle={{height: window.innerHeight - 112, background: '#222', overflow: 'auto'}}>
           <Tab label="JSON">
             <WEWorkflowJSON ref="json" />
           </Tab>
@@ -129,10 +124,6 @@ export default class WETray extends Component {
     window.addEventListener('mousemove', moveHandler);
     window.addEventListener('mouseup', upHandler);
   }
-
-  // viewInspector() {
-  //   this.refs.tabs.setState({selectedIndex: 0});
-  // }
 
   viewJSON() {
     this.refs.tabs.setState({selectedIndex: 0});

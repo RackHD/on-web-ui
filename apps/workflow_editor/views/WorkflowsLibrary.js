@@ -11,16 +11,6 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 import Library from './Library';
 import LibraryItem from './LibraryItem';
 
-/**
-# WEWorkflowsLibrary
-
-@object
-  @type class
-  @extends React.Component
-  @name WEWorkflowsLibrary
-  @desc
-*/
-
 @radium
 @mixin(RouteHelpers)
 export default class WEWorkflowsLibrary extends Component {

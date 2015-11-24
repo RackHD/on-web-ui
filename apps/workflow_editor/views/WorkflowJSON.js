@@ -5,23 +5,11 @@
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
-// import JsonEditor from 'common-web-ui/views/JsonEditor';
-
 import AceEditor from 'common-web-ui/views/AceEditor';
 import 'brace/mode/json';
-import 'brace/theme/github';
+import 'brace/theme/monokai';
 
 import { RaisedButton } from 'material-ui';
-
-/**
-# WEWorkflowJSON
-
-@object
-  @type class
-  @extends React.Component
-  @name WEWorkflowJSON
-  @desc
-*/
 
 @radium
 export default class WEWorkflowJson extends Component {
@@ -61,10 +49,10 @@ export default class WEWorkflowJson extends Component {
         {this.state.error}
         <AceEditor ref="aceEditor" key="aceEditor"
           mode="json"
-          theme="github"
+          theme="monokai"
           name="workflowAceEditor"
           width="98%"
-          height={(window.innerHeight - 150) + 'px'}
+          height={(window.innerHeight - 174) + 'px'}
           value={this.prepareJSON(this.state.model || this.props.model)}
           onChange={this.autoUpdateGraph.bind(this)} />
       </div>

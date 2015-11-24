@@ -7,16 +7,6 @@ import radium from 'radium';
 
 import { TextField } from 'material-ui';
 
-/**
-# WELibrary
-
-@object
-  @type class
-  @extends React.Component
-  @name WELibrary
-  @desc
-*/
-
 @radium
 export default class WELibrary extends Component {
 
@@ -38,14 +28,12 @@ export default class WELibrary extends Component {
 
   css = {
     root: {
-      padding: 10,
-      background: '#fff'
+      padding: 10
     },
     search: {
       marginTop: '-20px'
     },
     ul: {
-      // maxHeight: 500,
       overflow: 'auto',
       userSelect: 'none',
       borderTop: '1px dotted #ddd',
@@ -67,7 +55,7 @@ export default class WELibrary extends Component {
     var css = {
       root: [this.css.root, this.props.css.root, this.props.style],
       search: [this.css.search, this.props.css.search],
-      ul: [this.css.ul, /*{maxHeight: window.innerHeight - 200},*/ this.props.css.ul]
+      ul: [this.css.ul, this.props.css.ul]
     };
     var empty = null;
     if (!React.Children.count(this.props.children)) {
@@ -99,11 +87,8 @@ export default class WELibrary extends Component {
     this.trie = {};
 
     React.Children.forEach(this.props.children, child => {
-      var name = //child.key || child.props.children ||
-                 child.props.object && child.props.object.friendlyName,
+      var name = child.props.object && child.props.object.friendlyName,
           words = name && name.toLowerCase().split(/\s+/) || [];
-      // if (!name) {debugger;}
-
       words.forEach(word => {
         var letters = word.split(''),
             trie = this.trie;
