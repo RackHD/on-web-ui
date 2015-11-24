@@ -11,16 +11,6 @@ import PromptDialog from 'common-web-ui/views/dialogs/Prompt';
 import Library from './Library';
 import LibraryItem from './LibraryItem';
 
-/**
-# WETasksLibrary
-
-@object
-  @type class
-  @extends React.Component
-  @name WETasksLibrary
-  @desc
-*/
-
 @radium
 export default class WETasksLibrary extends Component {
 

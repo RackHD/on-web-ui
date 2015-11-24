@@ -5,23 +5,11 @@
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
-// import JsonEditor from 'common-web-ui/views/JsonEditor';
-
 import AceEditor from 'common-web-ui/views/AceEditor';
 import 'brace/mode/json';
 import 'brace/theme/monokai';
 
 import { RaisedButton } from 'material-ui';
-
-/**
-# WEWorkflowJSON
-
-@object
-  @type class
-  @extends React.Component
-  @name WEWorkflowJSON
-  @desc
-*/
 
 @radium
 export default class WEWorkflowJson extends Component {
