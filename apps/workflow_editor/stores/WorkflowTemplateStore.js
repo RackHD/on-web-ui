@@ -9,6 +9,7 @@ import WorkflowsRestAPI from '../messengers/WorkflowsRestAPI';
 export default class WorkflowTemplateStore extends Store {
 
   workflowsRestAPI = new WorkflowsRestAPI();
+  autoCache = true;
 
   list() {
     this.empty();
