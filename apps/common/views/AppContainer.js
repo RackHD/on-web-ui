@@ -13,7 +13,6 @@ import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
 import AppNavigation from './AppNavigation';
 import EMCTab from './EMCTab';
 import ErrorNotification from './ErrorNotification';
-import ViewportSize from './ViewportSize';
 
 import FormatHelpers from '../mixins/FormatHelpers';
 
@@ -164,8 +163,7 @@ export default class AppContainer extends Component {
           <ErrorNotification ref="error" />
 
           <footer style={css.footer}>
-            <span key={0}>© 2015 EMC<sup>2</sup></span>
-            {this.state.fullscreenMode ? null : <ViewportSize style={{float: 'right'}} />}
+            {this.state.fullscreenMode ? null : <span key={0}>© 2015 EMC<sup>2</sup></span>}
           </footer>
 
           <EMCTab ref="emcTab" />
