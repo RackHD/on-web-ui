@@ -88,7 +88,6 @@ export default class WEWorkflowJson extends Component {
   }
 
   autoUpdateGraph(newValue) {
-    // console.log('AUTO UPDATE GRAPH');
     clearTimeout(this.updateTimer);
     if (this.silentUpdating) { return; }
     if (newValue === this.lastValue) { return; }
@@ -102,7 +101,6 @@ export default class WEWorkflowJson extends Component {
   }
 
   updateGraph() {
-    // console.log('UPDATE GRAPH');
     this.compileJSON(this.refs.aceEditor.editor.getValue());
   }
 
@@ -115,7 +113,6 @@ export default class WEWorkflowJson extends Component {
   }
 
   compileJSON(newValue, delay) {
-    // console.log('COMPILE JSON');
     try {
       let updates = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
       if (updates) {
@@ -129,7 +126,6 @@ export default class WEWorkflowJson extends Component {
   }
 
   updateWorkflowGraph(updates, delay) {
-    // console.log('UPDATE WORKFLOW GRAPH');
     let safeMerge = (current, changes) => {
       if (!changes || typeof changes !== 'object') {
         return changes;
@@ -153,14 +149,11 @@ export default class WEWorkflowJson extends Component {
       return safe;
     };
 
-    // safeMerge(this.context.editor.currentWorkflowTemplate, updates);
     this.context.editor.currentWorkflowGraph =
       safeMerge(this.context.editor.currentWorkflowGraph, updates);
 
-    // console.log('UPDATE TIMER');
     clearTimeout(this.updateTimer);
     this.updateTimer = setTimeout(() => {
-      // console.log('REFRESH WORKFLOW');
       // this.setState({error: null});
       try {
         this.context.editor.refreshWorkflow();

@@ -73,9 +73,6 @@ export default class WETasksLibrary extends Component {
     var promptProps = {
       callback: (label) => {
         if (label) {
-          // let taskNode = taskDefinition.toTaskNode(this, taskDefinition, { label });
-          // taskNode.addGraphCanvasNode([1000, 1000, 1100, 1100]);
-          // this.context.layout.refs.graphCanvas.refs.world.updateGraph();
           this.context.editor.addTask(taskDefinition, label);
         }
       },

@@ -139,29 +139,11 @@ export default class WorkflowEditor extends Component {
     document.body.classList.remove('no-select');
   }
 
-  // componentWillReceiveProps(nextProps) {
-    // TODO: fix this
-    // this.loadWorkflowFromParams(nextProps);
-  // }
-
-  // componentDidUpdate() {
-  //   debugger;
-  //   this.refs.graphCanvas.onSelect((selection) => {
-  //     debugger;
-  //     this.refs.tray.refs.inspector.update(selection);
-  //   });
-  // }
+  componentWillReceiveProps(nextProps) {
+    this.loadWorkflowFromParams(nextProps);
+  }
 
   render() {
-    // var supported = true;
-    // // TODO: check for mobile, mobile is not currently supported.
-    // if (!supported) {
-    //   return (
-    //     <div className="WorkflowEditor">
-    //       <p>Workflow Editor requires a larger viewport.</p>
-    //     </div>
-    //   );
-    // }
     let css = {
       root: [this.css.root, this.props.css.root, this.props.style],
       overlay: [this.css.overlay, this.props.css.overlay]
@@ -200,9 +182,7 @@ export default class WorkflowEditor extends Component {
         onUnlink={this.removeLink.bind(this)} />;
   }
 
-  onSelect(selection) {
-    // this.refs.tray.refs.inspector.update(selection);
-  }
+  onSelect(selection) {}
 
   resetWorkflow() {
     this.currentWorkflowGraph = this.currentWorkflowGraph || {
@@ -255,7 +235,7 @@ export default class WorkflowEditor extends Component {
     props = props || this.props;
     this.setState({loading: true});
     setTimeout(() => {
-      if (props.params && props.params.workflow) {
+      if (props.params && props.params.workflow && props.params.workflow !== 'New Workflow') {
         let workflowName = decodeURIComponent(props.params.workflow);
         Promise.all([
           this.taskDefinitionStore.list(),
@@ -276,9 +256,7 @@ export default class WorkflowEditor extends Component {
   refreshWorkflow(callback) {
     this.resetWorkflow();
     setTimeout(() => {
-      this.loadWorkflowGraph(this.currentWorkflowGraph,
-        // this.currentWorkflowTemplate,
-        callback);
+      this.loadWorkflowGraph(this.currentWorkflowGraph, callback);
     }, 32);
   }
 
@@ -286,41 +264,29 @@ export default class WorkflowEditor extends Component {
     if (newGraph) { this.resetWorkflow(); }
     setTimeout(() => {
       let workflowGraph = cloneDeep(workflowTemplate);
-      // workflowTemplate = cloneDeep(workflowTemplate);
       if (newGraph) {
         this.currentWorkflowGraph = workflowGraph;
-        // this.currentWorkflowTemplate = workflowTemplate;
       }
-      this.loadWorkflowGraph(workflowGraph,
-        // workflowTemplate,
-        callback);
+      this.loadWorkflowGraph(workflowGraph, callback);
     }, 32);
   }
 
-  loadWorkflowGraph(workflowGraph,
-      // workflowTemplate,
-      callback) {
-    // this.refs.tray.refs.inspector.refs.outline.setState({model: workflowGraph});
+  loadWorkflowGraph(workflowGraph, callback) {
     // this.refs.tray.refs.json.setState({model: workflowTemplate});
-    this.loadWorkflowTemplate(workflowGraph,
-      // workflowTemplate,
-      this.currentWorkflowGraph, () => {
-        this.organizeWorkflowGraphs(workflowGraph._.groupId);
-        this.refs.tray.refs.json.setState({model: workflowGraph});
-        if (callback) { callback(workflowGraph); }
-      });
+    this.loadWorkflowTemplate(workflowGraph, this.currentWorkflowGraph, () => {
+      this.organizeWorkflowGraphs(workflowGraph._.groupId);
+      this.refs.tray.refs.json.setState({model: workflowGraph});
+      if (callback) { callback(workflowGraph); }
+    });
   }
 
-  loadWorkflowTemplate(workflowGraph,
-    // workflowTemplate,
-    parentWorkflowGraph, callback) {
+  loadWorkflowTemplate(workflowGraph, parentWorkflowGraph, callback) {
     let workflowGroupId = GCGroup.id(),
         isSubGraph = parentWorkflowGraph && parentWorkflowGraph !== workflowGraph;
 
     this.workflowGraphs[workflowGroupId] = workflowGraph;
 
-    workflowGraph._ = { isSubGraph//, template: workflowTemplate
-                                      };
+    workflowGraph._ = { isSubGraph };
     workflowGraph._.groupId = workflowGroupId;
 
     let taskCount = workflowGraph.tasks.length + 1;
