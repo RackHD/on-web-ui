@@ -217,7 +217,6 @@ export default class WorkflowEditor extends Component {
   }
 
   updateTraySize(trayWidth) {
-    // debugger;
     this.setState({ trayWidth });
     setTimeout(this.updateCanvasSize.bind(this), 16);
   }
@@ -271,7 +270,7 @@ export default class WorkflowEditor extends Component {
     }, 32);
   }
 
-  loadWorkflowGraph(workflowGraph, callback) {
+  loadWorkflowGraph(workflowGraph, workflowTemplate, callback) {
     // this.refs.tray.refs.json.setState({model: workflowTemplate});
     this.loadWorkflowTemplate(workflowGraph, this.currentWorkflowGraph, () => {
       this.organizeWorkflowGraphs(workflowGraph._.groupId);
@@ -289,15 +288,15 @@ export default class WorkflowEditor extends Component {
     workflowGraph._ = { isSubGraph };
     workflowGraph._.groupId = workflowGroupId;
 
-    let taskCount = workflowGraph.tasks.length + 1;
+    let taskCount = workflowGraph.tasks.length;
     let taskGutter = 30;
-    let taskSizeX = 320;
-    let taskSizeY = 220;
+    let taskSizeX = 240;
+    let taskSizeY = 160;
     let taskWidth = taskGutter + taskSizeX;
     let taskHeight = taskGutter + taskSizeY;
     let minSizeX = taskGutter + taskWidth / 2;
     let minSizeY = taskGutter + taskHeight / 2;
-    let columns = 4;
+    let columns = 6;
     let sizeX = Math.max(minSizeX, taskGutter + (columns * taskWidth) / 2);
     let sizeY = Math.max(minSizeY, taskGutter + (Math.ceil(taskCount / columns) * taskHeight) / 2) + 10;
 
@@ -335,74 +334,73 @@ export default class WorkflowEditor extends Component {
       // Setup Workflow Nodes
       let taskMap = workflowGraph._.taskMap = {};
 
-      let workflowOptions = workflowGraph._.options = {},
-          optionsNodeId = GCNode.id(),
-          defaultOptionsPortId = GCPort.id(),
-          defaultOptionsInId = GCSocket.id(),
-          defaultOptionsOutId = GCSocket.id(),
-          specificOptionsPortId = GCPort.id(),
-          specificOptionsInId = GCSocket.id(),
-          specificOptionsOutId = GCSocket.id();
+      // let workflowOptions = workflowGraph._.options = {},
+      //     optionsNodeId = GCNode.id(),
+      //     defaultOptionsPortId = GCPort.id(),
+      //     defaultOptionsInId = GCSocket.id(),
+      //     defaultOptionsOutId = GCSocket.id(),
+      //     specificOptionsPortId = GCPort.id(),
+      //     specificOptionsInId = GCSocket.id(),
+      //     specificOptionsOutId = GCSocket.id();
 
-      workflowOptions.defaultOptionsPortId = defaultOptionsPortId;
-      workflowOptions.specificOptionsPortId = specificOptionsPortId;
+      // workflowOptions.defaultOptionsPortId = defaultOptionsPortId;
+      // workflowOptions.specificOptionsPortId = specificOptionsPortId;
 
-      workflowOptions.defaultSocketIds = {
-        in: defaultOptionsInId,
-        out: defaultOptionsOutId
-      };
-      workflowOptions.specificSocketIds = {
-        in: specificOptionsInId,
-        out: specificOptionsOutId
-      };
+      // workflowOptions.defaultSocketIds = {
+      //   in: defaultOptionsInId,
+      //   out: defaultOptionsOutId
+      // };
+      // workflowOptions.specificSocketIds = {
+      //   in: specificOptionsInId,
+      //   out: specificOptionsOutId
+      // };
 
-      workflowOptions.element = (
-        <GCNode key={optionsNodeId}
-            initialBounds={[
-              0, 0,
-              taskWidth, taskHeight
-            ]}
-            initialColor="#6c8"
-            initialId={optionsNodeId}
-            initialName={'Options: ' + workflowGraph.friendlyName}
-            isRemovable={false}>
-          <GCPort key={defaultOptionsPortId}
-              initialColor="#496"
-              initialId={defaultOptionsPortId}
-              initialName="Workflow Options (Defaults)">
-            <GCSocket key={defaultOptionsInId}
-                dir={[-1, 0]}
-                initialColor="#294"
-                initialId={defaultOptionsInId}
-                initialName="In" />
-            <GCSocket key={defaultOptionsOutId}
-                dir={[1, 0]}
-                initialColor="#272"
-                initialId={defaultOptionsOutId}
-                initialName="Out" />
-          </GCPort>
-          <GCPort key={specificOptionsPortId}
-              initialColor="#496"
-              initialId={specificOptionsPortId}
-              initialName="Workflow Options (Specifics)">
-            <GCSocket key={specificOptionsInId}
-                dir={[-1, 0]}
-                initialColor="#294"
-                initialId={specificOptionsInId}
-                initialName="In" />
-            <GCSocket key={specificOptionsOutId}
-                dir={[1, 0]}
-                initialColor="#272"
-                initialId={specificOptionsOutId}
-                initialName="Out" />
-          </GCPort>
-        </GCNode>
-      );
+      // workflowOptions.element = (
+      //   <GCNode key={optionsNodeId}
+      //       initialBounds={[
+      //         0, 0,
+      //         taskWidth, taskHeight
+      //       ]}
+      //       initialColor="#6c8"
+      //       initialId={optionsNodeId}
+      //       initialName={'Options: ' + workflowGraph.friendlyName}
+      //       isRemovable={false}>
+      //     <GCPort key={defaultOptionsPortId}
+      //         initialColor="#496"
+      //         initialId={defaultOptionsPortId}
+      //         initialName="Workflow Options (Defaults)">
+      //       <GCSocket key={defaultOptionsInId}
+      //           dir={[-1, 0]}
+      //           initialColor="#294"
+      //           initialId={defaultOptionsInId}
+      //           initialName="In" />
+      //       <GCSocket key={defaultOptionsOutId}
+      //           dir={[1, 0]}
+      //           initialColor="#272"
+      //           initialId={defaultOptionsOutId}
+      //           initialName="Out" />
+      //     </GCPort>
+      //     <GCPort key={specificOptionsPortId}
+      //         initialColor="#496"
+      //         initialId={specificOptionsPortId}
+      //         initialName="Workflow Options (Specifics)">
+      //       <GCSocket key={specificOptionsInId}
+      //           dir={[-1, 0]}
+      //           initialColor="#294"
+      //           initialId={specificOptionsInId}
+      //           initialName="In" />
+      //       <GCSocket key={specificOptionsOutId}
+      //           dir={[1, 0]}
+      //           initialColor="#272"
+      //           initialId={specificOptionsOutId}
+      //           initialName="Out" />
+      //     </GCPort>
+      //   </GCNode>
+      // );
 
-      workflowGroupComponent.appendChild(workflowOptions.element);
+      // workflowGroupComponent.appendChild(workflowOptions.element);
 
       workflowGraph.tasks.forEach((task, taskNumber) => {
-        taskNumber += 1;
         taskMap[task.label] = task;
 
         let taskNodeId = GCNode.id(),
@@ -410,10 +408,10 @@ export default class WorkflowEditor extends Component {
             waitOnId = GCSocket.id(),
             failedId = GCSocket.id(),
             succeededId = GCSocket.id(),
-            finishedId = GCSocket.id(),
-            optionsPortId = GCPort.id(),
-            optionsInId = GCSocket.id(),
-            optionsOutId = GCSocket.id();
+            finishedId = GCSocket.id();//,
+            // optionsPortId = GCPort.id(),
+            // optionsInId = GCSocket.id(),
+            // optionsOutId = GCSocket.id();
 
         task._ = {};
         task._.nodeId = taskNodeId;
@@ -424,11 +422,11 @@ export default class WorkflowEditor extends Component {
           succeeded: succeededId,
           finished: finishedId
         };
-        task._.optionsPortId = optionsPortId;
-        task._.optionsSocketIds = {
-          in: optionsInId,
-          out: optionsOutId
-        };
+        // task._.optionsPortId = optionsPortId;
+        // task._.optionsSocketIds = {
+        //   in: optionsInId,
+        //   out: optionsOutId
+        // };
 
         task._.definition = this.getTaskDefinitionFromTask(task);
         // TODO: figure out how to link a nested workflow to a task.
@@ -455,16 +453,17 @@ export default class WorkflowEditor extends Component {
               initialId={taskNodeId}
               initialName={task.label}
               onRemove={this.removeTask.bind(this, workflowGraph, task)}
-              onChange={this.changeTask.bind(this, workflowGraph, task)}>
+              onChange={this.changeTask.bind(this, workflowGraph, task)}
+              leftSocket={<GCSocket key={waitOnId}
+                  dir={[-1, 0]}
+                  initialColor="#249"
+                  initialId={waitOnId}
+                  initialName="Wait On"
+                  hideLabel={true} />}>
             <GCPort key={orderPortId}
                 initialColor="#469"
                 initialId={orderPortId}
                 initialName="Run Order">
-              <GCSocket key={waitOnId}
-                  dir={[-1, 0]}
-                  initialColor="#249"
-                  initialId={waitOnId}
-                  initialName="Wait On" />
               <GCSocket key={failedId}
                   dir={[1, 0]}
                   initialColor="#227"
@@ -481,7 +480,7 @@ export default class WorkflowEditor extends Component {
                   initialId={finishedId}
                   initialName="Finished" />
             </GCPort>
-            <GCPort key={optionsPortId}
+            {/*<GCPort key={optionsPortId}
                 initialColor="#496"
                 initialId={optionsPortId}
                 initialName="Task Options">
@@ -495,7 +494,7 @@ export default class WorkflowEditor extends Component {
                   initialColor="#272"
                   initialId={optionsOutId}
                   initialName="Out" />
-            </GCPort>
+            </GCPort>*/}
           </GCNode>
         );
 
@@ -534,62 +533,62 @@ export default class WorkflowEditor extends Component {
       });
 
       // Specific Options Link Setup
-      if (workflowGraph.options) {
-        Object.keys(workflowGraph.options).forEach(optionsKey => {
-          let associatedTask = taskMap[optionsKey];
-          if (associatedTask) {
-            let socketFrom = workflowGraph._.options.specificSocketIds.out,
-                socketTo = associatedTask._.optionsSocketIds.in;
-
-            let optionsLinkId = GCLink.id();
-
-            let link = (
-              <GCLink key={optionsLinkId}
-                  from={socketFrom}
-                  to={socketTo}
-                  initialId={optionsLinkId}
-                  initialColor="#6fc" />
-            );
-
-            links[optionsLinkId] = link;
-
-            // TODO: add handler to remove this task from workflowGraph.tasks
-            workflowGroupComponent.appendChild(link);
-          }
-        });
-
-        // Default Options Link Setup
-        if (workflowGraph.options.defaults) {
-          Object.keys(workflowGraph.options.defaults).forEach(optionKey => {
-            let associatedTasks = [];
-            workflowGraph.tasks.forEach(task => {
-              let taskDefinition = task._.definition;
-              if (taskDefinition && taskDefinition.options && taskDefinition.options.hasOwnProperty(optionKey)) {
-                associatedTasks.push(task);
-              }
-            });
-            associatedTasks.forEach(associatedTask => {
-              let socketFrom = workflowGraph._.options.defaultSocketIds.out,
-                  socketTo = associatedTask._.optionsSocketIds.in;
-
-              let optionsLinkId = GCLink.id();
-
-              let link = (
-                <GCLink key={optionsLinkId}
-                    from={socketFrom}
-                    to={socketTo}
-                    initialId={optionsLinkId}
-                    initialColor="#6fc" />
-              );
-
-              links[optionsLinkId] = link;
-
-              // TODO: add handler to remove this task from workflowGraph.tasks
-              workflowGroupComponent.appendChild(link);
-            });
-          });
-        }
-      }
+      // if (workflowGraph.options) {
+      //   Object.keys(workflowGraph.options).forEach(optionsKey => {
+      //     let associatedTask = taskMap[optionsKey];
+      //     if (associatedTask) {
+      //       let socketFrom = workflowGraph._.options.specificSocketIds.out,
+      //           socketTo = associatedTask._.optionsSocketIds.in;
+      //
+      //       let optionsLinkId = GCLink.id();
+      //
+      //       let link = (
+      //         <GCLink key={optionsLinkId}
+      //             from={socketFrom}
+      //             to={socketTo}
+      //             initialId={optionsLinkId}
+      //             initialColor="#6fc" />
+      //       );
+      //
+      //       links[optionsLinkId] = link;
+      //
+      //       // TODO: add handler to remove this task from workflowGraph.tasks
+      //       workflowGroupComponent.appendChild(link);
+      //     }
+      //   });
+      //
+      //   // Default Options Link Setup
+      //   if (workflowGraph.options.defaults) {
+      //     Object.keys(workflowGraph.options.defaults).forEach(optionKey => {
+      //       let associatedTasks = [];
+      //       workflowGraph.tasks.forEach(task => {
+      //         let taskDefinition = task._.definition;
+      //         if (taskDefinition && taskDefinition.options && taskDefinition.options.hasOwnProperty(optionKey)) {
+      //           associatedTasks.push(task);
+      //         }
+      //       });
+      //       associatedTasks.forEach(associatedTask => {
+      //         let socketFrom = workflowGraph._.options.defaultSocketIds.out,
+      //             socketTo = associatedTask._.optionsSocketIds.in;
+      //
+      //         let optionsLinkId = GCLink.id();
+      //
+      //         let link = (
+      //           <GCLink key={optionsLinkId}
+      //               from={socketFrom}
+      //               to={socketTo}
+      //               initialId={optionsLinkId}
+      //               initialColor="#6fc" />
+      //         );
+      //
+      //         links[optionsLinkId] = link;
+      //
+      //         // TODO: add handler to remove this task from workflowGraph.tasks
+      //         workflowGroupComponent.appendChild(link);
+      //       });
+      //     });
+      //   }
+      // }
 
       if (callback) { setTimeout(callback, 32); }
     }, 32);
@@ -608,9 +607,9 @@ export default class WorkflowEditor extends Component {
 
     workflowGraph.tasks.forEach(task => taskMap[task.label] = task);
 
-    let columns = [true, workflowGraph.tasks.filter(task => !task.waitOn)];
+    let columns = [workflowGraph.tasks.filter(task => !task.waitOn)];
 
-    function findMaxDepth(task, depth=0) {
+    function findMaxDepth(task, depth = 0) {
       if (!task.waitOn) { return depth; }
       depth += 1;
       var depths = Object.keys(task.waitOn).map(taskLabel => {
@@ -638,13 +637,13 @@ export default class WorkflowEditor extends Component {
       }
     });
 
-    if (numRows < 2) {
-      if (callback) { callback(); }
-      return;
-    }
+    // if (numRows < 2) {
+    // if (callback) { callback(); }
+      // return;
+    // }
 
     columns.forEach((column, c) => {
-      if (column === true) { return; }
+      // if (column === true) { return; }
       column.forEach((task, i) => {
         let nodeComponent = this.refs.graphCanvas.lookup(task._.nodeId);
         let x = 350 * c + 30;
@@ -749,39 +748,39 @@ export default class WorkflowEditor extends Component {
         socketLabel = null,
         portId = null,
         portType = null;
-    if (
-      graph._.options.defaultSocketIds.in === socketId ||
-      graph._.options.defaultSocketIds.out === socketId
-    ) {
-      task = 'options';
-      socketLabel = 'out'; // TODO:
-      portId = graph._.options.defaultOptionsPortId;
-      portType = 'defaultOtions';
-    }
-    else if (
-      graph._.options.specificSocketIds.in === socketId ||
-      graph._.options.specificSocketIds.out === socketId
-    ) {
-      task = 'options';
-      socketLabel = 'out'; // TODO:
-      portId = graph._.options.specificOptionsPortId;
-      portType = 'specificOptions';
-    }
+    // if (
+    //   graph._.options.defaultSocketIds.in === socketId ||
+    //   graph._.options.defaultSocketIds.out === socketId
+    // ) {
+    //   task = 'options';
+    //   socketLabel = 'out'; // TODO:
+    //   portId = graph._.options.defaultOptionsPortId;
+    //   portType = 'defaultOtions';
+    // }
+    // else if (
+    //   graph._.options.specificSocketIds.in === socketId ||
+    //   graph._.options.specificSocketIds.out === socketId
+    // ) {
+    //   task = 'options';
+    //   socketLabel = 'out'; // TODO:
+    //   portId = graph._.options.specificOptionsPortId;
+    //   portType = 'specificOptions';
+    // }
     graph.tasks.forEach(t => {
       if (task) { return; }
-      let match = Object.keys(t._.optionsSocketIds).some(k => {
-        if (t._.optionsSocketIds[k] === socketId) {
-          socketLabel = k;
-          return true;
-        }
-      });
-      if (match) {
-        task = t;
-        portId = t._.optionsPortId;
-        portType = 'taskOptions';
-        return;
-      }
-      match = Object.keys(t._.orderSocketIds).some(k => {
+      // let match = Object.keys(t._.optionsSocketIds).some(k => {
+      //   if (t._.optionsSocketIds[k] === socketId) {
+      //     socketLabel = k;
+      //     return true;
+      //   }
+      // });
+      // if (match) {
+      //   task = t;
+      //   portId = t._.optionsPortId;
+      //   portType = 'taskOptions';
+      //   return;
+      // }
+      let match = Object.keys(t._.orderSocketIds).some(k => {
         if (t._.orderSocketIds[k] === socketId) {
           socketLabel = k;
           return true;
