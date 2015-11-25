@@ -298,6 +298,7 @@ export default class GraphCanvas extends Component {
   }
 
   associate(scope, a, b, id, value) {
+    if (!a || !b) { return; }
     a = a.id || a;
     b = b.id || b;
     scope[a] = scope[a] || {};
@@ -311,13 +312,13 @@ export default class GraphCanvas extends Component {
 
     let toSocket = this.lookup(linkTo);
     let toPort = toSocket.context.parentGCPort;
-    let toNode = toPort.context.parentGCNode;
-    let toGroup = toNode.context.parentGCGroup;
+    let toNode = toSocket.context.parentGCNode;
+    let toGroup = toSocket.context.parentGCGroup;
 
     let fromSocket = this.lookup(linkFrom);
     let fromPort = fromSocket.context.parentGCPort;
-    let fromNode = fromPort.context.parentGCNode;
-    let fromGroup = fromNode.context.parentGCGroup;
+    let fromNode = fromSocket.context.parentGCNode;
+    let fromGroup = fromSocket.context.parentGCGroup;
 
     this.associate(scope, fromSocket, toSocket, linkId, value);
     this.associate(scope, toSocket, fromSocket, linkId, value);

@@ -45,7 +45,9 @@ export default class GCSocketElement extends Component {
 
   static contextTypes = {
     graphCanvas: PropTypes.any,
-    parentGCPort: PropTypes.any
+    parentGCPort: PropTypes.any,
+    parentGCNode: PropTypes.any,
+    parentGCGroup: PropTypes.any
   };
 
   static GCTypeEnum = {element: true, socket: true};
@@ -66,6 +68,14 @@ export default class GCSocketElement extends Component {
 
   get parentPort() {
     return this.context.parentGCPort;
+  }
+
+  get parentNode() {
+    return this.context.parentGCNode;
+  }
+
+  get parentGroup() {
+    return this.context.parentGCGroup;
   }
 
   id = this.props.initialId || this.constructor.id();
@@ -115,6 +125,18 @@ export default class GCSocketElement extends Component {
               onMouseDown={this.drawLink.bind(this)} />
       </div>
     );
+
+    if (this.props.hideLabel) {
+      return (
+        <div className="GraphCanvasSocket"
+             style={{display: 'inline-block'}}
+             data-id={this.id}
+             onMouseOver={this.onHover.bind(this)}
+             onMouseOut={this.onLeave.bind(this)}>
+          {socketCell}
+        </div>
+      );
+    }
 
     var dir = this.props.dir,
         cells;

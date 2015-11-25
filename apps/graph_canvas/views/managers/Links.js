@@ -105,8 +105,7 @@ export default class GCLinksManager extends Component {
   drawLinkStart(event, dragState, e) {
     this.isDrawing = true;
     event.stopPropagation();
-    let fromPort = dragState.fromSocket.parentPort,
-        fromGroup = fromPort.parentGroup || fromPort.parentNode.parentGroup;
+    let fromGroup = dragState.fromSocket.parentGroup;
 
     dragState.parentComponent = fromGroup || this.graphCanvasWorld;
     dragState.fromId = dragState.fromSocket.id;
