@@ -90,7 +90,7 @@ export default class CatalogsGrid extends Component {
               <a
                   href={this.routePath('catalogs', source.id)}
                   style={{display: 'inline-block', margin: '0 5px'}}>
-                {source.source.toUpperCase()}
+                {source.source && source.source.toUpperCase()}
               </a>
             ));
             if (!this.nodeId) {
@@ -118,7 +118,7 @@ export default class CatalogsGrid extends Component {
               <a
                   href={this.routePath('catalogs', source.id)}
                   style={{display: 'inline-block', margin: '0 5px'}}>
-                {source.source.toUpperCase()}
+                {source.source && source.source.toUpperCase()}
               </a>
             ));
             if (!this.nodeId) {

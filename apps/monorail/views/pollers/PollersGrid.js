@@ -42,8 +42,7 @@ export default class PollersGrid extends Component {
           toolbarContent={<RaisedButton label="Create Poller" primary={true} onClick={this.createPoller.bind(this)} />}
           mapper={poller => {
             let row = {};
-            console.log(poller);
-            row.Type = <a href={this.routePath('pollers', poller.id)}>{poller.type.toUpperCase()}</a>;
+            row.Type = <a href={this.routePath('pollers', poller.id)}>{poller.type && poller.type.toUpperCase()}</a>;
             if (!this.nodeId) {
               row.Node = <a href={this.routePath('nodes', poller.node)}>{this.shortId(poller.node)}</a>;
             }
