@@ -10,16 +10,6 @@ import DragEventHelpers from '../mixins/DragEventHelpers';
 
 import Vector from '../lib/Vector';
 
-/**
-# GCViewport
-
-@object
-  @type class
-  @extends React.Component
-  @name GCViewport
-  @desc
-*/
-
 @radium
 @mixin(DragEventHelpers)
 export default class GCViewport extends Component {
@@ -60,11 +50,6 @@ export default class GCViewport extends Component {
     }
   };
 
-  /**
-  @method
-    @name render
-    @desc
-  */
   render() {
     try {
       var props = this.props,
@@ -181,17 +166,18 @@ export default class GCViewport extends Component {
   scaleWorld(event) {
     if (event.stopPropagation) { event.stopPropagation(); }
     if (event.preventDefault) { event.preventDefault(); }
+    let sampleDuration = 100,
+        factor = 1.25;
     event.timeStamp = event.timeStamp || Date.now();
     if (!this.scrollBuffer) {
       this.scrollBuffer = [];
-      this.scrollBuffer.timeStamp = event.timeStamp + 100;
+      this.scrollBuffer.timeStamp = event.timeStamp + sampleDuration;
     }
     if (this.scrollBuffer.wait) { return; }
     if (event.deltaY) { this.scrollBuffer.push(event.deltaY); }
     clearTimeout(this.scrollBuffer.timer);
     if (this.scrollBuffer.timeStamp <= event.timeStamp) {
       let scale = this.graphCanvas.scale,
-          factor = 1.5,
           force = this.scrollBuffer.length && this.scrollBuffer.reduce((a, b) => a + b);
       scale = Math.max(0.0001, Math.min(100,
         Math.abs(force < 0 ? scale / factor : scale * factor)
