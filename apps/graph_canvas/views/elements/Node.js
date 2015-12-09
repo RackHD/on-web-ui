@@ -180,6 +180,7 @@ export default class GCNodeElement extends Component {
     this.emitters.add[link.id] = true;
     if (this.props.onLink) { this.props.onLink(link); }
     if (this.parentGroup) { this.parentGroup.emitLink(link); }
+    else if (this.graphCanvas) { this.graphCanvas.emitLink(link); }
   }
 
   emitUnlink(link) {
@@ -187,6 +188,7 @@ export default class GCNodeElement extends Component {
     this.emitters.remove[link.id] = true;
     if (this.props.onUnlink) { this.props.onUnlink(link); }
     if (this.parentGroup) { this.parentGroup.emitUnlink(link); }
+    else if (this.graphCanvas) { this.graphCanvas.emitLink(link); }
   }
 
 }

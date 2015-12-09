@@ -97,7 +97,6 @@ export default class GCLinksManager extends Component {
       return dom.dataset.id;
     } else {
       let parent = findDOMNode(dragState.parentComponent);
-      // console.log('PARENT', parent);
       return this.graphCanvas.getEventCoords(event, parent).sub([3, 39]);
     }
   }
@@ -150,7 +149,6 @@ export default class GCLinksManager extends Component {
     if (dragState.link && dragState.link.state.isPartial) {
       dragState.parentComponent.removeChild(dragState.originalLink);
     }
-    // debugger;
     dragState.link.forceUpdate();
   }
 

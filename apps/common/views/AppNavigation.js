@@ -46,7 +46,10 @@ export default class AppMenuNav extends Component {
   isActive(item) {
     let end = window.location.hash.lastIndexOf('?'),
         active = window.location.hash.substring(2, end).split('/')[0];
-    return item.route && item.route === active;
+    if (Array.isArray(item.route)) {
+      return item.route.indexOf(active) !== -1;
+    }
+    return item.route && item.route == active;
   }
 
   toggleLeftNav() {
@@ -64,12 +67,7 @@ export default class AppMenuNav extends Component {
   }
 
   onLeftNavChange(e, key, payload) {
-    this.routeTo(payload.route);
-  }
-
-  onHeaderClick() {
-    this.routeTo('');
-    this.refs.leftNav.close();
+    this.routeTo(Array.isArray(payload.route) ? payload.route[0] : payload.route);
   }
 
 }

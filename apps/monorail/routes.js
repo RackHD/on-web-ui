@@ -17,6 +17,7 @@ import NotFound from 'common-web-ui/views/NotFound';
 
 // See http://material-ui.com/#/components/left-nav
 export var navigation = [
+  { text: 'Dashboard', route: ['', 'dashboard'] },
   { text: 'Workflow Editor', route: 'workflow_editor' },
   { text: 'Main Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Catalogs', route: 'catalogs' },
@@ -66,8 +67,7 @@ let routes = (
     <IndexRoute name="Dashboard" component={Dashboard}/>
 
     <Route name="Workflow Editor" path="/workflow_editor/:workflow" component={WorkflowEditor} />
-    <Redirect from="/workflow_editor" to="/workflow_editor/New Workflow" />
-    <Redirect from="/edit/:workflow" to="/workflow_editor/:workflow" />
+    <Route name="Workflow Editor" path="/workflow_editor" component={WorkflowEditor} />
 
     <Route name="Catalogs" path="/catalogs" component={Catalogs} />
     <Route path="/catalogs/n/:nodeId" component={Catalogs} />

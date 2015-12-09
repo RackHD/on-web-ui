@@ -321,7 +321,7 @@ export default class GCPanelElement extends Component {
     this.setState({name: event.target.value});
     if (this.props.onChange) {
       clearTimeout(this.onChangeTimer);
-      this.onChangeTimer = setTimeout(() => { this.props.onChange(); }, 50);
+      this.onChangeTimer = setTimeout(() => { this.props.onChange(); }, 2000);
     }
   }
 

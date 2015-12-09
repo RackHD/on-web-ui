@@ -64,6 +64,7 @@ export default class GraphCanvas extends Component {
     viewWidth: PropTypes.number,
     worldHeight: PropTypes.number,
     worldWidth: PropTypes.number,
+    onChange: PropTypes.func,
     onSelect: PropTypes.func,
     onLink: PropTypes.func,
     onUnlink: PropTypes.func
@@ -82,6 +83,7 @@ export default class GraphCanvas extends Component {
     viewWidth: 800,
     worldHeight: 2000,
     worldWidth: 2000,
+    onChange: null,
     onSelect: null,
     onLink: null,
     onUnlink: null
@@ -219,11 +221,17 @@ export default class GraphCanvas extends Component {
   }
 
   updatePosition(position) {
-    this.setState({ position });
+    this.setState({ position },
+      () => this.props.onChange && this.props.onChange(this));
   }
 
   updateScale(scale, callback) {
-    this.setState({ scale }, callback);
+    console.log('update scale', scale, this.state.scale);
+    this.setState({ scale },
+      () => {
+        this.props.onChange && this.props.onChange(this);
+        callback && callback();
+      });
   }
 
   updateSelection(selected, element) {

@@ -116,6 +116,7 @@ export default class GCViewport extends Component {
       move: (event, dragState) => {
         // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
+        event.preventDefault();
         clearInterval(this.moveRepeat);
         var scale = this.graphCanvas.scale,
             start = dragState.start;//,

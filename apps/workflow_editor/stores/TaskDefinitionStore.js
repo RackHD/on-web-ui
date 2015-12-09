@@ -11,6 +11,8 @@ export default class TaskDefinitionStore extends Store {
   tasksRestAPI = new TasksRestAPI();
   autoCache = true;
 
+  static cache = {};
+
   list() {
     this.empty();
     return this.tasksRestAPI.list()

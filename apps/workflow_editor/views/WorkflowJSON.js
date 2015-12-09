@@ -27,140 +27,97 @@ export default class WEWorkflowJson extends Component {
   };
 
   static contextTypes = {
-    layout: PropTypes.any,
-    editor: PropTypes.any
+    workflowEditor: PropTypes.any,
+    workflowOperator: PropTypes.any
   };
 
   state = {
-    model: this.props.model
+    activeWorkflow: this.activeWorkflow,
+    version: 0
   };
 
-  componentWillMount() {
-    this.workflowTemplateStore = this.context.editor.workflowTemplateStore;
+  get workflowTemplateStore() {
+    return this.context.workflowOperator.workflowTemplateStore;
   }
 
-  componentWillUnmount() {}
+  componentDidMount() {
+    this.handleWorkflowChange = (source) => {
+      if (source === 'json') { return; }
+      this.setState({
+        activeWorkflow: this.context.workflowOperator.activeWorkflow,
+        version: this.state.version + 1
+      }, () => {
+        this.refs.aceEditor.editor.selection.moveCursorFileStart();
+      });
+    }
+    this.context.workflowOperator.onChangeWorkflow(this.handleWorkflowChange);
+  }
+
+  componenWillUnmount() {
+    this.context.workflowOperator.offChangeWorkflow(this.handleWorkflowChange);
+  }
+
+  get activeWorkflow() {
+    return this.context.workflowOperator.activeWorkflow;
+  }
 
   render() {
     return (
       <div>
-        <RaisedButton label="Update Graph" onTouchTap={this.updateGraph.bind(this)}/>
-        <RaisedButton label="Save Graph" onTouchTap={this.saveGraph.bind(this)}/>
-        {this.state.error}
         <AceEditor ref="aceEditor" key="aceEditor"
           mode="json"
           theme="monokai"
           name="workflowAceEditor"
-          width="98%"
-          height={(window.innerHeight - 174) + 'px'}
-          value={this.prepareJSON(this.state.model || this.props.model)}
+          width="100%"
+          height={(window.innerHeight - 70) + 'px'}
+          value={this.prepareJSON(this.state.activeWorkflow)}
           onChange={this.autoUpdateGraph.bind(this)} />
       </div>
     );
   }
 
-  prepareJSON(model) {
-    if (!model || Object.keys(model).length === 0) {
+  prepareJSON(activeWorkflow) {
+    if (!activeWorkflow || Object.keys(activeWorkflow).length === 0) {
       this.lastValue = '{}';
       return this.lastValue;
     }
-    let safeJsonify = (output, source) => {
-      if (!source || typeof source !== 'object') { return source; }
-      if (Array.isArray(source)) {
-        return source.slice(0).map(item => safeJsonify({}, item));
-      }
-      Object.keys(source).forEach(key => {
-        if (key === '_' || key === 'id') { return; }
-        output[key] = safeJsonify({}, source[key]);
-      });
-      return output;
-    };
-    this.lastValue = JSON.stringify(safeJsonify({}, model), '\t', 2);
+
+    this.lastValue = activeWorkflow.source;
     return this.lastValue;
   }
 
   silentUpdate() {
     this.silentUpdating = true;
-    this.forceUpdate();
-    setTimeout(() => {
-      delete this.silentUpdating;
-    }, 32);
+    this.forceUpdate(() => this.silentUpdating = false);
   }
 
   autoUpdateGraph(newValue) {
-    clearTimeout(this.updateTimer);
     if (this.silentUpdating) { return; }
     if (newValue === this.lastValue) { return; }
-    try {
-      let updates = JSON.parse(newValue);
-      this.compileJSON(updates, 7000);
-    }
-    catch (err) {
-      console.warn(err.stack || err);
-    }
-  }
-
-  updateGraph() {
-    this.compileJSON(this.refs.aceEditor.editor.getValue());
-  }
-
-  saveGraph() {
-    let workflow = JSON.parse(this.refs.aceEditor.editor.getValue());
-    workflow.injectableName = workflow.injectableName || 'Graph.' + workflow.friendlyName.replace(' ', '.');
-    this.workflowTemplateStore.create(workflow.injectableName, workflow).then(
-      () => {this.workflowTemplateStore.list()},
-      err => console.error(err));
-  }
-
-  compileJSON(newValue, delay) {
-    try {
-      let updates = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
-      if (updates) {
-        this.updateWorkflowGraph(updates, delay || 32);
-      }
-    }
-    catch(err) {
-      console.warn(err);
-      // this.setState({error: err});
-    }
-  }
-
-  updateWorkflowGraph(updates, delay) {
-    let safeMerge = (current, changes) => {
-      if (!changes || typeof changes !== 'object') {
-        return changes;
-      }
-      let safe;
-      if (Array.isArray(changes)) {
-        safe = [];
-        changes.forEach((item, i) => {
-          safe[i] = safeMerge(safe[i], item);
-        });
-      }
-      else {
-        safe = {};
-        Object.keys(changes).forEach(key => {
-          if (key === '_' || key === 'id') {
-            throw new Error('WorkflowEditor: Cannot use _ or id as property names in workflow templates.');
-          }
-          safe[key] = safeMerge(safe[key], changes[key]);
-        });
-      }
-      return safe;
-    };
-
-    this.context.editor.currentWorkflowGraph =
-      safeMerge(this.context.editor.currentWorkflowGraph, updates);
 
     clearTimeout(this.updateTimer);
     this.updateTimer = setTimeout(() => {
-      // this.setState({error: null});
+      this.compileJSON(newValue);
+    }, 3000);
+  }
+
+  compileJSON(newJsonObject) {
+    newJsonObject = newJsonObject || this.refs.aceEditor.editor.getValue();
+
+    if (typeof newJsonObject === 'string') {
       try {
-        this.context.editor.refreshWorkflow();
-      } catch (err) {
-        console.error(err);
+        newJsonObject = JSON.parse(newJsonObject);
       }
-    }, delay || 250);
+
+      catch(err) {
+        console.warn('WorkflowJSON parse failure.', err);
+        return;
+      }
+    }
+
+    if (newJsonObject) {
+      this.state.activeWorkflow.jsonUpdate(this.context, newJsonObject);
+    }
   }
 
 }
