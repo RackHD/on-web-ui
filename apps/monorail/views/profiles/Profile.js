@@ -50,7 +50,7 @@ export default class Profile extends Component {
           <ToolbarGroup key={1} float="right">
           </ToolbarGroup>
         </Toolbar>
-        <div className="ungrid">
+        <div className="ungrid collapse">
           <div className="line">
             <div className="cell">
               <List>

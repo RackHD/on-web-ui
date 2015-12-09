@@ -90,9 +90,9 @@ export default class EditPoller extends Component {
                 {value: 'ipmi', label: 'IPMI'},
                 {value: 'snmp', label: 'SNMP'}
               ]}
-              onChange={(value) => {
+              onChange={(option) => {
                 let poller = this.state.poller;
-                poller.type = value;
+                poller.type = option && option.value;
                 this.setState({poller: poller})
               }} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Node:</h5>
@@ -102,9 +102,9 @@ export default class EditPoller extends Component {
               placeholder="Select a node..."
               disabled={this.state.disabled}
               options={nodeOptions}
-              onChange={(value) => {
+              onChange={(option) => {
                 let poller = this.state.poller;
-                poller.node = value;
+                poller.node = option && option.value;
                 this.setState({poller: poller})
               }} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Poll Interval:</h5>
@@ -127,9 +127,9 @@ export default class EditPoller extends Component {
                 {value: '' + (60000 * 60 * 24), label: 'Every Day'},
                 {value: '' + (60000 * 60 * 24 * 7), label: 'Every Week'},
               ]}
-              onChange={(value) => {
+              onChange={(option) => {
                 let poller = this.state.poller;
-                poller.pollInterval = value;
+                poller.pollInterval = option && option.value;
                 this.setState({poller: poller})
               }} />
             <h5 style={{margin: '15px 0 5px', color: '#666'}}>Poller JSON:</h5>

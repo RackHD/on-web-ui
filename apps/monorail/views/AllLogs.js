@@ -11,17 +11,19 @@ import LogsMessenger from '../messengers/LogsMessenger';
 
 export default class AllLogs extends Component {
 
-  logs = new LogsMessenger();
+  static logs = new LogsMessenger();
+
+  logs = this.constructor.logs;
 
   state = {
     logs: []
   };
 
-  componentWillReceiveProps(nextProps) {
-    this.unwatch();
-    this.watch(nextProps);
-    this.forceUpdate();
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   this.unwatch();
+  //   this.watch(nextProps);
+  //   this.forceUpdate();
+  // }
 
   unwatch() {
     this.logs.ignore();
@@ -36,13 +38,13 @@ export default class AllLogs extends Component {
   }
 
   componentDidMount() {
-    this.logs.connect();
+    // this.logs.connect();
     this.watch();
   }
 
   componentWillUnmount() {
     this.unwatch();
-    this.logs.disconnect();
+    // this.logs.disconnect();
   }
 
   render() {
@@ -63,3 +65,5 @@ export default class AllLogs extends Component {
   }
 
 }
+
+AllLogs.logs.connect();

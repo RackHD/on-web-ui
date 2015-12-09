@@ -101,9 +101,9 @@ export default class EditWorkflow extends Component {
               value={this.state.workflow && this.state.workflow.name || this.props.name}
               placeholder="Select a workflow graph..."
               options={templateOptions}
-              onChange={(value) => {
+              onChange={(option) => {
                 let workflow = this.state.workflow;
-                workflow.name = value;
+                workflow.name = option && option.value;
                 this.setState({workflow: workflow})
               }} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Workflow Node:</h5>
@@ -112,9 +112,9 @@ export default class EditWorkflow extends Component {
               value={this.state.workflow && this.state.workflow.node || this.props.nodeId}
               placeholder="Select a node..."
               options={nodeOptions}
-              onChange={(value) => {
+              onChange={(option) => {
                 let workflow = this.state.workflow;
-                workflow.node = value;
+                workflow.node = option && option.value;
                 this.setState({workflow: workflow})
               }} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Workflow JSON:</h5>

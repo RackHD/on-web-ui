@@ -24,7 +24,6 @@ describe('MonoRail App', function() {
     });
 
     after(function(done) {
-      debugger;
       this.wrapper.cleanup(done);
     });
 

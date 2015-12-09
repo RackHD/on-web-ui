@@ -76,7 +76,7 @@ export default class Node extends Component {
     return (
       <div className="Node">
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
-        <div className="ungrid">
+        <div className="ungrid collapse">
           <div className="line">
             <div className="cell" style={{borderRight: '1px solid black'}}>
               <Toolbar>
