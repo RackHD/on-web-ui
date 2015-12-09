@@ -268,7 +268,7 @@ export default class WorkflowOperator extends Component {
     let allWorkflows = this.workflowTemplateStore.all(),
         filterTerm = state.workflowTerm || '',
         workflows = allWorkflows,
-        options = {};
+        options = [];
 
     if (filterTerm) {
       workflows = this.workflowTrie.find(filterTerm);
@@ -276,7 +276,7 @@ export default class WorkflowOperator extends Component {
 
     (filterTerm ? workflows : allWorkflows).forEach((workflow, i) => {
       if (!workflow) { return; }
-      options[workflow.friendlyName] = workflow.friendlyName;
+      options.push(workflow.friendlyName);
     });
 
     return (<AutoComplete key="workflows"
@@ -321,7 +321,7 @@ export default class WorkflowOperator extends Component {
     let allTasks = this.taskDefinitionStore.all(),
         filterTerm = state.taskTerm || '',
         tasks = allTasks,
-        options = {};
+        options = [];
 
     if (filterTerm) {
       tasks = this.taskTrie.find(filterTerm);
@@ -329,7 +329,7 @@ export default class WorkflowOperator extends Component {
 
     (filterTerm ? tasks : allTasks).forEach((task, i) => {
       if (!task) { return; }
-      options[task.friendlyName] = task.friendlyName;
+      options.push(task.friendlyName);
     });
 
     return (<AutoComplete
