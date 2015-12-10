@@ -2,6 +2,8 @@
 
 'use strict';
 
+import cloneDeep from 'lodash/lang/cloneDeep';
+
 function typeOf(obj) {
   return Array.isArray(obj) ? 'array' : typeof obj;
 }
@@ -9,6 +11,13 @@ function typeOf(obj) {
 function toString(type, val) {
   if (type === 'object' || type === 'array') return '';
   return String(val) + ' ';
+}
+
+function clone(val, type) {
+  if (type === 'object' || type === 'array') {
+    return cloneDeep(val);
+  }
+  return val;
 }
 
 export default class ObjectDiff {
@@ -23,7 +32,7 @@ export default class ObjectDiff {
 
     if (a === undefined) {
       // property added
-      results.push({operation: 'add', value: b, path: path.join('.')})
+      results.push({operation: 'add', value: clone(b, typeB), path: path.join('.')})
     }
     else if (b === undefined) {
       // property removed
@@ -31,11 +40,10 @@ export default class ObjectDiff {
     }
     else if (typeA !== typeB || (typeA !== 'object' && typeA !== 'array' && a !== b)) {
       // property changed
-      results.push({operation: 'change', value: b, path: path.join('.')});
+      results.push({operation: 'change', value: clone(b, typeB), path: path.join('.')});
     }
-    // else property is the same
-
-    if (typeA === 'object' || typeA === 'array' || typeB === 'object' || typeB === 'array') {
+    else if (typeA === 'object' || typeA === 'array' || typeB === 'object' || typeB === 'array') {
+      // both objects
       let keysA = a && typeof a === 'object' ? Object.keys(a) : [],
           keysB = b && typeof b === 'object' ? Object.keys(b) : [],
           allKeys = [].concat(keysA);

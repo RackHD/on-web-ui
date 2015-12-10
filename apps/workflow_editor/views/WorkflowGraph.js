@@ -143,7 +143,7 @@ export default class WorkflowEditor extends Component {
 
     return {
       node: task,
-      task: task.task,
+      task: task.template,
       portId: task.orderPortId,
       portType: 'taskOrder',
       socketLabel: socket
@@ -154,7 +154,7 @@ export default class WorkflowEditor extends Component {
     let fromSocketDetails = this.getSocketDetailsById(link.fromSocket.id),
         toSocketDetails = this.getSocketDetailsById(link.toSocket.id);
 
-    debugger;
+    // debugger;
 
     if (fromSocketDetails.portType === 'taskOrder') {
       if (toSocketDetails.portType === 'taskOrder') {
@@ -171,9 +171,10 @@ export default class WorkflowEditor extends Component {
             toSocketDetails.task.waitOn[fromSocketDetails.task.label] = fromSocketDetails.socketLabel;
           }
 
-          this.activeWorkflow.addWaitOnLink(this.context,
-            fromSocketDetails.node,
-            toSocketDetails.node);
+          this.activeWorkflow.graphUpdate(this.context);
+          // this.activeWorkflow.addWaitOnLink(this.context,
+          //   fromSocketDetails.node,
+          //   toSocketDetails.node);
         }
       }
     }
@@ -183,7 +184,7 @@ export default class WorkflowEditor extends Component {
     let fromSocketDetails = this.getSocketDetailsById(link.fromSocket.id),
         toSocketDetails = this.getSocketDetailsById(link.toSocket.id);
 
-    debugger;
+    // debugger;
 
     if (fromSocketDetails.portType === 'taskOrder') {
       if (toSocketDetails.portType === 'taskOrder') {
@@ -200,9 +201,10 @@ export default class WorkflowEditor extends Component {
             delete toSocketDetails.task.waitOn[fromSocketDetails.task.label];
           }
 
-          this.activeWorkflow.removeWaitOnLink(this.context,
-            fromSocketDetails.node,
-            toSocketDetails.node);
+          this.activeWorkflow.graphUpdate(this.context);
+          // this.activeWorkflow.removeWaitOnLink(this.context,
+          //   fromSocketDetails.node,
+          //   toSocketDetails.node);
         }
       }
     }

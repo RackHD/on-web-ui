@@ -30,7 +30,6 @@ export default class TaskJsonView extends Component {
       margin: 0
     },
     code: {
-      overflow: 'auto',
       padding: 0,
       margin: 0,
       width: '100%',

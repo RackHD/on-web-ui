@@ -13,7 +13,7 @@
   "ecmaFeatures": {"jsx": true},
   "rules": {
     // Strict mode
-    "strict": [1, "global"],
+    "strict": [0, "global"],
 
     // Code style
     "indent": [1, 2, {"VariableDeclarator": 2}],

@@ -53,13 +53,17 @@ export default class AppContainer extends Component {
   };
 
   static childContextTypes = {
-    appContainer: PropTypes.any
+    appContainer: PropTypes.any,
+    muiTheme: PropTypes.any
   };
 
   state = {};
 
   getChildContext() {
-    return {appContainer: this};
+    return {
+      appContainer: this,
+      muiTheme: emcTheme
+    };
   }
 
   componentWillMount() {

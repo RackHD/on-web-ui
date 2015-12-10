@@ -23,13 +23,22 @@ import { navigation } from '../routes';
 
 export default class App extends Component {
 
+  static contextTypes = {
+    muiTheme: PropTypes.any
+  };
+
   static childContextTypes = {
     app: PropTypes.any,
-    icons: PropTypes.any
+    icons: PropTypes.any,
+    muiTheme: PropTypes.any
   };
 
   getChildContext() {
-    return { app: this, icons };
+    return {
+      app: this,
+      icons,
+      muiTheme: emcTheme
+    };
   }
 
   state = {
@@ -47,6 +56,7 @@ export default class App extends Component {
           navigation={this.state.navigation}
           afterContent={[
             <Popover key="settings"
+                ref="settings"
                 style={{width: 300}}
                 animated={true}
                 anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}

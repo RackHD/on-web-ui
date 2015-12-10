@@ -214,6 +214,9 @@ export default class GCSocketElement extends Component {
   }
 
   drawLink(_event) {
+    if (!this.linksManager) {
+      throw new Error('Missing links manager');
+    }
     this.graphCanvasViewport.setupClickDrag({
       down: (event, dragState, e) => this.linksManager.drawLinkStart(event, dragState, e),
       move: (event, dragState, e) => this.linksManager.drawLinkContinue(event, dragState, e),
@@ -226,11 +229,17 @@ export default class GCSocketElement extends Component {
   emitLink(link) {
     if (this.props.onLink) { this.props.onLink(link); }
     if (this.parentPort) { this.parentPort.emitLink(link); }
+    else if (this.parentNode) { this.parentNode.emitLink(link); }
+    else if (this.parentGroup) { this.parentGroup.emitLink(link); }
+    else if (this.graphCanvas) { this.graphCanvas.emitLink(link); }
   }
 
   emitUnlink(link) {
     if (this.props.onUnlink) { this.props.onUnlink(link); }
     if (this.parentPort) { this.parentPort.emitUnlink(link); }
+    else if (this.parentNode) { this.parentNode.emitUnlink(link); }
+    else if (this.parentGroup) { this.parentGroup.emitUnlink(link); }
+    else if (this.graphCanvas) { this.graphCanvas.emitUnlink(link); }
   }
 
 }

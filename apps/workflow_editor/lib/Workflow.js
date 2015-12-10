@@ -28,12 +28,15 @@ export default class Workflow {
     this.template = template;
     this.json = cloneDeep(template);
     delete this.json.id;
-    this.sortTasks();
+    this.cleanTasks();
   }
 
-  sortTasks(custom) {
+  cleanTasks(customTaskList) {
     let nullTasks = (t) => {
-      if (!t || Object.keys(t).length == 0) return false;
+      if (!t || Object.keys(t).length === 0) return false;
+      if (t.waitOn && Object.keys(t.waitOn).length === 0) {
+        delete t.waitOn;
+      }
       return true;
     };
     let taskSort = (a, b) => {
@@ -48,10 +51,14 @@ export default class Workflow {
       }
     }
     this.tasks = filter(this.tasks, nullTasks).sort(taskSort)
-    this.template.tasks = filter(this.template.tasks, nullTasks).sort(taskSort);
-    this.json.tasks = filter(this.json.tasks, nullTasks).sort(taskSort);
-    if (custom) {
-      return filter(custom, nullTasks).sort(taskSort);
+    if (this.template.tasks) {
+      this.template.tasks = filter(this.template.tasks, nullTasks).sort(taskSort);
+    }
+    if (this.json.tasks) {
+      this.json.tasks = filter(this.json.tasks, nullTasks).sort(taskSort);
+    }
+    if (customTaskList) {
+      return filter(customTaskList, nullTasks).sort(taskSort);
     }
   }
 
@@ -60,7 +67,7 @@ export default class Workflow {
   }
 
   refresh(viewContext, source, callback) {
-    this.sortTasks();
+    this.cleanTasks();
     viewContext.workflowOperator.emitWorkflowChange(source);
     if (callback) { callback(); }
   }
@@ -71,7 +78,7 @@ export default class Workflow {
   }
 
   mergeGraph() {
-    this.sortTasks();
+    this.cleanTasks();
     let objectDiff = new ObjectDiff(),
         patches = objectDiff.diff(this.json, this.template);
     objectDiff.patch(this.json, patches);
@@ -86,7 +93,7 @@ export default class Workflow {
 
   mergeJson(newJsonObject) {
     if (!newJsonObject) { return; }
-    newJsonObject.tasks = this.sortTasks(newJsonObject.tasks);
+    newJsonObject.tasks = this.cleanTasks(newJsonObject.tasks);
     let objectDiff = new ObjectDiff(),
         patches = objectDiff.diff(this.json, newJsonObject);
     objectDiff.patch(this.json, patches);
@@ -96,13 +103,15 @@ export default class Workflow {
   }
 
   addTask(graphContext, taskDefinition, label) {
+    this.cleanTasks();
+
     let task = { label }
 
     if (taskDefinition) {
       task.taskDefinition = taskDefinition;
     }
     else {
-      task.taskName = 'Task.noop'
+      task.taskName = 'Task.noop';
     }
 
     this.template.tasks.push(task);
@@ -132,7 +141,7 @@ export default class Workflow {
   }
 
   removeTask(graphContext, node) {
-    this.sortTasks();
+    this.cleanTasks();
 
     let index = this.tasks.indexOf(node.task);
 
@@ -156,15 +165,15 @@ export default class Workflow {
     this.graphUpdate(graphContext);
   }
 
-  addWaitOnLink(graphContext, nodeA, nodeB) {
-    // TODO:
-    this.graphUpdate(graphContext);
-  }
+  // addWaitOnLink(graphContext, nodeA, nodeB) {
+  //   // TODO:
+  //   this.graphUpdate(graphContext);
+  // }
 
-  removeWaitOnLink(graphContext, nodeA, nodeB) {
-    // TODO:
-    this.graphUpdate(graphContext);
-  }
+  // removeWaitOnLink(graphContext, nodeA, nodeB) {
+  //   // TODO:
+  //   this.graphUpdate(graphContext);
+  // }
 
   renderGraph(graphContext, parentWorkflow) {
     if (!parentWorkflow) {
@@ -295,7 +304,7 @@ export default class Workflow {
     this.meta.nodes = {};
     this.meta.links = [];
 
-    this.tasks.forEach(task => {
+    this.tasks.forEach((task, i) => {
       let definition = workflowOperator.getTaskDefinitionFromTask(task),
           isNestedWorkflow =
             definition &&
@@ -308,6 +317,7 @@ export default class Workflow {
         y: 0,
         definition: definition || null,
         task: task,
+        template: this.template.tasks[i],
         workflow: null
       };
 
@@ -349,7 +359,11 @@ export default class Workflow {
     let columns = [
       this.tasks
         .filter(task => !task.waitOn)
-        .map(task => this.meta.nodes[task.label])
+        .map((task, i) => {
+          let node = this.meta.nodes[task.label]
+          node.y = i;
+          return node;
+        })
     ];
 
     this.meta.columns = columns;

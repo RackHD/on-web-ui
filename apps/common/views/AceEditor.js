@@ -53,6 +53,7 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     this.editor = ace.edit(this.props.name);
+    this.editor.$blockScrolling = Infinity;
     this.editor.getSession().setMode('ace/mode/' + this.props.mode);
     this.editor.setTheme('ace/theme/' + this.props.theme);
     this.editor.setFontSize(this.props.fontSize);

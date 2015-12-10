@@ -5,6 +5,7 @@
 // import { EventEmitter } from 'events';
 
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
@@ -226,12 +227,10 @@ export default class GraphCanvas extends Component {
   }
 
   updateScale(scale, callback) {
-    console.log('update scale', scale, this.state.scale);
-    this.setState({ scale },
-      () => {
-        this.props.onChange && this.props.onChange(this);
-        callback && callback();
-      });
+    this.setState({ scale }, () => {
+      this.props.onChange && this.props.onChange(this);
+      callback && callback();
+    });
   }
 
   updateSelection(selected, element) {
@@ -340,10 +339,13 @@ export default class GraphCanvas extends Component {
     this.associate(scope, fromGroup, toGroup, linkId, value);
     this.associate(scope, toGroup, fromGroup, linkId, value);
 
-    setTimeout(() => {
+    if (findDOMNode(fromSocket).parentNode) {
       fromSocket.forceUpdate();
+    }
+
+    if (findDOMNode(toSocket).parentNode) {
       toSocket.forceUpdate();
-    }, 0);
+    }
   }
 
   associateLink(link, value) {
