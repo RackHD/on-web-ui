@@ -102,7 +102,6 @@ export default class WorkflowEditor extends Component {
             key={'graphCanvas' + this.state.version}
             ref="graphCanvas"
             grid={{}}
-            initialScale={0.5}
             initialScale={this.lastGraphCanvas ? this.lastGraphCanvas.state.scale : 1}
             initialX={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.x : 0}
             initialY={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.y : 0}
