@@ -36,7 +36,7 @@ export default class JsonDiff extends Component {
   }
 
   render() {
-    console.log(this.state);
+    // console.log(this.state);
     return this.compareTree(this.state.objectA, this.state.objectB);
   }
 

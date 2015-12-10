@@ -79,9 +79,9 @@ export default class EditNode extends Component {
                 {value: 'pdu', label: 'PDU Node'},
                 {value: 'switch', label: 'Switch Node'}
               ]}
-              onChange={(value) => {
+              onChange={(option) => {
                 let node = this.state.node || {};
-                node.type = value;
+                node.type = option && option.value;
                 this.setState({node: node})
               }} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Node JSON:</h5>

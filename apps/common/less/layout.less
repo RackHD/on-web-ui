@@ -3,16 +3,25 @@
 /* Ungrid –– http://chrisnager.github.io/ungrid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-@media (min-width: 30em) {
-  .ungrid {
+.ungrid {
+  .line {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+  }
+  .cell {
+    display: table-cell;
+    vertical-align: top;
+  }
+}
+
+@media (max-width: 30em) {
+  .ungrid.collapse {
     .line {
-      width: 100%;
-      display: table;
-      table-layout: fixed;
+      display: block;
     }
     .cell {
-      display: table-cell;
-      vertical-align: top;
+      display: block;
     }
   }
 }

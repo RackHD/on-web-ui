@@ -37,8 +37,15 @@ let muiTheme = ThemeManager.getMuiTheme({
     canvasColor: new Color(emcColors.darkGrey).hexString(),
     borderColor: new Color(emcColors.mediumGrey).hexString(),
     disabledColor: new Color(emcColors.lightGrey).hexString(),
+  },
+
+  zIndex: {
+    layer: 20,
+    popover: 20,
   }
 });
+
+muiTheme.darkEMC = true;
 
 muiTheme.snackbar.textColor = muiColors.black;
 

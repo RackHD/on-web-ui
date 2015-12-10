@@ -9,16 +9,6 @@ import radium from 'radium';
 
 import { Dialog } from 'material-ui';
 
-/**
-# AlertDialog
-
-@object
-  @type class
-  @extends React.Component
-  @name AlertDialog
-  @desc
-*/
-
 @radium
 export default class AlertDialog extends Component {
 
@@ -55,7 +45,9 @@ export default class AlertDialog extends Component {
     return render(component, container);
   }
 
-  state = {};
+  state = {
+    open: true
+  };
 
   componentDidMount() {}
 
@@ -68,6 +60,7 @@ export default class AlertDialog extends Component {
 
     return (
       <Dialog ref="root"
+        open={this.state.open}
         actions={alertActions}
         actionFocus="ok"
         autoDetectWindowHeight={true}
@@ -88,13 +81,14 @@ export default class AlertDialog extends Component {
   }
 
   dismiss() {
-    this.refs.root.dismiss();
-    if (this.props.callback) { this.props.callback(true); }
-    this.remove();
+    this.setState({open: false}, () => {
+      if (this.props.callback) { this.props.callback(true); }
+      this.remove();
+    });
   }
 
   show() {
-    this.refs.root.show();
+    this.setState({open: true});
   }
 
 }

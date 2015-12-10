@@ -121,7 +121,9 @@ export default class GCNodeElement extends Component {
           onRemovePanel={this.onRemovePanel.bind(this)}
           onUpdateBounds={this.onUpdateBounds.bind(this)}
           onSelect={this.onSelect.bind(this)}
-          onChange={this.onChange.bind(this)}>
+          onChange={this.onChange.bind(this)}
+          leftSocket={this.props.leftSocket ? React.cloneElement(this.props.leftSocket) : null}
+          rightSocket={this.props.rightSocket ? React.cloneElement(this.props.rightSocket) : null}>
         <div ref="ports"
             onScroll={this.updateLinks.bind(this)}
             style={{
@@ -178,6 +180,7 @@ export default class GCNodeElement extends Component {
     this.emitters.add[link.id] = true;
     if (this.props.onLink) { this.props.onLink(link); }
     if (this.parentGroup) { this.parentGroup.emitLink(link); }
+    else if (this.graphCanvas) { this.graphCanvas.emitLink(link); }
   }
 
   emitUnlink(link) {
@@ -185,6 +188,7 @@ export default class GCNodeElement extends Component {
     this.emitters.remove[link.id] = true;
     if (this.props.onUnlink) { this.props.onUnlink(link); }
     if (this.parentGroup) { this.parentGroup.emitUnlink(link); }
+    else if (this.graphCanvas) { this.graphCanvas.emitUnlink(link); }
   }
 
 }

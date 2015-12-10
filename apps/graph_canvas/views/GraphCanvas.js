@@ -5,6 +5,7 @@
 // import { EventEmitter } from 'events';
 
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 import radium from 'radium';
 import mixin from 'common-web-ui/lib/mixin';
@@ -64,6 +65,7 @@ export default class GraphCanvas extends Component {
     viewWidth: PropTypes.number,
     worldHeight: PropTypes.number,
     worldWidth: PropTypes.number,
+    onChange: PropTypes.func,
     onSelect: PropTypes.func,
     onLink: PropTypes.func,
     onUnlink: PropTypes.func
@@ -82,6 +84,7 @@ export default class GraphCanvas extends Component {
     viewWidth: 800,
     worldHeight: 2000,
     worldWidth: 2000,
+    onChange: null,
     onSelect: null,
     onLink: null,
     onUnlink: null
@@ -219,11 +222,15 @@ export default class GraphCanvas extends Component {
   }
 
   updatePosition(position) {
-    this.setState({ position });
+    this.setState({ position },
+      () => this.props.onChange && this.props.onChange(this));
   }
 
   updateScale(scale, callback) {
-    this.setState({ scale }, callback);
+    this.setState({ scale }, () => {
+      this.props.onChange && this.props.onChange(this);
+      callback && callback();
+    });
   }
 
   updateSelection(selected, element) {
@@ -298,6 +305,7 @@ export default class GraphCanvas extends Component {
   }
 
   associate(scope, a, b, id, value) {
+    if (!a || !b) { return; }
     a = a.id || a;
     b = b.id || b;
     scope[a] = scope[a] || {};
@@ -311,13 +319,13 @@ export default class GraphCanvas extends Component {
 
     let toSocket = this.lookup(linkTo);
     let toPort = toSocket.context.parentGCPort;
-    let toNode = toPort.context.parentGCNode;
-    let toGroup = toNode.context.parentGCGroup;
+    let toNode = toSocket.context.parentGCNode;
+    let toGroup = toSocket.context.parentGCGroup;
 
     let fromSocket = this.lookup(linkFrom);
     let fromPort = fromSocket.context.parentGCPort;
-    let fromNode = fromPort.context.parentGCNode;
-    let fromGroup = fromNode.context.parentGCGroup;
+    let fromNode = fromSocket.context.parentGCNode;
+    let fromGroup = fromSocket.context.parentGCGroup;
 
     this.associate(scope, fromSocket, toSocket, linkId, value);
     this.associate(scope, toSocket, fromSocket, linkId, value);
@@ -331,10 +339,13 @@ export default class GraphCanvas extends Component {
     this.associate(scope, fromGroup, toGroup, linkId, value);
     this.associate(scope, toGroup, fromGroup, linkId, value);
 
-    setTimeout(() => {
+    if (findDOMNode(fromSocket).parentNode) {
       fromSocket.forceUpdate();
+    }
+
+    if (findDOMNode(toSocket).parentNode) {
       toSocket.forceUpdate();
-    }, 0);
+    }
   }
 
   associateLink(link, value) {

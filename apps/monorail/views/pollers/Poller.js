@@ -59,7 +59,7 @@ export default class Poller extends Component {
                 disabled={this.state.loading} />
           </ToolbarGroup>
         </Toolbar>
-        <div className="ungrid">
+        <div className="ungrid collapse">
           <div className="line">
             <div className="cell">
               <List>

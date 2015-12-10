@@ -103,14 +103,16 @@ export default class Catalog extends Component {
               value={this.state.compareCatalog && this.state.compareCatalog.id}
               placeholder="Select a catalog to compare..."
               options={otherCatalogsOptions}
-              onChange={(value) => {
+              onChange={(option) => {
                 let compareCatalog;
-                this.state.otherCatalogs.some(catalog => {
-                  if (catalog.id === value) {
-                    compareCatalog = catalog;
-                    return true;
-                  }
-                });
+                if (option) {
+                  this.state.otherCatalogs.some(catalog => {
+                    if (catalog.id === option.value) {
+                      compareCatalog = catalog;
+                      return true;
+                    }
+                  });
+                }
                 this.setState({ compareCatalog });
               }} />
           {this.state.catalog && this.state.compareCatalog ?

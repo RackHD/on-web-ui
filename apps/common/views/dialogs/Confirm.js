@@ -9,16 +9,6 @@ import radium from 'radium';
 
 import { Dialog } from 'material-ui';
 
-/**
-# ConfirmDialog
-
-@object
-  @type class
-  @extends React.Component
-  @name ConfirmDialog
-  @desc
-*/
-
 @radium
 export default class ConfirmDialog extends Component {
 
@@ -53,7 +43,9 @@ export default class ConfirmDialog extends Component {
     return render(component, container);
   }
 
-  state = {};
+  state = {
+    open: true
+  };
 
   componentDidMount() {}
 
@@ -67,6 +59,7 @@ export default class ConfirmDialog extends Component {
 
     return (
       <Dialog ref="root"
+        open={this.state.open}
         actions={confirmActions}
         actionFocus="ok"
         autoDetectWindowHeight={true}
@@ -82,19 +75,19 @@ export default class ConfirmDialog extends Component {
   }
 
   remove() {
-    // TODO: dry this code
     unmountComponentAtNode(this.props.container);
     this.props.container.parentNode.removeChild(this.props.container);
   }
 
   dismiss(acknowledged) {
-    this.refs.root.dismiss();
-    if (this.props.callback) { this.props.callback(acknowledged); }
-    this.remove();
+    this.setState({open: false}, () => {
+      if (this.props.callback) { this.props.callback(acknowledged); }
+      this.remove();
+    });
   }
 
   show() {
-    this.refs.root.show();
+    this.setState({open: true});
   }
 
 }

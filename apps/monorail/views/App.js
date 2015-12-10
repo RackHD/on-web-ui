@@ -23,15 +23,27 @@ import { navigation } from '../routes';
 
 export default class App extends Component {
 
+  static contextTypes = {
+    muiTheme: PropTypes.any
+  };
+
   static childContextTypes = {
-    icons: PropTypes.any
+    app: PropTypes.any,
+    icons: PropTypes.any,
+    muiTheme: PropTypes.any
   };
 
   getChildContext() {
-    return { icons };
+    return {
+      app: this,
+      icons,
+      muiTheme: emcTheme
+    };
   }
 
   state = {
+    customTitle: null,
+    customMenu: null,
     navigation,
     monorailAPI: this.monorailAPI
   };
@@ -39,10 +51,12 @@ export default class App extends Component {
   render() {
     return (
       <AppContainer
+          key="app"
           ref="container"
           navigation={this.state.navigation}
           afterContent={[
             <Popover key="settings"
+                ref="settings"
                 style={{width: 300}}
                 animated={true}
                 anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
@@ -70,10 +84,27 @@ export default class App extends Component {
             </Popover>
           ]}
           beforeBreadcrumbs={[
-            <Link key={0} to="dashboard" style={{marginRight: '1em'}}>
+            <Link key={0} to="dashboard" style={{paddingLeft: 4, marginRight: 24, float: 'left', display: 'inline-block'}}>
               <FontIcon className="fa fa-dashboard"
                 color={emcTheme.rawTheme.palette.alternateTextColor}
                 hoverColor={emcTheme.rawTheme.palette.textColor} />
+            </Link>
+          ]}
+          replaceBreadcrumbs={this.state.customTitle}
+          afterBreadcrumbs={this.state.customMenu || [
+            <Link key="we" to="workflow_editor" style={{marginLeft: 12, marginTop: -2, float: 'left'}}>
+              <IconButton tooltip="Workflow Editor">
+                <FontIcon className="fa fa-share-alt"
+                  color={emcTheme.rawTheme.palette.alternateTextColor}
+                  hoverColor={emcTheme.rawTheme.palette.textColor} />
+              </IconButton>
+            </Link>,
+            <Link key="logs" to="logs" style={{marginRight: 16, marginTop: -2, float: 'right'}}>
+              <IconButton tooltip="View Logs">
+                <FontIcon className="fa fa-terminal"
+                  color={emcTheme.rawTheme.palette.alternateTextColor}
+                  hoverColor={emcTheme.rawTheme.palette.textColor} />
+              </IconButton>
             </Link>
           ]}
           rightAppBarIconElement={

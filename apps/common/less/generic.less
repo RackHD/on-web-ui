@@ -13,8 +13,8 @@ code {
   margin: 0 .2rem;
   font-size: 90%;
   white-space: nowrap;
-  background: #F1F1F1;
-  border: 1px solid #E1E1E1;
+  // background: #F1F1F1;
+  // border: 1px solid #E1E1E1;
   border-radius: 4px;
 }
 
@@ -61,5 +61,16 @@ textarea, input {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+  }
+}
+
+pre, code, input, textarea {
+  &, & * {
+    -webkit-touch-callout: all !important;
+    -webkit-user-select: all !important;
+    -khtml-user-select: all !important;
+    -moz-user-select: all !important;
+    -ms-user-select: all !important;
+    user-select: all !important;
   }
 }

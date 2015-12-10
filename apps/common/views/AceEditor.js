@@ -53,6 +53,7 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     this.editor = ace.edit(this.props.name);
+    this.editor.$blockScrolling = Infinity;
     this.editor.getSession().setMode('ace/mode/' + this.props.mode);
     this.editor.setTheme('ace/theme/' + this.props.theme);
     this.editor.setFontSize(this.props.fontSize);
@@ -63,12 +64,10 @@ module.exports = React.createClass({
     this.editor.setOption('readOnly', this.props.readOnly);
     this.editor.setOption('highlightActiveLine', this.props.highlightActiveLine);
     this.editor.setShowPrintMargin(this.props.setShowPrintMargin);
-    setTimeout(() => {
-      this.editor.selection.moveCursorFileStart();
-      if (this.props.onLoad) {
-        this.props.onLoad(this.editor);
-      }
-    }, 32);
+    this.editor.selection.moveCursorFileStart();
+    if (this.props.onLoad) {
+      this.props.onLoad(this.editor);
+    }
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -84,12 +83,9 @@ module.exports = React.createClass({
       this.editor.setValue(nextProps.value, 1);
     }
     this.editor.renderer.setShowGutter(nextProps.showGutter);
-    setTimeout(() => {
-      this.editor.selection.moveCursorFileStart();
-      if (nextProps.onLoad) {
-        nextProps.onLoad(this.editor);
-      }
-    }, 32);
+    if (nextProps.onLoad) {
+      nextProps.onLoad(this.editor);
+    }
   },
 
   render: function() {

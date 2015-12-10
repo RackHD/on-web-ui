@@ -13,7 +13,6 @@ import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
 import AppNavigation from './AppNavigation';
 import EMCTab from './EMCTab';
 import ErrorNotification from './ErrorNotification';
-import ViewportSize from './ViewportSize';
 
 import FormatHelpers from '../mixins/FormatHelpers';
 
@@ -33,6 +32,7 @@ export default class AppContainer extends Component {
     disableAppBar: PropTypes.bool,
     disableTabPadding: PropTypes.bool,
     navigation: PropTypes.array,
+    replaceBreadcrumbs: PropTypes.any,
     rightAppBarIconElement: PropTypes.any,
     title: PropTypes.string
   };
@@ -47,18 +47,23 @@ export default class AppContainer extends Component {
     disableAppBar: false,
     disableTabPadding: false,
     navigation: [],
+    replaceBreadcrumbs: null,
     rightAppBarIconElement: null,
     title: '',
   };
 
   static childContextTypes = {
-    appContainer: PropTypes.any
+    appContainer: PropTypes.any,
+    muiTheme: PropTypes.any
   };
 
   state = {};
 
   getChildContext() {
-    return {appContainer: this};
+    return {
+      appContainer: this,
+      muiTheme: emcTheme
+    };
   }
 
   componentWillMount() {
@@ -66,8 +71,20 @@ export default class AppContainer extends Component {
     window.onerror = this.handleError;
   }
 
+  componentDidMount() {
+    this.handleResize = () => {
+      this.refs.content.style.height = (window.innerHeight - (this.gutter * 2) + 'px')
+    };
+    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('orientationchange', this.handleResize);
+  }
+
+
   componentWillUnmount() {
     window.onerror = null;
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('orientationchange', this.handleResize);
+    this.handleResize = null;
   }
 
   componentDidUpdate() {
@@ -106,9 +123,9 @@ export default class AppContainer extends Component {
       ],
 
       // AppBar does not support Radium style
-      appBar: merge(
+      appBar: merge({},
         this.css.appBar,
-        this.state.fullscreenMode ? {position: 'relative'} : null,
+        this.state.fullscreenMode ? {position: 'relative', height: 64} : null,
         this.props.css.appBar
       ),
 
@@ -124,15 +141,19 @@ export default class AppContainer extends Component {
       ]
     };
 
-    let breadcrumbs = this.renderBreadcrumbs(),
-        titleStyle = {fontWeight: 'normal', fontSize: '1em', margin: 0},
-        title = this.props.title || [
-          <h1 key={0} style={titleStyle}>
+    let breadcrumbs = this.props.replaceBreadcrumbs || this.renderBreadcrumbs(),
+        titleStyle = {fontWeight: 'normal', fontSize: '1em', margin: 0, height: 64},
+        title = this.props.title || this.props.replaceBreadcrumbs ?
+          <div style={titleStyle}>
             {this.props.beforeBreadcrumbs}
             {breadcrumbs}
             {this.props.afterBreadcrumbs}
-          </h1>
-        ];
+          </div> :
+          <h1 style={titleStyle}>
+            {this.props.beforeBreadcrumbs}
+            {breadcrumbs}
+            {this.props.afterBreadcrumbs}
+          </h1>;
 
     return (
       <div
@@ -144,6 +165,7 @@ export default class AppContainer extends Component {
                 onLeftIconButtonTouchTap={this.toggleLeftNavigation.bind(this)}
                 iconElementRight={this.props.rightAppBarIconElement}
                 title={title}
+                titleStyle={{overflow: 'visible'}}
                 style={css.appBar}
                 zDepth={0} />}
 
@@ -164,8 +186,7 @@ export default class AppContainer extends Component {
           <ErrorNotification ref="error" />
 
           <footer style={css.footer}>
-            <span key={0}>© 2015 EMC<sup>2</sup></span>
-            {this.state.fullscreenMode ? null : <ViewportSize style={{float: 'right'}} />}
+            {this.state.fullscreenMode ? null : <span key={0}>© 2015 EMC<sup>2</sup></span>}
           </footer>
 
           <EMCTab ref="emcTab" />
@@ -229,7 +250,7 @@ export default class AppContainer extends Component {
 
     this.title = title;
 
-    return breadcrumbs;
+    return <div style={{float: 'left'}}>{breadcrumbs}</div>;
   }
 
   toggleLeftNavigation() {
@@ -257,7 +278,16 @@ export default class AppContainer extends Component {
   }
 
   fullscreenMode(enable) {
-    this.setState({fullscreenMode: enable});
+    this.setState({fullscreenMode: enable}, () => {
+      if (this.state.fullscreenMode) {
+        document.body.style.overflow = 'hidden';
+        document.body.classList.add('no-select');
+      }
+      else {
+        document.body.style.overflow = 'visible';
+        document.body.classList.remove('no-select');
+      }
+    });
   }
 
 }

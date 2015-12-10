@@ -125,6 +125,7 @@ export default class GCPanelElement extends Component {
         <div ref="header"
             onMouseDown={this.movePanel.bind(this)}
             style={css.header}>
+          {this.props.leftSocket}
           <input ref="nameInput"
               key="nameInput"
               type="text"
@@ -147,6 +148,7 @@ export default class GCPanelElement extends Component {
               onChange={this.handleColorChange.bind(this)}
               onFocus={this.focusInput.bind(this)}
               onBlur={this.blurInput.bind(this)} />
+          {this.props.rightSocket}
         </div>
         <div ref="content"
             style={css.content}>
@@ -319,7 +321,7 @@ export default class GCPanelElement extends Component {
     this.setState({name: event.target.value});
     if (this.props.onChange) {
       clearTimeout(this.onChangeTimer);
-      this.onChangeTimer = setTimeout(() => { this.props.onChange(); }, 50);
+      this.onChangeTimer = setTimeout(() => { this.props.onChange(); }, 2000);
     }
   }
 

@@ -45,7 +45,9 @@ export default class GCSocketElement extends Component {
 
   static contextTypes = {
     graphCanvas: PropTypes.any,
-    parentGCPort: PropTypes.any
+    parentGCPort: PropTypes.any,
+    parentGCNode: PropTypes.any,
+    parentGCGroup: PropTypes.any
   };
 
   static GCTypeEnum = {element: true, socket: true};
@@ -66,6 +68,14 @@ export default class GCSocketElement extends Component {
 
   get parentPort() {
     return this.context.parentGCPort;
+  }
+
+  get parentNode() {
+    return this.context.parentGCNode;
+  }
+
+  get parentGroup() {
+    return this.context.parentGCGroup;
   }
 
   id = this.props.initialId || this.constructor.id();
@@ -115,6 +125,18 @@ export default class GCSocketElement extends Component {
               onMouseDown={this.drawLink.bind(this)} />
       </div>
     );
+
+    if (this.props.hideLabel) {
+      return (
+        <div className="GraphCanvasSocket"
+             style={{display: 'inline-block'}}
+             data-id={this.id}
+             onMouseOver={this.onHover.bind(this)}
+             onMouseOut={this.onLeave.bind(this)}>
+          {socketCell}
+        </div>
+      );
+    }
 
     var dir = this.props.dir,
         cells;
@@ -192,6 +214,9 @@ export default class GCSocketElement extends Component {
   }
 
   drawLink(_event) {
+    if (!this.linksManager) {
+      throw new Error('Missing links manager');
+    }
     this.graphCanvasViewport.setupClickDrag({
       down: (event, dragState, e) => this.linksManager.drawLinkStart(event, dragState, e),
       move: (event, dragState, e) => this.linksManager.drawLinkContinue(event, dragState, e),
@@ -204,11 +229,17 @@ export default class GCSocketElement extends Component {
   emitLink(link) {
     if (this.props.onLink) { this.props.onLink(link); }
     if (this.parentPort) { this.parentPort.emitLink(link); }
+    else if (this.parentNode) { this.parentNode.emitLink(link); }
+    else if (this.parentGroup) { this.parentGroup.emitLink(link); }
+    else if (this.graphCanvas) { this.graphCanvas.emitLink(link); }
   }
 
   emitUnlink(link) {
     if (this.props.onUnlink) { this.props.onUnlink(link); }
     if (this.parentPort) { this.parentPort.emitUnlink(link); }
+    else if (this.parentNode) { this.parentNode.emitUnlink(link); }
+    else if (this.parentGroup) { this.parentGroup.emitUnlink(link); }
+    else if (this.graphCanvas) { this.graphCanvas.emitUnlink(link); }
   }
 
 }

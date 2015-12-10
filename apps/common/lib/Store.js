@@ -8,10 +8,38 @@ import Messenger from './Messenger';
 
 export default class Store extends EventEmitter {
 
-  constructor(EntityClass) {
+  static cache = {};
+
+  static loadCache() {
+    let jsonCache = window.localStorage.getItem(this.name + '-cache') || '{}';
+    try { this.cache = JSON.parse(jsonCache); } catch (err) {}
+  }
+
+  static saveCache() {
+    let jsonCache = JSON.stringify(this.cache);
+    window.localStorage.setItem(this.name + '-cache', jsonCache);
+  }
+
+  autoCache = false;
+
+  constructor(EntityClass, autoCache) {
     super();
     this.EntityClass = EntityClass || this.EntityClass;
+    this.autoCache = autoCache || this.autoCache;
     this.collection = {};
+    if (this.autoCache) { this.loadCache(); }
+  }
+
+  get cache() {
+    return this.constructor.cache;
+  }
+
+  loadCache() {
+    this.constructor.loadCache();
+  }
+
+  saveCache() {
+    this.constructor.saveCache();
   }
 
   startMessenger(resource, host, secure) {
@@ -59,14 +87,15 @@ export default class Store extends EventEmitter {
   update() { throw new Error('Store: Unimplemented update method.'); }
   destroy() { throw new Error('Store: Unimplemented destroy method.'); }
 
-  all() {
-    return Object.keys(this.collection)
-      .map(id => this.collection[id])
-      .filter(item => !!item);
+  all(collection = this.collection) {
+    return Object.keys(collection)
+      .map(id => collection[id])
+      .filter(item => !!item)
+      .concat(collection === this.cache ? this.all(this.cache) : []);
   }
 
   get(id) {
-    return this.collection[id];
+    return this.collection[id] || this.cache[id];
   }
 
   error(id, error) {
@@ -118,7 +147,12 @@ export default class Store extends EventEmitter {
     }
     var object = this.EntityClass ? new this.EntityClass(data) : data;
     this.collection[id] = object;
+    this.cache[id] = object;
     if (!silent) { this.publish(id); }
+    if (this.autoCache) {
+      clearTimeout(this.autoCacheTimer);
+      this.autoCacheTimer = setTimeout(this.saveCache.bind(this), 10);
+    }
   }
 
   assign(id, newData) {

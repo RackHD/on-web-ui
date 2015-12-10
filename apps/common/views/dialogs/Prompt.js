@@ -9,16 +9,6 @@ import radium from 'radium';
 
 import { Dialog, TextField } from 'material-ui';
 
-/**
-# PromptDialog
-
-@object
-  @type class
-  @extends React.Component
-  @name PromptDialog
-  @desc
-*/
-
 @radium
 export default class PromptDialog extends Component {
 
@@ -53,7 +43,9 @@ export default class PromptDialog extends Component {
     return render(component, container);
   }
 
-  state = {};
+  state = {
+    open: true
+  };
 
   componentDidMount() {}
 
@@ -67,6 +59,7 @@ export default class PromptDialog extends Component {
 
     return (
       <Dialog ref="root"
+        open={this.state.open}
         actions={confirmActions}
         actionFocus="ok"
         autoDetectWindowHeight={true}
@@ -88,22 +81,22 @@ export default class PromptDialog extends Component {
   }
 
   remove() {
-    // TODO: dry this code
     unmountComponentAtNode(this.props.container);
     this.props.container.parentNode.removeChild(this.props.container);
   }
 
   dismiss(acknowledged) {
-    this.refs.root.dismiss();
-    if (this.props.callback) {
-      acknowledged = acknowledged ? this.refs.input.getValue() : null;
-      this.props.callback(acknowledged);
-    }
-    this.remove();
+    this.setState({open: false}, () => {
+      if (this.props.callback) {
+        acknowledged = acknowledged ? this.refs.input.getValue() : null;
+        this.props.callback(acknowledged);
+      }
+      this.remove();
+    });
   }
 
   show() {
-    this.refs.root.show();
+    this.setState({open: true});
   }
 
 }

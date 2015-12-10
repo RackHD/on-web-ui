@@ -286,6 +286,7 @@ export default class GCLinkElement extends Component {
     this.linksManager.unregister(this);
     let fromSocket = this.graphCanvas.lookup(this.state.from),
         toSocket = this.graphCanvas.lookup(this.state.to);
+    debugger;
     fromSocket.emitUnlink(this);
     toSocket.emitUnlink(this);
     this.setState({removed: true});
