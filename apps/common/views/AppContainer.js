@@ -98,6 +98,10 @@ export default class AppContainer extends Component {
       paddingBottom: this.props.disableTabPadding ? 0 : this.gutter
     },
 
+    header: {
+      background: 'rgba(0, 0, 0, 0.5)'
+    },
+
     appBar: {
       color: 'inherit',
       background: 'inherit',
@@ -121,6 +125,8 @@ export default class AppContainer extends Component {
         this.props.css.root,
         this.props.style
       ],
+
+      header: [this.css.header, this.props.css.header],
 
       // AppBar does not support Radium style
       appBar: merge({},
@@ -160,7 +166,7 @@ export default class AppContainer extends Component {
           className={this.props.className + ' app-canvas'}
           style={css.root}>
         <AppCanvas>
-          <header>
+          <header style={css.header}>
             {this.props.disableAppBar ? null : <AppBar
                 onLeftIconButtonTouchTap={this.toggleLeftNavigation.bind(this)}
                 iconElementRight={this.props.rightAppBarIconElement}
