@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>On-web-ui by RackHD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">On-web-ui</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/RackHD/on-web-ui" class="btn">View on GitHub</a>
+      <a href="https://github.com/RackHD/on-web-ui/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/RackHD/on-web-ui/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="on-web-ui---" class="anchor" href="#on-web-ui---" aria-hidden="true"><span class="octicon octicon-link"></span></a>On Web UI <a href="https://travis-ci.org/RackHD/on-web-ui"><img src="https://travis-ci.org/RackHD/on-web-ui.svg?branch=master" alt="Build Status"></a> <a href="https://codeclimate.com/github/RackHD/on-web-ui"><img src="https://codeclimate.com/github/RackHD/on-web-ui/badges/gpa.svg" alt="Code Climate"></a> <a href="https://coveralls.io/github/RackHD/on-web-ui?branch=master"><img src="https://coveralls.io/repos/RackHD/on-web-ui/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a>
+</h1>
+
+<p>Copyright 2015, EMC, Inc.</p>
+
+<h3>
+<a id="quick-getting-started-guide" class="anchor" href="#quick-getting-started-guide" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick getting started guide.</h3>
+
+<p><strong>Requires Node v4 or greater to run on-web-ui dev tools.</strong></p>
+
+<div class="highlight highlight-source-shell"><pre>$ git clone https://github.com/RackHD/on-web-ui.git
+$ <span class="pl-c1">cd</span> on-web-ui
+$ npm run uninstall             <span class="pl-c"># Uninstall all node_modules from last install.</span>
+$ npm install                   <span class="pl-c"># Install Node.js modules.</span>
+$ npm run install               <span class="pl-c"># Run install script. (Not required on Mac)</span>
+$ npm start                     <span class="pl-c"># Start on-web-ui development environment.</span>
+$ npm <span class="pl-c1">test</span>                      <span class="pl-c"># Runs all automated tests against On Web UI.</span></pre></div>
+
+<p>This will start a development server that will automatically refresh when code changes are made. It uses <a href="http://www.browsersync.io/">BrowserSync</a> to accomplish this.</p>
+
+<p>By default there will be two servers running. One on port <code>5000</code> which will be proxied by another on port <code>3000</code>.</p>
+
+<ul>
+<li>http://localhost:3000 is the MonoRail Web UI.</li>
+</ul>
+
+<h3>
+<a id="how-to-build-on-web-ui-applications" class="anchor" href="#how-to-build-on-web-ui-applications" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to build On Web UI applications.</h3>
+
+<p>By default, builds run in debug mode. If you need to build in release mode, add the <code>--release</code> flag.</p>
+
+<div class="highlight highlight-source-shell"><pre>$ <span class="pl-c1">cd</span> dev                        <span class="pl-c"># Gulp tasks must be run from `dev/`.</span>
+$ gulp build                    <span class="pl-c"># Or, `gulp build --release`.</span></pre></div>
+
+<p>This will generate a <code>build/</code> directory at the project root. The contents of this directory can be served by any HTTP file server in order to deploy all the On Web UI applications.</p>
+
+<div class="highlight highlight-source-shell"><pre>$ <span class="pl-c1">cd</span> dev                        <span class="pl-c"># Gulp tasks must be run from `dev/`.</span>
+$ gulp assets less bundle       <span class="pl-c"># A more verbose way to build.</span></pre></div>
+
+<p>The <code>build</code> task actually runs three different tasks sequentially.</p>
+
+<ul>
+<li>
+<code>gulp assets</code> -- Copies all assets in <code>apps/[app]/assets</code> to <code>build/[app]</code>.</li>
+<li>
+<code>gulp less</code> -- Compiles less/css files in <code>apps/[app]/less</code> to <code>build/[app]</code>.</li>
+<li>
+<code>gulp bundle</code> -- Compiles and bundles es6/7 javascript code from <code>apps/[app]/bundle.js</code> into <code>build/bundle/[app].js</code>.</li>
+</ul>
+
+<h3>
+<a id="more-on-automated-tests" class="anchor" href="#more-on-automated-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>More on Automated Tests.</h3>
+
+<p>Run unit tests powered by <a href="http://karma-runner.github.io/">Karma</a>, <a href="http://mochajs.org/">Mocha</a>, and <a href="http://chaijs.com/">Chai</a>, with <a href="https://github.com/chaijs/chai-spies">Spies</a></p>
+
+<p>Tests are designed to run in a real web browser such as Chrome or FireFox. By default Chrome must be present when running the tests.</p>
+
+<div class="highlight highlight-source-shell"><pre>$ npm <span class="pl-c1">test</span>                       <span class="pl-c"># Or, `npm run-script test-ci` for Jenkins.</span></pre></div>
+
+<p>Test any javascript module by creating a <code>__tests__/</code> directory where
+the file is. Name the test by appending <code>-test.js</code> to the JavaScript file.</p>
+
+<h3>
+<a id="project-organization" class="anchor" href="#project-organization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Organization</h3>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-c1">.</span>
+├── apps              <span class="pl-c"># Directory of separated applications.</span>
+│   │
+│   ├── {app}
+│   │   ├── assets        <span class="pl-c"># Static files to be made public.</span>
+│   │   ├── config        <span class="pl-c"># Application configuration files and routes.</span>
+│   │   ├── less          <span class="pl-c"># Less and CSS files.</span>
+│   │   ├── lib           <span class="pl-c"># Reusable JavaScript code.</span>
+│   │   ├── messengers    <span class="pl-c"># Actions modules delegate calls to stores.</span>
+│   │   ├── mixins        <span class="pl-c"># React component mixin definitions.</span>
+│   │   ├── node_modules  <span class="pl-c"># External application dependencies.</span>
+│   │   ├── stores        <span class="pl-c"># Stores contain persisted application data.</span>
+│   │   ├── views         <span class="pl-c"># React views.</span>
+│   │   │
+│   │   ├── bundle.js     <span class="pl-c"># Main application entry point.</span>
+│   │   ├── package.json  <span class="pl-c"># Application NPM package, dependency file.</span>
+│   │   └── README.md     <span class="pl-c"># Application specific documentation.</span>
+│   │
+│   ├── index.html    <span class="pl-c"># Default app redirector HTML file.</span>
+│   └── README.md     <span class="pl-c"># Generic application documentation.</span>
+│
+├── build             <span class="pl-c"># Output folder for built code.</span>
+│   │
+│   ├── {app}         <span class="pl-c"># Compiled CSS, HTML and assets go in app folders.</span>
+│   └── bundle        <span class="pl-c"># Compiled JavaScript code for all apps go here.</span>
+│
+├── node_modules      <span class="pl-c"># External project dependencies.</span>
+<span class="pl-k">|</span>
+├── debian            <span class="pl-c"># Debian packaging directory.</span>
+│
+├── dev                   <span class="pl-c"># Scripts for dev, build, and test.</span>
+│   │
+│   ├── app_tests         <span class="pl-c"># Application tests bootstrap source code.</span>
+│   ├── lib               <span class="pl-c"># Reusable JavaScript code for development.</span>
+│   │
+│   ├── node_modules      <span class="pl-c"># External development dependencies.</span>
+│   │
+│   ├── slush_app         <span class="pl-c"># [Optional] slush-app location.</span>
+│   │
+│   ├── specs             <span class="pl-c"># Specification documents.</span>
+│   ├── tasks             <span class="pl-c"># Gulp task definitions.</span>
+│   ├── tools             <span class="pl-c"># Miscellaneous development scripts.</span>
+│   │
+│   ├── deb_package.sh    <span class="pl-c"># Debian packaging script.</span>
+│   ├── Dockerfile        <span class="pl-c"># Docker container configuration file.</span>
+│   ├── gulpfile.js       <span class="pl-c"># Gulp file for project gulp tasks.</span>
+│   │
+│   ├── karma.<span class="pl-k">*</span>ci.conf.js  <span class="pl-c"># Karma configuration for continuous integration.</span>
+│   ├── karma.conf.js      <span class="pl-c"># Karma test running configuration for development.</span>
+│   │
+│   ├── package.json      <span class="pl-c"># Development NPM package, dependency file.</span>
+│   ├── provision.sh      <span class="pl-c"># Provision script for environment setup.</span>
+│   ├── README.md         <span class="pl-c"># Project development documentation.</span>
+│   └── Vagrantfile       <span class="pl-c"># Vagrant VM configuration file.</span>
+│
+├── server                <span class="pl-c"># Build server.</span>
+│   │
+│   ├── node_modules      <span class="pl-c"># External server dependencies.</span>
+│   │
+│   ├── build_server.js   <span class="pl-c"># Build server source file.</span>
+│   ├── package.json      <span class="pl-c"># Server NPM dependency file.</span>
+│   └── README.md         <span class="pl-c"># Server documentation.</span>
+<span class="pl-k">|</span>
+├── .babelrc          <span class="pl-c"># BabelJS configuration file.</span>
+├── .eslintrc         <span class="pl-c"># eslint configuration file.</span>
+├── .gitignore        <span class="pl-c"># git ignored files.</span>
+│
+├── HWIMO-BUILD       <span class="pl-c"># Build script.</span>
+├── HWIMO-DOC         <span class="pl-c"># Doc script.</span>
+├── HWIMO-TEST        <span class="pl-c"># Test script.</span>
+│
+├── package.json      <span class="pl-c"># Main NPM package, dependency file.</span>
+└── README.md         <span class="pl-c"># Everything that follows is a result of what you see here.</span></pre></div>
+
+<h3>
+<a id="core-technologies" class="anchor" href="#core-technologies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Core Technologies</h3>
+
+<ul>
+<li><a href="http://babeljs.io/docs/learn-es2015/#ecmascript-6-features'">BabelJS</a></li>
+<li><a href="https://facebook.github.io/react/docs/getting-started.html">React</a></li>
+<li><a href="http://projects.formidablelabs.com/radium/">Radium</a></li>
+<li><a href="http://material-ui.com/#/components/appbar">Material UI</a></li>
+<li><a href="http://www.browsersync.io/">BrowserSync</a></li>
+<li><a href="http://webpack.github.io/">Webpack</a></li>
+<li><a href="http://gulpjs.com/">Gulp</a></li>
+<li><a href="http://karma-runner.github.io/">Karma</a></li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/RackHD/on-web-ui">On-web-ui</a> is maintained by <a href="https://github.com/RackHD">RackHD</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
