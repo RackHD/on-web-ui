@@ -52,7 +52,7 @@ export default class AppHeader extends Component {
         <img
             className="emc-logo"
             style={[this.css.logo]}
-            src="/common/WhiteLogoLarge.png"
+            src="common/WhiteLogoLarge.png"
             alt="EMC" />
 
       </a>

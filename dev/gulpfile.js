@@ -35,4 +35,7 @@ require('./tasks/serve');
 require('./tasks/sync');
 require('./tasks/watch');
 
+// deploy
+require('./tasks/deploy');
+
 global.gulp.task('default', ['sync']);

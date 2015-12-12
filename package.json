@@ -35,10 +35,12 @@
     "babel-polyfill": "^6.3.14",
     "eslint": "^1.10.3",
     "eslint-plugin-react": "^3.11.3",
+    "gulp-gh-pages": "^0.5.4",
     "karma-cli": "^0.1.1"
   },
   "scripts": {
-    "build": "./node_modules/.bin/gulp dev/gulpfile.js",
+    "build": "cd ./dev && ./node_modules/.bin/gulp build --production && cd ..",
+    "deploy": "npm run-script build && cd ./dev && ./node_modules/.bin/gulp deploy",
     "install-apps": "npm link ./apps/*/",
     "install-dev-slush-app": "npm link ./dev/slush_app",
     "install-dev": "cd ./dev && npm install && cd ..",
