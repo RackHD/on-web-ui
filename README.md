@@ -22,6 +22,14 @@ By default there will be two servers running. One on port `5000` which will be p
 
  * http://localhost:3000 is the MonoRail Web UI.
 
+### How to configure RackHD API endpoint.
+
+You can change the RackHD API endpoint dynamically from the UI. There is a gear icon located at the top right corner of the UI. This will open the Settings Panel where you can type a custom Rack API endpoint URL.
+
+The default API endpoint can be configured by renaming `apps/monorail/custom.json.example` to `apps/monorail/custom.json`, and then editing the `MONORAIL_API` property.
+
+Note, that the endpoint URL is stored in your browsers local storage. This means that changing the default endpoint may not change the endpoint for your session. It is better to use the Settings Panel to update the endpoint in your browser.
+
 ### How to build On Web UI applications.
 
 By default, builds run in debug mode. If you need to build in release mode, add the `--release` flag.
