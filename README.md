@@ -2,6 +2,8 @@
 
 Copyright 2015, EMC, Inc.
 
+### [Download latest build](https://github.com/RackHD/on-web-ui/archive/gh-pages.zip)
+
 ### Quick getting started guide.
 
 **Requires Node v4 or greater to run on-web-ui dev tools.**
@@ -50,7 +52,7 @@ The `build` task actually runs three different tasks sequentially.
  * `gulp less` -- Compiles less/css files in `apps/[app]/less` to `build/[app]`.
  * `gulp bundle` -- Compiles and bundles es6/7 javascript code from `apps/[app]/bundle.js` into `build/bundle/[app].js`.
 
-### More on Automated Tests.
+### Automated Testing.
 
 Run unit tests powered by [Karma](http://karma-runner.github.io/), [Mocha](http://mochajs.org/), and [Chai](http://chaijs.com/), with [Spies](https://github.com/chaijs/chai-spies)
 
