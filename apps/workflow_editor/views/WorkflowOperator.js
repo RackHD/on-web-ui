@@ -214,15 +214,14 @@ export default class WorkflowOperator extends Component {
 
   renderCustomToolbar() {
     let customMenu = [
-        // TODO: add popovers for running and viewing workflows
-        // <this.WorkflowEditorIconButton key="active"
-        //     tooltip="Running Workflows"
-        //     icon="tasks"
-        //     float="right" />,
-        // <this.WorkflowEditorIconButton key="run"
-        //     tooltip="Run this Workflow"
-        //     icon="play"
-        //     float="right" />
+      <this.WorkflowEditorIconButton key="active"
+          tooltip="Running Workflows"
+          icon="tasks"
+          float="right" />,
+      <this.WorkflowEditorIconButton key="run"
+          tooltip="Run this Workflow"
+          icon="play"
+          float="right" />
     ];
 
     if (this.state.loading) {
