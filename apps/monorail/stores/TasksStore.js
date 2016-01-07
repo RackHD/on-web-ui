@@ -4,20 +4,18 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import TasksRestAPI from '../messengers/TasksRestAPI';
+import MonoRailRestAPIv1_1 from '../messengers/MonoRailRestAPIv1_1';
 
 export default class TasksStore extends Store {
 
-  tasksRestAPI =  new TasksRestAPI();
-
   read(id) {
-    return this.tasksRestAPI.get(id)
+    return MonoRailRestAPIv1_1.tasks.get(id)
       .then(item => this.change(id, item))
       .catch(err => this.error(id, err));
   }
 
   list() {
-    return this.tasksRestAPI.list()
+    return MonoRailRestAPIv1_1.tasks.list()
       .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }

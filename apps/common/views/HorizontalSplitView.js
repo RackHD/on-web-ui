@@ -33,7 +33,7 @@ export default class HorizontalSplitView extends Component {
   state = {
     split: this.props.split,
     lastSplit: null
-  }
+  };
 
   get width() {
     return this.refs.root.offsetWidth;
@@ -82,7 +82,7 @@ export default class HorizontalSplitView extends Component {
         background: 'rgba(127,127,127,0.66)',
       }
     }
-  }
+  };
 
   render() {
     let { props, state } = this;
@@ -155,7 +155,7 @@ export default class HorizontalSplitView extends Component {
     else {
       this.setState({split: this.props.collapse, lastSplit: this.state.split}, this.emitUpdate);
     }
-  }
+  };
 
   resizeSplitView = (event) => {
     let active = true,
@@ -186,6 +186,6 @@ export default class HorizontalSplitView extends Component {
 
     window.addEventListener('mousemove', moveHandler);
     window.addEventListener('mouseup', upHandler);
-  }
+  };
 
 }

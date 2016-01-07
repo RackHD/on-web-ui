@@ -2,23 +2,16 @@
 
 'use strict';
 
-import config from '../config/index';
-import RestAPI from 'common-web-ui/lib/RestAPI';
+import RestAPI from '../lib/RestAPI';
 
 export default class ConfigRestAPI extends RestAPI {
 
-  api = config.MONORAIL_API;
   entity = 'config';
 
+  unsupportedMethods = ['list', 'post', 'put', 'delete'];
+
   get() {
-    return new Promise((resolve, reject) => {
-      this.http.get(this.url)
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
+    return super.get('');
   }
 
   patch(body) {

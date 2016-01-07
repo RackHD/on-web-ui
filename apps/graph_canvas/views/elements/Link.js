@@ -35,7 +35,7 @@ export default class GCLinkElement extends Component {
   static contextTypes = {
     graphCanvas: PropTypes.any,
     parentGCGroup: PropTypes.any
-  }
+  };
 
   static GCTypeEnum = {vector: true, link: true};
 
@@ -103,7 +103,7 @@ export default class GCLinkElement extends Component {
     bounds: null,
     hover: false,
     removed: false
-  }
+  };
 
   render() {
     try {

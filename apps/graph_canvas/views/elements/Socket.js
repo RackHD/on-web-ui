@@ -218,9 +218,12 @@ export default class GCSocketElement extends Component {
       throw new Error('Missing links manager');
     }
     this.graphCanvasViewport.setupClickDrag({
-      down: (event, dragState, e) => this.linksManager.drawLinkStart(event, dragState, e),
-      move: (event, dragState, e) => this.linksManager.drawLinkContinue(event, dragState, e),
-      up: (event, dragState, e) => this.linksManager.drawLinkFinish(event, dragState, e)
+      down: (event, dragState, e) =>
+        this.linksManager && this.linksManager.drawLinkStart(event, dragState, e),
+      move: (event, dragState, e) =>
+        this.linksManager && this.linksManager.drawLinkContinue(event, dragState, e),
+      up: (event, dragState, e) =>
+        this.linksManager && this.linksManager.drawLinkFinish(event, dragState, e)
     }, {
       fromSocket: this
     })(_event);

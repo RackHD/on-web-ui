@@ -2,17 +2,17 @@
 
 'use strict';
 
-import config from '../config/index';
-import RestAPI from 'common-web-ui/lib/RestAPI';
+import RestAPI from '../lib/RestAPI';
 
-export default class VersionsRestAPI extends RestAPI {
+export default class SkusRestAPI extends RestAPI {
 
-  api = config.MONORAIL_API;
-  entity = 'versions';
+  entity = 'skus';
 
-  get() {
+  unsupportedMethods = ['put'];
+
+  listNodes() {
     return new Promise((resolve, reject) => {
-      this.http.get(this.url)
+      this.http.get(this.url + id + '/nodes')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -20,5 +20,7 @@ export default class VersionsRestAPI extends RestAPI {
         });
     });
   }
+
+  // TODO: more api calls
 
 }

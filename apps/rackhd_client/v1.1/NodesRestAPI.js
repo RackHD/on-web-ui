@@ -2,74 +2,13 @@
 
 'use strict';
 
-import config from '../config/index';
-import RestAPI from 'common-web-ui/lib/RestAPI';
+import RestAPI from '../lib/RestAPI';
 
 export default class NodesRestAPI extends RestAPI {
 
-  api = config.MONORAIL_API;
   entity = 'nodes';
 
-  get(id) {
-    return new Promise((resolve, reject) => {
-      this.http.get(this.url + id)
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  list() {
-    return new Promise((resolve, reject) => {
-      this.http.get(this.url)
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  post(body) {
-    return new Promise((resolve, reject) => {
-      this.http.post(this.url)
-        .accept('json')
-        .type('json')
-        .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  patch(id, body) {
-    return new Promise((resolve, reject) => {
-      this.http.patch(this.url + id)
-        .accept('json')
-        .type('json')
-        .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  delete(id) {
-    return new Promise((resolve, reject) => {
-      this.http.del(this.url + id)
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  // Special API calls:
+  unsupportedMethods = ['put'];
 
   getObm(id) {
     return new Promise((resolve, reject) => {

@@ -97,7 +97,7 @@ export default class GCLinksManager extends Component {
       return dom.dataset.id;
     } else {
       let parent = findDOMNode(dragState.parentComponent);
-      return this.graphCanvas.getEventCoords(event, parent).sub([3, 39]);
+      return this.graphCanvas.getEventCoords(event, parent).sub([3, 3]);
     }
   }
 

@@ -4,22 +4,20 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import VersionsRestAPI from '../messengers/VersionsRestAPI';
+import MonoRailRestAPIv1_1 from '../messengers/MonoRailRestAPIv1_1';
 
 export default class VersionsStore extends Store {
-
-  versionsRestAPI =  new VersionsRestAPI();
 
   key = 'package';
 
   get() {
-    return this.versionsRestAPI.get()
+    return MonoRailRestAPIv1_1.versions.get()
       .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 
   list() {
-    return this.versionsRestAPI.get()
+    return MonoRailRestAPIv1_1.versions.get()
       .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }

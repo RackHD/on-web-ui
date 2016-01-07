@@ -40,7 +40,7 @@ export default class AppHeader extends Component {
       marginBottom: '16%',
       width: '64%'
     }
-  }
+  };
 
   render() {
     return (

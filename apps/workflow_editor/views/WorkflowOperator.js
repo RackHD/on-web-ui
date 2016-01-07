@@ -162,7 +162,7 @@ export default class WorkflowOperator extends Component {
       top: 0,
       zIndex: 999
     }
-  }
+  };
 
   render() {
     let { props, state } = this;

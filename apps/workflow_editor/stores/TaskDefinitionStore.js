@@ -2,25 +2,17 @@
 
 'use strict';
 
-import Store from 'common-web-ui/lib/Store';
+import TaskDefinitionStore from 'monorail-web-ui/stores/TaskDefinitionStore';
 
-import TasksRestAPI from '../messengers/TasksRestAPI';
+export default class TaskDefinitionStore2 extends TaskDefinitionStore {
 
-export default class TaskDefinitionStore extends Store {
-
-  tasksRestAPI = new TasksRestAPI();
   autoCache = true;
 
   static cache = {};
 
   list() {
     this.empty();
-    return this.tasksRestAPI.list()
-      .then(list => this.collect(list.map(item => {
-        item.id = item.injectableName;
-        return item;
-      })))
-      .catch(err => this.error(null, err));
+    return super.list();
   }
 
 }

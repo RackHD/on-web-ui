@@ -2,35 +2,13 @@
 
 'use strict';
 
-import config from '../config/index';
-import RestAPI from 'common-web-ui/lib/RestAPI';
+import RestAPI from '../lib/RestAPI';
 
 export default class FilesRestAPI extends RestAPI {
 
-  api = config.MONORAIL_API;
   entity = 'files';
 
-  del(uuid) {
-    return new Promise((resolve, reject) => {
-      this.http.del(this.url + uuid)
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  get(filename) {
-    return new Promise((resolve, reject) => {
-      this.http.get(this.url + filename)
-        .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && (res.body || res.text));
-        });
-    });
-  }
+  unsupportedMethods = ['post', 'patch'];
 
   list() {
     return new Promise((resolve, reject) => {
@@ -43,9 +21,20 @@ export default class FilesRestAPI extends RestAPI {
     });
   }
 
+  latest(filename) {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.url + filename + '/latest')
+        .accept('json')
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
   md5(filename) {
     return new Promise((resolve, reject) => {
-      this.http.get(this.url + 'md5/' + filename)
+      this.http.get(this.url + 'md5/' + filename + '/latest')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -58,19 +47,6 @@ export default class FilesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + 'metadata/' + filename)
         .accept('json')
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  put(filename, body) {
-    return new Promise((resolve, reject) => {
-      this.http.put(this.url + filename)
-        .accept('json')
-        .type('application/octet-stream')
-        .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);

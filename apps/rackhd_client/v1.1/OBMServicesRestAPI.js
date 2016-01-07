@@ -2,13 +2,13 @@
 
 'use strict';
 
-import config from '../config/index';
-import RestAPI from 'common-web-ui/lib/RestAPI';
+import RestAPI from '../lib/RestAPI';
 
-export default class SchemasRestAPI extends RestAPI {
+export default class OBMServicesRestAPI extends RestAPI {
 
-  api = config.MONORAIL_API;
-  entity = 'schemas';
+  entity = 'obms/library';
+
+  unsupportedMethods = ['post', 'put', 'patch', 'delete'];
 
   get(id) {
     return new Promise((resolve, reject) => {

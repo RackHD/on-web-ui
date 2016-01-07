@@ -4,39 +4,37 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import LookupsRestAPI from '../messengers/LookupsRestAPI';
+import MonoRailRestAPIv1_1 from '../messengers/MonoRailRestAPIv1_1';
 
 export default class NodeStore extends Store {
 
-  lookupsRestAPI = new LookupsRestAPI();
-
   list(q) {
     this.empty();
-    return this.lookupsRestAPI.list(q)
+    return MonoRailRestAPIv1_1.lookups.list(q)
       .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return this.lookupsRestAPI.get(id)
+    return MonoRailRestAPIv1_1.lookups.get(id)
       .then(item => this.change(id, item))
       .catch(err => this.error(id, err));
   }
 
   create(id, data) {
-    return this.lookupsRestAPI.post(id, data)
+    return MonoRailRestAPIv1_1.lookups.post(id, data)
       .then(() => this.insert(id, data))
       .catch(err => this.error(id, err));
   }
 
   update(id, data) {
-    return this.lookupsRestAPI.patch(id, data)
+    return MonoRailRestAPIv1_1.lookups.patch(id, data)
       .then(() => this.change(id, data))
       .catch(err => this.error(id, err));
   }
 
   destroy(id) {
-    return this.lookupsRestAPI.delete(id)
+    return MonoRailRestAPIv1_1.lookups.delete(id)
       .then(() => this.remove(id))
       .catch(err => this.error(id, err));
   }

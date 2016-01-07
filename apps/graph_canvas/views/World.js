@@ -44,7 +44,7 @@ export default class GCWorld extends Component {
   state = {
     vectors: this.props.vectors,
     elements: this.props.elements
-  }
+  };
 
   // componentWillReceiveProps(nextProps) {
   //   this.setState({
@@ -104,7 +104,7 @@ export default class GCWorld extends Component {
       // transformStyle: 'flat',
       // transformBox: 'border-box'
     };
-  }
+  };
 
   prepareChildren(component, vectors, elements) {
     if (!component || !component.props) {

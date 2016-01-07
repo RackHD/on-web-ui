@@ -27,7 +27,7 @@ import NodeStore from '../../stores/NodeStore';
 export default class EditPoller extends Component {
 
   pollers = new PollerStore();
-  nodes = new NodeStore()
+  nodes = new NodeStore();
 
   state = {
     poller: this.props.poller,

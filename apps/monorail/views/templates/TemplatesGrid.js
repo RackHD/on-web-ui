@@ -34,7 +34,7 @@ export default class TemplatesGrid extends Component {
   render() {
     return (
       <ResourceTable
-          initialEntities={this.state.pollers}
+          initialEntities={this.state.templates}
           routeName="templates"
           emptyContent="No templates."
           headerContent="Templates"

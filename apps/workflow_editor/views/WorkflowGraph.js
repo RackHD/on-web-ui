@@ -59,7 +59,7 @@ export default class WorkflowEditor extends Component {
 
   css = {
     root: {}
-  }
+  };
 
   componentWillReceiveProps(nextProps) {
     let nextState = {}

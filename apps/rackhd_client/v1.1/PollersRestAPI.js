@@ -2,17 +2,17 @@
 
 'use strict';
 
-import config from '../config/index';
-import RestAPI from 'common-web-ui/lib/RestAPI';
+import RestAPI from '../lib/RestAPI';
 
-export default class LookupsRestAPI extends RestAPI {
+export default class PollersRestAPI extends RestAPI {
 
-  api = config.MONORAIL_API;
-  entity = 'lookups';
+  entity = 'pollers';
 
-  get(id) {
+  unsupportedMethods = ['put'];
+
+  currentData(id) {
     return new Promise((resolve, reject) => {
-      this.http.get(this.url + id)
+      this.http.get(this.url + id + '/data/current')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -21,10 +21,9 @@ export default class LookupsRestAPI extends RestAPI {
     });
   }
 
-  list(q) {
-    q = q || '';
+  library(id) {
     return new Promise((resolve, reject) => {
-      this.http.get(this.url + '?' + this.qs.stringify({q}))
+      this.http.get(this.url + 'library' + id ? '/' + id : '')
         .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -33,11 +32,11 @@ export default class LookupsRestAPI extends RestAPI {
     });
   }
 
-  post(body) {
+  pause(id, body) {
     return new Promise((resolve, reject) => {
-      this.http.post(this.url)
+      this.http.put(this.url + id + '/pause')
         .accept('json')
-        .type('json')
+        .type('application/json')
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -46,23 +45,12 @@ export default class LookupsRestAPI extends RestAPI {
     });
   }
 
-  patch(id, body) {
+  resume(id, body) {
     return new Promise((resolve, reject) => {
-      this.http.patch(this.url + id)
+      this.http.put(this.url + id + '/resume')
         .accept('json')
-        .type('json')
+        .type('application/json')
         .send(body)
-        .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
-        });
-    });
-  }
-
-  delete(id) {
-    return new Promise((resolve, reject) => {
-      this.http.del(this.url + id)
-        .accept('json')
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
