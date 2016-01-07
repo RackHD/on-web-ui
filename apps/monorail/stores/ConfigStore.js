@@ -4,27 +4,25 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import ConfigRestAPI from '../messengers/ConfigRestAPI';
+import MonoRailRestAPIv1_1 from '../messengers/MonoRailRestAPIv1_1';
 
 export default class ConfigStore extends Store {
 
-  configRestAPI = new ConfigRestAPI();
-
   read() {
-    return this.configRestAPI.get()
+    return MonoRailRestAPIv1_1.config.get()
       .then(item => this.change('config', item))
       .catch(err => this.error(err));
   }
 
   list() {
     this.empty();
-    return this.configRestAPI.get()
+    return MonoRailRestAPIv1_1.config.get()
       .then(item => this.change('config', item))
       .catch(err => this.error(null, err));
   }
 
   update(data) {
-    return this.configRestAPI.patch(data)
+    return MonoRailRestAPIv1_1.config.patch(data)
       .then(() => this.change('config', data))
       .catch(err => this.error('config', err));
   }

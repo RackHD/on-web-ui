@@ -29,6 +29,8 @@ import JsonInspector from 'react-json-inspector';
 
 import Console from 'common-web-ui/views/Console';
 
+import MonoRailRestAPIv1_1 from 'monorail-web-ui/messengers/MonoRailRestAPIv1_1';
+
 import NodeMonitor from '../../lib/NodeMonitor';
 import NodeStore from '../../stores/NodeStore';
 
@@ -36,7 +38,6 @@ import NodeStore from '../../stores/NodeStore';
 export default class Node extends Component {
 
   nodes = new NodeStore();
-  nodesRestAPI = this.nodes.nodesRestAPI;
 
   state = {
     logs: [],
@@ -158,7 +159,7 @@ export default class Node extends Component {
     this.setState({loading: true});
     this.nodes.read(this.getNodeId()).then(node => {
       if (this.state.node && this.state.node.id) {
-        this.nodesRestAPI.getObm(this.state.node.id).then(
+        MonoRailRestAPIv1_1.nodes.getObm(this.state.node.id).then(
           obm => this.setState({obm: obm, loading: false}),
           () => this.setState({loading: false}));
       }

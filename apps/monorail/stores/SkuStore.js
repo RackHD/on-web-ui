@@ -4,41 +4,39 @@
 
 import Store from 'common-web-ui/lib/Store';
 
-import SkusRestAPI from '../messengers/SkusRestAPI';
+import MonoRailRestAPIv1_1 from '../messengers/MonoRailRestAPIv1_1';
 
 export default class SkuStore extends Store {
 
-  skusRestAPI = new SkusRestAPI();
-
-  api = this.skusRestAPI.api;
+  api = MonoRailRestAPIv1_1.url;
   resource = 'skus';
 
   list() {
-    return this.skusRestAPI.list()
+    return MonoRailRestAPIv1_1.skus.list()
       .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return this.skusRestAPI.get(id)
+    return MonoRailRestAPIv1_1.skus.get(id)
       .then(item => this.change(id, item))
       .catch(err => this.error(id, err));
   }
 
   create(data) {
-    return this.skusRestAPI.post(data)
+    return MonoRailRestAPIv1_1.skus.post(data)
       .then(() => this.insert(data))
       .catch(err => this.error(null, err));
   }
 
   update(id, data) {
-    return this.skusRestAPI.patch(id, data)
+    return MonoRailRestAPIv1_1.skus.patch(id, data)
       .then(() => this.change(id, data))
       .catch(err => this.error(id, err));
   }
 
   destroy(id) {
-    return this.skusRestAPI.delete(id)
+    return MonoRailRestAPIv1_1.skus.delete(id)
       .then(() => this.remove(id))
       .catch(err => this.error(id, err));
   }

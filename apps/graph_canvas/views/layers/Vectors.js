@@ -65,7 +65,7 @@ export default class GCVectorsLayer extends Component {
   state = {
     bounds: this.props.bounds,
     grid: this.props.grid
-  }
+  };
 
   render() {
     // console.log('RENDER VECTORS');

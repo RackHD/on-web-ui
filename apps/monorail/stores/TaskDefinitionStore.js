@@ -6,16 +6,15 @@ import Store from 'common-web-ui/lib/Store';
 
 import MonoRailRestAPIv1_1 from '../messengers/MonoRailRestAPIv1_1';
 
-export default class SchemaStore extends Store {
+export default class TaskDefinitionStore extends Store {
 
-  read(id) {
-    return MonoRailRestAPIv1_1.schemas.get(id)
-      .then(item => this.change(id, item))
-      .catch(err => this.error(id, err));
-  }
+  // api = MonoRailRestAPIv1_1.url;
+  // resource = 'taskDefs';
+
+  key = 'injectableName';
 
   list() {
-    return MonoRailRestAPIv1_1.schemas.list()
+    return MonoRailRestAPIv1_1.tasks.library()
       .then(list => this.recollect(list))
       .catch(err => this.error(null, err));
   }

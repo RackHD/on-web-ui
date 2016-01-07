@@ -26,7 +26,7 @@ export default class EditSku extends Component {
   skus = new SkuStore();
 
   state = {
-    sku: null,
+    sku: this.props.sku,
     disabled: !this.props.sku,
     loading: !this.props.sku
   };

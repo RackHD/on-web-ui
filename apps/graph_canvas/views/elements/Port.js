@@ -174,7 +174,7 @@ export default class GCPortElement extends Component {
       textAlign: 'center',
       borderBottom: '2px dotted #ccc'
     }
-  }
+  };
 
   get preparedCSS() {
     let props = this.props,

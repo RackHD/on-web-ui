@@ -99,7 +99,7 @@ export default class WorkflowEditor extends Component {
       position: 'relative',
       overflow: 'hidden'
     }
-  }
+  };
 
   render() {
     let { props, state } = this;

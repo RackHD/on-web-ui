@@ -53,7 +53,7 @@ export default class GCElementsLayer extends Component {
 
   state = {
     width: this.props.width
-  }
+  };
 
   render() {
     // console.log('RENDER ELEMENTS');

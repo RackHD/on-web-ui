@@ -15,7 +15,7 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import ResourceTable from 'common-web-ui/views/ResourceTable';
 
-import NodesRestAPI from '../../messengers/NodesRestAPI';
+import MonoRailRestAPIv1_1 from '../../messengers/MonoRailRestAPIv1_1';
 import WorkflowStore from '../../stores/WorkflowStore';
 
 @mixin(FormatHelpers, RouteHelpers)
@@ -23,9 +23,8 @@ export default class WorkflowsGrid extends Component {
 
   static defaultProps = {
     sort: (a, b) => moment(b.updatedAt).unix() - moment(a.updatedAt).unix()
-  }
+  };
 
-  nodesRestAPI = new NodesRestAPI();
   workflows = new WorkflowStore();
 
   state = {
@@ -100,7 +99,7 @@ export default class WorkflowsGrid extends Component {
 
   cancelActiveWorkflow() {
     if (!this.nodeId) { return; }
-    this.nodesRestAPI.deleteActiveWorkflow(this.nodeId).then(() => {
+    MonoRailRestAPIv1_1.nodes.deleteActiveWorkflow(this.nodeId).then(() => {
       this.listWorkflows();
     });
   }
