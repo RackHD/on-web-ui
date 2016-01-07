@@ -1226,6 +1226,7 @@ textarea *
     cursor: pointer;
 
     color: #666;
+    background-color: #fff;
 }
 .Select-option:last-child
 {
