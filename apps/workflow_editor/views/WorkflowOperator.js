@@ -309,9 +309,11 @@ export default class WorkflowOperator extends Component {
               this.routeTo('workflow_editor', matchingWorkflow.injectableName);
             });
           }
-          // TODO: create configm dialog to create a new workflow
-          // if (confirm('Create new workflow: "' + value + '"?')) {
-          //   console.log('GOT HERE', value);
+          // else {
+            // TODO: create configm dialog to create a new workflow
+            // if (confirm('Create new workflow: "' + value + '"?')) {
+            //   console.log('GOT HERE', value);
+            // }
           // }
         }} />);
   }

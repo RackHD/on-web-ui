@@ -318,11 +318,15 @@ export default class GraphCanvas extends Component {
     let scope = this.index._links_ = this.index._links_ || {};
 
     let toSocket = this.lookup(linkTo);
+    if (!toSocket.context) { return; }
+
     let toPort = toSocket.context.parentGCPort;
     let toNode = toSocket.context.parentGCNode;
     let toGroup = toSocket.context.parentGCGroup;
 
     let fromSocket = this.lookup(linkFrom);
+    if (!fromSocket.context) { return; }
+
     let fromPort = fromSocket.context.parentGCPort;
     let fromNode = fromSocket.context.parentGCNode;
     let fromGroup = fromSocket.context.parentGCGroup;
