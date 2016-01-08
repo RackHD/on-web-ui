@@ -15,6 +15,7 @@ import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
 export default class GCLinkElement extends Component {
 
   static propTypes = {
+    confirmRemove: PropTypes.bool,
     from: PropTypes.string,
     to: PropTypes.any,
     isPartial: PropTypes.bool,
@@ -24,6 +25,7 @@ export default class GCLinkElement extends Component {
   };
 
   static defaultProps = {
+    confirmRemove: false,
     from: null,
     to: null,
     isPartial: false,
@@ -269,6 +271,9 @@ export default class GCLinkElement extends Component {
     var e = event.nativeEvent || event;
     e.stopPropagation();
     e.preventDefault();
+    if (!this.props.confirmRemove) {
+      return this.destroyLink();
+    }
     var confirmProps = {
       callback: (ok) => {
         if (ok) {
@@ -286,7 +291,7 @@ export default class GCLinkElement extends Component {
     this.linksManager.unregister(this);
     let fromSocket = this.graphCanvas.lookup(this.state.from),
         toSocket = this.graphCanvas.lookup(this.state.to);
-    debugger;
+    // debugger;
     fromSocket.emitUnlink(this);
     toSocket.emitUnlink(this);
     this.setState({removed: true});

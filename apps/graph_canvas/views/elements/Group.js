@@ -19,6 +19,7 @@ export default class GCGroupElement extends Component {
 
   static propTypes = {
     className: PropTypes.string,
+    confirmRemove: PropTypes.bool,
     css: PropTypes.object,
     initialBounds: PropTypes.any,
     initialColor: PropTypes.string,
@@ -34,6 +35,7 @@ export default class GCGroupElement extends Component {
 
   static defaultProps = {
     className: 'GCGroupElement',
+    confirmRemove: false,
     css: {},
     initialBounds: [0, 0, 750, 500],
     initialColor: 'grey',
@@ -118,6 +120,7 @@ export default class GCGroupElement extends Component {
     return (
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
+          confirmRemove={this.props.confirmRemove}
           onRemovePanel={this.onRemovePanel.bind(this)}
           onUpdateBounds={this.onUpdateBounds.bind(this)}
           onSelect={this.onSelect.bind(this)}
