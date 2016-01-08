@@ -140,6 +140,10 @@ export default class WorkflowEditor extends Component {
       });
     });
 
+    if (!task) {
+      throw new Error('Task not found');
+    }
+
     return {
       node: task,
       task: task.template,
