@@ -20,6 +20,7 @@ import {
 
 import JsonEditor from 'common-web-ui/views/JsonEditor';
 
+import MonoRailRestAPIv1_1 from '../../messengers/MonoRailRestAPIv1_1';
 import WorkflowTemplateStore from '../../stores/WorkflowTemplateStore';
 import WorkflowStore from '../../stores/WorkflowStore';
 import NodeStore from '../../stores/NodeStore';
@@ -30,7 +31,6 @@ export default class EditWorkflow extends Component {
   workflowTemplates = new WorkflowTemplateStore();
   workflows = new WorkflowStore();
   nodes = new NodeStore();
-  nodesRestAPI = this.nodes.nodesRestAPI;
 
   state = {
     nodes: [],
@@ -138,7 +138,7 @@ export default class EditWorkflow extends Component {
       this.workflows.update(this.state.workflow.id, this.state.workflow).then(() => this.enable());
     }
     else if (this.state.workflow.node) {
-      this.nodesRestAPI.postWorkflow(this.state.workflow.node, this.state.workflow).then(workflow => {
+      MonoRailRestAPIv1_1.nodes.postWorkflow(this.state.workflow.node, this.state.workflow).then(workflow => {
         this.enable();
         this.routeTo('workflows', workflow.id);
       });
