@@ -9,9 +9,10 @@ import EditWorkflow from './EditWorkflow';
 export default class CreateWorkflow extends Component {
 
   render() {
+    let nodeId = this.props.params && this.props.params.nodeId;
     return <EditWorkflow
-      workflow={{node: this.props.params.nodeId}}
-      nodeId={this.props.params.nodeId}/>;
+      workflow={{node: nodeId}}
+      nodeId={nodeId}/>;
   }
 
 }
