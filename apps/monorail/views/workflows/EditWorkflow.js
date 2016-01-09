@@ -79,12 +79,12 @@ export default class EditWorkflow extends Component {
       <div className="EditWorkflow">
         <Toolbar>
           <ToolbarGroup key={0} float="left">
-            <ToolbarTitle text={workflow.id ? 'Edit Workflow' : 'Create Workflow'} />
+            <ToolbarTitle text={this.props.title || workflow.id ? 'Edit Workflow' : 'Create Workflow'} />
           </ToolbarGroup>
           <ToolbarGroup key={1} float="right">
             <RaisedButton
                 label="Cancel"
-                onClick={this.routeBack}
+                onClick={this.props.onDone || this.routeBack}
                 disabled={this.state.disabled} />
             <RaisedButton
                 label="Save"
@@ -140,7 +140,17 @@ export default class EditWorkflow extends Component {
     else if (this.state.workflow.node) {
       MonoRailRestAPIv1_1.nodes.postWorkflow(this.state.workflow.node, this.state.workflow).then(workflow => {
         this.enable();
-        this.routeTo('workflows', workflow.id);
+        if (this.props.onDone) {
+          this.props.onDone();
+        }
+        else {
+          this.routeTo('workflows', workflow.id);
+        }
+      }).catch((err) => {
+        if (this.props.onDone) {
+          return this.props.onDone(err);
+        }
+        console.error(err);
       });
     }
     else {

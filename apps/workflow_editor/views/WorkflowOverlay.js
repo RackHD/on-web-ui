@@ -14,8 +14,8 @@ import {
     RaisedButton
   } from 'material-ui';
 
-import CreateWorkflow from 'monorail-web-ui/views/workflows/CreateWorkflow';
-import WorkflowsGrid from 'monorail-web-ui/views/workflows/WorkflowsGrid';
+import RunningWorkflows from './RunningWorkflows';
+import RunWorkflow from './RunWorkflow';
 
 import TaskJsonView from './TaskJsonView';
 
@@ -315,7 +315,14 @@ export default class WorkflowOverlay extends Component {
         closeRunPopover = () => this.setState({runPopoverAnchor: null}),
         closeRunningPopover = () => this.setState({runningPopoverAnchor: null}),
         emcTheme = this.context.muiTheme,
-        task = this.workflowOperator.state.task;
+        task = this.workflowOperator.state.task,
+        workflow = this.workflowOperator.state.workflow,
+        containerStyle = {
+          padding: 20,
+          maxHeight: window.innerHeight - 200,
+          overflow: 'auto',
+          border: '1px solid ' + emcTheme.rawTheme.palette.textColor
+        };
     this.lastTaskPopoverAnchor = this.state.taskPopoverAnchor || this.lastTaskPopoverAnchor;
     this.lastRunPopoverAnchor = this.state.runPopoverAnchor || this.lastRunPopoverAnchor;
     this.lastRunningPopoverAnchor = this.state.runningPopoverAnchor || this.lastRunningPopoverAnchor;
@@ -328,7 +335,7 @@ export default class WorkflowOverlay extends Component {
           open={this.state.taskPopoverAnchor ? true : false}
           anchorEl={this.state.taskPopoverAnchor || this.lastTaskPopoverAnchor}
           onRequestClose={closeTaskPopover} >
-        <div style={{padding: 20, border: '1px solid ' + emcTheme.rawTheme.palette.textColor}}>
+        <div style={containerStyle}>
           {task && task.friendlyName ?
             <TaskJsonView object={task} /> :
             <h2 style={{margin: 0}}>No task is selected.</h2>}
@@ -338,15 +345,21 @@ export default class WorkflowOverlay extends Component {
         </div>
       </Popover>,
       <Popover key="runWorkflow"
-          style={{width: 500}}
+          style={{width: 600}}
           animated={true}
           anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           open={this.state.runPopoverAnchor ? true : false}
           anchorEl={this.state.runPopoverAnchor || this.lastRunPopoverAnchor}
           onRequestClose={closeRunPopover} >
-        <div style={{padding: 20, border: '1px solid ' + emcTheme.rawTheme.palette.textColor}}>
-          <CreateWorkflow />
+        <div style={containerStyle}>
+          <RunWorkflow
+              name={workflow && workflow.injectableName}
+              options={workflow && workflow.options && workflow.options.defaults}
+              onDone={(err) => {
+                console.error(err);
+                closeRunPopover();
+              }} />
         </div>
       </Popover>,
       <Popover key="viewRunning"
@@ -357,8 +370,8 @@ export default class WorkflowOverlay extends Component {
           open={this.state.runningPopoverAnchor ? true : false}
           anchorEl={this.state.runningPopoverAnchor || this.lastRunningPopoverAnchor}
           onRequestClose={closeRunningPopover} >
-        <div style={{padding: 20, border: '1px solid ' + emcTheme.rawTheme.palette.textColor}}>
-          <WorkflowsGrid />
+        <div style={containerStyle}>
+          <RunningWorkflows />
         </div>
       </Popover>
     ];

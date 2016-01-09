@@ -196,7 +196,7 @@ export default class WorkflowOperator extends Component {
 
         let finish = (matchingWorkflow) => {
           this.refs.overlay.setState({
-            workflowTerm: matchingWorkflow.friendlyName,
+            workflowTerm: matchingWorkflow.friendlyName || '',
             loading: false
           }, () => {
             if (this.state.workflow !== currentWorkflow) {
@@ -227,7 +227,7 @@ export default class WorkflowOperator extends Component {
           }
         }
 
-        finish(matchingWorkflow);
+        finish({});
       });
   }
 
