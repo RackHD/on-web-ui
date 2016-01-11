@@ -24,6 +24,7 @@ export default class GCPanelElement extends Component {
 
   static propTypes = {
     className: PropTypes.string,
+    confirmRemove: PropTypes.bool,
     css: PropTypes.object,
     initialBounds: PropTypes.any,
     initialColor: PropTypes.string,
@@ -39,6 +40,7 @@ export default class GCPanelElement extends Component {
 
   static defaultProps = {
     className: 'GCPanelElement',
+    confirmRemove: false,
     css: {},
     initialBounds: [0, 0, 750, 500],
     initialColor: 'grey',
@@ -342,14 +344,18 @@ export default class GCPanelElement extends Component {
   removePanel(e) {
     e.stopPropagation();
     // e.preventDefault();
+    let remove = () => {
+      this.setState({removed: true});
+      if (this.props.onRemovePanel) {
+        this.props.onRemovePanel();
+      }
+    };
+    if (!this.props.confirmRemove) {
+      return remove();
+    }
     var confirmProps = {
       callback: (ok) => {
-        if (ok) {
-          this.setState({removed: true});
-          if (this.props.onRemovePanel) {
-            this.props.onRemovePanel();
-          }
-        }
+        if (ok) { remove(); }
       },
       children: 'Are you sure you want to delete this node?',
       title: 'Confirm Delete:'

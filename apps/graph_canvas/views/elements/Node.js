@@ -17,6 +17,7 @@ export default class GCNodeElement extends Component {
 
   static propTypes = {
     className: PropTypes.string,
+    confirmRemove: PropTypes.bool,
     css: PropTypes.object,
     initialBounds: PropTypes.any,
     initialColor: PropTypes.string,
@@ -32,6 +33,7 @@ export default class GCNodeElement extends Component {
 
   static defaultProps = {
     className: 'GCNodeElement',
+    confirmRemove: false,
     css: {},
     initialBounds: [50, 50, 350, 350],
     initialColor: 'grey',
@@ -118,6 +120,7 @@ export default class GCNodeElement extends Component {
     return (
       <Panel ref="panel" {...this.props}
           initialId={this.props.initialId || this.id}
+          confirmRemove={this.props.confirmRemove}
           onRemovePanel={this.onRemovePanel.bind(this)}
           onUpdateBounds={this.onUpdateBounds.bind(this)}
           onSelect={this.onSelect.bind(this)}

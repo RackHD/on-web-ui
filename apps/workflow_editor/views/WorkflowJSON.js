@@ -51,6 +51,10 @@ export default class WEWorkflowJson extends Component {
       });
     }
     this.context.workflowOperator.onChangeWorkflow(this.handleWorkflowChange);
+    this.refs.aceEditor.editor.on('blur', () => {
+      clearTimeout(this.updateTimer);
+      this.compileJSON();
+    });
   }
 
   componenWillUnmount() {
@@ -95,10 +99,12 @@ export default class WEWorkflowJson extends Component {
     if (this.silentUpdating) { return; }
     if (newValue === this.lastValue) { return; }
 
+    let absDiff = Math.abs(newValue.length - this.lastValue.length);
+
     clearTimeout(this.updateTimer);
     this.updateTimer = setTimeout(() => {
       this.compileJSON(newValue);
-    }, 3000);
+    }, absDiff > 15 ? 1500 : 5000);
   }
 
   compileJSON(newJsonObject) {
