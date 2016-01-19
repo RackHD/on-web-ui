@@ -37,4 +37,16 @@ export default class CatalogStore extends Store {
       .catch(err => this.error(null, err));
   }
 
+  relateNode(node, source, nodeStore) {
+    return MonoRailRestAPIv1_1.nodes.listSourceCatalogs(node.id, source)
+      .then(catalog => {
+        this.change(catalog.id, catalog);
+        node[source] = catalog || node[source];
+        if (nodeStore) {
+          nodeStore.change(node.id, node);
+        }
+      })
+      .catch(err => this.error(null, err));
+  }
+
 }

@@ -94,6 +94,10 @@ export default class Store extends EventEmitter {
       .concat(collection === this.cache ? this.all(this.cache) : []);
   }
 
+  each(iterator) {
+    Object.keys(this.collection).forEach(id => iterator(this.get(id), id, this.collection));
+  }
+
   get(id) {
     return this.collection[id] || this.cache[id];
   }
