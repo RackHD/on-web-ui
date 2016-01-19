@@ -7,12 +7,12 @@ import { findDOMNode } from 'react-dom';
 
 import mixin from 'common-web-ui/lib/mixin';
 
-import DragEventHelpers from '../../mixins/DragEventHelpers';
+import DragEventHelpers from '../mixins/DragEventHelpers';
 
-import generateId from '../../lib/generateId';
-import Vector from '../../lib/Vector';
+import generateId from '../lib/generateId';
+import Vector from '../lib/Vector';
 
-import GCLinkElement from '../elements/Link';
+import GCLinkElement from './elements/Link';
 
 @mixin(DragEventHelpers)
 export default class GCLinksManager extends Component {
@@ -33,8 +33,6 @@ export default class GCLinksManager extends Component {
     return this.graphCanvas.refs.world;
   }
 
-  // links = this.graphCanvas.props.initialLinks;
-
   shouldComponentUpdate() {
     return false;
   }
@@ -52,50 +50,62 @@ export default class GCLinksManager extends Component {
   }
 
   getSocketCenter(socketElement) {
-    var element = socketElement,
+    let element = socketElement,
         bounds = [],
         c = null,
+        t = null,
         x = 0,
         y = 0;
+
     do {
       if (element.dataset && element.dataset.id) {
         c = this.graphCanvas.lookup(element.dataset.id);
-        if (c && c.id && c.id.indexOf('group') === 0) { break; }
+        t = c.constructor.GCTypeEnum;
+        if (t && t.group) { break; }
         if (c && c.state && c.state.bounds) { bounds.push(c.state.bounds); }
       }
+
       x += element.offsetLeft;
       y += element.offsetTop;
-      if (c && c.id && c.id.indexOf('node') === 0) {
-        try {
-          // HACK: get ports element of socket.
-          c = findDOMNode(c).childNodes[1].firstChild;
-          // y -= Math.max(c.scrollTop,  (c.scrollHeight - c.offsetHeight - 15));
+
+      try {
+        // HACK: get ports element of socket.
+        c = findDOMNode(c);
+        c = c && c.firstChild && c.firstChild.firstChild;
+        // y -= Math.max(c.scrollTop,  (c.scrollHeight - c.offsetHeight - 15));
+        if (c) {
           y -= c.scrollTop;
           x -= c.scrollLeft;
         }
-        catch (err) { console.error(err.stack || err); }
-        break;
       }
+      catch (err) { console.error(err.stack || err); }
+
+      if (t && (t.panel || t.node)) { break; }
+
       element = element.offsetParent;
+      if (!element || element.className === 'GraphCanvasViewport') {break;}
     } while(element);
+
     bounds.forEach(b => {
       let p = b.position;
       x += p.x;
       y += p.y;
     });
+
     x += socketElement.clientWidth / 2;
     y += socketElement.clientHeight / 2;
-    // HACK: position seems to be off, not sure why yet.
-    x += 5;
-    y += 3;
+
     return new Vector(x, y);
   }
 
   detectSocketFromEvent(event, dragState, target) {
-    var dom = this.delegatesTo(target, 'GraphCanvasSocket');
+    let dom = this.delegatesTo(target, 'GraphCanvasSocket');
+
     if (dom && dom.dataset.id && dom.dataset.id !== dragState.fromId) {
       return dom.dataset.id;
-    } else {
+    }
+
+    else {
       let parent = findDOMNode(dragState.parentComponent);
       return this.graphCanvas.getEventCoords(event, parent).sub([3, 3]);
     }
@@ -104,6 +114,7 @@ export default class GCLinksManager extends Component {
   drawLinkStart(event, dragState, e) {
     this.isDrawing = true;
     event.stopPropagation();
+
     let fromGroup = dragState.fromSocket.parentGroup;
 
     dragState.parentComponent = fromGroup || this.graphCanvasWorld;
@@ -126,15 +137,20 @@ export default class GCLinksManager extends Component {
   drawLinkContinue(event, dragState, e) {
     event.stopPropagation();
     event.preventDefault(); // prevent text selection
+
     dragState.link = this.graphCanvas.lookup(dragState.link.id || dragState.link.props.initialId);
+
     if (dragState.link) {
       let lastEnd = dragState.link.state.to;
       let end = this.detectSocketFromEvent(event, dragState, e.target);
+
       dragState.link.setState({
         isPartial: typeof end !== 'string',
         to: end
       });
+
       dragState.link.updateBounds();
+
       if (lastEnd !== end && typeof lastEnd === 'string') {
         this.graphCanvas.associateLinkConcept(
           dragState.link.state.from, lastEnd,
@@ -146,9 +162,11 @@ export default class GCLinksManager extends Component {
   drawLinkFinish(event, dragState) {
     this.isDrawing = false;
     event.stopPropagation();
+
     if (dragState.link && dragState.link.state.isPartial) {
       dragState.parentComponent.removeChild(dragState.originalLink);
     }
+
     dragState.link.forceUpdate();
   }
 

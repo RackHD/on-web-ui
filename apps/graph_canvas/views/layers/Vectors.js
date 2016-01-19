@@ -68,49 +68,41 @@ export default class GCVectorsLayer extends Component {
   };
 
   render() {
-    // console.log('RENDER VECTORS');
+    let props = this.props,
+        bounds = this.state.bounds,
+        size = this.graphCanvas.worldSize,
+        cssSize = this.graphCanvas.cssWorldSize,
+        boundingBox = this.graphCanvas.worldBoundingBox,
+        grid = null;
 
-    try {
-      let props = this.props,
-          bounds = this.state.bounds,
-          size = this.graphCanvas.worldSize,
-          cssSize = this.graphCanvas.cssWorldSize,
-          boundingBox = this.graphCanvas.worldBoundingBox,
-          grid = null;
-
-      if (this.state.grid) {
-        grid = <GCGridElement {...this.state.grid} />;
-      }
-
-      if (bounds) {
-        size = new Vector(bounds.width, bounds.height);
-        cssSize = {width: size.x, height: size.y};
-        boundingBox = new Rectangle(0, 0, size.x, size.y);
-      }
-
-      return (
-        <svg
-            className={props.className}
-            width={size.x}
-            height={size.y}
-            style={[cssSize, {
-              overflow: 'visible',
-              position: 'absolute',
-              left: 0,
-              top: 0
-            }]}
-            viewBox={boundingBox.toSVGViewBox()}
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg">
-          {grid}
-          {props.children}
-        </svg>
-      );
+    if (this.state.grid) {
+      grid = <GCGridElement {...this.state.grid} />;
     }
 
-    catch (err) {
-      console.error(err.stack || err);
+    if (bounds) {
+      size = new Vector(bounds.width, bounds.height);
+      cssSize = {width: size.x, height: size.y};
+      boundingBox = new Rectangle(0, 0, size.x, size.y);
     }
+
+    return (
+      <svg
+          className={props.className}
+          width={size.x}
+          height={size.y}
+          style={[cssSize, {
+            overflow: 'visible',
+            position: 'absolute',
+            left: 0,
+            top: 0
+          }]}
+          viewBox={boundingBox.toSVGViewBox()}
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg">
+        {grid}
+        {props.children}
+      </svg>
+    );
   }
 
 }

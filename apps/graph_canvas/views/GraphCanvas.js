@@ -2,8 +2,6 @@
 
 'use strict';
 
-// import { EventEmitter } from 'events';
-
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
@@ -13,18 +11,12 @@ import mixin from 'common-web-ui/lib/mixin';
 import CoordinateHelpers from '../mixins/CoordinateHelpers';
 
 import generateId from '../lib/generateId';
-
-// import Graph from '../lib/Graph';
 import Vector from '../lib/Vector';
-// import Rectangle from '../lib/Rectangle';
 
 import GCViewport from './Viewport';
 import GCWorld from './World';
 
-import GCGroupsManager from './managers/Groups';
-import GCLinksManager from './managers/Links';
-import GCMarksManager from './managers/Marks';
-import GCNodesManager from './managers/Nodes';
+import GCLinksManager from './LinksManager';
 
 import GCGroupElement from './elements/Group';
 import GCLinkElement from './elements/Link';
@@ -38,16 +30,6 @@ export { GCNodeElement as GCNode };
 export { GCPortElement as GCPort };
 export { GCSocketElement as GCSocket };
 
-/**
-# GraphCanvas
-
-@object
-  @type class
-  @extends React.Component
-  @name GraphCanvas
-  @desc
-*/
-
 @radium
 @mixin(CoordinateHelpers)
 export default class GraphCanvas extends Component {
@@ -55,7 +37,6 @@ export default class GraphCanvas extends Component {
   static propTypes = {
     className: PropTypes.string,
     css: PropTypes.object,
-    enableMarks: PropTypes.bool,
     grid: PropTypes.object,
     initialScale: PropTypes.number,
     initialX: PropTypes.number,
@@ -74,7 +55,6 @@ export default class GraphCanvas extends Component {
   static defaultProps = {
     className: 'GraphCanvas',
     css: {},
-    enableMarks: false,
     grid: {},
     initialScale: 1,
     initialX: 0,
@@ -98,13 +78,9 @@ export default class GraphCanvas extends Component {
     return this;
   }
 
-  index = {_links_: {}};
-
-  // TODO: keep track of each action as a separate mutation for undo/redo
-  history = [];
-
-  // TODO: keep track of all selected items
   selected = [];
+
+  index = {_links_: {}};
 
   shouldComponentUpdate(nextProps, nextState) {
     let props = this.props,
@@ -139,50 +115,22 @@ export default class GraphCanvas extends Component {
     };
   }
 
-  // componentWillMount() {
-  //   debugger;
-  //   this.events = new EventEmitter();
-  // }
-  //
-  // componentWillUnmount() {
-  //   this.events.removeAllListeners();
-  // }
-
-  /**
-  @method
-    @name render
-    @desc
-  */
   render() {
-    try {
-      let props = this.props,
-          css = [this.css.root, this.cssViewSize, props.css.root, props.style];
+    let { props } = this;
 
-      let children = React.Children.map(props.children, child => {
-        // NOTE: Context seems to be based on lexical scope, this will ensure Graph Canvas
-        //       children have a graphCanvas in their context which is required for GC elements.
-        return React.cloneElement(child);
-      });
+    let css = [this.css.root, this.cssViewSize, props.css.root, props.style];
 
-      // debugger;
+    return (
+      <div className={props.className} style={css}>
+        <GCLinksManager ref="links" />
 
-      return (
-        <div className={props.className} style={css}>
-          <GCGroupsManager ref="groups" />
-          <GCLinksManager ref="links" />
-          <GCNodesManager ref="nodes" />
-          {this.props.enableMarks && <GCMarksManager ref="marks" />}
-
-          <GCViewport ref="viewport">
-            <GCWorld ref="world" grid={this.props.grid}>
-              {children}
-            </GCWorld>
-          </GCViewport>
-        </div>
-      );
-    } catch (err) {
-      console.error(err.stack || err);
-    }
+        <GCViewport ref="viewport">
+          <GCWorld ref="world" grid={this.props.grid}>
+            {this.props.children}
+          </GCWorld>
+        </GCViewport>
+      </div>
+    );
   }
 
   get cssViewSize() {
@@ -197,28 +145,6 @@ export default class GraphCanvas extends Component {
       width: this.props.worldWidth,
       height: this.props.worldHeight
     };
-  }
-
-  get elements() {
-    var elements = [],
-        world = this.refs.world;
-    if (world) {
-      if (this.refs.marks) {
-        elements = elements.concat(this.refs.marks.markElements);
-      }
-    }
-    return elements;
-  }
-
-  get vectors() {
-    var vectors = [],
-        world = this.refs.world;
-    if (world) {
-      if (this.refs.marks) {
-        vectors = vectors.concat(this.refs.marks.markVectors);
-      }
-    }
-    return vectors;
   }
 
   updatePosition(position) {
@@ -241,15 +167,8 @@ export default class GraphCanvas extends Component {
     else {
       if (index !== -1) { this.selected.splice(index, 1); }
     }
-    // debugger;
-    // this.events.emit('selection', this.selected);
     if (this.props.onSelect) { this.props.onSelect(this.selected); }
   }
-
-  // onSelect(callback) {
-  //   // debugger;
-  //   this.events.on('selection', callback);
-  // }
 
   lookup(id) {
     let obj = this.index[id];
@@ -266,17 +185,14 @@ export default class GraphCanvas extends Component {
   }
 
   register(child) {
-    // debugger;
     let id = child.id = child.id || generateId();
     let obj = this.index[id] = (this.index[id] || {matches: []});
     if (obj.matches.indexOf(child) === -1) {
       obj.matches.push(child);
     }
-    // TODO: create groups, nodes, links, ports, and sockets lists using child.constructor.GCTypeEnum
   }
 
   unregister(child) {
-    // debugger;
     let id = child.id;
     if (!id) {
       throw new Error('GraphCanvas: Cannot unregister invalid child without id.');
@@ -291,7 +207,6 @@ export default class GraphCanvas extends Component {
   }
 
   lookupLinks(id) {
-    // debugger;
     let scope = this.index._links_ = this.index._links_ || {},
         subindex = scope[id],
         links = {};
@@ -377,7 +292,3 @@ export default class GraphCanvas extends Component {
   }
 
 }
-
-// RAINBOW MODE:
-// color = [ 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet' ];
-// this.color = color[i++ % color.length];

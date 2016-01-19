@@ -129,7 +129,7 @@ export default class GCSocketElement extends Component {
     if (this.props.hideLabel) {
       return (
         <div className="GraphCanvasSocket"
-             style={{display: 'inline-block'}}
+             style={[{display: 'inline-block'}, this.props.style]}
              data-id={this.id}
              onMouseOver={this.onHover.bind(this)}
              onMouseOut={this.onLeave.bind(this)}>
