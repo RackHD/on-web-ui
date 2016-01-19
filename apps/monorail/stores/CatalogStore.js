@@ -42,7 +42,6 @@ export default class CatalogStore extends Store {
       .then(catalog => {
         this.change(catalog.id, catalog);
         node[source] = catalog || node[source];
-        console.log('relateNode', node, source, catalog);
         if (nodeStore) {
           nodeStore.change(node.id, node);
         }
