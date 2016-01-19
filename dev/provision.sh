@@ -42,7 +42,7 @@ if [ -z "$DOCKER_PROVISION" ]; then
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | NVM_DIR=/tmp/nvm bash
   nvm || . /tmp/nvm/nvm.sh
 
-  [ -z "$NODE_VERSION" ] && NODE_VERSION="4.1.1"
+  [ -z "$NODE_VERSION" ] && NODE_VERSION="4.2.2"
   CURRENT_NODE=`nvm current`
   if [ "v$NODE_VERSION" == "$CURRENT_NODE" ]; then
     printf "\n\nNode v$NODE_VERSION is current.\n\n"
@@ -55,25 +55,21 @@ if [ -z "$DOCKER_PROVISION" ]; then
 fi
 
 printf "\n\nDetect on-web-ui source:\n\n"
-if [ -z "$JENKINS_PROVISION" ]; then
-  if [ -n "$VAGRANT_PROVISION" ]; then
-    printf "\n\nCopy on-web-ui from vagrant mount:\n\n"
-    cp -R /vagrant/* /tmp/on-web-ui
-    cd /tmp/on-web-ui
-  else
-    if [ -f /tmp/on-web-ui/package.json ]; then
-      printf "\n\nUpdate on-web-ui:\n\n"
-      cd /tmp/on-web-ui
-      git pull origin master
-    else
-      printf "\n\nDownload on-web-ui:\n\n"
-      cd /tmp
-      git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
-      cd /tmp/on-web-ui
-    fi
-  fi
+if [ -n "$VAGRANT_PROVISION" ]; then
+  printf "\n\nCopy on-web-ui from vagrant mount:\n\n"
+  cp -R /vagrant/* /tmp/on-web-ui
+  cd /tmp/on-web-ui
 else
-  printf "\n\nJenkins already checked out on-web-ui from git.\n\n"
+  if [ -f /tmp/on-web-ui/package.json ]; then
+    printf "\n\nUpdate on-web-ui:\n\n"
+    cd /tmp/on-web-ui
+    git pull origin master
+  else
+    printf "\n\nDownload on-web-ui:\n\n"
+    cd /tmp
+    git clone ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-web-ui.git
+    cd /tmp/on-web-ui
+  fi
 fi
 
 if [ -n "$DOCKER_PROVISION" ]; then
@@ -100,15 +96,6 @@ else
     pushd dev
     ./node_modules/.bin/gulp build --release
     popd
-
-    if [ -n "$VAGRANT_PROVISION" ]; then
-      printf "\n\nInstall packaging tools:\n\n"
-      apt-get update -y
-      apt-get install -y --fix-missing pbuilder dh-make ubuntu-dev-tools devscripts
-    fi
-
-    printf "\n\Create debian package for on-web-ui:\n\n"
-    ./dev/deb_package.sh
   fi
 
   if [ -n "$RUN_ON_WEB_UI" ]; then

@@ -1,2 +1,0 @@
-build /opt/monorail/static/http
-on-web-ui_commitstring.txt /opt/monorail/static/http/on-web-ui

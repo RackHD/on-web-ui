@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Copyright 2015, EMC, Inc.
-
-export JENKINS_PROVISION=1
-export VERBOSE_PROVISION=1
-
-export TEST_ON_WEB_UI=1
-./dev/provision.sh
