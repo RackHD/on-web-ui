@@ -96,8 +96,6 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
 │
 ├── node_modules      # External project dependencies.
 |
-├── debian            # Debian packaging directory.
-│
 ├── dev                   # Scripts for dev, build, and test.
 │   │
 │   ├── app_tests         # Application tests bootstrap source code.
@@ -105,13 +103,10 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
 │   │
 │   ├── node_modules      # External development dependencies.
 │   │
-│   ├── slush_app         # [Optional] slush-app location.
-│   │
 │   ├── specs             # Specification documents.
 │   ├── tasks             # Gulp task definitions.
 │   ├── tools             # Miscellaneous development scripts.
 │   │
-│   ├── deb_package.sh    # Debian packaging script.
 │   ├── Dockerfile        # Docker container configuration file.
 │   ├── gulpfile.js       # Gulp file for project gulp tasks.
 │   │
@@ -134,11 +129,10 @@ the file is. Name the test by appending `-test.js` to the JavaScript file.
 ├── .babelrc          # BabelJS configuration file.
 ├── .eslintrc         # eslint configuration file.
 ├── .gitignore        # git ignored files.
+├── .hound.yml        # hound yaml
+├── .travis.yml       # travis yaml
 │
-├── HWIMO-BUILD       # Build script.
-├── HWIMO-DOC         # Doc script.
-├── HWIMO-TEST        # Test script.
-│
+├── LICENSE           # LICENSE
 ├── package.json      # Main NPM package, dependency file.
 └── README.md         # Everything that follows is a result of what you see here.
 ```

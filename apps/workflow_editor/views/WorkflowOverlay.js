@@ -121,6 +121,12 @@ export default class WorkflowOverlay extends Component {
           style={css.root}>
         {props.children}
 
+        <ul style={{width: 100, position: 'absolute', top: 0, left: -10, textAlign: 'left', fontWeight: 'bold', opacity: 0.8, zIndex: -1}}>
+          <li style={{color: 'red'}}>Failed</li>
+          <li style={{color: 'green'}}>Succeeded</li>
+          <li style={{color: '#6cf'}}>Finished</li>
+        </ul>
+
         {this.renderPopovers()}
 
         {state.loading && <CircularProgress

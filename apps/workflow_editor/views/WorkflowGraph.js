@@ -11,7 +11,7 @@ import radium from 'radium';
 import GraphCanvas from 'graph-canvas-web-ui/views/GraphCanvas';
 
 @radium
-export default class WorkflowEditor extends Component {
+export default class WorkflowGraph extends Component {
 
   static propTypes = {
     className: PropTypes.string,
@@ -90,8 +90,7 @@ export default class WorkflowEditor extends Component {
 
   render() {
     let css = {
-      root: [this.css.root, this.props.css.root, this.props.style],
-      overlay: [this.css.overlay, this.props.css.overlay]
+      root: [this.css.root, this.props.css.root, this.props.style]
     };
 
     return (

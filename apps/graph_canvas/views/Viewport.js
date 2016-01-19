@@ -45,27 +45,24 @@ export default class GCViewport extends Component {
       position: 'relative',
       width: 'inherit',
       height: 'inherit',
-      cursor: 'crosshair'//,
-      // overflow: 'hidden'
+      cursor: 'crosshair'
     }
   };
 
   render() {
-    try {
-      var props = this.props,
-          css = [this.css.root, props.css.root, props.style];
-      return (
-        <div
-            className={props.className}
-            onWheel={this.scaleWorld.bind(this)}
-            onMouseDown={this.translateWorld()}
-            style={css}>
-          {this.props.children}
-        </div>
-      );
-    } catch (err) {
-      console.error(err.stack || err);
-    }
+    let { props } = this;
+
+    let css = [this.css.root, props.css.root, props.style];
+
+    return (
+      <div
+          className={props.className}
+          onWheel={this.scaleWorld.bind(this)}
+          onMouseDown={this.translateWorld()}
+          style={css}>
+        {this.props.children}
+      </div>
+    );
   }
 
   translateWorld() {
@@ -86,9 +83,6 @@ export default class GCViewport extends Component {
     };
     return {
       down: (event, dragState) => {
-        // if (event.shiftKey) {
-        //   this.drawNode(null, {shiftKey: (dragState.shiftKey = true)})(event);
-        // }
         // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
         dragState.startTime = event.timeStamp || Date.now();
@@ -107,9 +101,6 @@ export default class GCViewport extends Component {
           // (this.worldBoundingBox.right / 2) + (this.screenSize.x / 2 / scale),
           // (this.worldBoundingBox.bottom / 2) + (this.screenSize.y / 2 / scale)
         // );
-        // console.log(this.worldBoundingBox.toArray());
-        // console.log(dragState.start.toArray());
-        // console.log(dragState.min.toArray(), dragState.max.toArray());
         clearTimeout(this.physicsScrollTimer);
         this.stopPhysicsScroll = true;
       },
@@ -119,9 +110,9 @@ export default class GCViewport extends Component {
         event.preventDefault();
         clearInterval(this.moveRepeat);
         var scale = this.graphCanvas.scale,
-            start = dragState.start;//,
-            // min = dragState.min,
-            // max = dragState.max;
+            start = dragState.start;
+        // var min = dragState.min,
+        //     max = dragState.max;
         pushFrame(event, dragState);
         this.graphCanvas.updatePosition({
           // x: Math.min(max.x, Math.max(min.x, start.x - (event.diffX / scale))),

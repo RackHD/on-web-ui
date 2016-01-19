@@ -19,6 +19,7 @@ import NotFound from 'common-web-ui/views/NotFound';
 export var navigation = [
   { text: 'Dashboard', route: ['', 'dashboard'] },
   { text: 'Workflow Editor', route: 'workflow_editor' },
+  { text: 'Network Topology', route: 'network_topology' },
   { text: 'Main Resources', type: MenuItem.Types.SUBHEADER },
   { text: 'Catalogs', route: 'catalogs' },
   { text: 'Nodes', route: 'nodes' },
@@ -60,6 +61,7 @@ import Workflow, { CreateWorkflow } from './views/workflows/Workflow';
 import Workflows from './views/workflows/Workflows';
 
 import WorkflowEditor from 'workflow-editor-web-ui/views/WorkflowEditor';
+import NetworkTopology from 'network-topology-web-ui/views/NetworkTopology';
 
 // See http://rackt.github.io/react-router/
 let routes = (
@@ -68,6 +70,8 @@ let routes = (
 
     <Route name="Workflow Editor" path="/workflow_editor/:workflow" component={WorkflowEditor} />
     <Route name="Workflow Editor" path="/workflow_editor" component={WorkflowEditor} />
+
+    <Route name="Network Topology" path="/network_topology" component={NetworkTopology} />
 
     <Route name="Catalogs" path="/catalogs" component={Catalogs} />
     <Route path="/catalogs/n/:nodeId" component={Catalogs} />

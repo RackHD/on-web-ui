@@ -31,10 +31,14 @@ export default class GCPanelElement extends Component {
     initialId: PropTypes.string,
     initialName: PropTypes.string,
     isRemovable: PropTypes.bool,
+    isResizable: PropTypes.bool,
     onChange: PropTypes.func,
     onSelect: PropTypes.func,
     onRemovePanel: PropTypes.func,
     onUpdateBounds: PropTypes.func,
+    showColorInput: PropTypes.bool,
+    showRemoveButton: PropTypes.bool,
+    showResizeButton: PropTypes.bool,
     style: PropTypes.object
   };
 
@@ -47,16 +51,19 @@ export default class GCPanelElement extends Component {
     initialId: null,
     initialName: '(Unamed)',
     isRemovable: true,
+    isResizable: false,
     onChange: null,
     onSelect: null,
     onRemovePanel: null,
     onUpdateBounds: null,
+    showColorInput: false,
+    showRemoveButton: true,
+    showResizeButton: true,
     style: {}
   };
 
   static contextTypes = {
     graphCanvas: PropTypes.any,
-    // graphCanvasOwner: PropTypes.any,
     parentGCNode: PropTypes.any,
     parentGCGroup: PropTypes.any
   };
@@ -71,18 +78,17 @@ export default class GCPanelElement extends Component {
 
   id = this.props.initialId || this.constructor.id();
 
-  // TODO: allow this to be registered under a panels list
-  // componentWillMount() {
-  //   this.graphCanvas.register(this);
-  // }
+  componentWillMount() {
+    this.graphCanvas.register(this);
+  }
 
-  // componentWillUnmount() {
-  //   this.graphCanvas.unregister(this);
-  // }
+  componentWillUnmount() {
+    this.graphCanvas.unregister(this);
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let state = this.state,
-        props = this.props;
+    let { state, props } = this;
+
     return (
       props.children !== nextProps.children ||
       state.name !== nextState.name ||
@@ -108,8 +114,6 @@ export default class GCPanelElement extends Component {
   };
 
   render() {
-    // console.log('RENDER PANEL');
-
     if (this.state.removed) { return null; }
 
     let props = this.props;
@@ -120,117 +124,126 @@ export default class GCPanelElement extends Component {
     return (
       <div ref="root"
           data-id={id}
+          onMouseDown={this.movePanel.bind(this)}
           onMouseOver={this.setHoverState.bind(this, true, 1000)}
           onMouseOut={this.setHoverState.bind(this, false, 250)}
           className={props.className}
           style={css.root}>
-        <div ref="header"
-            onMouseDown={this.movePanel.bind(this)}
-            style={css.header}>
-          {this.props.leftSocket}
-          <input ref="nameInput"
-              key="nameInput"
+        <div style={css.wrapper}>
+          <div ref="content"
+              style={css.content}
+              onScroll={this.updateLinks.bind(this)}>
+            {this.props.leftSockets}
+            <input ref="nameInput"
+                key="nameInput"
+                type="text"
+                value={this.state.name}
+                style={css.nameInput}
+                onChange={this.handleNameChange.bind(this)}
+                onFocus={this.focusInput.bind(this)}
+                onBlur={this.blurInput.bind(this)} />
+            {props.children}
+            {this.props.rightSockets}
+          </div>
+        </div>
+        <div ref="toolbar"
+            style={css.toolbar}>
+          {props.showColorInput ? <input ref="colorInput"
+              key="colorInput"
               type="text"
-              value={this.state.name}
-              style={css.inputs.concat([{width: (this.state.name.length + 1) + 'ex'}])}
-              onChange={this.handleNameChange.bind(this)}
+              value={this.state.color}
+              style={css.colorInput}
+              onChange={this.handleColorChange.bind(this)}
               onFocus={this.focusInput.bind(this)}
-              onBlur={this.blurInput.bind(this)} />
-          {props.isRemovable ? <a ref="remove"
+              onBlur={this.blurInput.bind(this)} /> : null}
+          {props.isRemovable && props.showRemoveButton ? <a ref="remove"
               style={css.remove}
               onMouseDown={this.stopEventPropagation}
               onTouchTap={this.removePanel.bind(this)}
               className="fa fa-remove"
               title="Remove" /> : null}
-          <input ref="colorInput"
-              key="colorInput"
-              type="text"
-              value={this.state.color}
-              style={css.inputs.concat([{float: 'right', width: (this.state.color.length + 1) + 'ex'}])}
-              onChange={this.handleColorChange.bind(this)}
-              onFocus={this.focusInput.bind(this)}
-              onBlur={this.blurInput.bind(this)} />
-          {this.props.rightSocket}
+          {props.isResizable && props.showResizeButton ? <a ref="resize"
+              style={css.resize}
+              onMouseOver={this.setHoverState.bind(this, true, 100)}
+              onMouseOut={this.setHoverState.bind(this, false, 1000)}
+              onMouseDown={this.resizePanel.bind(this)}
+              className="fa fa-arrows-alt"
+              title="Resize" /> : null}
         </div>
-        <div ref="content"
-            style={css.content}>
-          {props.children}
-        </div>
-        <a ref="resize"
-            style={css.resize}
-            onMouseOver={this.setHoverState.bind(this, true, 100)}
-            onMouseOut={this.setHoverState.bind(this, false, 1000)}
-            onMouseDown={this.resizePanel.bind(this)}
-            className="fa fa-arrows-alt"
-            title="Resize" />
       </div>
     );
   }
 
   css = {
-    content: {
-      position: 'relative',
-      overflow: 'hidden',
-      boxSizing: 'border-box',
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
-      borderStyle: 'dotted',
-      borderWidth: '0 2px 2px',
-      transition: 'background 0.4s ease-out'
+    colorInput: {
+      position: 'absolute',
+      left: 0,
+      top: 0
     },
-    header: {
-      cursor: 'move',
-      overflow: 'hidden',
-      boxSizing: 'border-box',
-      borderTopLeftRadius: 10,
-      borderTopRightRadius: 10,
-      padding: 10,
-      height: 39
+    content: {
+      height: '100%',
+      overflow: 'auto',
+      position: 'relative',
+      width: 'auto'
     },
     inputs: {
-      maxWidth: '40%',
-      color: 'inherit',
       background: 'transparent',
       border: 'none',
-      padding: 5,
-      marginTop: -5,
+      color: 'inherit',
       marginRight: '1ex',
+      marginTop: -5,
+      maxWidth: '70%',
+      overflow: 'hidden',
+      padding: 5,
+      textOverflow: 'ellipsis',
       transition: 'all 0.4s ease-out',
       whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
       ':focus': {
         textOverflow: 'clip',
-        maxWidth: '80%',
         color: 'black',
         background: 'white',
         outline: 'inset 2px rgba(127, 127, 127, 0.5)'
       }
     },
+    nameInput: {},
     remove: {
-      float: 'right',
-      color: 'inherit'
+      clear: 'both',
+      color: 'inherit',
+      padding: 20,
+      position: 'absolute',
+      right: -20,
+      top: -20,
+      visibility: 'hidden'
     },
     resize: {
       clear: 'both',
-      float: 'right',
       color: 'inherit',
-      padding: '20px 10px 10px 20px',
-      marginTop: -22,
-      marginRight: -24,
+      padding: 20,
       cursor: 'nwse-resize',
-      visibility: 'hidden'//,
-      // opacity: 0,
-      // transition: 'opacity 0.4s ease-out'
+      position: 'absolute',
+      right: -20,
+      top: -20,
+      visibility: 'hidden'
     },
     root: {
-      position: 'absolute', top: 0, left: 0,
-      boxSizing: 'border-box',
+      left: 0,
+      position: 'absolute',
+      top: 0
+    },
+    toolbar: {
+      position: 'relative'
+    },
+    wrapper: {
       borderColor: 'rgba(255, 255, 255, 0.6)',
+      borderRadius: 14,
       borderStyle: 'solid',
       borderWidth: '3px',
-      borderRadius: 14,
-      transition: 'border 0.4s ease-out'
+      boxSizing: 'border-box',
+      height: '100%',
+      overflow: 'hidden',
+      padding: 5,
+      transition: 'border 0.4s ease-out',
+      width: 'auto'
     }
   };
 
@@ -247,63 +260,75 @@ export default class GCPanelElement extends Component {
       color = new Color(props.initialColor);
       text = color.clone();
     }
-
-    if (color.dark()) { text.lighten(2); }
-    else { text.darken(2); }
+    text[color.dark() ? 'lighten' : 'darken'](2);
 
     return {
+      colorInput: [
+        this.css.inputs,
+        props.css.inputs,
+        this.css.colorInput,
+        props.css.colorInput,
+        {width: (this.state.color.length + 1) + 'ex'}
+      ],
       content: [
         this.css.content,
-        {
-          overflow: this.state.selected ? 'visible' : 'hidden',
-          height: bounds.height - this.css.header.height - 6,
-          borderColor: color.rgbString(),
-          backgroundColor: color.clone().alpha(this.state.hover ? 0.7 : 0.35).darken(0.5).rgbaString()
-        },
         props.css.content
       ],
-      header: [
-        this.css.header,
-        {
-          borderBottom: '1px solid ' + text.rgbString(),
-          backgroundColor: color.rgbString(),
-          color: text.rgbString()
-        },
-        props.css.header
-      ],
-      inputs: [
+      // inputs: [
+      //   this.css.inputs,
+      //   props.css.inputs
+      // ],
+      nameInput: [
         this.css.inputs,
-        props.css.inputs
+        props.css.inputs,
+        this.css.nameInput,
+        props.css.nameInput,
+        {width: (this.state.name.length + 1) + 'ex'}
       ],
       remove: [
         this.css.remove,
+        {top: -bounds.height - 40},
+        this.state.hover ? {visibility: 'visible'} : null,
         props.css.remove
       ],
       resize: [
         this.css.resize,
-        this.state.hover ? {/*opacity: 1*/visibility: 'visible'} : null,
+        this.state.hover ? {visibility: 'visible'} : null,
         props.css.resize
       ],
       root: [
         this.css.root,
         bounds.getCSSTransform(),
         this.state.hover ? {zIndex: 9} : null,
-        this.state.selected ? {borderColor: 'red'} : null,
         props.css.root,
         props.style
+      ],
+      toolbar: [
+        this.css.toolbar,
+        props.css.toolbar
+      ],
+      wrapper: [
+        this.css.wrapper,
+        {
+          height: bounds.height,
+          borderColor: color.rgbString(),
+          backgroundColor: color.clone()
+            .alpha(this.state.hover ? 0.5 : 0.25)
+            .darken(0.5)
+            .rgbaString()
+        },
+        this.state.selected ? {borderColor: 'red'} : null,
+        props.css.wrapper
       ]
     };
   }
 
   stopEventPropagation(e) { e.stopPropagation(); }
 
-  // renamePanel() {}
-
-  // TODO: this is sometimes calls as an event handler for onClick
-  //       and should not select the node if the user pans
   toggleSelected() {
     let selected = !this.state.selected;
     this.setState({ selected });
+    this.graphCanvas.updateSelection(selected, this.props.parent || this);
     if (this.props.onSelect) {
       this.props.onSelect(selected);
     }
@@ -323,29 +348,35 @@ export default class GCPanelElement extends Component {
     this.setState({name: event.target.value});
     if (this.props.onChange) {
       clearTimeout(this.onChangeTimer);
-      this.onChangeTimer = setTimeout(() => { this.props.onChange(); }, 2000);
+      this.onChangeTimer = setTimeout(() => {
+        this.props.onChange(this.props.parent, this);
+      }, 2000);
     }
   }
 
   handleColorChange(event) {
     this.setState({color: event.target.value});
     clearTimeout(this.onChangeTimer);
-    this.onChangeTimer = setTimeout(() => { this.props.onChange(); }, 50);
+    this.onChangeTimer = setTimeout(() => {
+      this.props.onChange(this.props.parent, this);
+    }, 50);
   }
 
   setHoverState(bool, sleep, e) {
     if (e) { e.stopPropagation(); }
     clearTimeout(this.hoverTimer);
-    // TODO: remove if hover toggles opacity, this causes bugs in chrome
     sleep = 0;
     this.hoverTimer = setTimeout(() => this.setState({hover: bool}), sleep || 0);
   }
 
   removePanel(e) {
     e.stopPropagation();
-    // e.preventDefault();
     let remove = () => {
       this.setState({removed: true});
+      this.graphCanvas.unregister(this);
+      let links = this.graphCanvas.lookupLinks(this.id);
+      links.forEach(link => link.destroyLink());
+      if (this.props.onRemove) { this.props.onRemove(this); }
       if (this.props.onRemovePanel) {
         this.props.onRemovePanel();
       }
@@ -394,11 +425,11 @@ export default class GCPanelElement extends Component {
         this.stopPhysicsMove = true;
       },
       move: (event, dragState) => {
+        event.preventDefault(); // prevent text selection;
         clearInterval(this.moveRepeat);
         var duration = (event.timeStamp || Date.now()) - dragState.start;
         if (duration < 200) { return; }
         event.stopPropagation();
-        event.preventDefault(); // prevent text selection;
         var lastX = dragState.lastMove.x,
             lastY = dragState.lastMove.y;
         dragState.lastMove = {
@@ -475,9 +506,15 @@ export default class GCPanelElement extends Component {
 
   updateBounds(bounds) {
     this.setState({ bounds });
+    this.updateLinks();
     if (this.props.onUpdateBounds) {
       this.props.onUpdateBounds(bounds);
     }
+  }
+
+  updateLinks() {
+    let links = this.graphCanvas.lookupLinks(this.id);
+    links.forEach(link => link.updateBounds());
   }
 
 }

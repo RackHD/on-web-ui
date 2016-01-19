@@ -56,31 +56,23 @@ export default class GCElementsLayer extends Component {
   };
 
   render() {
-    // console.log('RENDER ELEMENTS');
+    let props = this.props,
+        width = this.state.width || this.graphCanvas.worldSize.x;
 
-    try {
-      let props = this.props,
-          width = this.state.width || this.graphCanvas.worldSize.x;
-
-      return (
-        <div
-            className={props.className}
-            style={{
-              width: width,
-              height: 0,
-              overflow: 'visible',
-              position: 'absolute',
-              left: 0,
-              top: 0
-            }}>
-          {props.children}
-        </div>
-      );
-    }
-
-    catch (err) {
-      console.error(err.stack || err);
-    }
+    return (
+      <div
+          className={props.className}
+          style={{
+            width: width,
+            height: 0,
+            overflow: 'visible',
+            position: 'absolute',
+            left: 0,
+            top: 0
+          }}>
+        {props.children}
+      </div>
+    );
   }
 
 }

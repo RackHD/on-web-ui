@@ -160,7 +160,7 @@ export default class GCLinkElement extends Component {
       // var socket = this.props.model.socketOut || this.props.model.socketIn;
       // var color = socket && socket.port && socket.port.color || 'black';
       var color = this.props.initialColor;
-      if (this.state.hover) { color = 'red'; }
+      if (this.state.hover) { color = color === 'red' ? 'white' : 'red'; }
 
       // style={{overflow: 'visible'}}
       // <g transform={transform}>
@@ -211,8 +211,10 @@ export default class GCLinkElement extends Component {
     _retry = _retry || 0;
 
     try {
-      var fromSocket = this.graphCanvas.lookup(this.state.from),
-          fromSocketElement = findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
+      let fromSocket = this.graphCanvas.lookup(this.state.from);
+      if (!fromSocket) { throw new Error(); }
+
+      let fromSocketElement = findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
           fromVector = this.linksManager.getSocketCenter(fromSocketElement);
 
       var toSocket, toSocketElement, toVector;
