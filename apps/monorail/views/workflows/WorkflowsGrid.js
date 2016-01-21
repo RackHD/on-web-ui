@@ -60,7 +60,7 @@ export default class WorkflowsGrid extends Component {
           initialEntities={this.state.workflows}
           routeName="workflows"
           emptyContent="No workflows."
-          headerContent="Workflows"
+          headerContent="Workflow History"
           toolbarContent={rightButtons}
           loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
           mapper={workflow => {
