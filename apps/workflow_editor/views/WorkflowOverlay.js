@@ -228,7 +228,7 @@ export default class WorkflowOverlay extends Component {
     return (<AutoComplete key="workflows"
         style={{width: 276, top: -8, float: 'left'}}
         filter={() => true}
-        showAllItems={true}
+        triggerUpdateOnFocus={!state.workflowTerm}
         menuStyle={{maxHeight: 250, width: 276, overflow: 'auto'}}
         animated={true}
         hintText="Workflow Name"
@@ -286,7 +286,7 @@ export default class WorkflowOverlay extends Component {
       key={1}
       style={{width: 276, top: -8, float: 'left', marginLeft: 8}}
       filter={() => true}
-      showAllItems={true}
+      triggerUpdateOnFocus={!state.taskTerm}
       menuStyle={{maxHeight: 250, width: 276, overflow: 'auto'}}
       animated={true}
       hintText="Task Name"
