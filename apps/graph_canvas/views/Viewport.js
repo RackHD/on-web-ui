@@ -83,7 +83,7 @@ export default class GCViewport extends Component {
     };
     return {
       down: (event, dragState) => {
-        // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
         dragState.startTime = event.timeStamp || Date.now();
         dragState.start = new Vector(this.graphCanvas.position);
@@ -105,7 +105,7 @@ export default class GCViewport extends Component {
         this.stopPhysicsScroll = true;
       },
       move: (event, dragState) => {
-        // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
         event.preventDefault();
         clearInterval(this.moveRepeat);
@@ -125,7 +125,7 @@ export default class GCViewport extends Component {
         }, 32);
       },
       up: (event, dragState) => {
-        // if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
+        if (event.which === 2 || event.which === 3 || dragState.shiftKey) { return; } // only left click
         event.stopPropagation();
         clearInterval(this.moveRepeat);
         // var dragDuration = (event.timeStamp || Date.now()) - dragState.startTime;
