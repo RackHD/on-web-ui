@@ -10,31 +10,33 @@ import { createHashHistory, useBasename } from 'history'
 
 import onReady from 'common-web-ui/lib/onReady';
 
-import { MenuItem } from 'material-ui';
+import { Divider, Menu, MenuItem } from 'material-ui';
 
 import AppContainer from 'common-web-ui/views/AppContainer';
 import NotFound from 'common-web-ui/views/NotFound';
 
-// See http://material-ui.com/#/components/left-nav
-export var navigation = [
-  { text: 'Dashboard', route: ['', 'dashboard'] },
-  { text: 'Workflow Editor', route: 'workflow_editor' },
-  { text: 'Network Topology', route: 'network_topology' },
-  { text: 'Main Resources', type: MenuItem.Types.SUBHEADER },
-  { text: 'Catalogs', route: 'catalogs' },
-  { text: 'Nodes', route: 'nodes' },
-  { text: 'Pollers', route: 'pollers' },
-  { text: 'Workflows', route: 'workflows' },
-  { text: 'Other Resources', type: MenuItem.Types.SUBHEADER },
-  { text: 'Files', route: 'files' },
-  { text: 'OBM Services', route: 'obms' },
-  { text: 'Profiles', route: 'profiles' },
-  { text: 'Skus', route: 'skus' },
-  { text: 'Templates', route: 'templates' },
-  { text: 'System', type: MenuItem.Types.SUBHEADER },
-  { text: 'Config', route: 'config' },
-  { text: 'Logs', route: 'logs' }
-];
+export var navigation = (
+  <Menu>
+    <MenuItem><a href="#">Dashboard</a></MenuItem>
+    <MenuItem><a href="#/workflow_editor">Workflow Editor</a></MenuItem>
+    {/*<MenuItem><a href="#/network_topology">Network Topology</a></MenuItem>*/}
+    <MenuItem><h4>Main Resources</h4></MenuItem>
+    <Divider />
+    <MenuItem><a href="#/catalogs">Catalogs</a></MenuItem>
+    <MenuItem><a href="#/nodes">Nodes</a></MenuItem>
+    <MenuItem><a href="#/pollers">Pollers</a></MenuItem>
+    <MenuItem><a href="#/workflows">Workflows</a></MenuItem>
+    <MenuItem><h4>Other Resources</h4></MenuItem>
+    <Divider />
+    <MenuItem><a href="#/files">Files</a></MenuItem>
+    <MenuItem><a href="#/obms">OBM Services</a></MenuItem>
+    <MenuItem><a href="#/profiles">Profiles</a></MenuItem>
+    <MenuItem><a href="#/skus">Skus</a></MenuItem>
+    <MenuItem><a href="#/templates">Templates</a></MenuItem>
+    <MenuItem><a href="#/config">Config</a></MenuItem>
+    <MenuItem><a href="#/logs"Logs></a></MenuItem>
+  </Menu>
+);
 
 // Must be imported after navigation.
 import AllLogs from './views/AllLogs';
@@ -71,7 +73,7 @@ let routes = (
     <Route name="Workflow Editor" path="/workflow_editor/:workflow" component={WorkflowEditor} />
     <Route name="Workflow Editor" path="/workflow_editor" component={WorkflowEditor} />
 
-    <Route name="Network Topology" path="/network_topology" component={NetworkTopology} />
+    {/*<Route name="Network Topology" path="/network_topology" component={NetworkTopology} />*/}
 
     <Route name="Catalogs" path="/catalogs" component={Catalogs} />
     <Route path="/catalogs/n/:nodeId" component={Catalogs} />

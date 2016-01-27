@@ -31,7 +31,7 @@ export default class AppContainer extends Component {
     css: PropTypes.object,
     disableAppBar: PropTypes.bool,
     disableTabPadding: PropTypes.bool,
-    navigation: PropTypes.array,
+    navigation: PropTypes.any,
     replaceBreadcrumbs: PropTypes.any,
     rightAppBarIconElement: PropTypes.any,
     title: PropTypes.string
@@ -46,7 +46,7 @@ export default class AppContainer extends Component {
     css: {},
     disableAppBar: false,
     disableTabPadding: false,
-    navigation: [],
+    navigation: null,
     replaceBreadcrumbs: null,
     rightAppBarIconElement: null,
     title: '',
@@ -175,10 +175,8 @@ export default class AppContainer extends Component {
                 style={css.appBar}
                 zDepth={0} />}
 
-            {this.props.navigation && <AppNavigation
-                ref="navigation"
-                title={this.props.title}
-                menuItems={this.props.navigation} />}
+            {this.props.navigation &&
+              <AppNavigation ref="navigation">{this.props.navigation}</AppNavigation>}
           </header>
 
           {this.props.beforeContent}

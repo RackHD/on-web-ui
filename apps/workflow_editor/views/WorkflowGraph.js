@@ -8,6 +8,7 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import radium from 'radium';
 
+import ContextMenu from 'common-web-ui/views/ContextMenu';
 import GraphCanvas from 'graph-canvas-web-ui/views/GraphCanvas';
 
 @radium
@@ -96,7 +97,13 @@ export default class WorkflowGraph extends Component {
     return (
       <div ref="root"
           className={'WorkflowGraph ' + this.props.className}
+          onContextMenu={openEvent => {
+            // openEvent.preventDefault();
+            // openEvent.stopPropagation();
+            // this.setState({ openEvent });
+          }}
           style={css.root}>
+
         <GraphCanvas
             key={'graphCanvas' + this.state.version}
             ref="graphCanvas"
@@ -114,6 +121,15 @@ export default class WorkflowGraph extends Component {
             onUnlink={this.removeLink.bind(this)}>
           {this.state.activeWorkflow.renderGraph(this.context)}
         </GraphCanvas>
+
+        {/*<ContextMenu
+            onClose={() => this.setState({openEvent: null})}
+            openEvent={this.state.openEvent}
+            menuList={[
+              {primaryText: 'Menu Item 1'},
+              'divider',
+              {primaryText: 'Menu Item 2'}
+            ]} />*/}
       </div>
     );
   }

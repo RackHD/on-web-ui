@@ -31,6 +31,8 @@ export default class ErrorNotification extends Component {
     }
   }
 
+  dismissError = this.dismissError.bind(this);
+
   render() {
     return (
       <Snackbar
@@ -39,14 +41,17 @@ export default class ErrorNotification extends Component {
         className={'ErrorNotification ' + this.props.className}
         message={this.state.error || 'Unknown error.'}
         style={this.props.style}
-        onActionTouchTap={this.dismissError.bind(this)} />
+        open={!!this.state.error}
+        onActionTouchTap={this.dismissError}
+        onRequestClose={this.dismissError} />
     );
   }
 
-  showError(error) { this.setState({error: error.message || error}); }
+  showError(error) {
+    this.setState({error: error.message || error});
+  }
 
   dismissError() {
-    this.refs.snackbar.dismiss();
     this.setState({error: null});
   }
 
