@@ -38,4 +38,18 @@ export default class WorkflowsRestAPI extends RestAPI {
     });
   }
 
+  // TODO:
+  // validate(body) {
+  //   new Promise((resolve, reject) => {
+  //     this.http.post(this.url + 'validate')
+  //       .accept('json')
+  //       .type('json')
+  //       .send(body)
+  //       .end((err, res) => {
+  //         if (err) { return reject(err); }
+  //         resolve(res && res.body);
+  //       });
+  //   });
+  // }
+
 }

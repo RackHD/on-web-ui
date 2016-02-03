@@ -169,6 +169,10 @@ export default class WorkflowOperator extends Component {
     this.activeWorkflow.renameWorkflow(newName);
   }
 
+  validate() {
+    // TODO
+  }
+
   load(workflowName) {
     this.refs.overlay.setState({loading: true});
 
