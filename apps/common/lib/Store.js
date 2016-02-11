@@ -10,6 +10,10 @@ export default class Store extends EventEmitter {
 
   static cache = {};
 
+  static emptyCache() {
+    this.cache = {};
+  }
+
   static loadCache() {
     let jsonCache = window.localStorage.getItem(this.name + '-cache') || '{}';
     try { this.cache = JSON.parse(jsonCache); } catch (err) {}
@@ -21,8 +25,9 @@ export default class Store extends EventEmitter {
   }
 
   autoCache = false;
+  onChange = null;
 
-  constructor(EntityClass, autoCache) {
+  constructor(EntityClass, autoCache, onChange) {
     super();
     this.EntityClass = EntityClass || this.EntityClass;
     this.autoCache = autoCache || this.autoCache;
@@ -32,6 +37,10 @@ export default class Store extends EventEmitter {
 
   get cache() {
     return this.constructor.cache;
+  }
+
+  emptyCache() {
+    this.constructor.emptyCache();
   }
 
   loadCache() {
@@ -130,17 +139,19 @@ export default class Store extends EventEmitter {
 
   collect(list, silent) {
     list.forEach(item => this.insert(item[this.key], item, silent));
+    if (!silent) { this.publish(); }
   }
 
   recollect(list, silent) {
     this.empty(true);
-    this.collect(list, true);
-    if (!silent) { this.publish(); }
+    if (this.autoCache) { this.emptyCache(); }
+    this.collect(list, silent);
   }
 
   publish(id) {
-    if (id) { this.emit('change:' + id); }
-    this.emit('change');
+    if (id) { this.emit('change:' + id, id); }
+    else { this.emit('change', id); }
+    if (this.onChange) { this.onChange(id); }
   }
 
   insert(id, data, silent) {
@@ -149,9 +160,9 @@ export default class Store extends EventEmitter {
       console.warn(new Error('Store: Insert called with undefined data.'));
       data = this.collection[id];
     }
-    var object = this.EntityClass ? new this.EntityClass(data) : data;
+    var object = this.EntityClass && data ? new this.EntityClass(data) : data;
     this.collection[id] = object;
-    this.cache[id] = object;
+    this.cache[id] = data;
     if (!silent) { this.publish(id); }
     if (this.autoCache) {
       clearTimeout(this.autoCacheTimer);
@@ -159,8 +170,8 @@ export default class Store extends EventEmitter {
     }
   }
 
-  assign(id, newData) {
-    this.insert(id, Object.assign(this.get(id) || {}, newData));
+  assign(id, newData, oldData) {
+    this.insert(id, Object.assign(oldData || this.get(id) || {}, newData));
   }
 
   change(id, data, silent) {
@@ -197,9 +208,6 @@ export default class Store extends EventEmitter {
     if (failure) {
       this.once(this.event(id, 'error'), failure);
     }
-    // else {
-    //   console.warn(new Error('Store subscribed once to change without error handler.').stack);
-    // }
   }
 
   subscribe(id, success, failure) {
@@ -207,9 +215,6 @@ export default class Store extends EventEmitter {
     if (failure) {
       this.on(this.event(id, 'error'), failure);
     }
-    // else {
-    //   console.warn(new Error('Store subscribed to change without error handler.').stack);
-    // }
   }
 
   unsubscribe(id, success, failure) {

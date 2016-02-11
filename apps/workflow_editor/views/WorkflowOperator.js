@@ -13,8 +13,8 @@ import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
 import Trie from '../lib/Trie';
 import Workflow from '../lib/Workflow';
 
-import TaskDefinitionStore from '../stores/TaskDefinitionStore';
-import WorkflowTemplateStore from '../stores/WorkflowTemplateStore';
+import TaskDefinitionStore from 'monorail-web-ui/stores/TaskDefinitionStore';
+import WorkflowTemplateStore from 'monorail-web-ui/stores/WorkflowTemplateStore';
 
 import WorkflowOverlay from './WorkflowOverlay';
 
