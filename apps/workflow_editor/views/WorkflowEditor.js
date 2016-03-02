@@ -9,7 +9,7 @@ import { findDOMNode } from 'react-dom';
 import radium from 'radium';
 import { Link } from 'react-router';
 
-import HorizontalSplitView from 'common-web-ui/views/HorizontalSplitView';
+import HorizontalSplitView from 'rui-common/views/HorizontalSplitView';
 
 import WorkflowGraph from './WorkflowGraph';
 import WorkflowJSON from './WorkflowJSON';
@@ -62,7 +62,7 @@ export default class WorkflowEditor extends Component {
   };
 
   componentWillMount() {
-    this.context.appContainer.fullscreenMode(true);
+    // this.context.appContainer.fullscreenMode(true);
 
     this.updateSize = () => {
       let splitView = this.refs.splitView;
@@ -87,7 +87,7 @@ export default class WorkflowEditor extends Component {
   }
 
   componentWillUnmount() {
-    this.context.appContainer.fullscreenMode(false);
+    // this.context.appContainer.fullscreenMode(false);
 
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('orientationchange', this.handleResize);

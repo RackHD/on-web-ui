@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 
-import EditWorkflow from 'monorail-web-ui/views/workflows/EditWorkflow';
+import EditWorkflow from 'rui-management-console/views/workflows/EditWorkflow';
 
 export default class RunWorkflow extends Component {
 

@@ -4,8 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 
-// Based on http://www.mbates.com/play/ReactJsonEditor/
-
 export default class JsonEditor extends Component {
 
   static propTypes = {
@@ -27,11 +25,11 @@ export default class JsonEditor extends Component {
     error: false
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.initialValue !== this.props.initialValue) {
-      this.setState({value: nextProps.initialValue});
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.initialValue !== this.props.initialValue) {
+  //     this.setState({value: nextProps.initialValue});
+  //   }
+  // }
 
   handleChange(newValue) {
     try {
@@ -50,21 +48,34 @@ export default class JsonEditor extends Component {
 
   linkState() {
     return {
-      value: this.state.rawValue ? this.state.rawValue : JSON.stringify(this.state.value, null, 2),
+      value: this.currentValue,
       requestChange: this.handleChange.bind(this)
     };
   }
 
+  get currentValue() {
+    return this.state.rawValue ?
+      this.state.rawValue : JSON.stringify(this.state.value, null, 2);
+  }
+
+  // focusTextArea() {
+  //   this.refs.textarea.focus();
+  // }
+
   render() {
-    if (this.state.value === null) {
-      this.state.value = this.props.initialValue;
-    }
+    // if (this.state.value === null) {
+    //   this.state.value = this.props.initialValue;
+    // }
+    // console.log('render');
+    // onMouseDown={this.focusTextArea.bind(this)}
     return (
       <div className={'JsonEditor' + (this.props.disabled ? ' disabled' : '')}>
         {this.state.error ? (
           <div className="error">{JSON.stringify(this.state.error.message)}</div>
         ) : null}
-        <textarea valueLink={this.linkState()}
+        <textarea ref="textarea"
+                  defaultValue=''
+
                   rows={this.props.rows}
                   cols={this.props.cols}
                   disabled={this.props.disabled}

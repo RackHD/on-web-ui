@@ -8,50 +8,93 @@ import radium from 'radium';
 @radium
 export default class HorizontalSplitView extends Component {
 
-  static propTypes = {
-    className: PropTypes.string,
-    collapse: PropTypes.number,
-    css: PropTypes.object,
-    height: PropTypes.any,
-    onUpdate: PropTypes.func,
-    split: PropTypes.number,
-    style: PropTypes.object,
-    width: PropTypes.any
-  };
-
   static defaultProps = {
     className: '',
+    collapsable: true,
     collapse: 0,
     css: {},
+    dividerSize: 10,
     height: '100%',
+    invert: false,
     onUpdate: null,
+    resizable: true,
+    ratio: true,
     split: 0.5,
     style: {},
     width: '100%'
   };
 
+  static contextTypes = {
+    appContainer: PropTypes.any,
+    // parentSplit: PropTypes.any
+  };
+
+  // static childContextTypes = {
+  //   parentSplit: PropTypes.any
+  // };
+
+  // getChildContext() {
+  //   return {
+  //     parentSplit: this
+  //   };
+  // }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.split) {
+      this.setState({split: nextProps.split});
+    }
+  }
+
   state = {
-    split: this.props.split,
-    lastSplit: null
+    toggleSplit: null,
+    split: this.props.split
   };
 
   get width() {
-    return this.refs.root.offsetWidth;
+    if (typeof this.props.width === 'number') {
+      return this.props.width;
+    }
+    // if (this.context.parentSplit) {
+    //   return this.context.parentSplit.width;
+    // }
+    if (this.context.appContainer) {
+      return this.context.appContainer.state.width;
+    }
+    if (this.refs.root) {
+      if (this.refs.root.parentNode) {
+        return this.refs.root.parentNode.offsetWidth;
+      }
+      return this.refs.root.offsetWidth;
+    }
+    return window.innerWidth;
   }
 
   get leftSplit() {
-    return this.state.split;
+    let split = !this.props.ratio ?
+      this.state.split / this.width :
+      this.state.split
+    // console.log('left', split, 1 - split);
+    return this.props.invert ? 1 - split : split;
   }
 
   get rightSplit() {
-    return 1 - this.state.split;
+    let split = !this.props.ratio ?
+      (this.width - this.state.split) / this.width :
+      1 - this.state.split;
+    // console.log('right', split, 1 - split);
+    return this.props.invert ? 1 - split : split;
   }
 
   css = {
     root: {
-      width: '100%',
-      height: '100%',
+      width: this.props.width,
+      height: this.props.height,
       position: 'relative'
+    },
+
+    line: {
+      width: 'inherit',
+      height: 'inherit'
     },
 
     left: {
@@ -68,29 +111,32 @@ export default class HorizontalSplitView extends Component {
 
     resize: {
       height: 'inherit',
-      width: 10,
-      marginLeft: -5,
-      background: 'rgba(127,127,127,0.33)',
-      cursor: 'col-resize',
+      width: this.props.dividerSize,
+      marginLeft: -this.props.dividerSize / 2,
+      background: this.props.resizable || this.props.collapsable ? 'rgba(127,127,127,0.33)' : 'rgba(127,127,127,0.66)',
+      cursor: this.props.resizable ? 'col-resize' : this.props.collapsable ? 'pointer' : 'default',
       position: 'absolute',
       top: 0,
       left: this.leftSplit * 100 + '%',
       zIndex: 10,
       overflow: 'hidden',
 
-      ':hover': {
+      ':hover': this.props.resizable || this.props.collapsable ? {
         background: 'rgba(127,127,127,0.66)',
-      }
+      } : null
     }
   };
 
   render() {
-    let { props, state } = this;
+    let { props } = this;
 
-    let split = state.split,
+    let split = this.leftSplit,
         leftSize = (split * 100) + '%',
         rightSize = (this.rightSplit * 100) + '%',
-        isCollapsed = split === 0 || split === 1;
+        isCollapsed = split === 0 || split === 1,
+        dividerSize = this.props.dividerSize;
+
+    console.log('GOT HERE', leftSize, rightSize);
 
     let css = {
       root: [
@@ -100,13 +146,21 @@ export default class HorizontalSplitView extends Component {
         this.props.style
       ],
 
+      line: [
+        this.css.line,
+        props.css.line
+      ],
+
       left: [this.css.left, {width: leftSize}, props.css.left],
       right: [this.css.right, {width: rightSize}, props.css.right],
 
       resize: [
         this.css.resize,
-        {left: leftSize,
-          width: isCollapsed ? 20 : 10, marginLeft: isCollapsed ? -10 : -5},
+        {
+          left: leftSize,
+          width: isCollapsed ? dividerSize * 2 : dividerSize,
+          marginLeft: isCollapsed ? -dividerSize : -dividerSize / 2
+        },
         props.css.resize
       ]
     };
@@ -117,7 +171,7 @@ export default class HorizontalSplitView extends Component {
           style={css.root}>
 
         <div className="line"
-            style={props.css.line}>
+            style={css.line}>
 
           <div ref="left"
               className="cell"
@@ -145,22 +199,33 @@ export default class HorizontalSplitView extends Component {
   };
 
   toggleSplitView = () => {
+    if (!this.props.collapsable) return;
+
     let { props, state } = this;
-    if (state.lastSplit !== null || state.split === props.collapse) {
+
+    if (state.toggleSplit !== null || this.leftSplit === props.collapse) {
+      console.log("GOT HERE 2", this.props.split, state.toggleSplit);
       this.setState({
-        split: state.lastSplit === null || state.lastSplit === state.split ? 0.5 : state.lastSplit,
-        lastSplit: null
+        split: state.toggleSplit === state.split ? this.props.split : state.toggleSplit,
+        toggleSplit: null
       }, this.emitUpdate);
     }
+
     else {
-      this.setState({split: this.props.collapse, lastSplit: this.state.split}, this.emitUpdate);
+      console.log('GOT HERE', this.props.collapse, this.width * this.props.collapse);
+      this.setState({
+        split: this.props.ratio ? this.props.collapse : this.width * this.props.collapse,
+        toggleSplit: this.leftSplit
+      }, this.emitUpdate);
     }
   };
 
   resizeSplitView = (event) => {
+    if (!this.props.resizable) return;
+
     let active = true,
         pageX = event.pageX,
-        split = this.state.split,
+        split = this.leftSplit,
         size = this.width;
 
     event.preventDefault();
@@ -175,7 +240,12 @@ export default class HorizontalSplitView extends Component {
       let diffX = (e.pageX - pageX) / size,
           newSplit = Math.max(0, Math.min(1, split + diffX));
 
-      this.setState({split: newSplit, lastSplit: null}, this.emitUpdate);
+      console.log("DRAG", diffX, newSplit);
+
+      this.setState({
+        split: this.props.ratio ? newSplit : this.width * newSplit,
+        toggleSplit: null
+      }, this.emitUpdate);
     };
 
     let upHandler = () => {

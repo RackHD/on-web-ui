@@ -7,7 +7,7 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 
-import TestWrapper from 'common-web-ui/views/TestWrapper';
+import TestWrapper from 'rui-common/views/TestWrapper';
 import GraphCanvas from '../GraphCanvas';
 import Vector from '../../lib/Vector';
 

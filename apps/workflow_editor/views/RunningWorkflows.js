@@ -3,23 +3,19 @@
 'use strict';
 
 
-import React, { Component } from 'react';
-
+import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import moment from 'moment';
-
-import mixin from 'common-web-ui/lib/mixin';
-import FormatHelpers from 'common-web-ui/mixins/FormatHelpers';
-import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-
 import { RaisedButton, LinearProgress } from 'material-ui';
 
-import ResourceTable from 'common-web-ui/views/ResourceTable';
+import FormatHelpers from 'rui-common/mixins/FormatHelpers';
+import ResourceTable from 'rui-common/views/ResourceTable';
+import RackHDRestAPIv1_1 from 'rui-common/messengers/RackHDRestAPIv1_1';
+import WorkflowStore from 'rui-common/stores/WorkflowStore';
 
-import MonoRailRestAPIv1_1 from 'monorail-web-ui/messengers/MonoRailRestAPIv1_1';
-import WorkflowStore from 'monorail-web-ui/stores/WorkflowStore';
-
-@mixin(FormatHelpers, RouteHelpers)
 export default class RunningWorkflows extends Component {
+
+  static contextTypes = {router: PropTypes.any};
 
   static defaultProps = {
     sort: (a, b) => moment(b.updatedAt).unix() - moment(a.updatedAt).unix()
@@ -56,14 +52,20 @@ export default class RunningWorkflows extends Component {
           loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
           mapper={workflow => {
             let row = {};
-            row.Name = <a href={this.routePath('workflows', workflow.id)}>{workflow.name}</a>;
-            row.Node = <a href={this.routePath('nodes', workflow.node)}>{this.shortId(workflow.node)}</a>;
+            row.Name = <Link to={'/mc/workflows/' + workflow.id}>{workflow.name}</Link>;
+            row.Node = <Link to={'/mc/nodes/' + workflow.node}>{FormatHelpers.shortId(workflow.node)}</Link>;
             row.Status = workflow.completeEventString || (workflow.cancelled ? 'cancelled' : workflow._status);
+<<<<<<< HEAD
             if (workflow.pendingTasks) {
               row.Progress = workflow.finishedTasks.length + ' / ' +
                 (workflow.finishedTasks.length + workflow.pendingTasks.length);
             }
             row.Updated = this.fromNow(workflow.updatedAt);
+=======
+            // row.Progress = workflow.finishedTasks.length + ' / ' +
+            //   (workflow.finishedTasks.length + workflow.pendingTasks.length);
+            row.Updated = FormatHelpers.fromNow(workflow.updatedAt);
+>>>>>>> wip
             return row;
           }}
           filter={this.props.filter}
@@ -84,13 +86,15 @@ export default class RunningWorkflows extends Component {
   }
 
   createWorkflow() {
-    if (this.nodeId) return this.routeTo('workflows', 'new', this.nodeId);
-    this.routeTo('workflows', 'new');
+    if (this.nodeId) {
+      return this.context.router.push('/mc/nodes/' + this.nodeId + '/workflows/new');
+    }
+    this.context.router.push('/mc/workflows/new');
   }
 
   cancelActiveWorkflow() {
     if (!this.nodeId) { return; }
-    MonoRailRestAPIv1_1.nodes.deleteActiveWorkflow(this.nodeId).then(() => {
+    RackHDRestAPIv1_1.nodes.deleteActiveWorkflow(this.nodeId).then(() => {
       this.listWorkflows();
     });
   }

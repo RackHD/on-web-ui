@@ -45,6 +45,8 @@ let muiTheme = ThemeManager.getMuiTheme({
   }
 });
 
+muiTheme.emcColors = emcColors;
+
 muiTheme.darkEMC = true;
 
 muiTheme.snackbar.textColor = muiColors.black;

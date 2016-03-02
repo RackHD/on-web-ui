@@ -1,9 +1,9 @@
 {
-  "name": "graph-canvas-web-ui",
+  "name": "rui-graph-canvas",
   "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
-  "description": "Graph Canvas Web UI",
+  "description": "RackHD UI -Graph Canvas",
   "repository": "",
   "license": "Apache-2.0",
   "engines": {

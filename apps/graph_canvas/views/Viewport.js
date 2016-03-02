@@ -4,7 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
+import mixin from 'rui-common/lib/mixin';
 
 import DragEventHelpers from '../mixins/DragEventHelpers';
 

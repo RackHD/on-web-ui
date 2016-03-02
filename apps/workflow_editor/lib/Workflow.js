@@ -2,8 +2,8 @@
 
 'use strict';
 
-import cloneDeep from 'lodash/lang/cloneDeep';
-import merge from 'lodash/object/merge';
+import cloneDeep from 'lodash/cloneDeep';
+import merge from 'lodash/merge';
 
 import {
     GCGroup,
@@ -11,9 +11,9 @@ import {
     GCNode,
     GCPort,
     GCSocket
-  } from 'graph-canvas-web-ui/views/GraphCanvas';
+  } from 'rui-graph-canvas/views/GraphCanvas';
 
-import Rectangle from 'graph-canvas-web-ui/lib/Rectangle';
+import Rectangle from 'rui-graph-canvas/lib/Rectangle';
 
 import ObjectDiff from './ObjectDiff';
 

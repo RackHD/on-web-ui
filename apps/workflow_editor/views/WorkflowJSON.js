@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
-import AceEditor from 'common-web-ui/views/AceEditor';
+import AceEditor from 'rui-common/views/AceEditor';
 import 'brace/mode/json';
 import 'brace/theme/monokai';
 

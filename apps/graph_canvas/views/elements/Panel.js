@@ -5,13 +5,13 @@
 import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
+import mixin from 'rui-common/lib/mixin';
 
 import Color from 'color';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 
-import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
+import ConfirmDialog from 'rui-common/views/dialogs/Confirm';
 
 import generateId from '../../lib/generateId';
 

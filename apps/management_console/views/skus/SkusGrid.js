@@ -1,0 +1,67 @@
+// Copyright 2015, EMC, Inc.
+
+'use strict';
+
+import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
+import { RaisedButton, LinearProgress } from 'material-ui';
+
+import FormatHelpers from 'rui-common/mixins/FormatHelpers';
+import ResourceTable from 'rui-common/views/ResourceTable';
+import SkuStore from 'rui-common/stores/SkuStore';
+
+export default class SkusGrid extends Component {
+
+  static contextTypes = {router: PropTypes.any};
+
+  skus = new SkuStore();
+
+  state = {
+    skus: null,
+    loading: true
+  };
+
+  componentWillMount() {
+    this.skus.startMessenger();
+  }
+
+  componentDidMount() {
+    this.unwatchSkus = this.skus.watchAll('skus', this);
+    this.listSkus();
+  }
+
+  componentWillUnmount() {
+    this.skus.stopMessenger();
+    this.unwatchSkus();
+  }
+
+  render() {
+    return (
+      <ResourceTable
+          initialEntities={this.state.skus}
+          routeName="skus"
+          emptyContent="No skus."
+          headerContent="SKUs"
+          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          toolbarContent={<RaisedButton label="Create SKU" primary={true} onClick={this.createSku.bind(this)} />}
+          mapper={sku => (
+            {
+              ID: <Link to={'/mc/skus/' + sku.id}>{FormatHelpers.shortId(sku.id)}</Link>,
+              Name: sku.name,
+              Created: FormatHelpers.fromNow(sku.createdAt),
+              Updated: FormatHelpers.fromNow(sku.updatedAt)
+            }
+          )} />
+    );
+  }
+
+  listSkus() {
+    this.setState({loading: true});
+    this.skus.list().then(() => this.setState({loading: false}));
+  }
+
+  createSku() {
+    this.context.router.push('/mc/skus/new');
+  }
+
+}

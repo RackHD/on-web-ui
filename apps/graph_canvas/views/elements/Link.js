@@ -10,7 +10,7 @@ import generateId from '../../lib/generateId';
 import Vector from '../../lib/Vector';
 import Rectangle from '../../lib/Rectangle';
 
-import ConfirmDialog from 'common-web-ui/views/dialogs/Confirm';
+import ConfirmDialog from 'rui-common/views/dialogs/Confirm';
 
 export default class GCLinkElement extends Component {
 

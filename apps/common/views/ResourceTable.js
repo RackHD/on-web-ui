@@ -3,7 +3,7 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
-
+import { Link } from 'react-router';
 import { Checkbox, FontIcon } from 'material-ui';
 
 import DataTable from './DataTable';
@@ -99,7 +99,7 @@ export default class ResourceTable extends Component {
           style={this.props.style}>
         <DataTableToolbar
             icon={icon}
-            label={<a href={'#/' + this.props.routeName}>{this.props.headerContent}</a>}
+            label={<Link to={'/mc/' + this.props.routeName}>{this.props.headerContent}</Link>}
             count={data && data.length || 0}>
           {this.props.toolbarContent}
         </DataTableToolbar>

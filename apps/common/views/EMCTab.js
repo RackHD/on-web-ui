@@ -8,23 +8,36 @@ import radium from 'radium';
 @radium
 export default class AppHeader extends Component {
 
+  static defaultProps = {
+    opacity: 1
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.opacity !== this.props.opacity) {
+      this.css.root.opacity = nextProps.opacity;
+      this.forceUpdate();
+    }
+  }
+
   // http://brand.emc.com/brand-elements-2/
 
   css = {
     root: {
       backgroundColor: '#2C95DD',
       overflow: 'hidden',
-      position: 'fixed',
+      position: 'absolute', // fixed
       display: 'block',
-      zIndex: 99,
+      // zIndex: 99,
       color: 'white',
       float: 'left',
-      // left: (100 / 21) + '%',
-      right: (100 / 21) + '%',
+      left: (100 / 21) + '%',
+      // right: (100 / 21) + '%',
       width: (100 / 7) + '%',
       maxWidth: 140,
       minWidth: 100,
       bottom: 0,
+      opacity: this.props.opacity,
+      transition: 'opacity 1s',
       // top: 0,
 
       ':hover': {

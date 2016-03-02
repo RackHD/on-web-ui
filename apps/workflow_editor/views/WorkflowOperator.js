@@ -7,19 +7,15 @@ import { EventEmitter } from 'events';
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
-import mixin from 'common-web-ui/lib/mixin';
-import RouteHelpers from 'common-web-ui/mixins/RouteHelpers';
-
 import Trie from '../lib/Trie';
 import Workflow from '../lib/Workflow';
 
-import TaskDefinitionStore from 'monorail-web-ui/stores/TaskDefinitionStore';
-import WorkflowTemplateStore from 'monorail-web-ui/stores/WorkflowTemplateStore';
+import TaskDefinitionStore from 'rui-common/stores/TaskDefinitionStore';
+import WorkflowTemplateStore from 'rui-common/stores/WorkflowTemplateStore';
 
 import WorkflowOverlay from './WorkflowOverlay';
 
 @radium
-@mixin(RouteHelpers)
 export default class WorkflowOperator extends Component {
 
   static propTypes = {
@@ -39,6 +35,7 @@ export default class WorkflowOperator extends Component {
   };
 
   static contextTypes = {
+    // router: PropTypes.any,
     workflowEditor: PropTypes.any
   };
 

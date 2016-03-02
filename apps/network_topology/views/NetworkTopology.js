@@ -46,7 +46,7 @@ export default class NetworkTopology extends Component {
   };
 
   componentWillMount() {
-    this.context.appContainer.fullscreenMode(true);
+    // this.context.appContainer.fullscreenMode(true);
 
     this.updateSize = () => {
       let splitView = this.refs.splitView;
@@ -68,7 +68,7 @@ export default class NetworkTopology extends Component {
   }
 
   componentWillUnmount() {
-    this.context.appContainer.fullscreenMode(false);
+    // this.context.appContainer.fullscreenMode(false);
 
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('orientationchange', this.handleResize);

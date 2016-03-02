@@ -3,7 +3,7 @@
   "main": "index.js",
   "private": true,
   "version": "0.0.0",
-  "description": "RackHD Client",
+  "description": "RackHD UI -RackHD Client",
   "repository": "",
   "license": "Apache-2.0",
   "engines": {

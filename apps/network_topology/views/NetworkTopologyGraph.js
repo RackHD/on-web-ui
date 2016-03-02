@@ -7,10 +7,10 @@ import { EventEmitter } from 'events';
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
-import GraphCanvas from 'graph-canvas-web-ui/views/GraphCanvas';
+import GraphCanvas from 'rui-graph-canvas/views/GraphCanvas';
 
-import cloneDeep from 'lodash/lang/cloneDeep';
-import merge from 'lodash/object/merge';
+import cloneDeep from 'lodash/cloneDeep';
+import merge from 'lodash/merge';
 
 import {
     GCGroup,
@@ -18,7 +18,7 @@ import {
     GCNode,
     GCPort,
     GCSocket
-  } from 'graph-canvas-web-ui/views/GraphCanvas';
+  } from 'rui-graph-canvas/views/GraphCanvas';
 
 @radium
 export default class NetworkTopologyGraph extends Component {
