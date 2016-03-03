@@ -20,11 +20,20 @@ export default class WorkflowsRestAPI extends RestAPI {
 
   library() {
     return new Promise((resolve, reject) => {
-      this.http.get(this.url + 'library')
+      this.http.get(this.url + 'library/*')
         .accept('json')
         .end((err, res) => {
-          if (err) { return reject(err); }
-          resolve(res && res.body);
+          if (err) {
+            this.http.get(this.url + 'library')
+              .accept('json')
+              .end((err, res) => {
+                if (err) { return reject(err); }
+                resolve(res && res.body);
+              });
+          }
+          else {
+            resolve(res && res.body);
+          }
         });
     });
   }
