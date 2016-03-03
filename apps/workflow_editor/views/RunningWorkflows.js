@@ -55,17 +55,9 @@ export default class RunningWorkflows extends Component {
             row.Name = <Link to={'/mc/workflows/' + workflow.id}>{workflow.name}</Link>;
             row.Node = <Link to={'/mc/nodes/' + workflow.node}>{FormatHelpers.shortId(workflow.node)}</Link>;
             row.Status = workflow.completeEventString || (workflow.cancelled ? 'cancelled' : workflow._status);
-<<<<<<< HEAD
-            if (workflow.pendingTasks) {
-              row.Progress = workflow.finishedTasks.length + ' / ' +
-                (workflow.finishedTasks.length + workflow.pendingTasks.length);
-            }
-            row.Updated = this.fromNow(workflow.updatedAt);
-=======
             // row.Progress = workflow.finishedTasks.length + ' / ' +
             //   (workflow.finishedTasks.length + workflow.pendingTasks.length);
             row.Updated = FormatHelpers.fromNow(workflow.updatedAt);
->>>>>>> wip
             return row;
           }}
           filter={this.props.filter}

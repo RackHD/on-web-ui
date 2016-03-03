@@ -136,7 +136,7 @@ export default class HorizontalSplitView extends Component {
         isCollapsed = split === 0 || split === 1,
         dividerSize = this.props.dividerSize;
 
-    console.log('GOT HERE', leftSize, rightSize);
+    // console.log('GOT HERE', leftSize, rightSize);
 
     let css = {
       root: [
@@ -204,7 +204,7 @@ export default class HorizontalSplitView extends Component {
     let { props, state } = this;
 
     if (state.toggleSplit !== null || this.leftSplit === props.collapse) {
-      console.log("GOT HERE 2", this.props.split, state.toggleSplit);
+      // console.log("GOT HERE 2", this.props.split, state.toggleSplit);
       this.setState({
         split: state.toggleSplit === state.split ? this.props.split : state.toggleSplit,
         toggleSplit: null
@@ -240,7 +240,7 @@ export default class HorizontalSplitView extends Component {
       let diffX = (e.pageX - pageX) / size,
           newSplit = Math.max(0, Math.min(1, split + diffX));
 
-      console.log("DRAG", diffX, newSplit);
+      // console.log("DRAG", diffX, newSplit);
 
       this.setState({
         split: this.props.ratio ? newSplit : this.width * newSplit,
