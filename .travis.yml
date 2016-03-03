@@ -6,7 +6,12 @@ node_js:
   # - '4.0'
   # - '4.1'
   - '4.2'
-  # - '5.0'
+  - '5'
+
+matrix:
+  allow_failures:
+   - node_js: "5"
+
 
 # before_install:
   # - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
