@@ -9,7 +9,7 @@ import { findDOMNode } from 'react-dom';
 import radium from 'radium';
 import { Link } from 'react-router';
 
-import HorizontalSplitView from 'rui-common/views/HorizontalSplitView';
+import SplitView from 'rui-common/views/SplitView';
 
 import WorkflowGraph from './WorkflowGraph';
 import WorkflowJSON from './WorkflowJSON';
@@ -94,6 +94,10 @@ export default class WorkflowEditor extends Component {
     this.handleResize = null;
   }
 
+  state = {
+    split: this.props.initialSplit
+  };
+
   css = {
     root: {
       position: 'relative',
@@ -122,34 +126,27 @@ export default class WorkflowEditor extends Component {
             overlay={overlay}
             workflowName={props.params && props.params.workflow}>
 
-          <HorizontalSplitView ref="splitView"
-              split={this.initialSplit}
+          <SplitView ref="splitView"
+              split={this.state.split}
               collapse={1}
               width={state.width}
               height={state.height}
-              onUpdate={this.updateCanvasSize.bind(this)}>
-
-            <WorkflowGraph key={0}
-                ref="graph"
-                width={state.graphWidth}
-                height={state.height} />
-
-            <WorkflowJSON key={1}
-                ref="json"
-                width={state.jsonWidth}
-                height={state.height} />
-
-          </HorizontalSplitView>
+              onUpdate={(splitView) => this.setState({split: splitView.state.split})}
+              a={({ width, height }) => <WorkflowGraph key={0}
+                  ref="graph"
+                  width={width}
+                  height={height} />}
+              b={({ width, height }) => <WorkflowJSON key={1}
+                  ref="json"
+                  width={width}
+                  height={height} />} />
         </WorkflowOperator>
       </div>
     );
   }
 
   updateCanvasSize(splitView) {
-    this.setState({
-      graphWidth: window.innerWidth * splitView.leftSplit,
-      jsonWidth: window.innerWidth * splitView.rightSplit
-    });
+
   }
 
 }
