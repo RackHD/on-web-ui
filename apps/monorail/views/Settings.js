@@ -6,22 +6,11 @@ import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 import { RouteHandler, Link } from 'react-router';
 import {
-    AppCanvas,
-    Avatar,
-    FontIcon,
-    IconButton,
-    List,
-    ListItem,
     RaisedButton,
-    TextField,
-    Toolbar,
-    ToolbarGroup,
-    ToolbarTitle
+    TextField
   } from 'material-ui';
 
 import config from 'rui-common/config/index';
-// import EMCTab from 'rui-common/views/EMCTab';
-import emcTheme from 'rui-common/lib/emcTheme';
 
 @radium
 export default class Settings extends Component {
@@ -34,7 +23,13 @@ export default class Settings extends Component {
     root: {}
   };
 
-  state = {};
+  state = {
+    elasticsearchAPI: this.elasticsearchAPI,
+    monorailAPI: this.monorailAPI,
+    monorailWSS: this.monorailWSS,
+    rackhdAPI: this.rackhdAPI,
+    redfishAPI: this.redfishAPI
+  };
 
   render() {
     let { props } = this;
@@ -50,76 +45,81 @@ export default class Settings extends Component {
     return (
       <div style={css.root} {...props}>
         <div style={{padding: 20}}>
-          <h2 style={{margin: 0}}>Settings</h2>
-          <TextField
-              ref="monorailAPI"
-              fullWidth={true}
-              //hintText={this.monorailAPI}
-              //defaultValue={this.state.monorailAPI}
-              floatingLabelText="RackHD Northbound API v1.1"
-              onChange={(e) => {
-                this.setState({monorailAPI: e.target.value});
-              }} />
-          <TextField
-              ref="monorailAPI"
-              fullWidth={true}
-              hintText={this.monorailAPI}
-              defaultValue={this.state.monorailAPI}
-              floatingLabelText="RackHD Northbound API v2"
-              onChange={(e) => {
-                this.setState({monorailAPI: e.target.value});
-              }} />
-          <TextField
-              ref="rackhdWsUrl"
-              fullWidth={true}
-              hintText={this.monorailAPI}
-              defaultValue={this.state.rackhdWsUrl}
-              floatingLabelText="RackHD WebSocket URL"
-              onChange={(e) => {
-                this.setState({rackhdWsUrl: e.target.value});
-              }} />
+          <fieldset>
+            <legend style={{padding: 5}}>RacKHD Settings</legend>
+            <TextField
+                ref="rackhdAPI"
+                fullWidth={true}
+                hintText={this.rackhdAPI}
+                defaultValue={this.state.rackhdAPI}
+                floatingLabelText="RackHD Northbound API v2"
+                onChange={(e) => this.setState({monorailAPI: e.target.value})} />
+            <TextField
+                ref="monorailAPI"
+                fullWidth={true}
+                hintText={this.monorailAPI}
+                defaultValue={this.state.monorailAPI}
+                floatingLabelText="RackHD Northbound API v1.1"
+                onChange={(e) => this.setState({monorailAPI: e.target.value})} />
+            <TextField
+                ref="monorailWSS"
+                fullWidth={true}
+                hintText={this.monorailWSS}
+                defaultValue={this.state.monorailWSS}
+                floatingLabelText="RackHD WebSocket URL"
+                onChange={(e) => this.setState({monorailWSS: e.target.value})} />
+          </fieldset>
           <TextField
               ref="elasticsearchAPI"
               fullWidth={true}
               hintText={this.elasticsearchAPI}
               defaultValue={this.state.elasticsearchAPI}
               floatingLabelText="Elasticsearch API"
-              onChange={(e) => {
-                this.setState({elasticsearchAPI: e.target.value});
-              }} />
+              onChange={(e) => this.setState({elasticsearchAPI: e.target.value})} />
           <TextField
               ref="redfishAPI"
               fullWidth={true}
               hintText={this.redfishAPI}
               defaultValue={this.state.redfishAPI}
               floatingLabelText="RedFish API"
-              onChange={(e) => {
-                this.setState({redfishAPI: e.target.value});
-              }} />
+              onChange={(e) => this.setState({redfishAPI: e.target.value})} />
           <div style={{textAlign: 'right', marginTop: 10}}>
             <RaisedButton secondary={true} label="Apply" onClick={this.updateSettings.bind(this)}/>
           </div>
         </div>
-        {/*<EMCTab ref="emcTab" />*/}
       </div>
     );
   }
 
-  get monorailAPI() {
-    return window.localStorage.getItem('MONORAIL_API') || config.MONORAIL_API;
-  }
+  getConfigValue(key) { return window.localStorage.getItem(key) || config[key]; }
 
-  set monorailAPI(value) {
-    window.localStorage.setItem('MONORAIL_API', (config.MONORAIL_API = value));
+  setConfigValue(key, value) {
+    window.localStorage.setItem(key, (config[key] = value));
     return value;
   }
 
+  get elasticsearchAPI() { return this.getConfigValue('Elasticsearch_API'); }
+  set elasticsearchAPI(value) { return this.setConfigValue('Elasticsearch_API', value); }
+
+  get monorailAPI() { return this.getConfigValue('MonoRail_API'); }
+  set monorailAPI(value) { return this.setConfigValue('MonoRail_API', value); }
+
+  get monorailWSS() { return this.getConfigValue('MonoRail_WSS'); }
+  set monorailWSS(value) { return this.setConfigValue('MonoRail_WSS', value); }
+
+  get rackhdAPI() { return this.getConfigValue('RackHD_API'); }
+  set rackhdAPI(value) { return this.setConfigValue('RackHD_API', value); }
+
+  get redfishAPI() { return this.getConfigValue('RedFish_API'); }
+  set redfishAPI(value) { return this.setConfigValue('RedFish_API', value); }
+
   updateSettings() {
+    this.elasticsearchAPI = this.state.elasticsearchAPI;
     this.monorailAPI = this.state.monorailAPI;
-    window.localStorage.setItem('monorail-config', JSON.stringify(config));
-    this.setState({activePopover: null}, () => {
-      setTimeout(() => window.location.reload(), 250);
-    });
+    this.monorailWSS = this.state.monorailWSS;
+    this.rackhdAPI = this.state.rackhdAPI;
+    this.redfishAPI = this.state.redfishAPI;
+    setTimeout(() => window.location.reload(), 250);
   }
 
 }

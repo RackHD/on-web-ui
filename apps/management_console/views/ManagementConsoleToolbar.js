@@ -27,6 +27,10 @@ import emcTheme from 'rui-common/lib/emcTheme';
 @radium
 export default class MonoRailToolbar extends Component {
 
+  static contextTypes = {
+    routes: PropTypes.any
+  };
+
   static defaultProps = {
     css: {},
     width: 200
@@ -55,78 +59,72 @@ export default class MonoRailToolbar extends Component {
       transition: 'color 0.5s'
     }
 
-    // let activeListItemStyle = {color: emcTheme.emcColors.emcBlue},
-    //     activeFontIconStyle = {color: emcTheme.emcColors.emcBlue};
-    //
-    let props = {}
-    //   onMouseEnter: this.props.onMouseEnter,
-    //   onMouseLeave: this.props.onMouseLeave
-    // };
-    //
-    // let checkTarget = (target) => {
-    //   if (!this.props.routes) return false;
-    //   if (!this.props.routes[1]) return false;
-    //   if (!this.props.routes[1].path) return false;
-    //   return this.props.routes[1].path.substr(1) === target;
-    // };
-    //
-    // let getLinkStyle = (target) => {
-    //   if (checkTarget(target)) return activeListItemStyle;
-    //   return null;
-    // };
-    //
+    let activeListItemStyle = {color: emcTheme.emcColors.emcBlue};//,
+        // activeFontIconStyle = {color: emcTheme.emcColors.emcBlue};
+
+    let routes = this.context.routes;
+
+    let checkTarget = (target) => {
+      if (!routes) return false;
+      if (!routes[2]) return false;
+      if (!routes[2].path) return false;
+      return routes[2].path.substr(1).split('/')[1] === target;
+    };
+
+    let getLinkStyle = (target) => {
+      if (checkTarget(target)) return activeListItemStyle;
+      return null;
+    };
+
     // let getIconStyle = (target) => {
     //   if (checkTarget(target)) return activeFontIconStyle;
     //   return null;
     // };
 
     return (
-      <div style={css.root} {...props}>
-        <div style={{position: 'relative'/*, height: window.innerHeight*/}}>
-          <List style={{float: 'left', width: this.props.width, overflow: 'hidden', transition: 'width 1s'}}>
+      <div style={css.root}>
+        <div style={{position: 'relative'}}>
+          <List style={{float: 'left', width: '100%', overflow: 'hidden', transition: 'width 1s'}}>
             <Link to="/mc/dashboard" style={linkStyle}>
-              <ListItem primaryText="Dashboard" />
+              <ListItem primaryText="Dashboard" style={getLinkStyle('dashboard')} />
             </Link>
 
             <Divider />
             <Link to="/mc/nodes" style={linkStyle}>
-              <ListItem primaryText="Nodes" />
+              <ListItem primaryText="Nodes" style={getLinkStyle('nodes')} />
             </Link>
             <Link to="/mc/pollers" style={linkStyle}>
-              <ListItem primaryText="Pollers" />
+              <ListItem primaryText="Pollers" style={getLinkStyle('pollers')} />
             </Link>
             <Link to="/mc/workflows" style={linkStyle}>
-              <ListItem primaryText="Workflows" />
+              <ListItem primaryText="Workflows" style={getLinkStyle('workflows')} />
             </Link>
 
             <Divider />
             <Link to="/mc/catalogs" style={linkStyle}>
-              <ListItem primaryText="Catalogs" />
+              <ListItem primaryText="Catalogs" style={getLinkStyle('catalogs')} />
             </Link>
             <Link to="/mc/skus" style={linkStyle}>
-              <ListItem primaryText="SKUs" />
+              <ListItem primaryText="SKUs" style={getLinkStyle('skus')} />
             </Link>
             <Link to="/mc/obms" style={linkStyle}>
-              <ListItem primaryText="OBM Services" />
+              <ListItem primaryText="OBM Services" style={getLinkStyle('obms')} />
             </Link>
 
             <Divider />
             <Link to="/mc/files" style={linkStyle}>
-              <ListItem primaryText="Files" />
+              <ListItem primaryText="Files" style={getLinkStyle('files')} />
             </Link>
             <Link to="/mc/profiles" style={linkStyle}>
-              <ListItem primaryText="Profiles" />
+              <ListItem primaryText="Profiles" style={getLinkStyle('profiles')} />
             </Link>
             <Link to="/mc/templates" style={linkStyle}>
-              <ListItem primaryText="Templates" />
+              <ListItem primaryText="Templates" style={getLinkStyle('templates')} />
             </Link>
 
             <Divider />
             <Link to="/mc/config" style={linkStyle}>
-              <ListItem primaryText="Config" />
-            </Link>
-            <Link to="/mc/versions" style={linkStyle}>
-              <ListItem primaryText="Versions" />
+              <ListItem primaryText="Config" style={getLinkStyle('config')} />
             </Link>
           </List>
         </div>

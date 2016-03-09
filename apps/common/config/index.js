@@ -6,19 +6,18 @@ import merge from 'lodash/merge';
 
 let env = (typeof process !== 'undefined') && process.env || {};
 
-let defaults = {
-  MONORAIL_API: env.MONORAIL_API || 'http://localhost/api/1.1/'
-};
+let defaults = require('./defaults.json');
 
 let custom;
 try { custom = require('./custom.json'); }
 catch (err) { custom = {}; }
 
-let local;
-try { local = JSON.parse(window.localStorage.getItem('monorail-config')) }
-catch (err) {
-  local = {};
-  window.localStorage.setItem('monorail-config', '{}');
-}
+let local = {};
+Object.keys(defaults).forEach(key => {
+  let value = window.localStorage.getItem(key);
+  if (value) {
+    local[key] = value;
+  }
+});
 
 merge(exports, defaults, custom, local);

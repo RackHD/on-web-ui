@@ -26,18 +26,18 @@ export default class HorizontalSplitView extends Component {
 
   static contextTypes = {
     appContainer: PropTypes.any,
-    // parentSplit: PropTypes.any
+    parentSplit: PropTypes.any
   };
 
-  // static childContextTypes = {
-  //   parentSplit: PropTypes.any
-  // };
+  static childContextTypes = {
+    parentSplit: PropTypes.any
+  };
 
-  // getChildContext() {
-  //   return {
-  //     parentSplit: this
-  //   };
-  // }
+  getChildContext() {
+    return {
+      parentSplit: this
+    };
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.split) {
@@ -50,23 +50,30 @@ export default class HorizontalSplitView extends Component {
     split: this.props.split
   };
 
+  get height() {
+    if (typeof this.props.height === 'number') {
+      return this.props.height;
+    }
+    if (this.context.parentSplit) {
+      return this.context.parentSplit.height;
+    }
+    if (this.context.appContainer) {
+      return this.context.appContainer.state.width;
+    }
+    return window.innerWidth;
+  }
+
   get width() {
     if (typeof this.props.width === 'number') {
       return this.props.width;
     }
-    // if (this.context.parentSplit) {
-    //   return this.context.parentSplit.width;
-    // }
+    if (this.context.parentSplit) {
+      return this.context.parentSplit.width;
+    }
     if (this.context.appContainer) {
       return this.context.appContainer.state.width;
     }
-    if (this.refs.root) {
-      if (this.refs.root.parentNode) {
-        return this.refs.root.parentNode.offsetWidth;
-      }
-      return this.refs.root.offsetWidth;
-    }
-    return window.innerWidth;
+    return window.innerHeight;
   }
 
   get leftSplit() {
@@ -89,7 +96,8 @@ export default class HorizontalSplitView extends Component {
     root: {
       width: this.props.width,
       height: this.props.height,
-      position: 'relative'
+      position: 'relative',
+      overflow: 'hidden'
     },
 
     line: {
@@ -212,7 +220,7 @@ export default class HorizontalSplitView extends Component {
     }
 
     else {
-      console.log('GOT HERE', this.props.collapse, this.width * this.props.collapse);
+      // console.log('GOT HERE', this.props.collapse, this.width * this.props.collapse);
       this.setState({
         split: this.props.ratio ? this.props.collapse : this.width * this.props.collapse,
         toggleSplit: this.leftSplit

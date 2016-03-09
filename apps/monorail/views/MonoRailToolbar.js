@@ -28,6 +28,10 @@ import emcTheme from 'rui-common/lib/emcTheme';
 @radium
 export default class MonoRailToolbar extends Component {
 
+  static contextTypes = {
+    routes: PropTypes.any
+  };
+
   static defaultProps = {
     css: {}
   };
@@ -69,11 +73,13 @@ export default class MonoRailToolbar extends Component {
       onMouseLeave: this.props.onMouseLeave
     };
 
+    let routes = this.context.routes;
+
     let checkTarget = (target) => {
-      if (!this.props.routes) return false;
-      if (!this.props.routes[1]) return false;
-      if (!this.props.routes[1].path) return false;
-      return this.props.routes[1].path.substr(1) === target;
+      if (!routes) return false;
+      if (!routes[1]) return false;
+      if (!routes[1].path) return false;
+      return routes[1].path.substr(1) === target;
     };
 
     let getLinkStyle = (target) => {

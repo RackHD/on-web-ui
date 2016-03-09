@@ -2,11 +2,11 @@
 
 'use strict';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import { Route, IndexRedirect } from 'react-router';
 
-import HorizontalSplitView from 'rui-common/views/HorizontalSplitView';
+import SplitView from 'rui-common/views/SplitView';
 
 import Catalog from './catalogs/Catalog';
 import Catalogs from './catalogs/Catalogs';
@@ -85,25 +85,48 @@ export default class ManagementConsole extends Component {
     </Route>
   )
 
+  static contextTypes = {
+    parentSplit: PropTypes.any
+  };
+
   state = {
     menuSize: 200
   };
 
   render() {
+    let parentSplitView = this.context.parentSplit,
+        height = parentSplitView.size * parentSplitView.splitB,
+        width = parentSplitView.width;
     return (
-      <div className="ManagementConsole">
-        <HorizontalSplitView
-            collapse={1}
-            invert={true}
-            ratio={false}
-            split={this.state.menuSize}
-            onUpdate={splitView => {
-              this.setState({menuSize: splitView.state.split});
-            }}>
-          <div key={0}>{this.props.children}</div>
-          <ManagementConsoleToolbar key={1} />
-        </HorizontalSplitView>
-      </div>
+      <SplitView
+          width={width}
+          height={height}
+          className="ManagementConsole"
+          invert={true}
+          ratio={false}
+          css={{
+            root: {transition: 'width 1s'},
+            a: {transition: 'width 1s'},
+            b: {transition: 'width 1s, left 1s'},
+            resize: {transition: 'width 1s, left 1s'}
+          }}
+          split={this.state.menuSize}
+          onUpdate={splitView => this.setState({menuSize: splitView.state.split})}
+          resizable={false}
+          collapsable={true}
+          a={({ width, height }) => {
+            return (
+              <div key="mcView" style={{width, height, overflow: 'auto', transition: 'width 1s'}}>
+                {this.props.children}
+              </div>
+            );
+          }}
+          b={({ width, height }) => {
+            return (
+              <ManagementConsoleToolbar key="mcToolbar"
+                  style={{width, height, overflow: 'auto', transition: 'width 1s'}} />
+            );
+          }} />
     );
   }
 

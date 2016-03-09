@@ -17,8 +17,7 @@ import {
 import AppContainer from 'rui-common/views/AppContainer';
 import emcTheme from 'rui-common/lib/emcTheme';
 import FormatHelpers from 'rui-common/mixins/FormatHelpers';
-import HorizontalSplitView from 'rui-common/views/HorizontalSplitView';
-import VerticalSplitView from 'rui-common/views/VerticalSplitView';
+import SplitView from 'rui-common/views/SplitView';
 
 import MonoRailToolbar from './MonoRailToolbar';
 import Logs from './Logs';
@@ -40,14 +39,16 @@ export default class MonoRailApp extends Component {
   static childContextTypes = {
     app: PropTypes.any,
     icons: PropTypes.any,
-    muiTheme: PropTypes.any
+    muiTheme: PropTypes.any,
+    routes: PropTypes.any
   };
 
   getChildContext() {
     return {
       app: this,
       icons,
-      muiTheme: emcTheme
+      muiTheme: emcTheme,
+      routes: this.props.routes
     };
   }
 
@@ -97,59 +98,80 @@ export default class MonoRailApp extends Component {
   };
 
   render() {
-    let contentStyle = {
-      // paddingLeft: this.state.toolbarWidth,
-      paddingTop: 5,
-      paddingRight: 5,
-      // transition: 'padding-left 1s'
+    let renderToolbar = ({ width, height }) => {
+      return (
+        <MonoRailToolbar key="toolbar"
+          width={width}
+          height={height}
+          style={{zIndex: 999, top: 0, left: 0}}
+          onMenuToggle={this.toggleToolbar.bind(this)}
+          onMouseEnter={this.deferedExpandToolbar.bind(this)}
+          onMouseLeave={this.deferedCollapseToolbar.bind(this)} />
+      );
+    };
+
+    let renderContent = ({ width, height }) => {
+      let renderHeader = ({ height }) => {
+        return (
+          <div key="header" style={{width: width, height: height, overflow: 'hidden', transition: 'width 1s'}}>
+            <a style={{float: 'right', padding: 5}} onClick={this.toggleLogs.bind(this)}>
+              {this.state.showLogs ? 'Hide' : 'Show'} RackHD Logs
+            </a>
+            <div style={{padding: 5, textAlign: 'center'}}>
+              {this.renderBreadcrumbs()}
+            </div>
+            <Logs open={this.state.showLogs} style={{clear: 'both', margin: 5}}/>
+          </div>
+        );
+      };
+
+      let renderBody = ({ height }) => {
+        return (
+          <div key="body" style={{width: width, height: height, overflow: 'hidden', transition: 'width 1s'}}>
+            {this.props.children}
+          </div>
+        );
+      };
+
+      return (
+        <SplitView key="content"
+          orientation="vertical"
+          width={width}
+          height={height}
+          css={{
+            root: {transition: 'width 1s'},
+            a: {transition: 'width 1s'},
+            b: {transition: 'width 1s, left 1s'},
+            resize: {transition: 'width 1s, left 1s'}
+          }}
+          ratio={false}
+          split={this.state.headerHeight}
+          onUpdate={splitView => this.setState({headerHeight: splitView.state.split})}
+          resizable={this.state.showLogs}
+          collapsable={false}
+          a={renderHeader}
+          b={renderBody} />
+      );
     };
 
     return (
-      <AppContainer>
-        <HorizontalSplitView
+      <AppContainer key="app">
+        <SplitView key="m"
+            orientation="horizontal"
             width="inherit"
             height="inherit"
             css={{
-              left: {transition: 'width 1s'},
-              resize: {transition: 'left 1s, marginLeft 1s'},
-              right: {transition: 'width 1s'}
+              a: {transition: 'width 1s'},
+              b: {transition: 'width 1s, left 1s'},
+              resize: {transition: 'left 1s'}
             }}
             ratio={false}
             split={this.state.toolbarWidth}
             dividerSize={5}
             resizable={false}
-            collapsable={false}>
-
-          <MonoRailToolbar key={0}
-              width={this.state.toolbarWidth}
-              style={{zIndex: 999, top: 0, left: 0}}
-              routes={this.props.routes}
-              onMenuToggle={this.toggleToolbar.bind(this)}
-              onMouseEnter={this.deferedExpandToolbar.bind(this)}
-              onMouseLeave={this.deferedCollapseToolbar.bind(this)} />
-
-          <VerticalSplitView key={1}
-              ratio={false}
-              split={this.state.headerHeight}
-              onUpdate={splitView => {
-                this.setState({headerHeight: splitView.state.split});
-              }}>
-
-            <div key={0} style={contentStyle}>
-              <Logs open={this.state.showLogs} style={{clear: 'both', marginBottom: 5}}/>
-              <a style={{float: 'right'}} onClick={this.toggleLogs.bind(this)}>
-                {this.state.showLogs ? 'Hide' : 'Show'} RackHD Logs
-              </a>
-              {this.renderBreadcrumbs()}
-            </div>
-
-            <div key={1} style={contentStyle}>
-              {this.props.children}
-            </div>
-
-          </VerticalSplitView>
-
-        </HorizontalSplitView>
+            collapsable={false}
+            a={renderToolbar}
+            b={renderContent} />
       </AppContainer>
     );
   }
@@ -222,7 +244,7 @@ export default class MonoRailApp extends Component {
 
     this.title = title;
 
-    return <div style={{marginBottom: 5, textAlign: 'center'}}>{breadcrumbs}</div>;
+    return breadcrumbs;
   }
 
   get title() {
