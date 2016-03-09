@@ -142,7 +142,8 @@ export default class MonoRailToolbar extends Component {
             </Link>
           </List>
         </div>
-        <EMCTab ref="emcTab" opacity={this.props.width <= 55 ? 0 : 1}/>
+        <EMCTab ref="emcTab"
+            opacity={this.props.width <= (this.props.collapsedToolbarWidth + 1) ? 0 : 1}/>
       </div>
     );
   }

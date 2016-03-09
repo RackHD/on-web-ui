@@ -104,6 +104,7 @@ export default class MonoRailApp extends Component {
           width={width}
           height={height}
           style={{zIndex: 999, top: 0, left: 0}}
+          collapsedToolbarWidth={this.props.collapsedToolbarWidth}
           onMenuToggle={this.toggleToolbar.bind(this)}
           onMouseEnter={this.deferedExpandToolbar.bind(this)}
           onMouseLeave={this.deferedCollapseToolbar.bind(this)} />
@@ -113,14 +114,14 @@ export default class MonoRailApp extends Component {
     let renderContent = ({ width, height }) => {
       let renderHeader = ({ height }) => {
         return (
-          <div key="header" style={{width: width, height: height, overflow: 'hidden', transition: 'width 1s'}}>
+          <div key="header" style={{width: width, height: height, overflow: 'auto', transition: 'width 1s'}}>
             <a style={{float: 'right', padding: 5}} onClick={this.toggleLogs.bind(this)}>
               {this.state.showLogs ? 'Hide' : 'Show'} RackHD Logs
             </a>
             <div style={{padding: 5, textAlign: 'center'}}>
               {this.renderBreadcrumbs()}
             </div>
-            <Logs open={this.state.showLogs} style={{clear: 'both', margin: 5}}/>
+            <Logs height={height - 60} open={this.state.showLogs} style={{clear: 'both', margin: 5}}/>
           </div>
         );
       };

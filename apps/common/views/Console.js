@@ -56,8 +56,9 @@ export default class Console extends Component {
         <span style={{color: 'white'}}>Console:</span>
         <div className="Console-logs" style={{
           padding: 5,
-          maxHeight: 600,
-          minHeight: 60,
+          maxHeight: 800,
+          minHeight: 20,
+          height: this.props.height - 20,
           overflow: 'auto'
         }}>
           {this.state.rows.map(this.props.mapper)}

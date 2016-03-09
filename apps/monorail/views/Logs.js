@@ -50,7 +50,7 @@ export default class Logs extends Component {
 
     return (
       <div className="Logs" {...props}>
-        <Console rows={this.state.logs} mapper={data => (
+        <Console rows={this.state.logs} height={this.props.height} mapper={data => (
           <p style={{color: Console.colors[data.level]}}>
             <b>{data.timestamp}</b>&nbsp;&nbsp;
             <i>[{data.name}]</i>&nbsp;&nbsp;

@@ -76,32 +76,32 @@ export default class WorkflowOverlay extends Component {
   }
 
   componentWillUnmount() {
-    this.context.app.setState({
-      customTitle: null,
-      customMenu: null
-    });
+    // this.context.app.setState({
+    //   customTitle: null,
+    //   customMenu: null
+    // });
   }
 
   componentDidMount() {
-    this.renderCustomToolbar();
+    // this.renderCustomToolbar();
   }
 
-  scheduleTitleUpdate = false;
+  // scheduleTitleUpdate = false;
 
-  shouldComponentUpdate(nextProps, nextState) {
-    this.scheduleTitleUpdate = this.scheduleTitleUpdate ||
-      nextState.taskTerm !== this.state.taskTerm ||
-      nextState.workflowTerm !== this.state.workflowTerm ||
-      (nextState.loading === false && this.state.loading === true);
-
-    return true;
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   this.scheduleTitleUpdate = this.scheduleTitleUpdate ||
+  //     nextState.taskTerm !== this.state.taskTerm ||
+  //     nextState.workflowTerm !== this.state.workflowTerm ||
+  //     (nextState.loading === false && this.state.loading === true);
+  //
+  //   return true;
+  // }
 
   componentDidUpdate() {
-    if (this.scheduleTitleUpdate) {
-      this.scheduleTitleUpdate = false;
-      this.renderCustomToolbar();
-    }
+    // if (this.scheduleTitleUpdate) {
+      // this.scheduleTitleUpdate = false;
+      // this.renderCustomToolbar();
+    // }
   }
 
   css = {
@@ -127,6 +127,7 @@ export default class WorkflowOverlay extends Component {
           <li style={{color: '#6cf'}}>Finished</li>
         </ul>
 
+        {this.renderToolbar()}
         {this.renderPopovers()}
 
         {state.loading && <CircularProgress
@@ -153,45 +154,35 @@ export default class WorkflowOverlay extends Component {
     );
   };
 
-  renderCustomToolbar() {
-    let customMenu = [
-      <this.WorkflowEditorIconButton key="active"
-          tooltip="Running Workflows"
-          icon="tasks"
-          float="right"
-          onClick={(e) => this.setState({
-            runningPopoverAnchor: this.state.runningPopoverAnchor === e.currentTarget ? null : e.currentTarget
-          })} />,
-      <this.WorkflowEditorIconButton key="run"
-          tooltip="Run this Workflow"
-          icon="play"
-          float="right"
-          onClick={(e) => this.setState({
-            runPopoverAnchor: this.state.runPopoverAnchor === e.currentTarget ? null : e.currentTarget
-          })} />
-    ];
-
-    if (this.state.loading) {
-      return this.context.app.setState({
-        customTitle: <div style={{float: 'left'}}>Loading Workflows...</div>,
-        customMenu: customMenu
-      });
-    }
-
-    this.context.app.setState({
-      customTitle: [
-        this.renderWorkflowSelect(),
+  renderToolbar() {
+    return (
+      <div>
+        <this.WorkflowEditorIconButton key="active"
+            tooltip="Running Workflows"
+            icon="tasks"
+            float="right"
+            onClick={(e) => this.setState({
+              runningPopoverAnchor: this.state.runningPopoverAnchor === e.currentTarget ? null : e.currentTarget
+            })} />
+        <this.WorkflowEditorIconButton key="run"
+            tooltip="Run this Workflow"
+            icon="play"
+            float="right"
+            onClick={(e) => this.setState({
+              runPopoverAnchor: this.state.runPopoverAnchor === e.currentTarget ? null : e.currentTarget
+            })} />
+        {this.renderWorkflowSelect()}
         <this.WorkflowEditorIconButton key="refresh"
             tooltip="Refresh Workflow"
             icon="refresh"
             float="left"
-            onClick={this.workflowOperator.reload.bind(this.workflowOperator)} />,
+            onClick={this.workflowOperator.reload.bind(this.workflowOperator)} />
         <this.WorkflowEditorIconButton key="save"
             tooltip="Save Workflow"
             icon="floppy-o"
             float="left"
-            onClick={this.workflowOperator.save.bind(this.workflowOperator)} />,
-        this.renderTaskSelect(),
+            onClick={this.workflowOperator.save.bind(this.workflowOperator)} />
+        {this.renderTaskSelect()}
         <this.WorkflowEditorIconButton key="view"
             margin={20}
             tooltip="View Task"
@@ -199,15 +190,14 @@ export default class WorkflowOverlay extends Component {
             float="left"
             onClick={(e) => this.setState({
               taskPopoverAnchor: this.state.taskPopoverAnchor === e.currentTarget ? null : e.currentTarget
-            })} />,
+            })} />
         <this.WorkflowEditorIconButton key="add"
             tooltip="Add Task"
             icon="plus"
             float="left"
             onClick={this.workflowOperator.add.bind(this.workflowOperator)}/>
-      ],
-      customMenu: customMenu
-    });
+      </div>
+    );
   }
 
   renderWorkflowSelect(state = this.state) {
