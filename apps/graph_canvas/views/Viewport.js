@@ -45,7 +45,8 @@ export default class GCViewport extends Component {
       position: 'relative',
       width: 'inherit',
       height: 'inherit',
-      cursor: 'crosshair'
+      cursor: 'crosshair',
+      transition: 'width 1s'
     }
   };
 

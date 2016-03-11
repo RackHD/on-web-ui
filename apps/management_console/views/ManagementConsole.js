@@ -95,8 +95,9 @@ export default class ManagementConsole extends Component {
 
   render() {
     let parentSplitView = this.context.parentSplit,
-        height = parentSplitView.size * parentSplitView.splitB,
+        height = parentSplitView.height * parentSplitView.splitB,
         width = parentSplitView.width;
+
     return (
       <SplitView
           width={width}

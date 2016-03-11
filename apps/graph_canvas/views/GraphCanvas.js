@@ -105,7 +105,8 @@ export default class GraphCanvas extends Component {
 
   css = {
     root: {
-      overflow: 'hidden'
+      overflow: 'hidden',
+      transition: 'width 1s'
     }
   };
 

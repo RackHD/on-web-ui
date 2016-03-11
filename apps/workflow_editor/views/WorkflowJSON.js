@@ -72,8 +72,9 @@ export default class WEWorkflowJson extends Component {
           mode="json"
           theme="monokai"
           name="workflowAceEditor"
-          width="100%"
-          height={(window.innerHeight - 70) + 'px'}
+          width={this.props.width}
+          height={this.props.height}
+          style={{transition: 'width 1s'}}
           value={this.prepareJSON(this.state.activeWorkflow)}
           onChange={this.autoUpdateGraph.bind(this)} />
       </div>

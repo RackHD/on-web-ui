@@ -135,7 +135,7 @@ export default class MonoRailApp extends Component {
       };
 
       return (
-        <SplitView key="content"
+        <SplitView key="content" ref="contentSplit"
           orientation="vertical"
           width={width}
           height={height}
@@ -148,6 +148,7 @@ export default class MonoRailApp extends Component {
           ratio={false}
           split={this.state.headerHeight}
           onUpdate={splitView => this.setState({headerHeight: splitView.state.split})}
+          dividerSize={this.state.showLogs ? 10 : 5}
           resizable={this.state.showLogs}
           collapsable={false}
           a={renderHeader}
@@ -157,7 +158,7 @@ export default class MonoRailApp extends Component {
 
     return (
       <AppContainer key="app">
-        <SplitView key="m"
+        <SplitView key="main" ref="mainSplit"
             orientation="horizontal"
             width="inherit"
             height="inherit"

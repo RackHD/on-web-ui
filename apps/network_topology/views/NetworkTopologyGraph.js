@@ -64,7 +64,9 @@ export default class NetworkTopologyGraph extends Component {
   };
 
   css = {
-    root: {}
+    root: {
+      transition: 'width 1s'
+    }
   };
 
   componentWillReceiveProps(nextProps) {
@@ -92,7 +94,7 @@ export default class NetworkTopologyGraph extends Component {
     };
 
     return (
-      <div ref="root" style={css.root}>
+      <div className="NetworkTopology" ref="root" style={css.root}>
         <GraphCanvas
             key={'graphCanvas' + this.state.version}
             ref="graphCanvas"

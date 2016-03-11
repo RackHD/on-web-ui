@@ -7,13 +7,14 @@ import { EventEmitter } from 'events';
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
-import Trie from '../lib/Trie';
-import Workflow from '../lib/Workflow';
-
 import TaskDefinitionStore from 'rui-common/stores/TaskDefinitionStore';
 import WorkflowTemplateStore from 'rui-common/stores/WorkflowTemplateStore';
 
+import WorkflowEditorToolbar from './WorkflowEditorToolbar';
 import WorkflowOverlay from './WorkflowOverlay';
+
+import Trie from '../lib/Trie';
+import Workflow from '../lib/Workflow';
 
 @radium
 export default class WorkflowOperator extends Component {
@@ -118,7 +119,7 @@ export default class WorkflowOperator extends Component {
       position: 'absolute',
       height: 0,
       width: '100%',
-      top: 0,
+      top: this.props.toolbarHeight || 0,
       zIndex: 9
     }
   };
@@ -135,6 +136,7 @@ export default class WorkflowOperator extends Component {
       <div ref="root"
           className={'WorkflowOperator ' + props.className}
           style={css.root}>
+        <WorkflowEditorToolbar height={this.props.toolbarHeight} />
 
         {props.children}
 
@@ -144,7 +146,7 @@ export default class WorkflowOperator extends Component {
   }
 
   add(e) {
-    let graphContext = this.context.workflowEditor.refs.graph.context;
+    let graphContext = this.context.workflowEditor.graph.context;
     this.activeWorkflow.addTask(graphContext, this.state.task, 'new-task-' + Date.now());
   }
 

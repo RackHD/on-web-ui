@@ -15,8 +15,6 @@ import WorkflowGraph from './WorkflowGraph';
 import WorkflowJSON from './WorkflowJSON';
 import WorkflowOperator from './WorkflowOperator';
 
-const TOOLBAR_HEIGHT = 70;
-
 @radium
 export default class WorkflowEditor extends Component {
 
@@ -35,7 +33,8 @@ export default class WorkflowEditor extends Component {
   };
 
   static contextTypes = {
-    appContainer: PropTypes.any
+    // app: PropTypes.any,
+    parentSplit: PropTypes.any
   };
 
   static childContextTypes = {
@@ -52,91 +51,64 @@ export default class WorkflowEditor extends Component {
     return this.props && this.props.params && this.props.params.workflow;
   }
 
-  initialSplit = 0.6;
-
   state = {
-    graphWidth: window.innerWidth / (this.initialSplit),
-    height: window.innerHeight - TOOLBAR_HEIGHT,
-    jsonWidth: window.innerWidth / (1 - this.initialSplit),
-    width: window.innerWidth
-  };
-
-  componentWillMount() {
-    // this.context.appContainer.fullscreenMode(true);
-
-    this.updateSize = () => {
-      let splitView = this.refs.splitView;
-      this.setState({
-        graphWidth: window.innerWidth / splitView.leftSplit,
-        height: window.innerHeight - TOOLBAR_HEIGHT,
-        jsonWidth: window.innerWidth / splitView.rightSplit,
-        width: window.innerWidth
-      });
-    };
-  }
-
-  componentDidMount() {
-    let resizeTimer = null;
-    this.handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(this.updateSize, 300);
-    };
-    window.addEventListener('resize', this.handleResize);
-    window.addEventListener('orientationchange', this.handleResize);
-    setTimeout(this.updateCanvasSize.bind(this, this.refs.splitView), 100);
-  }
-
-  componentWillUnmount() {
-    // this.context.appContainer.fullscreenMode(false);
-
-    window.removeEventListener('resize', this.handleResize);
-    window.removeEventListener('orientationchange', this.handleResize);
-    this.handleResize = null;
-  }
-
-  state = {
-    split: this.props.initialSplit
+    split: 0.6
   };
 
   css = {
     root: {
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      transition: 'width 1s'
     }
   };
 
   render() {
     let { props, state } = this;
 
+    let contentSplit = this.context.parentSplit,//.app.refs.contentSplit,
+        contentWidth = contentSplit.width,
+        contentHeight = contentSplit.height * contentSplit.splitB;
+
     let css = {
       root: [
         this.css.root,
         props.css.root,
-        { width: state.width, height: state.height },
+        { width: contentWidth, height: contentHeight },
         this.props.style
       ]
     };
 
-    let overlay = [];
+    let toolbarHeight = 56,
+        overlay = [];
 
     return (
       <div ref="root" className="WorkflowEditor" style={css.root}>
 
-        <WorkflowOperator ref="operator"
+        <WorkflowOperator key="op"
+            ref="operator"
             overlay={overlay}
+            toolbarHeight={toolbarHeight}
             workflowName={props.params && props.params.workflow}>
 
-          <SplitView ref="splitView"
+          <SplitView key="sv"
+              ref="splitView"
               split={this.state.split}
               collapse={1}
-              width={state.width}
-              height={state.height}
+              width={contentWidth}
+              height={contentHeight - toolbarHeight}
+              css={{
+                root: {transition: 'width 1s'},
+                a: {transition: 'width 1s'},
+                b: {transition: 'width 1s, left 1s'},
+                resize: {transition: 'width 1s, left 1s'}
+              }}
               onUpdate={(splitView) => this.setState({split: splitView.state.split})}
-              a={({ width, height }) => <WorkflowGraph key={0}
+              a={({ width, height }) => <WorkflowGraph key="graph"
                   ref="graph"
                   width={width}
                   height={height} />}
-              b={({ width, height }) => <WorkflowJSON key={1}
+              b={({ width, height }) => <WorkflowJSON key="json"
                   ref="json"
                   width={width}
                   height={height} />} />
@@ -145,8 +117,12 @@ export default class WorkflowEditor extends Component {
     );
   }
 
-  updateCanvasSize(splitView) {
+  get graph() {
+    return this.refs.splitView.refs.graph;
+  }
 
+  get json() {
+    return this.refs.splitView.refs.json;
   }
 
 }

@@ -51,8 +51,9 @@ export default class HorizontalSplitView extends Component {
   }
 
   state = {
-    toggleSplit: this.props.collapse,
-    split: this.props.split
+    resizing: false,
+    split: this.props.split,
+    toggleSplit: this.props.collapse
   };
 
   get height() {
@@ -109,14 +110,14 @@ export default class HorizontalSplitView extends Component {
   };
 
   render() {
-    let { props } = this;
+    let { props, state } = this;
 
     let split = this.splitA,
         size = this.size,
         sizeA = split * this.size,
         sizeB = this.splitB * size,
         isCollapsed = split === 0 || split === 1,
-        dividerSize = this.props.dividerSize;
+        dividerSize = props.dividerSize;
 
     let a, b, resize;
 
@@ -156,21 +157,25 @@ export default class HorizontalSplitView extends Component {
       background: 'rgba(127,127,127,0.66)',
     } || null;
 
+    let resizeFix = state.resizing && {transition: null};
+
     let css = {
       root: [
         this.css.root,
         {width: props.width, height: props.height},
         props.css.root,
+        resizeFix,
         this.props.style
       ],
 
-      a: [this.css.a, a, props.css.a],
-      b: [this.css.b, b, props.css.b],
+      a: [this.css.a, a, props.css.a, resizeFix],
+      b: [this.css.b, b, props.css.b, resizeFix],
 
       resize: [
         this.css.resize,
         resize,
-        props.css.resize
+        props.css.resize,
+        resizeFix
       ]
     };
 
@@ -263,10 +268,13 @@ export default class HorizontalSplitView extends Component {
       active = false;
       window.removeEventListener('mousemove', moveHandler);
       window.removeEventListener('mouseup', upHandler);
+      this.setState({resizing: false});
     };
 
-    window.addEventListener('mousemove', moveHandler);
-    window.addEventListener('mouseup', upHandler);
+    this.setState({resizing: true}, () => {
+      window.addEventListener('mousemove', moveHandler);
+      window.addEventListener('mouseup', upHandler);
+    });
   };
 
 }
