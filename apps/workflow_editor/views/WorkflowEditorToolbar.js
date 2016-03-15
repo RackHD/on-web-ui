@@ -130,14 +130,6 @@ export default class WorkflowEditorToolbar extends Component {
         <ToolbarGroup float="right">
           <ToolbarTitle text="Ops" />
           <ToolbarSeparator />
-          <WorkflowEditorIconButton key="run"
-              muiTheme={this.context.muiTheme}
-              tooltip="Run this Workflow"
-              icon="play"
-              float="right"
-              onClick={(e) => this.setState({
-                runPopoverAnchor: this.state.runPopoverAnchor === e.currentTarget ? null : e.currentTarget
-              })} />
           <WorkflowEditorIconButton key="active"
               muiTheme={this.context.muiTheme}
               tooltip="Running Workflows"
@@ -145,6 +137,14 @@ export default class WorkflowEditorToolbar extends Component {
               float="right"
               onClick={(e) => this.setState({
                 runningPopoverAnchor: this.state.runningPopoverAnchor === e.currentTarget ? null : e.currentTarget
+              })} />
+          <WorkflowEditorIconButton key="run"
+              muiTheme={this.context.muiTheme}
+              tooltip="Run this Workflow"
+              icon="play"
+              float="right"
+              onClick={(e) => this.setState({
+                runPopoverAnchor: this.state.runPopoverAnchor === e.currentTarget ? null : e.currentTarget
               })} />
         </ToolbarGroup>
       </Toolbar>
@@ -180,26 +180,26 @@ export default class WorkflowEditorToolbar extends Component {
           this.setState({workflowTerm: value});
         }}
         onNewRequest={(value, injectableName) => {
-          let matchingWorkflow = null;
-          workflows.some(workflow => {
-            if (workflow.injectableName === value || workflow.friendlyName === value) {
-              matchingWorkflow = workflow;
-              return true;
-            }
-          });
-          if (matchingWorkflow) {
-            this.setState({
-              workflowTerm: matchingWorkflow.friendlyName
-            }, () => {
-              this.workflowOperator.setState({
-                workflow: matchingWorkflow,
-                workflowName: matchingWorkflow.injectableName
-              }, () => {
-                this.workflowOperator.emitWorkflowChange();
-                this.context.router.push('/we/' + matchingWorkflow.injectableName);
-              });
-            });
-          }
+          // let matchingWorkflow = null;
+          // workflows.some(workflow => {
+          //   if (workflow.injectableName === value || workflow.friendlyName === value) {
+          //     matchingWorkflow = workflow;
+          //     return true;
+          //   }
+          // });
+          // if (matchingWorkflow) {
+            // this.setState({
+            //   workflowTerm: matchingWorkflow.friendlyName
+            // }, () => {
+              // this.workflowOperator.setState({
+              //   workflow: matchingWorkflow,
+              //   workflowName: matchingWorkflow.injectableName
+              // }, () => {
+              //   this.workflowOperator.emitWorkflowChange();
+              //   this.context.router.push('/we/' + matchingWorkflow.injectableName);
+              // });
+            // });
+          // }
           // else {
             // TODO: create configm dialog to create a new workflow
             // if (confirm('Create new workflow: "' + value + '"?')) {
@@ -239,18 +239,18 @@ export default class WorkflowEditorToolbar extends Component {
         this.setState({taskTerm: value});
       }}
       onNewRequest={(value, injectableName) => {
-        let matchingTask = null;
-        tasks.some(task => {
-          if (task.injectableName === value || task.friendlyName === value) {
-            matchingTask = task;
-            return true;
-          }
-        });
-        if (matchingTask) {
-          this.setState({taskTerm: matchingTask.friendlyName}, () => {
-            this.workflowOperator.setState({task: matchingTask});
-          });
-        }
+        // let matchingTask = null;
+        // tasks.some(task => {
+        //   if (task.injectableName === value || task.friendlyName === value) {
+        //     matchingTask = task;
+        //     return true;
+        //   }
+        // });
+        // if (matchingTask) {
+          // this.setState({taskTerm: matchingTask.friendlyName}, () => {
+            // this.workflowOperator.setState({task: matchingTask});
+          // });
+        // }
         // TODO: add warning dialog when the task cannot be found.
         // alert('Unable to find task: "' + value+ '"');
       }} />);
@@ -269,9 +269,6 @@ export default class WorkflowEditorToolbar extends Component {
           overflow: 'auto',
           border: '1px solid ' + emcTheme.rawTheme.palette.textColor
         };
-    this.lastTaskPopoverAnchor = this.state.taskPopoverAnchor || this.lastTaskPopoverAnchor;
-    this.lastRunPopoverAnchor = this.state.runPopoverAnchor || this.lastRunPopoverAnchor;
-    this.lastRunningPopoverAnchor = this.state.runningPopoverAnchor || this.lastRunningPopoverAnchor;
     return [
       <Popover key="viewTask"
           style={{width: 500}}
@@ -279,7 +276,7 @@ export default class WorkflowEditorToolbar extends Component {
           anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           open={this.state.taskPopoverAnchor ? true : false}
-          anchorEl={this.state.taskPopoverAnchor || this.lastTaskPopoverAnchor}
+          anchorEl={this.state.taskPopoverAnchor}
           onRequestClose={closeTaskPopover} >
         <div style={containerStyle}>
           {task && task.friendlyName ?
@@ -296,7 +293,7 @@ export default class WorkflowEditorToolbar extends Component {
           anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           open={this.state.runPopoverAnchor ? true : false}
-          anchorEl={this.state.runPopoverAnchor || this.lastRunPopoverAnchor}
+          anchorEl={this.state.runPopoverAnchor}
           onRequestClose={closeRunPopover} >
         <div style={containerStyle}>
           <RunWorkflow
@@ -314,7 +311,7 @@ export default class WorkflowEditorToolbar extends Component {
           anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           open={this.state.runningPopoverAnchor ? true : false}
-          anchorEl={this.state.runningPopoverAnchor || this.lastRunningPopoverAnchor}
+          anchorEl={this.state.runningPopoverAnchor}
           onRequestClose={closeRunningPopover} >
         <div style={containerStyle}>
           <RunningWorkflows />

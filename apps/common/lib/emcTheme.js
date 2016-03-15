@@ -1,13 +1,16 @@
 'use strict';
 
+import merge from 'lodash/merge';
 import Color from 'color';
 
-import muiColors from 'material-ui/lib/styles/colors';
-import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
+
+import * as muiColors from 'material-ui/lib/styles/colors';
+import darkBaseTheme from 'material-ui/lib/styles/baseThemes/darkBaseTheme';
 
 import emcColors from './emcColors';
 
-let muiTheme = ThemeManager.getMuiTheme({
+let muiTheme = getMuiTheme(merge(darkBaseTheme, {
   spacing: {
     iconSize: 24,
 
@@ -43,33 +46,33 @@ let muiTheme = ThemeManager.getMuiTheme({
     layer: 20,
     popover: 20,
   }
-});
+}));
 
 muiTheme.emcColors = emcColors;
 
 muiTheme.darkEMC = true;
 
-muiTheme.snackbar.textColor = muiColors.black;
+// muiTheme.snackbar.textColor = muiColors.black;
 
-muiTheme.tableRow.stripeColor =
-  new Color(emcColors.darkGrey).lighten(0.4).hexString();
+// muiTheme.tableRow.stripeColor =
+//   new Color(emcColors.darkGrey).lighten(0.4).hexString();
 
-muiTheme.tableRow.borderColor =
-  new Color(emcColors.darkGrey).lighten(0.8).hexString();
+// muiTheme.tableRow.borderColor =
+//   new Color(emcColors.darkGrey).lighten(0.8).hexString();
 
-muiTheme.flatButton.color =
-muiTheme.raisedButton.color =
-  new Color(emcColors.mediumGrey).lighten(0.8).hexString();
+// muiTheme.flatButton.color =
+// muiTheme.raisedButton.color =
+//   new Color(emcColors.mediumGrey).lighten(0.8).hexString();
 
-muiTheme.flatButton.textColor =
-muiTheme.raisedButton.textColor =
-  new Color(emcColors.offWhite).hexString();
+// muiTheme.flatButton.textColor =
+// muiTheme.raisedButton.textColor =
+//   new Color(emcColors.offWhite).hexString();
 
-muiTheme.raisedButton.disabledColor =
-  new Color(emcColors.mediumGrey).lighten(0.4).hexString();
+// muiTheme.raisedButton.disabledColor =
+//   new Color(emcColors.mediumGrey).lighten(0.4).hexString();
 
-muiTheme.flatButton.disabledTextColor =
-muiTheme.raisedButton.disabledTextColor =
-  new Color(emcColors.mediumGrey).lighten(0.8).hexString();
+// muiTheme.flatButton.disabledTextColor =
+// muiTheme.raisedButton.disabledTextColor =
+//   new Color(emcColors.mediumGrey).lighten(0.8).hexString();
 
 export default muiTheme;

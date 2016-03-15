@@ -59,6 +59,7 @@ export default class Console extends Component {
           maxHeight: 800,
           minHeight: 20,
           height: this.props.height - 20,
+          transition: 'height 1s',
           overflow: 'auto'
         }}>
           {this.state.rows.map(this.props.mapper)}

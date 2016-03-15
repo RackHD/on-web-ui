@@ -6,13 +6,12 @@ import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
 import { AppCanvas } from 'material-ui';
-import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
+import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 
 import ErrorNotification from './ErrorNotification';
 
 import emcTheme from '../lib/emcTheme';
 
-@ThemeDecorator(emcTheme)
 @radium
 export default class AppContainer extends Component {
 
@@ -79,10 +78,12 @@ export default class AppContainer extends Component {
     };
 
     return (
-      <div className={this.props.className} style={css.root}>
-        {this.props.children}
-        <ErrorNotification ref="error" />
-      </div>
+      <MuiThemeProvider muiTheme={emcTheme}>
+        <div className={this.props.className} style={css.root}>
+          {this.props.children}
+          <ErrorNotification ref="error" />
+        </div>
+      </MuiThemeProvider>
     );
   }
 

@@ -26,7 +26,42 @@ export default class UserLogin extends Component {
   }
 
   render() {
-    return this.renderLogin();
+    return (
+      <div className="UserLogin">
+        <h3>{this.state.loginHeader}</h3>
+        <TextField
+            ref="user"
+            name="user"
+            hintText="Ralph"
+            floatingLabelText="User Name"
+            style={{width: '100%'}}
+            disabled={this.state.disabled} />
+        <TextField
+            ref="pass"
+            name="pass"
+            hintText="Secret"
+            floatingLabelText="Password"
+            style={{width: '100%'}}
+            type="password"
+            disabled={this.state.disabled} />
+        <div className="buttons container center">
+          <div className="one-half column">
+            <FlatButton
+                onClick={this.onCancel.bind(this)}
+                className="button"
+                label="Cancel"
+                disabled={this.state.disabled} />
+          </div>
+          <div className="one-half column">
+            <RaisedButton
+                onClick={this.onSubmit.bind(this)}
+                className="button"
+                label="Submit"
+                disabled={this.state.disabled} />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   get user() {
@@ -48,50 +83,5 @@ export default class UserLogin extends Component {
   onCancel() {}
 
   onSubmit() {}
-
-  renderLogin() {
-    return (
-      <div className="UserLogin container">
-        <div className="row" style={{padding: '0 0 20px 0'}}>
-          <div className="one-third column">&nbsp;</div>
-          <div className="one-third column">
-            <h3>{this.state.loginHeader}</h3>
-            <TextField
-                ref="user"
-                name="user"
-                hintText="Ralph"
-                floatingLabelText="User Name"
-                style={{width: '100%'}}
-                disabled={this.state.disabled} />
-            <TextField
-                ref="pass"
-                name="pass"
-                hintText="Secret"
-                floatingLabelText="Password"
-                style={{width: '100%'}}
-                type="password"
-                disabled={this.state.disabled} />
-            <div className="buttons container center">
-              <div className="one-half column">
-                <FlatButton
-                    onClick={this.onCancel.bind(this)}
-                    className="button"
-                    label="Cancel"
-                    disabled={this.state.disabled} />
-              </div>
-              <div className="one-half column">
-                <RaisedButton
-                    onClick={this.onSubmit.bind(this)}
-                    className="button"
-                    label="Submit"
-                    disabled={this.state.disabled} />
-              </div>
-            </div>
-          </div>
-          <div className="one-third column">&nbsp;</div>
-        </div>
-      </div>
-    );
-  }
 
 }

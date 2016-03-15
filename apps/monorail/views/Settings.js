@@ -7,10 +7,12 @@ import radium from 'radium';
 import { RouteHandler, Link } from 'react-router';
 import {
     RaisedButton,
-    TextField
+    TextField,
+    Toggle
   } from 'material-ui';
 
 import config from 'rui-common/config/index';
+import UserLogin from 'rui-common/views/UserLogin';
 
 @radium
 export default class Settings extends Component {
@@ -24,6 +26,8 @@ export default class Settings extends Component {
   };
 
   state = {
+    enableSSL: this.enableSSL,
+    enableAuth: this.enableAuth,
     elasticsearchAPI: this.elasticsearchAPI,
     monorailAPI: this.monorailAPI,
     monorailWSS: this.monorailWSS,
@@ -47,6 +51,17 @@ export default class Settings extends Component {
         <div style={{padding: 20}}>
           <fieldset>
             <legend style={{padding: 5}}>RacKHD Settings</legend>
+            <Toggle
+                label={(this.state.enableSSL ? 'Disable' : 'Enable') + ' Secure Connections'}
+                labelPosition="right"
+                onToggle={() => this.setState({enableSSL: !this.state.enableSSL})}
+                toggled={this.state.enableSSL} />
+            <Toggle
+                label={(this.state.enableAuth ? 'Disable' : 'Enable') + ' API Authentication'}
+                labelPosition="right"
+                onToggle={() => this.setState({enableAuth: !this.state.enableAuth})}
+                toggled={this.state.enableAuth} />
+            {this.state.enableAuth && <UserLogin />}
             <TextField
                 ref="rackhdAPI"
                 fullWidth={true}
@@ -91,6 +106,13 @@ export default class Settings extends Component {
     );
   }
 
+  getConfigBoolean(key) {
+    let localValue = window.localStorage.getItem(key);
+    if (typeof localValue === 'string') { localValue = localValue === 'true'; }
+    if (typeof localValue === 'boolean') { return localValue; }
+    return config[key]
+  }
+
   getConfigValue(key) { return window.localStorage.getItem(key) || config[key]; }
 
   setConfigValue(key, value) {
@@ -100,6 +122,12 @@ export default class Settings extends Component {
 
   get elasticsearchAPI() { return this.getConfigValue('Elasticsearch_API'); }
   set elasticsearchAPI(value) { return this.setConfigValue('Elasticsearch_API', value); }
+
+  get enableAuth() { return this.getConfigBoolean('Enable_RackHD_API_Auth'); }
+  set enableAuth(value) { return this.setConfigValue('Enable_RackHD_API_Auth', !!value); }
+
+  get enableSSL() { return this.getConfigBoolean('Enable_RackHD_SSL'); }
+  set enableSSL(value) { return this.setConfigValue('Enable_RackHD_SSL', !!value); }
 
   get monorailAPI() { return this.getConfigValue('MonoRail_API'); }
   set monorailAPI(value) { return this.setConfigValue('MonoRail_API', value); }
@@ -115,6 +143,8 @@ export default class Settings extends Component {
 
   updateSettings() {
     this.elasticsearchAPI = this.state.elasticsearchAPI;
+    this.enableAuth = this.state.enableAuth;
+    this.enableSSL = this.state.enableSSL;
     this.monorailAPI = this.state.monorailAPI;
     this.monorailWSS = this.state.monorailWSS;
     this.rackhdAPI = this.state.rackhdAPI;

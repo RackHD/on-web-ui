@@ -114,7 +114,7 @@ export default class MonoRailApp extends Component {
     let renderContent = ({ width, height }) => {
       let renderHeader = ({ height }) => {
         return (
-          <div key="header" style={{width: width, height: height, overflow: 'auto', transition: 'width 1s'}}>
+          <div key="header" style={{width: width, height: height, overflow: 'hidden', transition: 'width 1s, height 1s'}}>
             <a style={{float: 'right', padding: 5}} onClick={this.toggleLogs.bind(this)}>
               {this.state.showLogs ? 'Hide' : 'Show'} RackHD Logs
             </a>
@@ -141,9 +141,9 @@ export default class MonoRailApp extends Component {
           height={height}
           css={{
             root: {transition: 'width 1s'},
-            a: {transition: 'width 1s'},
-            b: {transition: 'width 1s, left 1s'},
-            resize: {transition: 'width 1s, left 1s'}
+            a: {transition: 'width 1s, height 1s'},
+            b: {transition: 'width 1s, height 1s, left 1s'},
+            resize: {transition: 'width 1s, height 1s, left 1s, top 1s'}
           }}
           ratio={false}
           split={this.state.headerHeight}
