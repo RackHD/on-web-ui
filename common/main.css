@@ -617,21 +617,21 @@ input
 
     -webkit-touch-callout: none;
 }
-pre,
-code,
-input,
-textarea,
-pre *,
-code *,
-input *,
-textarea *
+.no-select pre,
+.no-select * pre,
+.no-select code,
+.no-select * code,
+.no-select input,
+.no-select * input,
+.no-select textarea,
+.no-select * textarea
 {
-    -webkit-user-select: all !important;
-       -moz-user-select: all !important;
-        -ms-user-select: all !important;
-            user-select: all !important;
+    -webkit-user-select: all;
+       -moz-user-select: all;
+        -ms-user-select: all;
+            user-select: all;
 
-    -webkit-touch-callout: all !important;
+    -webkit-touch-callout: all;
 }
 /* Media Queries
 ––––––––––––––––––––––––––––––––––––––––––––––––––
@@ -1418,6 +1418,7 @@ pre[class*='language-']
             hyphens: none;
 
     color: white;
+    background: none;
     text-shadow: 0 -.1em .2em black;
 
     direction: ltr;
@@ -1445,25 +1446,13 @@ pre[class*='language-']
 
 pre[class*='language-']::-moz-selection
 {
-    /* Safari */
-    background: hsl(200, 4%, 16%); /* #282A2B */
-}
-
-pre[class*='language-']::selection
-{
-    /* Safari */
-    background: hsl(200, 4%, 16%); /* #282A2B */
-}
-
-pre[class*='language-']::-moz-selection
-{
     /* Firefox */
     background: hsl(200, 4%, 16%); /* #282A2B */
 }
 
 pre[class*='language-']::selection
 {
-    /* Firefox */
+    /* Safari */
     background: hsl(200, 4%, 16%); /* #282A2B */
 }
 
@@ -1490,6 +1479,8 @@ code[class*='language-'] ::selection
 :not(pre) > code[class*='language-']
 {
     padding: .15em .2em .05em;
+
+    white-space: normal;
 
     border: .13em solid hsl(0, 0%, 33%); /* #545454 */
     border-radius: .3em;
