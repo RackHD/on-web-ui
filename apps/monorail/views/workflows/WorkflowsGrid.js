@@ -70,8 +70,20 @@ export default class WorkflowsGrid extends Component {
               row.Node = <a href={this.routePath('nodes', workflow.node)}>{this.shortId(workflow.node)}</a>;
             }
             row.Status = workflow.completeEventString || (workflow.cancelled ? 'cancelled' : workflow._status);
-            row['Pending Tasks'] = workflow.pendingTasks.length;
-            row['Finished Tasks'] = workflow.finishedTasks.length;
+            row.Status = row.Status.charAt(0).toUpperCase() + row.Status.substr(1);
+            if (workflow.pendingTasks) {
+              row['Pending Tasks'] = workflow.pendingTasks.length;
+              row['Finished Tasks'] = workflow.finishedTasks.length;
+            }
+            let tmp = {};
+            Object.keys(workflow.tasks).forEach(taskId => {
+              let state = workflow.tasks[taskId].state;
+              state = state.charAt(0).toUpperCase() + state.substr(1);
+              tmp[state] = (tmp[state] || 0) + 1;
+            });
+            let tmpKeys = Object.keys(tmp);
+            if (tmpKeys.length > 1) tmpKeys.forEach(key => row[key] = tmp[key]);
+
             row.Updated = this.fromNow(workflow.updatedAt);
             return row;
           }}

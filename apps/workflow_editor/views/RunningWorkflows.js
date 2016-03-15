@@ -59,8 +59,10 @@ export default class RunningWorkflows extends Component {
             row.Name = <a href={this.routePath('workflows', workflow.id)}>{workflow.name}</a>;
             row.Node = <a href={this.routePath('nodes', workflow.node)}>{this.shortId(workflow.node)}</a>;
             row.Status = workflow.completeEventString || (workflow.cancelled ? 'cancelled' : workflow._status);
-            row.Progress = workflow.finishedTasks.length + ' / ' +
-              (workflow.finishedTasks.length + workflow.pendingTasks.length);
+            if (workflow.pendingTasks) {
+              row.Progress = workflow.finishedTasks.length + ' / ' +
+                (workflow.finishedTasks.length + workflow.pendingTasks.length);
+            }
             row.Updated = this.fromNow(workflow.updatedAt);
             return row;
           }}

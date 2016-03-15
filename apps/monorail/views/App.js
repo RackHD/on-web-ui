@@ -73,7 +73,9 @@ export default class App extends Component {
                     defaultValue={this.state.monorailAPI}
                     floatingLabelText="MonoRail API Endpoint"
                     onChange={(e) => {
-                      this.setState({monorailAPI: e.target.value});
+                      this.setState({monorailAPI: e.target.value}, () => {
+                        this.refs.monorailAPI.focus();
+                      });
                     }} />
                 <div style={{textAlign: 'right'}}>
                   <RaisedButton primary={true} label="Cancel" onClick={this.closePopover.bind(this, 'settings')}/>
