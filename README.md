@@ -1,8 +1,20 @@
-# On Web UI [![Build Status](https://travis-ci.org/RackHD/on-web-ui.svg?branch=master)](https://travis-ci.org/RackHD/on-web-ui) [![Code Climate](https://codeclimate.com/github/RackHD/on-web-ui/badges/gpa.svg)](https://codeclimate.com/github/RackHD/on-web-ui) [![Coverage Status](https://coveralls.io/repos/RackHD/on-web-ui/badge.svg?branch=master&service=github)](https://coveralls.io/github/RackHD/on-web-ui?branch=master)
+# [On Web UI](http://rackhd.github.io/on-web-ui) [![Build Status](https://travis-ci.org/RackHD/on-web-ui.svg?branch=master)](https://travis-ci.org/RackHD/on-web-ui) [![Code Climate](https://codeclimate.com/github/RackHD/on-web-ui/badges/gpa.svg)](https://codeclimate.com/github/RackHD/on-web-ui) [![Coverage Status](https://coveralls.io/repos/RackHD/on-web-ui/badge.svg?branch=master&service=github)](https://coveralls.io/github/RackHD/on-web-ui?branch=master)
 
 Copyright 2015, EMC, Inc.
 
-### [Download latest build](https://github.com/RackHD/on-web-ui/archive/gh-pages.zip)
+### Publicly hosted on GitHub page.
+
+A live version of the UI can be used at:
+
+**[Live RackHD UI](http://rackhd.github.io/on-web-ui)**
+
+You can change the API endpoints from the settings page. Look for the gear icon.
+
+A zip file of the live version can always be downloaded from the `gh-pages` branch:
+
+**[Download latest build](https://github.com/RackHD/on-web-ui/archive/gh-pages.zip)**
+
+Extract the zip file to any directory served over HTTP. This is done automatically by `on-http` with `npm install`.
 
 ### Quick getting started guide.
 
