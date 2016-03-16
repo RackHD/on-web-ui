@@ -95,7 +95,7 @@ export default class MonoRailToolbar extends Component {
     return (
       <div style={css.root} {...props}>
         <div style={{position: 'relative', height: 'inherit'}}>
-          <List style={{float: 'left', width: this.props.width, height: 'inherit', overflow: 'hidden', transition: 'width 1s'}}>
+          <List style={{float: 'left', width: this.props.width, height: 'inherit', overflow: 'hidden', transition: 'width 1s', boxSizing: 'border-box'}}>
             <ListItem
                 innerDivStyle={{paddingBottom: 0, paddingTop: 0}}
                 leftIcon={

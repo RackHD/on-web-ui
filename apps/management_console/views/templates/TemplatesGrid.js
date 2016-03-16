@@ -35,7 +35,7 @@ export default class TemplatesGrid extends Component {
           routeName="templates"
           emptyContent="No templates."
           headerContent="Templates"
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           toolbarContent={<RaisedButton label="Create Template" primary={true} onClick={this.createTemplate.bind(this)} />}
           mapper={template => (
             {

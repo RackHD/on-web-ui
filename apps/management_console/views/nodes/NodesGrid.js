@@ -55,7 +55,7 @@ export default class NodesGrid extends Component {
           emptyContent="No nodes."
           headerContent="Nodes"
           toolbarContent={<RaisedButton label="Create Node" primary={true} onClick={this.createNode.bind(this)} />}
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           mapper={node => (
             {
               Name: <Link to={'/mc/nodes/' + node.id}>{node.name}</Link>,

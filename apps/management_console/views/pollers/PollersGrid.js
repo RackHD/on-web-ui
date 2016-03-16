@@ -35,7 +35,7 @@ export default class PollersGrid extends Component {
           routeName="pollers"
           emptyContent="No pollers."
           headerContent="Pollers"
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           toolbarContent={<RaisedButton label="Create Poller" primary={true} onClick={this.createPoller.bind(this)} />}
           mapper={poller => {
             let row = {};

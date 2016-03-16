@@ -26,7 +26,6 @@ export default class ErrorNotification extends Component {
 
   componentDidUpdate() {
     if (this.state.error) {
-      this.refs.snackbar.show();
       setTimeout(this.dismissError.bind(this), this.props.autoDismiss);
     }
   }

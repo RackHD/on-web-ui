@@ -32,7 +32,7 @@ export default class OBMServicesGrid extends Component {
           routeName="obms"
           emptyContent="No OBM Services."
           headerContent="OBM Services"
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           mapper={obmService => (
             {
               'Service Name': <Link to={'/mc/obms/' + obmService.service}>{obmService.service}</Link>,

@@ -58,7 +58,7 @@ export default class WorkflowsGrid extends Component {
           emptyContent="No workflows."
           headerContent="Workflow History"
           toolbarContent={rightButtons}
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           mapper={workflow => {
             let row = {};
             row.Name = <Link to={'/mc/workflows/' + workflow.id}>{workflow.name}</Link>;

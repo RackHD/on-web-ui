@@ -13,9 +13,11 @@ import {
     RaisedButton,
     Toolbar,
     ToolbarGroup,
-    ToolbarSeparator,
+    // ToolbarSeparator,
     ToolbarTitle
   } from 'material-ui';
+
+import ConfirmDialog from 'rui-common/views/dialogs/Confirm';
 
 import WorkflowEditorIconButton from './WorkflowEditorIconButton';
 
@@ -56,8 +58,12 @@ export default class WorkflowEditorToolbar extends Component {
   }
 
   state = {
+    task: null,
+    tasks: this.workflowOperator.taskDefinitionStore.all(),
     taskTerm: '',
-    workflowTerm: ''
+    workflow: this.activeWorkflow,
+    workflows: this.workflowOperator.workflowTemplateStore.all(),
+    workflowTerm: this.activeWorkflow && this.activeWorkflow.friendlyName
   };
 
   get activeWorkflow() {
@@ -66,6 +72,23 @@ export default class WorkflowEditorToolbar extends Component {
 
   getChildContext() {
     return { workflowEditorToolbar: this };
+  }
+
+  componentDidMount() {
+    this.updateWorkflow = () => {
+      this.setState({workflow: this.activeWorkflow});
+    };
+    this.workflowOperator.onChangeWorkflow(this.updateWorkflow);
+    this.unwatchTaskDefinitions =
+      this.workflowOperator.taskDefinitionStore.watchAll('tasks', this);
+    this.unwatchWorkflowTemplates =
+      this.workflowOperator.workflowTemplateStore.watchAll('workflows', this);
+  }
+
+  componentWillUnmount() {
+    this.workflowOperator.offChangeWorkflow(this.updateWorkflow);
+    this.unwatchTaskDefinitions();
+    this.unwatchWorkflowTemplates();
   }
 
   render() {
@@ -90,8 +113,8 @@ export default class WorkflowEditorToolbar extends Component {
     return (
       <Toolbar>
         <ToolbarGroup firstChild={true} float="left">
-        <ToolbarTitle text="&nbsp;" />
-          {/*<ToolbarTitle text="Graph" />*/}
+          <ToolbarTitle text="&nbsp;" />
+          <ToolbarTitle text="Workflow:" />
           {this.renderWorkflowSelect()}
           <WorkflowEditorIconButton key="refresh"
               muiTheme={this.context.muiTheme}
@@ -108,7 +131,7 @@ export default class WorkflowEditorToolbar extends Component {
           {/*<ToolbarSeparator />*/}
         </ToolbarGroup>
         <ToolbarGroup float="left">
-          {/*<ToolbarTitle text="Task" />*/}
+          <ToolbarTitle text="Task:" />
           {this.renderTaskSelect()}
           <WorkflowEditorIconButton key="view"
               muiTheme={this.context.muiTheme}
@@ -128,8 +151,8 @@ export default class WorkflowEditorToolbar extends Component {
           {/*<ToolbarSeparator />*/}
         </ToolbarGroup>
         <ToolbarGroup float="right">
-          <ToolbarTitle text="Ops" />
-          <ToolbarSeparator />
+          <ToolbarTitle text="Ops:" />
+          {/*<ToolbarSeparator />*/}
           <WorkflowEditorIconButton key="active"
               muiTheme={this.context.muiTheme}
               tooltip="Running Workflows"
@@ -152,7 +175,7 @@ export default class WorkflowEditorToolbar extends Component {
   }
 
   renderWorkflowSelect(state = this.state) {
-    let allWorkflows = this.workflowOperator.workflowTemplateStore.all(),
+    let allWorkflows = state.workflows,
         filterTerm = state.workflowTerm || '',
         workflows = allWorkflows,
         options = [];
@@ -166,51 +189,81 @@ export default class WorkflowEditorToolbar extends Component {
       options.push(workflow.friendlyName);
     });
 
-    return (<AutoComplete key="workflows"
-        style={{width: 276, top: -8, float: 'left'}}
-        filter={() => true}
-        triggerUpdateOnFocus={!state.workflowTerm}
-        menuStyle={{maxHeight: 250, width: 276, overflow: 'auto'}}
-        animated={true}
-        hintText="Workflow Name"
-        floatingLabelText={state.workflowName ? 'Active Workflow:' : 'Choose a Workflow...'}
-        searchText={state.workflowTerm}
-        dataSource={options}
-        onUpdateInput={(value) => {
-          this.setState({workflowTerm: value});
-        }}
-        onNewRequest={(value, injectableName) => {
-          // let matchingWorkflow = null;
-          // workflows.some(workflow => {
-          //   if (workflow.injectableName === value || workflow.friendlyName === value) {
-          //     matchingWorkflow = workflow;
-          //     return true;
-          //   }
-          // });
-          // if (matchingWorkflow) {
-            // this.setState({
-            //   workflowTerm: matchingWorkflow.friendlyName
-            // }, () => {
-              // this.workflowOperator.setState({
-              //   workflow: matchingWorkflow,
-              //   workflowName: matchingWorkflow.injectableName
-              // }, () => {
-              //   this.workflowOperator.emitWorkflowChange();
-              //   this.context.router.push('/we/' + matchingWorkflow.injectableName);
-              // });
-            // });
-          // }
-          // else {
-            // TODO: create configm dialog to create a new workflow
-            // if (confirm('Create new workflow: "' + value + '"?')) {
-            //   console.log('GOT HERE', value);
-            // }
-          // }
-        }} />);
+
+
+    return (
+      <AutoComplete key="workflows"
+          style={{width: 276, top: 8, float: 'left'}}
+          filter={() => true}
+          openOnFocus={true}
+          menuStyle={{maxHeight: 250, width: 276, overflow: 'auto'}}
+          animated={true}
+          hintText="Select"
+          searchText={state.workflowTerm || state.workflow && state.workflow.friendlyName}
+          dataSource={options}
+          onUpdateInput={(value) => {
+            this.setState({workflowTerm: value});
+          }}
+          onNewRequest={(value, injectableName) => {
+            let matchingWorkflow = null;
+
+            workflows.some(workflow => {
+              if (workflow.injectableName === value || workflow.friendlyName === value) {
+                matchingWorkflow = workflow;
+                return true;
+              }
+            });
+
+            if (matchingWorkflow) {
+              this.setState({
+                workflow: matchingWorkflow,
+                workflowTerm: matchingWorkflow.friendlyName
+              }, () => {
+                this.workflowOperator.setState({
+                  workflow: matchingWorkflow,
+                  workflowName: matchingWorkflow.injectableName
+                }, () => {
+                  this.workflowOperator.emitWorkflowChange();
+                  this.context.router.push('/we/' + matchingWorkflow.injectableName);
+                });
+              });
+            }
+
+            else {
+              value = value.split(/\s+/).map(word => {
+                return word.charAt(0).toUpperCase() + word.substr(1);
+              }).join(' ')
+              let newTaskInjectableName = 'Graph.' + value.replace(' ', '.');
+
+              ConfirmDialog.create({
+                callback: (ok) => {
+                  if (ok) {
+                    this.workflowOperator.workflowTemplateStore.create(newTaskInjectableName, {
+                      friendlyName: value,
+                      injectableName: newTaskInjectableName,
+                      tasks: [
+                        {
+                          label: 'no-op',
+                          taskName: 'Task.noop'
+                        }
+                      ]
+                    }).then((workflow) => {
+                      debugger;
+                      this.context.router.push('/we/' + newTaskInjectableName);
+                    });
+                  }
+                },
+                children: 'Create new workflow: "' + newTaskInjectableName + '"?',
+                title: 'Confirm:'
+              });
+            }
+          }}
+      />
+    );
   }
 
   renderTaskSelect(state = this.state) {
-    let allTasks = this.workflowOperator.taskDefinitionStore.all(),
+    let allTasks = state.tasks,
         filterTerm = state.taskTerm || '',
         tasks = allTasks,
         options = [];
@@ -224,36 +277,41 @@ export default class WorkflowEditorToolbar extends Component {
       options.push(task.friendlyName);
     });
 
-    return (<AutoComplete
-      key={1}
-      style={{width: 276, top: -8, float: 'left', marginLeft: 8}}
-      filter={() => true}
-      triggerUpdateOnFocus={!state.taskTerm}
-      menuStyle={{maxHeight: 250, width: 276, overflow: 'auto'}}
-      animated={true}
-      hintText="Task Name"
-      floatingLabelText={state.task ? 'Selected Task:' : 'Add a Task...'}
-      searchText={state.taskTerm}
-      dataSource={options}
-      onUpdateInput={(value) => {
-        this.setState({taskTerm: value});
-      }}
-      onNewRequest={(value, injectableName) => {
-        // let matchingTask = null;
-        // tasks.some(task => {
-        //   if (task.injectableName === value || task.friendlyName === value) {
-        //     matchingTask = task;
-        //     return true;
-        //   }
-        // });
-        // if (matchingTask) {
-          // this.setState({taskTerm: matchingTask.friendlyName}, () => {
-            // this.workflowOperator.setState({task: matchingTask});
-          // });
-        // }
-        // TODO: add warning dialog when the task cannot be found.
-        // alert('Unable to find task: "' + value+ '"');
-      }} />);
+    return (
+      <AutoComplete
+          key={1}
+          style={{width: 276, top: 8, float: 'left', marginLeft: 8}}
+          filter={() => true}
+          openOnFocus={true}
+          menuStyle={{maxHeight: 250, width: 276, overflow: 'auto'}}
+          animated={true}
+          hintText="Select"
+          searchText={state.taskTerm || state.task && state.task.friendlyName}
+          dataSource={options}
+          onUpdateInput={(value) => {
+            this.setState({taskTerm: value});
+          }}
+          onNewRequest={(value, injectableName) => {
+            let matchingTask = null;
+
+            tasks.some(task => {
+              if (task.injectableName === value || task.friendlyName === value) {
+                matchingTask = task;
+                return true;
+              }
+            });
+
+            if (matchingTask) {
+              this.setState({taskTerm: matchingTask.friendlyName}, () => {
+                this.workflowOperator.setState({task: matchingTask});
+              });
+            }
+
+            // TODO: add warning dialog when the task cannot be found.
+            // alert('Unable to find task: "' + value+ '"');
+          }}
+      />
+    );
   }
 
   renderPopovers() {
@@ -269,6 +327,7 @@ export default class WorkflowEditorToolbar extends Component {
           overflow: 'auto',
           border: '1px solid ' + emcTheme.rawTheme.palette.textColor
         };
+
     return [
       <Popover key="viewTask"
           style={{width: 500}}

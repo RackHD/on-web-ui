@@ -6,14 +6,11 @@ import React, { Component, PropTypes } from 'react';
 
 export default class Console extends Component {
 
-  static propTypes = {
-    rows: PropTypes.array,
-    mapper: PropTypes.func
-  };
-
   static defaultProps = {
-    rows: [],
-    mapper: item => <div>{JSON.stringify(item)}</div>
+    limit: 512,
+    mapper: item => <div>{JSON.stringify(item)}</div>,
+    offset: 0,
+    rows: []
   };
 
   static colors = {
@@ -44,9 +41,12 @@ export default class Console extends Component {
   }
 
   render() {
-    if (!this.state.rows || !this.state.rows.length) {
-      return null;
-    }
+    let { props } = this;
+
+    let rows = this.state.rows || [];
+
+    rows = rows.slice(props.offset, props.offset + props.limit);
+
     return (
       <div className="Console" style={{
         background: 'black',
@@ -62,7 +62,7 @@ export default class Console extends Component {
           transition: 'height 1s',
           overflow: 'auto'
         }}>
-          {this.state.rows.map(this.props.mapper)}
+          {rows.length ? rows.map(this.props.mapper) : '(empty)'}
         </div>
       </div>
     );

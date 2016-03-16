@@ -36,7 +36,7 @@ export default class FilesGrid extends Component {
           routeName="files"
           emptyContent="No files."
           headerContent="Files"
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           toolbarContent={<RaisedButton label="Create File" primary={true} onClick={this.createNode.bind(this)} />}
           mapper={file => (
             {

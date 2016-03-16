@@ -57,10 +57,6 @@ export default class AppContainer extends Component {
     this.updateSize = null;
   }
 
-  componentDidUpdate() {
-    if (this.state.error) { this.refs.error.show(); }
-  }
-
   css = {
     root: {
       position: 'relative'

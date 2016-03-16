@@ -12,7 +12,7 @@ import 'brace/theme/monokai';
 import { RaisedButton } from 'material-ui';
 
 @radium
-export default class WEWorkflowJson extends Component {
+export default class WorkflowJson extends Component {
 
   static propTypes = {
     className: PropTypes.string,

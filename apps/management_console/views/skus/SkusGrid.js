@@ -42,7 +42,7 @@ export default class SkusGrid extends Component {
           routeName="skus"
           emptyContent="No skus."
           headerContent="SKUs"
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           toolbarContent={<RaisedButton label="Create SKU" primary={true} onClick={this.createSku.bind(this)} />}
           mapper={sku => (
             {

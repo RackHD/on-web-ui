@@ -54,8 +54,12 @@ export default class AlertDialog extends Component {
   componentWillUnmount() {}
 
   render() {
-    let alertActions = [
-      { text: 'OK', onTouchTap: this.dismiss.bind(this), ref: 'ok' }
+    const alertActions = [
+      <FlatButton ref="ok"
+          label="Submit"
+          primary={true}
+          keyboardFocused={true}
+          onTouchTap={this.dismiss.bind(this, true)} />
     ];
 
     return (

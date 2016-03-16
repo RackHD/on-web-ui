@@ -42,10 +42,6 @@ export default class File extends Component {
 
   componentWillUnmount() { this.unwatchFile(); }
 
-  componentDidUpdate() {
-    if (this.state.error) { this.refs.error.show(); }
-  }
-
   render() {
     let file = this.state.file || {};
     return (

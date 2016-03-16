@@ -16,8 +16,7 @@ import {
     LinearProgress,
     List, ListItem,
     RaisedButton,
-    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle,
-    Snackbar
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
 import TemplateStore from 'rui-common/stores/TemplateStore';

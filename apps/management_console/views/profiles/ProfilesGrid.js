@@ -32,7 +32,7 @@ export default class ProfilesGrid extends Component {
           routeName="profiles"
           emptyContent="No profiles."
           headerContent="Profiles"
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           toolbarContent={<RaisedButton label="Create Profile" primary={true} onClick={this.createProfile.bind(this)} />}
           mapper={profile => (
             {

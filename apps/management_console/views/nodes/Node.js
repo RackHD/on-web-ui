@@ -66,10 +66,6 @@ export default class Node extends Component {
     this.unwatchNode();
   }
 
-  componentDidUpdate() {
-    if (this.state.error) { this.refs.error.show(); }
-  }
-
   render() {
     let node = this.state.node || {};
     return (

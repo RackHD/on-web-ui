@@ -77,7 +77,7 @@ export default class CatalogsGrid extends Component {
           routeName="catalogs"
           emptyContent="No catalogs."
           headerContent="Catalogs"
-          loadingContent={this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix"></div>}
+          loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           mapper={catalog => {
             let row = {};
             row.Sources = catalog.sources.map(source => (
