@@ -94,7 +94,7 @@ export default class EditWorkflow extends Component {
                 disabled={this.state.disabled} />
           </ToolbarGroup>
         </Toolbar>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix" />}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{padding: '0 10px 10px'}}>
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Workflow Type:</h5>
           <Select

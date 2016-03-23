@@ -29,7 +29,7 @@ export default class Task extends Component {
   render() {
     return (
       <div className="Task">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{overflow: 'auto', margin: 10}}>
           <JsonInspector
               search={false}

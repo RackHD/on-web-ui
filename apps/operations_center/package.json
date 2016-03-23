@@ -1,9 +1,9 @@
 {
-  "name": "rui-network-topology",
+  "name": "rui-operations-center",
   "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
-  "description": "RackHD UI - Network Topology",
+  "description": "RackHD UI - Operations Center",
   "repository": "",
   "license": "Apache-2.0",
   "engines": {

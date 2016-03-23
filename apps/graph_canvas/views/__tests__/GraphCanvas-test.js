@@ -12,9 +12,9 @@ import GraphCanvas from '../GraphCanvas';
 import Vector from '../../lib/Vector';
 
 var props = {
-  initialX: 0,
-  initialY: 0,
-  initialScale: 1,
+  x: 0,
+  y: 0,
+  scale: 1,
   worldWidth: 240,
   worldHeight: 200,
   viewWidth: 120,

@@ -28,7 +28,7 @@ export default class OBMService extends Component {
   render() {
     return (
       <div className="OBMService">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{overflow: 'auto', margin: 10}}>
           <JsonInspector
               search={false}

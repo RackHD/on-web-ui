@@ -20,6 +20,7 @@ export default class NodesGrid extends Component {
 
   state = {
     nodes: null,
+    catalogs: null,
     loading: true
   };
 

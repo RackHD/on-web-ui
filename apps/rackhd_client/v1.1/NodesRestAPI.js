@@ -14,6 +14,7 @@ export default class NodesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id + '/obm')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -26,6 +27,7 @@ export default class NodesRestAPI extends RestAPI {
       this.http.post(this.url + id + '/obm')
         .accept('json')
         .type('json')
+        .set('authorization', this.jwtAuthorization)
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -47,6 +49,7 @@ export default class NodesRestAPI extends RestAPI {
       this.http.post(this.url + id + '/obm')
         .accept('json')
         .type('json')
+        .set('authorization', this.jwtAuthorization)
         .send(value)
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -59,6 +62,7 @@ export default class NodesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id + '/catalogs')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -81,6 +85,7 @@ export default class NodesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id + '/pollers')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -92,6 +97,7 @@ export default class NodesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.post(this.url + macAddress + '/dhcp/whitelist')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -103,6 +109,7 @@ export default class NodesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.del(this.url + macAddress + '/dhcp/whitelist')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -114,6 +121,7 @@ export default class NodesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id + '/workflows')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -126,6 +134,7 @@ export default class NodesRestAPI extends RestAPI {
       this.http.post(this.url + nodeId + '/workflows')
         .accept('json')
         .type('json')
+        .set('authorization', this.jwtAuthorization)
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -138,6 +147,7 @@ export default class NodesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id + '/workflows/active')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -149,6 +159,7 @@ export default class NodesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.del(this.url + id + '/workflows/active')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);

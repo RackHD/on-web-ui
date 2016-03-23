@@ -44,7 +44,7 @@ export default class Sku extends Component {
     let sku = this.state.sku || {};
     return (
       <div className="Sku">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="SKU Details" />

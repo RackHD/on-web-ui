@@ -27,7 +27,7 @@ export default class Config extends Component {
   render() {
     return (
       <div className="Config">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{overflow: 'auto', margin: 10}}>
           <JsonInspector
               isExpanded={() => true}

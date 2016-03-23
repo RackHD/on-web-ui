@@ -21,7 +21,7 @@ exports.RestAPIs = {
   Workflows: require('./WorkflowsRestAPI')
 };
 
-exports.create = function RackHDv1_1API(url) {
+exports.create = function RackHDv1_1API(url, auth) {
   const nameMap = {
     Catalogs: 'catalogs',
     Config: 'config',
@@ -40,14 +40,15 @@ exports.create = function RackHDv1_1API(url) {
   };
 
   let api = {
-    url: url
+    url: url,
+    auth: auth
   };
 
   Object.keys(exports.RestAPIs).forEach(apiName => {
     let RestAPI = exports.RestAPIs[apiName],
         name = nameMap[apiName] || apiName.toLowerCase();
 
-    api[name] = new RestAPI(url || exports.MONORAIL_API_v1_1);
+    api[name] = new RestAPI(url, auth);
   });
 
   return api;

@@ -56,7 +56,7 @@ export default class EditFile extends Component {
                 disabled={this.state.disabled} />
           </ToolbarGroup>
         </Toolbar>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : <div className="clearfix" />}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{padding: '0 10px 10px'}}>
           <TextField
               valueLink={nameLink}

@@ -46,7 +46,7 @@ export default class File extends Component {
     let file = this.state.file || {};
     return (
       <div className="File">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="File Details" />

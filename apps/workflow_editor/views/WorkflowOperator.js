@@ -108,7 +108,7 @@ export default class WorkflowOperator extends Component {
   }
 
   offChangeWorkflow(handler) {
-    this.events.off('changeWorkflow', handler);
+    this.events.removeListener('changeWorkflow', handler);
   }
 
   css = {

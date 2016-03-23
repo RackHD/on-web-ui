@@ -46,7 +46,7 @@ export default class Poller extends Component {
     let poller = this.state.poller || {};
     return (
       <div className="Poller">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="Poller Details" />

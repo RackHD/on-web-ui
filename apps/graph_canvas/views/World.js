@@ -46,10 +46,6 @@ export default class GCWorld extends Component {
     return this.context.graphCanvas;
   }
 
-  shouldComponentUpdate() {
-    return true;
-  }
-
   getChildContext() {
     return {
       graphCanvas: this.graphCanvas

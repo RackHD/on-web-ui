@@ -120,12 +120,19 @@ export default class MonoRailToolbar extends Component {
                   primaryText="Network Topology" />
             </Link>
 
-            <Link to="/va" style={linkStyle}>
+            <Link to="/oc" style={linkStyle}>
+              <ListItem
+                  style={getLinkStyle('oc')}
+                  leftIcon={<FontIcon className="fa fa-fw fa-tasks" style={getIconStyle('oc')}/>}
+                  primaryText="Operations Center" />
+            </Link>
+
+            {/*<Link to="/va" style={linkStyle}>
               <ListItem
                   style={getLinkStyle('va')}
                   leftIcon={<FontIcon className="fa fa-fw fa-pie-chart" style={getIconStyle('va')}/>}
                   primaryText="Visual Analytics" />
-            </Link>
+            </Link>*/}
 
             <Link to="/we" style={linkStyle}>
               <ListItem

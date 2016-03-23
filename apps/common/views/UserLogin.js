@@ -12,23 +12,21 @@ import {
 
 export default class UserLogin extends Component {
 
-  state = UserLogin.getInitialState();
+  static defaultProps = {
+    header: 'Login',
+    onSubmit: null,
+    submitLabel: 'Submit'
+  };
 
-  static getInitialState(cb) {
-    let state = {
-      disabled: false,
-      loginHeader: 'Login'
-    };
-
-    if (cb) cb(state);
-
-    return state;
-  }
+  state = {
+    disabled: false
+  };
 
   render() {
+    let header = null;
     return (
       <div className="UserLogin">
-        <h3>{this.state.loginHeader}</h3>
+        {this.props.header}
         <TextField
             ref="user"
             name="user"
@@ -44,21 +42,13 @@ export default class UserLogin extends Component {
             style={{width: '100%'}}
             type="password"
             disabled={this.state.disabled} />
-        <div className="buttons container center">
-          <div className="one-half column">
-            <FlatButton
-                onClick={this.onCancel.bind(this)}
-                className="button"
-                label="Cancel"
-                disabled={this.state.disabled} />
-          </div>
-          <div className="one-half column">
-            <RaisedButton
-                onClick={this.onSubmit.bind(this)}
-                className="button"
-                label="Submit"
-                disabled={this.state.disabled} />
-          </div>
+        <div className="buttons">
+          {this.props.cancel}
+          <RaisedButton
+              onClick={this.onSubmit.bind(this)}
+              className="button"
+              label={this.props.submitLabel}
+              disabled={this.state.disabled} />
         </div>
       </div>
     );
@@ -80,8 +70,10 @@ export default class UserLogin extends Component {
     this.setState({disabled: false});
   }
 
-  onCancel() {}
-
-  onSubmit() {}
+  onSubmit() {
+    if (this.props.onSubmit) {
+      this.props.onSubmit(this.user, this.pass);
+    }
+  }
 
 }

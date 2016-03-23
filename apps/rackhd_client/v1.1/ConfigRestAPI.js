@@ -19,6 +19,7 @@ export default class ConfigRestAPI extends RestAPI {
       this.http.patch(this.url)
         .accept('json')
         .type('json')
+        .set('authorization', this.jwtAuthorization)
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }

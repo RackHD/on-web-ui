@@ -21,7 +21,7 @@ import ConfirmDialog from 'rui-common/views/dialogs/Confirm';
 
 import WorkflowEditorIconButton from './WorkflowEditorIconButton';
 
-import RunningWorkflows from './RunningWorkflows';
+// import RunningWorkflows from './RunningWorkflows';
 import RunWorkflow from './RunWorkflow';
 
 import TaskJsonView from './TaskJsonView';
@@ -128,9 +128,17 @@ export default class WorkflowEditorToolbar extends Component {
               icon="floppy-o"
               float="left"
               onClick={this.workflowOperator.save.bind(this.workflowOperator)} />
+          <WorkflowEditorIconButton key="run"
+              muiTheme={this.context.muiTheme}
+              tooltip="Run this Workflow"
+              icon="play"
+              float="right"
+              onClick={(e) => this.setState({
+                runPopoverAnchor: this.state.runPopoverAnchor === e.currentTarget ? null : e.currentTarget
+              })} />
           {/*<ToolbarSeparator />*/}
         </ToolbarGroup>
-        <ToolbarGroup float="left">
+        <ToolbarGroup float="right">
           <ToolbarTitle text="Task:" />
           {this.renderTaskSelect()}
           <WorkflowEditorIconButton key="view"
@@ -150,9 +158,8 @@ export default class WorkflowEditorToolbar extends Component {
               onClick={this.workflowOperator.add.bind(this.workflowOperator)}/>
           {/*<ToolbarSeparator />*/}
         </ToolbarGroup>
-        <ToolbarGroup float="right">
+        {/*<ToolbarGroup float="right">
           <ToolbarTitle text="Ops:" />
-          {/*<ToolbarSeparator />*/}
           <WorkflowEditorIconButton key="active"
               muiTheme={this.context.muiTheme}
               tooltip="Running Workflows"
@@ -161,15 +168,7 @@ export default class WorkflowEditorToolbar extends Component {
               onClick={(e) => this.setState({
                 runningPopoverAnchor: this.state.runningPopoverAnchor === e.currentTarget ? null : e.currentTarget
               })} />
-          <WorkflowEditorIconButton key="run"
-              muiTheme={this.context.muiTheme}
-              tooltip="Run this Workflow"
-              icon="play"
-              float="right"
-              onClick={(e) => this.setState({
-                runPopoverAnchor: this.state.runPopoverAnchor === e.currentTarget ? null : e.currentTarget
-              })} />
-        </ToolbarGroup>
+        </ToolbarGroup>*/}
       </Toolbar>
     );
   }
@@ -363,19 +362,19 @@ export default class WorkflowEditorToolbar extends Component {
                 closeRunPopover();
               }} />
         </div>
-      </Popover>,
-      <Popover key="viewRunning"
-          style={{width: 800}}
-          animated={true}
-          anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          open={this.state.runningPopoverAnchor ? true : false}
-          anchorEl={this.state.runningPopoverAnchor}
-          onRequestClose={closeRunningPopover} >
-        <div style={containerStyle}>
-          <RunningWorkflows />
-        </div>
-      </Popover>
+      </Popover>//,
+      // <Popover key="viewRunning"
+      //     style={{width: 800}}
+      //     animated={true}
+      //     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+      //     targetOrigin={{horizontal: 'right', vertical: 'top'}}
+      //     open={this.state.runningPopoverAnchor ? true : false}
+      //     anchorEl={this.state.runningPopoverAnchor}
+      //     onRequestClose={closeRunningPopover} >
+      //   <div style={containerStyle}>
+      //     <RunningWorkflows />
+      //   </div>
+      // </Popover>
     ];
   }
 

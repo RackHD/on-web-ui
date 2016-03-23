@@ -1,7 +1,8 @@
 'use strict';
 
-import LogsMessenger from 'rui-common/messengers/LogsMessenger';
+import ElasticsearchAPI from 'rui-common/messengers/ElasticsearchAPI';
 import EventsMessenger from 'rui-common/messengers/EventsMessenger';
+import LogsMessenger from 'rui-common/messengers/LogsMessenger';
 
 export default class Node {
   constructor(nodeId, handler) {
@@ -15,9 +16,9 @@ export default class Node {
   listen(handler) {
     this.logs.listen(msg => {
       if (msg.data.subject !== this.nodeId) return;
-      let history = JSON.parse(window.localStorage.getItem('logs-' + this.nodeId)) || [];
-      history.push(msg);
-      window.localStorage.setItem('logs-' + this.nodeId, JSON.stringify(history));
+      // let history = JSON.parse(window.localStorage.getItem('logs-' + this.nodeId)) || [];
+      // history.push(msg);
+      // window.localStorage.setItem('logs-' + this.nodeId, JSON.stringify(history));
       handler(msg);
     });
   }
@@ -27,13 +28,21 @@ export default class Node {
   }
 
   connect(handler) {
-    let history = [];
-    try {
-      history = JSON.parse(window.localStorage.getItem('logs-' + this.nodeId)) || [];
-    } catch (err) {
-      window.localStorage.setItem('logs-' + this.nodeId, '[]');
-    }
-    history.forEach(handler);
+    ElasticsearchAPI.search({
+      q: this.nodeId
+    }).then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.error(err);
+    });
+
+    // let history = [];
+    // try {
+    //   history = JSON.parse(window.localStorage.getItem('logs-' + this.nodeId)) || [];
+    // } catch (err) {
+    //   window.localStorage.setItem('logs-' + this.nodeId, '[]');
+    // }
+    // history.forEach(handler);
     this.listen(handler);
     this.logs.connect();
   }

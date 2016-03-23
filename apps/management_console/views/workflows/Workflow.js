@@ -66,7 +66,7 @@ export default class Workflow extends Component {
     let workflow = this.state.workflow || {};
     return (
       <div className="Workflow">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="Workflow Details" />

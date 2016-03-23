@@ -4,6 +4,8 @@
 
 import url from 'url';
 import { EventEmitter } from 'events';
+
+import config from '../config/index';
 import Messenger from './Messenger';
 
 export default class Store extends EventEmitter {
@@ -55,10 +57,9 @@ export default class Store extends EventEmitter {
     if (this.messenger) {
       return console.error(new Error('A messenger already exists.').stack);
     }
-    let api = this.api ? url.parse(this.api) : null;
     resource = resource || this.resource;
-    host = host || api && api.host;
-    secure = secure || api.protocol === 'https:';
+    host = host || config.MonoRail_WSS;
+    secure = secure || config.check('Enable_RackHD_SSL');
     this.messenger = new Messenger(resource, host, secure);
     this.messenger.connect(() => {
       if (!this.messenger) {

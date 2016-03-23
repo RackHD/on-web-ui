@@ -42,7 +42,7 @@ export default class Profile extends Component {
     let profile = this.state.profile || {};
     return (
       <div className="Profile">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="Profile Details" />

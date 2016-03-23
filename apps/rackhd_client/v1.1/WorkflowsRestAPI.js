@@ -22,10 +22,12 @@ export default class WorkflowsRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + 'library/*')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) {
             this.http.get(this.url + 'library')
               .accept('json')
+              .set('authorization', this.jwtAuthorization)
               .end((err, res) => {
                 if (err) { return reject(err); }
                 resolve(res && res.body);

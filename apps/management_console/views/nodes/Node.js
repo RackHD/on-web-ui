@@ -70,7 +70,7 @@ export default class Node extends Component {
     let node = this.state.node || {};
     return (
       <div className="Node">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div className="ungrid collapse">
           <div className="line">
             <div className="cell" style={{borderRight: '1px solid black'}}>

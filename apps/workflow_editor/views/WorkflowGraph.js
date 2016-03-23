@@ -108,9 +108,9 @@ export default class WorkflowGraph extends Component {
             key={'graphCanvas' + this.state.version}
             ref="graphCanvas"
             grid={{}}
-            initialScale={this.lastGraphCanvas ? this.lastGraphCanvas.state.scale : 1}
-            initialX={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.x : 0}
-            initialY={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.y : 0}
+            scale={this.lastGraphCanvas ? this.lastGraphCanvas.state.scale : 1}
+            x={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.x : 0}
+            y={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.y : 0}
             viewHeight={this.state.canvasHeight}
             viewWidth={this.state.canvasWidth}
             worldHeight={this.state.worldHeight}

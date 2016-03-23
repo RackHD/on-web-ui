@@ -42,7 +42,7 @@ export default class Template extends Component {
     let template = this.state.template || {};
     return (
       <div className="Template">
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : null}
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="Template Details" />

@@ -11,9 +11,10 @@ import onReady from 'rui-common/lib/onReady';
 import NotFound from 'rui-common/views/NotFound';
 
 import ManagementConsole from 'rui-management-console/views/ManagementConsole';
-import WorkflowEditor from 'rui-workflow-editor/views/WorkflowEditor';
-import VisualAnalytics from 'rui-visual-analytics/views/VisualAnalytics'
 import NetworkTopology from 'rui-network-topology/views/NetworkTopology';
+import OperationsCenter from 'rui-operations-center/views/OperationsCenter';
+import VisualAnalytics from 'rui-visual-analytics/views/VisualAnalytics'
+import WorkflowEditor from 'rui-workflow-editor/views/WorkflowEditor';
 
 import MonoRailApp from './views/MonoRailApp'
 import Settings from './views/Settings';
@@ -31,6 +32,7 @@ onReady(() => {
         <IndexRedirect to="/mc/dashboard" />
         {ManagementConsole.routes}
         <Route name="Network Topology" path="/nt" component={NetworkTopology} />
+        <Route name="Operations Center" path="/oc" component={OperationsCenter} />
         <Route name="Visual Analytics" path="/va" component={VisualAnalytics} />
         <Route name="Workflow Editor" path="/we" component={WorkflowEditor} />
         <Route name="Workflow Editor" path="/we/:workflow" component={WorkflowEditor} />

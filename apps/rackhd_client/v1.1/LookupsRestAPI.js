@@ -15,6 +15,7 @@ export default class LookupsRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + '?' + this.qs.stringify({q}))
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);

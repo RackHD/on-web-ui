@@ -21,3 +21,7 @@ Object.keys(defaults).forEach(key => {
 });
 
 merge(exports, defaults, custom, local);
+
+exports.check = function (property, target='true') {
+  return this[property] === target;
+};

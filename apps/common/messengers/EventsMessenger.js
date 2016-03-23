@@ -11,8 +11,9 @@ export default class EventsMessenger extends Messenger {
   handlers = ['item'];
 
   constructor(host, secure) {
-    let api = url.parse(config.MONORAIL_API);
-    super('mq', host || api.host, secure || api.protocol === 'https:');
+    super('mq',
+      host || config.MonoRail_WSS,
+      secure || config.check('Enable_RackHD_SSL'));
   }
 
   item(msg) {
