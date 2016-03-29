@@ -4,11 +4,13 @@ import ElasticsearchAPI from 'rui-common/messengers/ElasticsearchAPI';
 import EventsMessenger from 'rui-common/messengers/EventsMessenger';
 import LogsMessenger from 'rui-common/messengers/LogsMessenger';
 
-export default class Node {
+export default class NodeMonitor {
+
   constructor(nodeId, handler) {
     this.nodeId = nodeId;
+
     this.logs = new LogsMessenger();
-    // window.localStorage.setItem('logs-' + this.nodeId, []);
+
     if (handler) { this.connect(handler); }
     return this;
   }
@@ -16,10 +18,24 @@ export default class Node {
   listen(handler) {
     this.logs.listen(msg => {
       if (msg.data.subject !== this.nodeId) return;
-      // let history = JSON.parse(window.localStorage.getItem('logs-' + this.nodeId)) || [];
-      // history.push(msg);
-      // window.localStorage.setItem('logs-' + this.nodeId, JSON.stringify(history));
+
       handler(msg);
+    });
+  }
+
+  load(offset=0, size=100) {
+    return ElasticsearchAPI.search({
+      q: 'subject:' + this.nodeId,
+      sort: 'timestamp:desc',
+      index: 'logstash-*',
+      from: offset,
+      size: size
+    });
+  }
+
+  prependHits(hits, handler) {
+    hits.forEach(hit => {
+      handler({data: hit._source});
     });
   }
 
@@ -28,27 +44,21 @@ export default class Node {
   }
 
   connect(handler) {
-    ElasticsearchAPI.search({
-      q: this.nodeId
-    }).then(res => {
-      console.log(res);
-    }).catch(err => {
-      console.error(err);
-    });
-
-    // let history = [];
-    // try {
-    //   history = JSON.parse(window.localStorage.getItem('logs-' + this.nodeId)) || [];
-    // } catch (err) {
-    //   window.localStorage.setItem('logs-' + this.nodeId, '[]');
-    // }
-    // history.forEach(handler);
-    this.listen(handler);
-    this.logs.connect();
+    let listenAndConnect = () => {
+      this.listen(handler);
+      this.logs.connect();
+    };
+    this.load()
+      .then(res => {
+        this.prependHits(res.hits.hits, handler);
+        listenAndConnect();
+      })
+      .catch(listenAndConnect);
   }
 
   disconnect() {
     this.ignore();
     this.logs.disconnect();
   }
+
 }

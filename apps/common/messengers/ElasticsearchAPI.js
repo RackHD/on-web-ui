@@ -8,7 +8,7 @@ import config from '../config/index';
 
 module.exports = new ElasticsearchClient({
   host: config.Elasticsearch_API,
-  log: 'trace'
+  // log: 'trace'
 });
 
 module.exports.ping({

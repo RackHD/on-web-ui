@@ -109,21 +109,7 @@ export default class Node extends Component {
           </div>
           <div className="line">
             <div className="cell">
-              <Console rows={this.state.logs} mapper={data => (
-                <p style={{
-                  color: Console.colors[data.level],
-                  borderTop: '1px dotted #888',
-                  padding: '5px 0',
-                  margin: 0
-                }}>
-                  <b>{data.timestamp}</b>&nbsp;&nbsp;
-                  <i>[{data.name}]</i>&nbsp;&nbsp;
-                  <i>[{data.module}]</i>&nbsp;&nbsp;
-                  <i>[{data.subject}]</i>&nbsp;--&nbsp;
-                  <b>{data.message}</b>&nbsp;->&nbsp;
-                  <u>{data.caller}</u>
-                </p>
-              )} />
+              <Console elements={this.state.logs} />
             </div>
             <div className="cell">
               <PollersGrid nodeId={this.getNodeId()} />
@@ -134,16 +120,18 @@ export default class Node extends Component {
         <Snackbar
           ref="error"
           action="dismiss"
+          open={!!this.state.error}
           message={this.state.error || 'Unknown error.'}
           onActionClick={this.dismissError.bind(this)} />
       </div>
     );
   }
 
-  showError(error) { this.setState({error: error.message || error}); }
+  showError(error) {
+    this.setState({error: error.message || error});
+  }
 
   dismissError() {
-    this.refs.error.dismiss();
     this.setState({error: null});
   }
 
