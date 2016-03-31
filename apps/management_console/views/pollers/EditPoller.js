@@ -135,7 +135,7 @@ export default class EditPoller extends Component {
               }} />
             <h5 style={{margin: '15px 0 5px', color: '#666'}}>Poller JSON:</h5>
             <JsonEditor
-                initialValue={this.state.poller}
+                value={this.state.poller}
                 updateParentState={this.updateStateFromJsonEditor.bind(this)}
                 disabled={this.state.disabled}
                 ref="jsonEditor" />

@@ -10,15 +10,10 @@ import ConsoleItem from './ConsoleItem';
 export default class Console extends Component {
 
   static defaultProps = {
-    monitor: null,
-    // elementHeight: 40,
+    elements: [],
+    handleInfiniteLoad: (cb) => { throw new Error('No handleInfiniteLoad') },
     height: 200,
-    // limit: 512,
-    mapper: (item, i) => {
-      return item && <ConsoleItem key={i} {...item} />
-    },
-    // offset: 0,
-    elements: []
+    mapper: (item, i) => item && <ConsoleItem key={i + '_' + item.timestamp} {...item} />,
   };
 
   state = {
@@ -33,19 +28,18 @@ export default class Console extends Component {
   }
 
   handleInfiniteLoad() {
-    return;
-    this.setState({isInfiniteLoading: true});
-
-    this.props.monitor.load((elements) => {
-      this.setState({
-        isInfiniteLoading: false,
-        elements: elements
+    if (this.state.isInfiniteLoading === true) {
+      return;
+    }
+    this.setState({isInfiniteLoading: true}, () => {
+      this.props.handleInfiniteLoad(() => {
+        this.setState({isInfiniteLoading: false});
       });
     });
   }
 
   elementInfiniteLoad() {
-    return <h2>Loading...</h2>;
+    return <span>Loading...</span>;
   }
 
   render() {
@@ -54,32 +48,23 @@ export default class Console extends Component {
     return (
       <div className="Console" style={{
         background: 'black',
+        borderRadius: 5,
+        boxSizing: 'border-box',
+        height: props.height,
+        overflow: 'hidden',
         padding: 5,
-        borderRadius: 5
+        transition: 'height 1s'
       }}>
-        <span style={{color: 'white'}}>Console:</span>
-
-        <div className="Console-logs" style={{
-          // padding: 5,
-          // maxHeight: 800,
-          // minHeight: 20,
-          height: props.height - 20,
-          transition: 'height 1s',
-          overflow: 'hidden'
-        }}>
-          <Infinite
-              elementHeight={40}
-              containerHeight={props.height - 20}
-              infiniteLoadBeginEdgeOffset={200}
-              onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
-              loadingSpinnerDelegate={this.elementInfiniteLoad()}
-              isInfiniteLoading={this.state.isInfiniteLoading}
-              displayBottomUpwards={true}>
-            {state.elements.length ?
-              state.elements.map(props.mapper) :
-              '(empty)'}
-          </Infinite>
-        </div>
+        <Infinite
+            elementHeight={40}
+            containerHeight={props.height - 10}
+            infiniteLoadBeginEdgeOffset={200}
+            onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
+            loadingSpinnerDelegate={this.elementInfiniteLoad()}
+            isInfiniteLoading={this.state.isInfiniteLoading}
+            displayBottomUpwards={true}>
+          {state.elements.length ? state.elements.map(props.mapper) : '(console empty)'}
+        </Infinite>
       </div>
     );
   }

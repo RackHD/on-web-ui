@@ -120,7 +120,7 @@ export default class EditWorkflow extends Component {
               }} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Workflow JSON:</h5>
           <JsonEditor
-              initialValue={this.state.workflow}
+              value={this.state.workflow}
               updateParentState={this.updateStateFromJsonEditor.bind(this)}
               disabled={this.state.disabled}
               ref="jsonEditor" />

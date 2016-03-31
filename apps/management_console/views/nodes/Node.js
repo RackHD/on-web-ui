@@ -3,7 +3,9 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
+import moment from 'moment';
 
+import ElasticsearchAPI from 'rui-common/messengers/ElasticsearchAPI';
 import DialogHelpers from 'rui-common/mixins/DialogHelpers';
 
 import EditNode from './EditNode';
@@ -16,10 +18,12 @@ import WorkflowsGrid from '../workflows/WorkflowsGrid';
 
 import {
     FlatButton,
+    FontIcon,
     LinearProgress,
     List, ListItem,
     RaisedButton,
     Snackbar,
+    Tabs, Tab,
     Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
@@ -38,7 +42,8 @@ export default class Node extends Component {
   nodes = new NodeStore();
 
   state = {
-    logs: [],
+    previousLogs: [],
+    realtimeLogs: [],
     obm: null,
     node: null,
     loading: true
@@ -47,7 +52,7 @@ export default class Node extends Component {
   componentWillMount() {
     this.nodeMonitor = new NodeMonitor(this.getNodeId(), msg => {
       this.setState(state => {
-        return {logs: [msg.data].concat(state.logs)}
+        return {realtimeLogs: [msg.data].concat(state.realtimeLogs)}
       });
     });
   }
@@ -66,62 +71,96 @@ export default class Node extends Component {
     this.unwatchNode();
   }
 
+  loadPreviousLogs(offset=0, size=100) {
+    return ElasticsearchAPI.search({
+      q: 'subject:' + this.getNodeId(),
+      sort: 'timestamp:desc',
+      index: 'logstash-*',
+      from: offset,
+      size: size
+    });
+  }
+
   render() {
-    let node = this.state.node || {};
+    let { state } = this;
+    let node = state.node || {};
+
     return (
       <div className="Node">
-        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
-        <div className="ungrid collapse">
-          <div className="line">
-            <div className="cell" style={{borderRight: '1px solid black'}}>
-              <Toolbar>
-                <ToolbarGroup key={0} float="left">
-                  <ToolbarTitle text="Node Details" />
-                </ToolbarGroup>
-                <ToolbarGroup key={1} float="right">
-                  <RaisedButton
-                      label="Delete Node"
-                      primary={true}
-                      onClick={this.deleteNode.bind(this)}
-                      disabled={this.state.loading} />
-                </ToolbarGroup>
-              </Toolbar>
-              <List>
-                <ListItem
-                  primaryText={node.name || '(Untitled)'}
-                  secondaryText="Name" />
-                <ListItem
-                  primaryText={node.type || '(Unknown)'}
-                  secondaryText="Type" />
-              </List>
-              <div style={{overflow: 'auto', margin: 10}}>
-                <h3>{this.state.obm ? 'OBM' : 'OBM Not Found'}</h3>
-                {this.state.obm && <div style={{overflow: 'auto', margin: 10}}><JsonInspector
-                      search={false}
-                      isExpanded={() => true}
-                      data={this.state.obm || {}} /></div>}
-              </div>
+        <LinearProgress mode={state.loading ? 'indeterminate' : 'determinate'} value={100} />
+
+        <Tabs>
+          <Tab
+              icon={<FontIcon className="fa fa-server" />}
+              label="Details">
+
+            <Toolbar>
+              <ToolbarGroup key={0} float="left">
+                <ToolbarTitle text={node.name + ' -- ' + node.type + ' node.'}
+                              style={{color: 'white'}}/>
+              </ToolbarGroup>
+              <ToolbarGroup key={1} float="right">
+                <RaisedButton
+                    label="Delete Node"
+                    primary={true}
+                    onClick={this.deleteNode.bind(this)}
+                    disabled={state.loading} />
+              </ToolbarGroup>
+            </Toolbar>
+
+            <div style={{overflow: 'auto', margin: 10}}>
+              <h3>{state.obm ? 'OBM' : 'OBM Not Found'}</h3>
+              {state.obm && <div style={{overflow: 'auto', margin: 10}}><JsonInspector
+                    search={false}
+                    isExpanded={() => true}
+                    data={state.obm || {}} /></div>}
             </div>
-            <div className="cell">
-              <WorkflowsGrid nodeId={this.getNodeId()} />
-              <CatalogsGrid nodeId={this.getNodeId()} />
-            </div>
-          </div>
-          <div className="line">
-            <div className="cell">
-              <Console elements={this.state.logs} />
-            </div>
-            <div className="cell">
-              <PollersGrid nodeId={this.getNodeId()} />
-              <EditNode node={this.state.node} />
-            </div>
-          </div>
-        </div>
+
+            <WorkflowsGrid nodeId={this.getNodeId()} />
+            <CatalogsGrid nodeId={this.getNodeId()} />
+            <PollersGrid nodeId={this.getNodeId()} />
+
+          </Tab>
+          <Tab
+              icon={<FontIcon className="fa fa-terminal" />}
+              label="Console">
+
+            <Console
+              elements={state.previousLogs.concat(state.realtimeLogs)}
+              height={Math.max(500, window.innerHeight - 150)}
+              handleInfiniteLoad={cb => {
+                this.loadPreviousLogs(
+                  state.previousLogs.length +
+                  state.realtimeLogs.length
+                ).then(res => {
+                  let previousLogs = res.hits.hits.map(hit => hit._source);
+
+                  this.setState(state => {
+                    previousLogs = previousLogs.concat(state.previousLogs).sort(
+                      (a, b) => moment(a.timestamp).unix() -
+                                moment(b.timestamp).unix()
+                    );
+
+                    return { previousLogs };
+                  }, cb);
+                }).catch(cb);
+              }} />
+
+          </Tab>
+          <Tab
+              icon={<FontIcon className="fa fa-edit" />}
+              label="Editor">
+
+            <EditNode node={node} />
+
+          </Tab>
+        </Tabs>
+
         <Snackbar
           ref="error"
           action="dismiss"
-          open={!!this.state.error}
-          message={this.state.error || 'Unknown error.'}
+          open={!!state.error}
+          message={state.error || 'Unknown error.'}
           onActionClick={this.dismissError.bind(this)} />
       </div>
     );

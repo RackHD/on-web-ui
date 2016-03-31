@@ -3,10 +3,12 @@
 'use strict';
 
 import React, { Component } from 'react';
+import moment from 'moment';
 
 import Console from 'rui-common/views/Console';
 import JsonInspector from 'react-json-inspector';
 
+import ElasticsearchAPI from 'rui-common/messengers/ElasticsearchAPI';
 import LogsMessenger from 'rui-common/messengers/LogsMessenger';
 
 export default class Logs extends Component {
@@ -20,7 +22,8 @@ export default class Logs extends Component {
   get logs() { return this.constructor.logs; }
 
   state = {
-    logs: []
+    previousLogs: [],
+    realtimeLogs: []
   };
 
   unwatch() {
@@ -30,7 +33,7 @@ export default class Logs extends Component {
   watch(props) {
     this.logs.listen(msg => {
       this.setState(state => {
-        return {logs: [msg.data].concat(state.logs)};
+        return {realtimeLogs: [msg.data].concat(state.realtimeLogs)};
       });
     });
   }
@@ -43,23 +46,45 @@ export default class Logs extends Component {
     this.unwatch();
   }
 
+  loadPreviousLogs(offset=0, size=300) {
+    return ElasticsearchAPI.search({
+      q: '*',
+      sort: 'timestamp:desc',
+      index: 'logstash-*',
+      from: offset,
+      size: size
+    });
+  }
+
   render() {
     if (this.props.open === false) { return null; }
 
-    let props = {style: this.props.style};
+    let props = {style: this.props.style},
+        state = this.state;
+
+    let elements = state.previousLogs.concat(state.realtimeLogs).sort(
+      (a, b) => moment(a.timestamp).unix() -
+                moment(b.timestamp).unix()
+    );
 
     return (
       <div className="Logs" {...props}>
-        <Console rows={this.state.logs} height={this.props.height} mapper={data => (
-          <p style={{color: Console.colors[data.level]}}>
-            <b>{data.timestamp}</b>&nbsp;&nbsp;
-            <i>[{data.name}]</i>&nbsp;&nbsp;
-            <i>[{data.module}]</i>&nbsp;&nbsp;
-            <i>[{data.subject}]</i>&nbsp;--&nbsp;
-            <b>{data.message}</b>&nbsp;->&nbsp;
-            <u>{data.caller}</u>
-          </p>
-        )} />
+        <Console
+          elements={elements}
+          height={this.props.height}
+          handleInfiniteLoad={cb => {
+            this.loadPreviousLogs(
+              elements.length
+            ).then(res => {
+              let previousLogs = res.hits.hits.map(hit => hit._source);
+
+              this.setState(state => {
+                previousLogs = previousLogs.concat(state.previousLogs);
+
+                return { previousLogs };
+              }, cb);
+            }).catch(cb);
+          }} />
       </div>
     );
   }

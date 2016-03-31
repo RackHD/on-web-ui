@@ -39,7 +39,7 @@ export default class PollersGrid extends Component {
           toolbarContent={<RaisedButton label="Create Poller" primary={true} onClick={this.createPoller.bind(this)} />}
           mapper={poller => {
             let row = {};
-            row.Type = <Link to={'/mc/pollers/' + poller.id}>{poller.type && poller.type.toUpperCase()}</Link>;
+            row.Type = <Link to={'/mc/pollers/' + poller.id}>{this.getPollerType(poller)}</Link>;
             if (!this.nodeId) {
               row.Node = <Link to={'/mc/nodes/' + poller.node}>{FormatHelpers.shortId(poller.node)}</Link>;
             }
@@ -50,6 +50,16 @@ export default class PollersGrid extends Component {
   }
 
   get nodeId() { return this.props.nodeId; }
+
+  getPollerType(poller) {
+    if (poller.type) {
+      return poller.type.toString().toUpperCase();
+    }
+    if (poller.name) {
+      return poller.name.toString().split('.').slice(1).join('.');
+    }
+    return '(Unknown)';
+  }
 
   listPollers() {
     this.setState({loading: true});

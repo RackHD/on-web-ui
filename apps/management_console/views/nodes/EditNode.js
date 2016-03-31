@@ -35,44 +35,50 @@ export default class EditNode extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.node) this.setState({node: nextProps.node, loading: false, disabled: false});
+    if (nextProps.node) {
+      this.setState({node: nextProps.node, loading: false, disabled: false});
+    }
   }
 
   render() {
-    var node = this.state.node || {},
-        nameLink = this.linkObjectState('node', 'name')
+    let { state } = this;
+
+    let node = state.node || {},
+        nameLink = this.linkObjectState('node', 'name');
+
     return (
       <div className="EditNode">
         <Toolbar>
           <ToolbarGroup key={0} float="left">
-            <ToolbarTitle text={node.id ? 'Edit Node' : 'Create Node'} />
+            <ToolbarTitle text={node.id ? 'Edit Node' : 'Create Node'}
+                          style={{color: 'white'}}/>
           </ToolbarGroup>
           <ToolbarGroup key={1} float="right">
             <RaisedButton
                 label="Cancel"
                 onClick={this.routeBack}
-                disabled={this.state.disabled} />
+                disabled={state.disabled} />
             <RaisedButton
                 label="Save"
                 primary={true}
                 onClick={this.saveNode.bind(this)}
-                disabled={this.state.disabled} />
+                disabled={state.disabled} />
           </ToolbarGroup>
         </Toolbar>
-        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
+        <LinearProgress mode={state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{padding: '0 10px 10px'}}>
           <TextField
               valueLink={nameLink}
               hintText="Name"
               floatingLabelText="Name"
-              disabled={this.state.disabled}
+              disabled={state.disabled}
               fullWidth={true} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Node Type:</h5>
           <Select
               name="type"
-              value={this.state.node && this.state.node.type}
+              value={node && node.type}
               placeholder="Select a type..."
-              disabled={this.state.disabled}
+              disabled={state.disabled}
               options={[
                 {value: 'compute', label: 'Compute Node'},
                 {value: 'dea', label: 'DEA Node'},
@@ -81,15 +87,15 @@ export default class EditNode extends Component {
                 {value: 'switch', label: 'Switch Node'}
               ]}
               onChange={(option) => {
-                let node = this.state.node || {};
+                let node = state.node || {};
                 node.type = option && option.value;
-                this.setState({node: node})
+                this.setState({ node });
               }} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Node JSON:</h5>
           <JsonEditor
-              initialValue={this.state.node}
+              value={node}
               updateParentState={this.updateStateFromJsonEditor.bind(this)}
-              disabled={this.state.disabled}
+              disabled={state.disabled}
               ref="jsonEditor" />
         </div>
       </div>
@@ -97,14 +103,16 @@ export default class EditNode extends Component {
   }
 
   updateStateFromJsonEditor(stateChange) {
-    // this.setState({node: stateChange});
+    this.setState({node: stateChange});
   }
 
   saveNode() {
     this.disable();
+
     if (this.state.node.id) {
       this.nodes.update(this.state.node.id, this.state.node).then(() => this.enable());
     }
+
     else {
       this.nodes.create(this.state.node).then(() => this.context.router.goBack());
     }

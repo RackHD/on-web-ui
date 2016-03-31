@@ -41,12 +41,12 @@ export default class ConsoleItem extends Component {
         margin: 0,
         height: props.height
       }}>
-        <b>{props.timestamp}</b>
-        {/*<i>[{props.name}]</i>
-        <i>[{props.module}]</i>
-        <i>[{props.subject}]</i>*/}
-        <b>{props.message}</b>
-        {/*<u>{props.caller}</u>*/}
+        <b>{props.timestamp}</b>&nbsp;&nbsp;
+        {/*<i>[{props.name}]</i>&nbsp;&nbsp;
+        <i>[{props.module}]</i>&nbsp;&nbsp;
+        <i>[{props.subject}]</i>&nbsp;&nbsp;*/}
+        <b>{props.message}</b>&nbsp;&nbsp;
+        {/*<u>{props.caller}</u>&nbsp;&nbsp;*/}
       </div>
     );
   }

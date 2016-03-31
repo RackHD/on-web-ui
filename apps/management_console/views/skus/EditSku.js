@@ -66,7 +66,7 @@ export default class EditSku extends Component {
               fullWidth={true} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>SKU JSON:</h5>
           <JsonEditor
-              initialValue={this.state.sku}
+              value={this.state.sku}
               updateParentState={this.updateStateFromJsonEditor.bind(this)}
               disabled={this.state.disabled}
               ref="jsonEditor" />
