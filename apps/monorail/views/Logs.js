@@ -73,14 +73,11 @@ export default class Logs extends Component {
           elements={elements}
           height={this.props.height}
           handleInfiniteLoad={cb => {
-            this.loadPreviousLogs(
-              elements.length
-            ).then(res => {
+            this.loadPreviousLogs(elements.length).then(res => {
               let previousLogs = res.hits.hits.map(hit => hit._source);
 
               this.setState(state => {
                 previousLogs = previousLogs.concat(state.previousLogs);
-
                 return { previousLogs };
               }, cb);
             }).catch(cb);

@@ -103,7 +103,7 @@ export default class MonoRailToolbar extends Component {
                 }
                 onTouchTap={this.toggleMenu.bind(this)}
                 primaryText={
-                  <TextField hintText="Search" style={{width: 200}} onTouchTap={event => event.stopPropagation()}/>
+                  <TextField hintText="Search" style={{width: 200, visibility: 'hidden'}} onTouchTap={event => event.stopPropagation()} />
                 } />
 
             <Link to="/mc/dashboard" style={linkStyle}>
@@ -113,19 +113,19 @@ export default class MonoRailToolbar extends Component {
                   primaryText="Management Console" />
             </Link>
 
-            <Link to="/nt" style={linkStyle}>
+            {/*<Link to="/nt" style={linkStyle}>
               <ListItem
                   style={getLinkStyle('nt')}
                   leftIcon={<FontIcon className="fa fa-fw fa-sitemap fa-rotate-270" style={getIconStyle('nt')}/>}
                   primaryText="Network Topology" />
-            </Link>
+            </Link>*/}
 
-            <Link to="/oc" style={linkStyle}>
+            {/*<Link to="/oc" style={linkStyle}>
               <ListItem
                   style={getLinkStyle('oc')}
                   leftIcon={<FontIcon className="fa fa-fw fa-tasks" style={getIconStyle('oc')}/>}
                   primaryText="Operations Center" />
-            </Link>
+            </Link>*/}
 
             {/*<Link to="/va" style={linkStyle}>
               <ListItem

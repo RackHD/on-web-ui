@@ -39,7 +39,9 @@ export default class Console extends Component {
   }
 
   elementInfiniteLoad() {
-    return <span>Loading...</span>;
+    return <div style={{height: 40}}>
+      <span>Loading...</span>
+    </div>;
   }
 
   render() {

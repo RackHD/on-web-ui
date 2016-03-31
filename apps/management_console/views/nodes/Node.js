@@ -85,6 +85,11 @@ export default class Node extends Component {
     let { state } = this;
     let node = state.node || {};
 
+    let logs = state.previousLogs.concat(state.realtimeLogs).sort(
+      (a, b) => moment(a.timestamp).unix() -
+                moment(b.timestamp).unix()
+    );
+
     return (
       <div className="Node">
         <LinearProgress mode={state.loading ? 'indeterminate' : 'determinate'} value={100} />
@@ -126,21 +131,14 @@ export default class Node extends Component {
               label="Console">
 
             <Console
-              elements={state.previousLogs.concat(state.realtimeLogs)}
+              elements={logs}
               height={Math.max(500, window.innerHeight - 150)}
               handleInfiniteLoad={cb => {
-                this.loadPreviousLogs(
-                  state.previousLogs.length +
-                  state.realtimeLogs.length
-                ).then(res => {
+                this.loadPreviousLogs(logs.length).then(res => {
                   let previousLogs = res.hits.hits.map(hit => hit._source);
 
                   this.setState(state => {
-                    previousLogs = previousLogs.concat(state.previousLogs).sort(
-                      (a, b) => moment(a.timestamp).unix() -
-                                moment(b.timestamp).unix()
-                    );
-
+                    previousLogs = previousLogs.concat(state.previousLogs)
                     return { previousLogs };
                   }, cb);
                 }).catch(cb);
