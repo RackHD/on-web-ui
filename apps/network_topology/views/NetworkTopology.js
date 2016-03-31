@@ -9,25 +9,17 @@ import radium from 'radium';
 
 import NetworkTopologyGraph from './NetworkTopologyGraph';
 
-const TOOLBAR_HEIGHT = 70;
-
 @radium
 export default class NetworkTopology extends Component {
-
-  static propTypes = {
-    css: PropTypes.object,
-    params: PropTypes.object,
-    style: PropTypes.object
-  };
 
   static defaultProps = {
     css: {},
     params: null,
-    style: {},
+    style: {}
   };
 
   static contextTypes = {
-    appContainer: PropTypes.any
+    parentSplit: PropTypes.any
   };
 
   static childContextTypes = {
@@ -40,56 +32,28 @@ export default class NetworkTopology extends Component {
     };
   }
 
-  state = {
-    height: window.innerHeight - TOOLBAR_HEIGHT,
-    width: window.innerWidth
-  };
-
-  componentWillMount() {
-    this.context.appContainer.fullscreenMode(true);
-
-    this.updateSize = () => {
-      let splitView = this.refs.splitView;
-      this.setState({
-        height: window.innerHeight - TOOLBAR_HEIGHT,
-        width: window.innerWidth
-      });
-    };
-  }
-
-  componentDidMount() {
-    let resizeTimer = null;
-    this.handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(this.updateSize, 300);
-    };
-    window.addEventListener('resize', this.handleResize);
-    window.addEventListener('orientationchange', this.handleResize);
-  }
-
-  componentWillUnmount() {
-    this.context.appContainer.fullscreenMode(false);
-
-    window.removeEventListener('resize', this.handleResize);
-    window.removeEventListener('orientationchange', this.handleResize);
-    this.handleResize = null;
-  }
+  state = {};
 
   css = {
     root: {
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      transition: 'width 1s'
     }
   };
 
   render() {
     let { props, state } = this;
 
+    let parentSplitView = this.context.parentSplit,
+        height = parentSplitView.height * parentSplitView.splitB,
+        width = parentSplitView.width;
+
     let css = {
       root: [
         this.css.root,
         props.css.root,
-        { width: state.width, height: state.height },
+        { width: width, height: height },
         this.props.style
       ]
     };
@@ -98,7 +62,7 @@ export default class NetworkTopology extends Component {
 
     return (
       <div ref="root" style={css.root}>
-        <NetworkTopologyGraph ref="graph" width={state.width} height={state.height} />
+        <NetworkTopologyGraph ref="graph" width={width} height={height} />
       </div>
     );
   }

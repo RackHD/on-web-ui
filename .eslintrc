@@ -10,7 +10,10 @@
     "__DEV__": true,
     "__SERVER__": true
   },
-  "ecmaFeatures": {"jsx": true},
+  "ecmaFeatures": {
+    "jsx": true,
+    "modules": true
+  },
   "rules": {
     // Strict mode
     "strict": [0, "global"],

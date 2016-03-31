@@ -4,16 +4,14 @@
 
 import React, { Component, PropTypes } from 'react';
 
-// Based on http://www.mbates.com/play/ReactJsonEditor/
-
 export default class JsonEditor extends Component {
 
   static propTypes = {
-    rows: PropTypes.number,
     cols: PropTypes.number,
     disabled: PropTypes.bool,
-    initialValue: PropTypes.any,
-    updateParentState: PropTypes.func
+    rows: PropTypes.number,
+    updateParentState: PropTypes.func,
+    value: PropTypes.any
   };
 
   static defaultProps = {
@@ -23,13 +21,13 @@ export default class JsonEditor extends Component {
   };
 
   state = {
-    value: null,
+    value: this.props.value,
     error: false
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.initialValue !== this.props.initialValue) {
-      this.setState({value: nextProps.initialValue});
+    if (nextProps.value !== this.props.value) {
+      this.setState({value: nextProps.value});
     }
   }
 
@@ -50,21 +48,25 @@ export default class JsonEditor extends Component {
 
   linkState() {
     return {
-      value: this.state.rawValue ? this.state.rawValue : JSON.stringify(this.state.value, null, 2),
+      value: this.currentValue,
       requestChange: this.handleChange.bind(this)
     };
   }
 
+  get currentValue() {
+    return this.state.rawValue ?
+      this.state.rawValue : JSON.stringify(this.state.value, null, 2);
+  }
+
   render() {
-    if (this.state.value === null) {
-      this.state.value = this.props.initialValue;
-    }
     return (
       <div className={'JsonEditor' + (this.props.disabled ? ' disabled' : '')}>
         {this.state.error ? (
           <div className="error">{JSON.stringify(this.state.error.message)}</div>
         ) : null}
-        <textarea valueLink={this.linkState()}
+        <textarea ref="textarea"
+                  defaultValue={this.props.value}
+                  valueLink={this.linkState()}
                   rows={this.props.rows}
                   cols={this.props.cols}
                   disabled={this.props.disabled}

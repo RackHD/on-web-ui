@@ -14,6 +14,7 @@ export default class FilesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + 'list/all')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -25,6 +26,7 @@ export default class FilesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + filename + '/latest')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -36,6 +38,7 @@ export default class FilesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + 'md5/' + filename + '/latest')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -47,6 +50,7 @@ export default class FilesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + 'metadata/' + filename)
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);

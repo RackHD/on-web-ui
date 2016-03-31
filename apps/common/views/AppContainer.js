@@ -2,54 +2,21 @@
 
 'use strict';
 
-import merge from 'lodash/object/merge';
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
-import { RouteHandler, Link } from 'react-router';
 
-import { AppBar, AppCanvas, FontIcon } from 'material-ui';
-import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
+import { AppCanvas } from 'material-ui';
+import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 
-import AppNavigation from './AppNavigation';
-import EMCTab from './EMCTab';
 import ErrorNotification from './ErrorNotification';
-
-import FormatHelpers from '../mixins/FormatHelpers';
 
 import emcTheme from '../lib/emcTheme';
 
-@ThemeDecorator(emcTheme)
 @radium
 export default class AppContainer extends Component {
 
-  static propTypes = {
-    afterBreadcrumbs: PropTypes.any,
-    afterContent: PropTypes.any,
-    beforeBreadcrumbs: PropTypes.any,
-    beforeContent: PropTypes.any,
-    className: PropTypes.string,
-    css: PropTypes.object,
-    disableAppBar: PropTypes.bool,
-    disableTabPadding: PropTypes.bool,
-    navigation: PropTypes.any,
-    replaceBreadcrumbs: PropTypes.any,
-    rightAppBarIconElement: PropTypes.any,
-    title: PropTypes.string
-  };
-
   static defaultProps = {
-    afterBreadcrumbs: null,
-    afterContent: null,
-    beforeBreadcrumbs: null,
-    beforeContent: null,
-    className: 'app-container',
-    css: {},
-    disableAppBar: false,
-    disableTabPadding: false,
-    navigation: null,
-    replaceBreadcrumbs: null,
-    rightAppBarIconElement: null,
-    title: '',
+    css: {}
   };
 
   static childContextTypes = {
@@ -57,7 +24,10 @@ export default class AppContainer extends Component {
     muiTheme: PropTypes.any
   };
 
-  state = {};
+  state = {
+    width: window.innerWidth,
+    height: window.innerHeight
+  };
 
   getChildContext() {
     return {
@@ -72,48 +42,24 @@ export default class AppContainer extends Component {
   }
 
   componentDidMount() {
-    this.handleResize = () => {
-      this.refs.content.style.height = (window.innerHeight - (this.gutter * 2) + 'px')
+    this.updateSize = () => {
+      this.setState({width: window.innerWidth, height: window.innerHeight});
     };
-    window.addEventListener('resize', this.handleResize);
-    window.addEventListener('orientationchange', this.handleResize);
+    window.addEventListener('resize', this.updateSize);
+    window.addEventListener('orientationchange', this.updateSize);
   }
 
 
   componentWillUnmount() {
     window.onerror = null;
-    window.removeEventListener('resize', this.handleResize);
-    window.removeEventListener('orientationchange', this.handleResize);
-    this.handleResize = null;
+    window.removeEventListener('resize', this.updateSize);
+    window.removeEventListener('orientationchange', this.updateSize);
+    this.updateSize = null;
   }
-
-  componentDidUpdate() {
-    if (this.state.error) { this.refs.error.show(); }
-  }
-
-  gutter = 64;
 
   css = {
     root: {
-      paddingBottom: this.props.disableTabPadding ? 0 : this.gutter
-    },
-
-    header: {
-      background: 'rgba(0, 0, 0, 0.5)'
-    },
-
-    appBar: {
-      color: 'inherit',
-      background: 'inherit',
-      position: 'fixed'
-    },
-
-    content: {
-      paddingTop: this.props.disableAppBar ? 0 : this.gutter
-    },
-
-    footer: {
-      padding: 10
+      position: 'relative'
     }
   };
 
@@ -121,144 +67,20 @@ export default class AppContainer extends Component {
     let css = {
       root: [
         this.css.root,
-        this.state.fullscreenMode ? {paddingBottom: 0} : null,
+        {width: this.state.width, height: this.state.height},
         this.props.css.root,
         this.props.style
-      ],
-
-      header: [this.css.header, this.props.css.header],
-
-      // AppBar does not support Radium style
-      appBar: merge({},
-        this.css.appBar,
-        this.state.fullscreenMode ? {position: 'relative', height: 64} : null,
-        this.props.css.appBar
-      ),
-
-      content: [
-        this.css.content,
-        this.state.fullscreenMode ? {paddingTop: 0, height: window.innerHeight - (this.gutter * 2)} : null,
-        this.props.css.content
-      ],
-
-      footer: [
-        this.css.footer,
-        this.props.css.footer
       ]
     };
 
-    let breadcrumbs = this.props.replaceBreadcrumbs || this.renderBreadcrumbs(),
-        titleStyle = {fontWeight: 'normal', fontSize: '1em', margin: 0, height: 64},
-        title = this.props.title || this.props.replaceBreadcrumbs ?
-          <div style={titleStyle}>
-            {this.props.beforeBreadcrumbs}
-            {breadcrumbs}
-            {this.props.afterBreadcrumbs}
-          </div> :
-          <h1 style={titleStyle}>
-            {this.props.beforeBreadcrumbs}
-            {breadcrumbs}
-            {this.props.afterBreadcrumbs}
-          </h1>;
-
     return (
-      <div
-          className={this.props.className + ' app-canvas'}
-          style={css.root}>
-        <AppCanvas>
-          <header style={css.header}>
-            {this.props.disableAppBar ? null : <AppBar
-                onLeftIconButtonTouchTap={this.toggleLeftNavigation.bind(this)}
-                iconElementRight={this.props.rightAppBarIconElement}
-                title={title}
-                titleStyle={{overflow: 'visible'}}
-                style={css.appBar}
-                zDepth={0} />}
-
-            {this.props.navigation &&
-              <AppNavigation ref="navigation">{this.props.navigation}</AppNavigation>}
-          </header>
-
-          {this.props.beforeContent}
-
-          <div ref="content" style={css.content}>
-            {this.props.children}
-          </div>
-
-          {this.props.afterContent}
-
+      <MuiThemeProvider muiTheme={emcTheme}>
+        <div className={this.props.className} style={css.root}>
+          {this.props.children}
           <ErrorNotification ref="error" />
-
-          <footer style={css.footer}>
-            {this.state.fullscreenMode ? null : <span key={0}>© 2015 EMC<sup>2</sup></span>}
-          </footer>
-
-          <EMCTab ref="emcTab" />
-        </AppCanvas>
-      </div>
+        </div>
+      </MuiThemeProvider>
     );
-  }
-
-  renderBreadcrumbs() {
-    if (this.props.disableAppBar || !this.props.routes) return [];
-
-    let breadcrumbs = [],
-        title = 'MonoRail » ',
-        depth = this.props.routes.length;
-
-    this.props.routes.forEach((item, index) => {
-      if (index === 0) return;
-
-      let path = (item.path || '').split('/');
-
-      let showLastParam = path[path.length - 1].charAt(0) === ':',
-          isNotLast = (index + 1) < depth;
-
-      path = path.map(segment => {
-        if (segment.charAt(0) === ':') {
-          return this.props.params[segment.slice(1)];
-        }
-        return segment;
-      });
-
-      let targetPath = path.slice(0);
-      targetPath.pop();
-      add(targetPath.join('/'), item.name || item.component.name, index);
-
-      if (isNotLast || showLastParam) { divide(index + 1); }
-      if (showLastParam) {
-        add(path.join('/'), last(path[path.length - 1]), index + 2);
-      }
-    });
-
-    function add(target, name, index) {
-      title += name;
-      breadcrumbs.push(
-        <Link key={'l' + index} to={target} style={{textDecoration: 'none'}}>
-          {name}
-        </Link>
-      );
-    }
-
-    function divide(index) {
-      title += ' » ';
-      breadcrumbs.push(<span key={'s' + index}>&nbsp;{'»'}&nbsp;</span>);
-    }
-
-    function last(name) {
-      if ((name.length === 24 || name.length === 36) && !((/\s/).test(name))) {
-        name = FormatHelpers.shortId(name);
-      }
-      return name;
-    }
-
-    this.title = title;
-
-    return <div style={{float: 'left'}}>{breadcrumbs}</div>;
-  }
-
-  toggleLeftNavigation() {
-    this.refs.navigation.toggleLeftNav();
   }
 
   onError(errorMsg, tries=0) {
@@ -267,31 +89,6 @@ export default class AppContainer extends Component {
       return setTimeout(this.onError.bind(this, errorMsg, tries + 1), 100);
     }
     this.refs.error.showError(errorMsg);
-  }
-
-  get title() {
-    return this.findTitle().innerHTML;
-  }
-
-  set title(title) {
-    this.findTitle().innerHTML = title;
-  }
-
-  findTitle() {
-    return document.head.querySelector('title');
-  }
-
-  fullscreenMode(enable) {
-    this.setState({fullscreenMode: enable}, () => {
-      if (this.state.fullscreenMode) {
-        document.body.style.overflow = 'hidden';
-        document.body.classList.add('no-select');
-      }
-      else {
-        document.body.style.overflow = 'visible';
-        document.body.classList.remove('no-select');
-      }
-    });
   }
 
 }

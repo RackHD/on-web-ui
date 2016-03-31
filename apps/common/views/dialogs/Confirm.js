@@ -7,7 +7,7 @@ import { render, unmountComponentAtNode } from 'react-dom';
 
 import radium from 'radium';
 
-import { Dialog } from 'material-ui';
+import { Dialog, FlatButton } from 'material-ui';
 
 @radium
 export default class ConfirmDialog extends Component {
@@ -52,9 +52,16 @@ export default class ConfirmDialog extends Component {
   componentWillUnmount() {}
 
   render() {
-    let confirmActions = [
-      { text: 'Cancel', onTouchTap: this.dismiss.bind(this, false) },
-      { text: 'OK', onTouchTap: this.dismiss.bind(this, true), ref: 'ok' }
+    const confirmActions = [
+      <FlatButton
+          label="Cancel"
+          secondary={true}
+          onTouchTap={this.dismiss.bind(this, false)} />,
+      <FlatButton ref="ok"
+          label="Submit"
+          primary={true}
+          keyboardFocused={true}
+          onTouchTap={this.dismiss.bind(this, true)} />
     ];
 
     return (

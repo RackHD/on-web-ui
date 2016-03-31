@@ -1,9 +1,9 @@
 {
-  "name": "common-web-ui",
+  "name": "rui-common",
   "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
-  "description": "Common Web UI",
+  "description": "RackHD UI -Common",
   "repository": "",
   "license": "Apache-2.0",
   "engines": {

@@ -1,13 +1,16 @@
 'use strict';
 
+import merge from 'lodash/merge';
 import Color from 'color';
 
-import muiColors from 'material-ui/lib/styles/colors';
-import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
+
+import * as muiColors from 'material-ui/lib/styles/colors';
+import darkBaseTheme from 'material-ui/lib/styles/baseThemes/darkBaseTheme';
 
 import emcColors from './emcColors';
 
-let muiTheme = ThemeManager.getMuiTheme({
+let muiTheme = getMuiTheme(merge(darkBaseTheme, {
   spacing: {
     iconSize: 24,
 
@@ -43,7 +46,9 @@ let muiTheme = ThemeManager.getMuiTheme({
     layer: 20,
     popover: 20,
   }
-});
+}));
+
+muiTheme.emcColors = emcColors;
 
 muiTheme.darkEMC = true;
 

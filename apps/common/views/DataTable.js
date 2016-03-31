@@ -73,7 +73,11 @@ export default class DataTable extends Component {
       return (
         <TableRow key={i}>
           {fields.map(field => {
-            return <TableRowColumn key={field.name + '-row'}>{item[field.name]}</TableRowColumn>
+            return (
+              <TableRowColumn key={field.name + '-row'} style={{whiteSpace: 'default'}}>
+                {item[field.name]}
+              </TableRowColumn>
+            );
           })}
         </TableRow>
       );

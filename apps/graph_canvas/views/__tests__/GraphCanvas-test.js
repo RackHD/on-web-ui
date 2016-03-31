@@ -7,14 +7,14 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 
-import TestWrapper from 'common-web-ui/views/TestWrapper';
+import TestWrapper from 'rui-common/views/TestWrapper';
 import GraphCanvas from '../GraphCanvas';
 import Vector from '../../lib/Vector';
 
 var props = {
-  initialX: 0,
-  initialY: 0,
-  initialScale: 1,
+  x: 0,
+  y: 0,
+  scale: 1,
   worldWidth: 240,
   worldHeight: 200,
   viewWidth: 120,

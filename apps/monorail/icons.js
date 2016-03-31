@@ -5,7 +5,7 @@ export default {
   dashboard: 'fa fa-dashboard',
   settings: 'fa fa-cog',
 
-  // MonoRail API Entities
+  // RackHD API Entities
   catalogs: 'fa fa-map-o',
   config: 'fa fa-info',
   files: 'fa fa-files-o',

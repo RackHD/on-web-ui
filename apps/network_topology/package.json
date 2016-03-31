@@ -1,9 +1,9 @@
 {
-  "name": "network-topology-web-ui",
+  "name": "rui-network-topology",
   "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
-  "description": "Network Topology Web UI",
+  "description": "RackHD UI - Network Topology",
   "repository": "",
   "license": "Apache-2.0",
   "engines": {

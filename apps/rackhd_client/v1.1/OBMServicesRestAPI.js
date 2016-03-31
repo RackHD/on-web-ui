@@ -14,6 +14,7 @@ export default class OBMServicesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id)
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -25,6 +26,7 @@ export default class OBMServicesRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url)
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);

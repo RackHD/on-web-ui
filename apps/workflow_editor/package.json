@@ -1,9 +1,9 @@
 {
-  "name": "workflow-editor-web-ui",
+  "name": "rui-workflow-editor",
   "main": "bundle.js",
   "private": true,
   "version": "0.0.0",
-  "description": "Workflow Editor Web UI",
+  "description": "RackHD UI -Workflow Editor",
   "repository": "",
   "license": "Apache-2.0",
   "engines": {

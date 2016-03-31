@@ -22,10 +22,12 @@ export default class WorkflowsRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + 'library/*')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) {
             this.http.get(this.url + 'library')
               .accept('json')
+              .set('authorization', this.jwtAuthorization)
               .end((err, res) => {
                 if (err) { return reject(err); }
                 resolve(res && res.body);
@@ -37,5 +39,19 @@ export default class WorkflowsRestAPI extends RestAPI {
         });
     });
   }
+
+  // TODO:
+  // validate(body) {
+  //   new Promise((resolve, reject) => {
+  //     this.http.post(this.url + 'validate')
+  //       .accept('json')
+  //       .type('json')
+  //       .send(body)
+  //       .end((err, res) => {
+  //         if (err) { return reject(err); }
+  //         resolve(res && res.body);
+  //       });
+  //   });
+  // }
 
 }

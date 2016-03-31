@@ -8,22 +8,22 @@ var ace = require('brace');
 var React = require('react');
 
 module.exports = React.createClass({
-  propTypes: {
-    mode: React.PropTypes.string,
-    theme: React.PropTypes.string,
-    name: React.PropTypes.string,
-    height: React.PropTypes.string,
-    width: React.PropTypes.string,
-    fontSize: React.PropTypes.number,
-    showGutter: React.PropTypes.bool,
-    onChange: React.PropTypes.func,
-    value: React.PropTypes.string,
-    onLoad: React.PropTypes.func,
-    maxLines: React.PropTypes.number,
-    readOnly: React.PropTypes.bool,
-    highlightActiveLine: React.PropTypes.bool,
-    showPrintMargin: React.PropTypes.bool
-  },
+  // propTypes: {
+  //   mode: React.PropTypes.string,
+  //   theme: React.PropTypes.string,
+  //   name: React.PropTypes.string,
+  //   height: React.PropTypes.string,
+  //   width: React.PropTypes.string,
+  //   fontSize: React.PropTypes.number,
+  //   showGutter: React.PropTypes.bool,
+  //   onChange: React.PropTypes.func,
+  //   value: React.PropTypes.string,
+  //   onLoad: React.PropTypes.func,
+  //   maxLines: React.PropTypes.number,
+  //   readOnly: React.PropTypes.bool,
+  //   highlightActiveLine: React.PropTypes.bool,
+  //   showPrintMargin: React.PropTypes.bool
+  // },
 
   getDefaultProps: function() {
     return {
@@ -89,10 +89,9 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var divStyle = {
-      width: this.props.width,
-      height: this.props.height
-    };
+    var divStyle = this.props.style || {}
+    divStyle.width = this.props.width;
+    divStyle.height = this.props.height;
     return (<div id={this.props.name} onChange={this.onChange} style={divStyle}></div>);
   }
 });

@@ -14,6 +14,7 @@ export default class SkusRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id + '/nodes')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);

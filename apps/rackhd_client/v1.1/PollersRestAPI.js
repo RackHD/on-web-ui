@@ -14,6 +14,7 @@ export default class PollersRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id + '/data/current')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -25,6 +26,7 @@ export default class PollersRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + 'library' + id ? '/' + id : '')
         .accept('json')
+        .set('authorization', this.jwtAuthorization)
         .end((err, res) => {
           if (err) { return reject(err); }
           resolve(res && res.body);
@@ -36,7 +38,8 @@ export default class PollersRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.put(this.url + id + '/pause')
         .accept('json')
-        .type('application/json')
+        .type('json')
+        .set('authorization', this.jwtAuthorization)
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }
@@ -49,7 +52,8 @@ export default class PollersRestAPI extends RestAPI {
     return new Promise((resolve, reject) => {
       this.http.put(this.url + id + '/resume')
         .accept('json')
-        .type('application/json')
+        .type('json')
+        .set('authorization', this.jwtAuthorization)
         .send(body)
         .end((err, res) => {
           if (err) { return reject(err); }

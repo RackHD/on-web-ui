@@ -8,8 +8,8 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import radium from 'radium';
 
-import ContextMenu from 'common-web-ui/views/ContextMenu';
-import GraphCanvas from 'graph-canvas-web-ui/views/GraphCanvas';
+import ContextMenu from 'rui-common/views/ContextMenu';
+import GraphCanvas from 'rui-graph-canvas/views/GraphCanvas';
 
 @radium
 export default class WorkflowGraph extends Component {
@@ -108,9 +108,9 @@ export default class WorkflowGraph extends Component {
             key={'graphCanvas' + this.state.version}
             ref="graphCanvas"
             grid={{}}
-            initialScale={this.lastGraphCanvas ? this.lastGraphCanvas.state.scale : 1}
-            initialX={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.x : 0}
-            initialY={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.y : 0}
+            scale={this.lastGraphCanvas ? this.lastGraphCanvas.state.scale : 1}
+            x={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.x : 0}
+            y={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.y : 0}
             viewHeight={this.state.canvasHeight}
             viewWidth={this.state.canvasWidth}
             worldHeight={this.state.worldHeight}

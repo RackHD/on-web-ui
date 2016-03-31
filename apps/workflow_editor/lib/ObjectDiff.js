@@ -2,7 +2,7 @@
 
 'use strict';
 
-import cloneDeep from 'lodash/lang/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep';
 
 function typeOf(obj) {
   return Array.isArray(obj) ? 'array' : typeof obj;

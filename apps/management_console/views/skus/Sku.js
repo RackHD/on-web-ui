@@ -1,0 +1,98 @@
+// Copyright 2015, EMC, Inc.
+
+'use strict';
+
+import React, { Component } from 'react';
+
+import mixin from 'rui-common/lib/mixin';
+import DialogHelpers from 'rui-common/mixins/DialogHelpers';
+
+import EditSku from './EditSku';
+import CreateSku from './CreateSku';
+export { CreateSku, EditSku };
+
+import {
+    FlatButton,
+    LinearProgress,
+    List, ListItem,
+    RaisedButton,
+    Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
+  } from 'material-ui';
+
+import JsonInspector from 'react-json-inspector';
+
+import SkuStore from 'rui-common/stores/SkuStore';
+
+@mixin(DialogHelpers)
+export default class Sku extends Component {
+
+  skus = new SkuStore();
+
+  state = {
+    sku: null,
+    loading: true
+  };
+
+  componentDidMount() {
+    this.unwatchSku = this.skus.watchOne(this.getSkuId(), 'sku', this);
+    this.readSku();
+  }
+
+  componentWillUnmount() { this.unwatchSku(); }
+
+  render() {
+    let sku = this.state.sku || {};
+    return (
+      <div className="Sku">
+        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+            <ToolbarTitle text="SKU Details" />
+          </ToolbarGroup>
+          <ToolbarGroup key={1} float="right">
+            <RaisedButton
+                label="Delete SKU"
+                primary={true}
+                onClick={this.deleteSku.bind(this)}
+                disabled={this.state.loading} />
+          </ToolbarGroup>
+        </Toolbar>
+        <div className="ungrid collapse">
+          <div className="line">
+            <div className="cell">
+              <List>
+                <ListItem
+                  primaryText={sku.name || '(Untitled)'}
+                  secondaryText="Name" />
+              </List>
+            </div>
+            <div className="cell">
+              <div style={{overflow: 'auto', margin: 10}}>
+                <JsonInspector
+                    search={false}
+                    isExpanded={() => true}
+                    data={sku.rules || []} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <EditSku sku={this.state.sku} />
+      </div>
+    );
+  }
+
+  getSkuId() { return this.props.skuId || this.props.params.skuId; }
+
+  readSku() {
+    this.setState({loading: true});
+    this.skus.read(this.getSkuId()).then(() => this.setState({loading: false}));
+  }
+
+  deleteSku() {
+    var id = this.state.sku.id;
+    this.setState({loading: true});
+    this.confirmDialog('Are you sure want to delete: ' + id,
+      (confirmed) => confirmed ? this.skus.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+  }
+
+}

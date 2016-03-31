@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
+import mixin from 'rui-common/lib/mixin';
 
 import GraphCanvasChildrenHelpers from '../mixins/GraphCanvasChildrenHelpers'
 
@@ -44,10 +44,6 @@ export default class GCWorld extends Component {
 
   get graphCanvas() {
     return this.context.graphCanvas;
-  }
-
-  shouldComponentUpdate() {
-    return true;
   }
 
   getChildContext() {

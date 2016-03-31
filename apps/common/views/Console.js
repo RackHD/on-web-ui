@@ -3,65 +3,70 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
+import Infinite from 'react-infinite';
+
+import ConsoleItem from './ConsoleItem';
 
 export default class Console extends Component {
 
-  static propTypes = {
-    rows: PropTypes.array,
-    mapper: PropTypes.func
-  };
-
   static defaultProps = {
-    rows: [],
-    mapper: item => <div>{JSON.stringify(item)}</div>
-  };
-
-  static colors = {
-    emerge: 'red',
-    alert: 'yellow',
-    crit: 'red',
-    error: 'red',
-    warning: 'red',
-    notice: 'yellow',
-    info: 'green',
-    debug: 'blue',
-    silly: 'blue'
+    elements: [],
+    handleInfiniteLoad: (cb) => { throw new Error('No handleInfiniteLoad') },
+    height: 200,
+    mapper: (item, i) => item && <ConsoleItem key={i + '_' + item.timestamp} {...item} />,
   };
 
   state = {
-    rows: this.props.rows.slice(0)
+    elements: this.props.elements,
+    isInfiniteLoading: false
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.rows && nextProps.rows !== this.state.rows) {
-      this.setState({rows: nextProps.rows});
+    if (nextProps.elements && nextProps.elements !== this.state.elements) {
+      this.setState({elements: nextProps.elements});
     }
   }
 
-  addRows(rows) {
-    var offset = this.state.rows.length;
-    this.setState(state => ({rows: state.rows.concat(rows)}));
+  handleInfiniteLoad() {
+    if (this.state.isInfiniteLoading === true) {
+      return;
+    }
+    this.setState({isInfiniteLoading: true}, () => {
+      this.props.handleInfiniteLoad(() => {
+        this.setState({isInfiniteLoading: false});
+      });
+    });
+  }
+
+  elementInfiniteLoad() {
+    return <div style={{height: 40}}>
+      <span>Loading...</span>
+    </div>;
   }
 
   render() {
-    if (!this.state.rows || !this.state.rows.length) {
-      return null;
-    }
+    let { props, state } = this;
+
     return (
       <div className="Console" style={{
         background: 'black',
+        borderRadius: 5,
+        boxSizing: 'border-box',
+        height: props.height,
+        overflow: 'hidden',
         padding: 5,
-        borderRadius: 5
+        transition: 'height 1s'
       }}>
-        <span style={{color: 'white'}}>Console:</span>
-        <div className="Console-logs" style={{
-          padding: 5,
-          maxHeight: 600,
-          minHeight: 60,
-          overflow: 'auto'
-        }}>
-          {this.state.rows.map(this.props.mapper)}
-        </div>
+        <Infinite
+            elementHeight={40}
+            containerHeight={props.height - 10}
+            infiniteLoadBeginEdgeOffset={200}
+            onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
+            loadingSpinnerDelegate={this.elementInfiniteLoad()}
+            isInfiniteLoading={this.state.isInfiniteLoading}
+            displayBottomUpwards={true}>
+          {state.elements.length ? state.elements.map(props.mapper) : '(console empty)'}
+        </Infinite>
       </div>
     );
   }

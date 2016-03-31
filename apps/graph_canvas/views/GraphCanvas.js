@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
 import radium from 'radium';
-import mixin from 'common-web-ui/lib/mixin';
+import mixin from 'rui-common/lib/mixin';
 
 import CoordinateHelpers from '../mixins/CoordinateHelpers';
 
@@ -34,31 +34,13 @@ export { GCSocketElement as GCSocket };
 @mixin(CoordinateHelpers)
 export default class GraphCanvas extends Component {
 
-  static propTypes = {
-    className: PropTypes.string,
-    css: PropTypes.object,
-    grid: PropTypes.object,
-    initialScale: PropTypes.number,
-    initialX: PropTypes.number,
-    initialY: PropTypes.number,
-    style: PropTypes.object,
-    viewHeight: PropTypes.number,
-    viewWidth: PropTypes.number,
-    worldHeight: PropTypes.number,
-    worldWidth: PropTypes.number,
-    onChange: PropTypes.func,
-    onSelect: PropTypes.func,
-    onLink: PropTypes.func,
-    onUnlink: PropTypes.func
-  };
-
   static defaultProps = {
     className: 'GraphCanvas',
     css: {},
     grid: {},
-    initialScale: 1,
-    initialX: 0,
-    initialY: 0,
+    scale: 1,
+    x: 0,
+    y: 0,
     style: {},
     viewHeight: 600,
     viewWidth: 800,
@@ -82,30 +64,40 @@ export default class GraphCanvas extends Component {
 
   index = {_links_: {}};
 
-  shouldComponentUpdate(nextProps, nextState) {
-    let props = this.props,
-        state = this.state;
-    return (
-      props.viewHeight !== nextProps.viewHeight ||
-      props.viewWidth !== nextProps.viewWidth ||
-      props.worldHeight !== nextProps.worldHeight ||
-      props.worldWidth !== nextProps.worldWidth ||
-      state.position !== nextState.position ||
-      state.scale !== nextState.scale
-    );
+  componentWillReceiveProps(nextProps) {
+    let position = new Vector(this.state.position),
+        nextState = null;
+    if (nextProps.x) {
+      position.x = nextProps.x;
+      nextState = nextState || {};
+      nextState.position = position;
+    }
+    if (nextProps.y) {
+      position.y = nextProps.y;
+      nextState = nextState || {};
+      nextState.position = position;
+    }
+    if (nextProps.scale) {
+      nextState = nextState || {};
+      nextState.scale = nextProps.scale;
+    }
+    if (nextState) {
+      this.setState(nextState);
+    }
   }
 
   state = {
     position: new Vector(
-      this.props.initialX,
-      this.props.initialY
+      this.props.x,
+      this.props.y
     ),
-    scale: this.props.initialScale
+    scale: this.props.scale
   };
 
   css = {
     root: {
-      overflow: 'hidden'
+      overflow: 'hidden',
+      transition: 'width 1s'
     }
   };
 
