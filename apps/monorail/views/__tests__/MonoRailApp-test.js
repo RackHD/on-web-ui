@@ -8,7 +8,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { findDOMNode } from 'react-dom';
 
 import TestWrapper from 'rui-common/views/TestWrapper';
-import App from '../App';
+import App from '../MonoRailApp';
 
 describe('MonoRail App', function() {
   this.timeout(5000);
