@@ -82,8 +82,8 @@ exports.baseConfig = function (options) {
 
     module: {
       preLoaders: [
-        { test: /\.js$/,
-          loader: 'eslint-loader', exclude: /(node_modules|material-ui)/ }
+        // { test: /\.js$/,
+          // loader: 'eslint-loader', exclude: /(node_modules|material-ui)/ }
       ],
 
       loaders: [
@@ -101,6 +101,7 @@ exports.baseConfig = function (options) {
           loader: 'url-loader?limit=10000&mimetype=image/png' },
         { test: /\.svg/,
           loader: 'url-loader?limit=10000&mimetype=image/svg+xml' },
+
         { test: /\.jsx?$/,
           loader: 'babel-loader', exclude: /(node_modules|material-ui)/ }
       ]
