@@ -33,6 +33,7 @@ onReady(() => {
         {ManagementConsole.routes}
         <Route name="Network Topology" path="/nt" component={NetworkTopology} />
         <Route name="Operations Center" path="/oc" component={OperationsCenter} />
+        <Route name="Operations Center" path="/oc/:workflow" component={OperationsCenter} />
         <Route name="Visual Analytics" path="/va" component={VisualAnalytics} />
         <Route name="Workflow Editor" path="/we" component={WorkflowEditor} />
         <Route name="Workflow Editor" path="/we/:workflow" component={WorkflowEditor} />

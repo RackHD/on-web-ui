@@ -7,10 +7,13 @@ import { EventEmitter } from 'events';
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
-import GraphCanvas from 'rui-graph-canvas/views/GraphCanvas';
-
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
+
+import GraphCanvas from 'rui-graph-canvas/views/GraphCanvas';
+
+import OverlayLegend from './OverlayLegend';
+import Operation from '../lib/Operation';
 
 import {
     GCGroup,
@@ -28,6 +31,7 @@ export default class OperationsGraph extends Component {
     height: PropTypes.number,
     styles: PropTypes.object,
     width: PropTypes.number,
+    workflow: PropTypes.any,
     worldHeight: PropTypes.number,
     worldWidth: PropTypes.number
   };
@@ -37,37 +41,24 @@ export default class OperationsGraph extends Component {
     height: 300,
     styles: {},
     width: 300,
+    workflow: null,
     worldHeight: 3000,
     worldWidth: 3000
   };
 
   static contextTypes = {
-    networkTopology: PropTypes.any,
+    operationsCenter: PropTypes.any,
   };
 
   static childContextTypes = {
-    networkTopologyGraph: PropTypes.any
+    operationsCenterGraph: PropTypes.any
   };
 
   getChildContext() {
     return {
-      networkTopologyGraph: this
+      operationsCenterGraph: this
     };
   }
-
-  state = {
-    canvasHeight: this.props.height,
-    canvasWidth: this.props.width,
-    version: 0,
-    worldHeight: this.props.worldHeight,
-    worldWidth: this.props.worldWidth
-  };
-
-  css = {
-    root: {
-      transition: 'width 1s'
-    }
-  };
 
   componentWillReceiveProps(nextProps) {
     let nextState = {}
@@ -75,106 +66,66 @@ export default class OperationsGraph extends Component {
     if (nextProps.worldWidth) { nextState.worldWidth = nextProps.worldWidth; }
     if (nextProps.height) { nextState.canvasHeight = nextProps.height; }
     if (nextProps.width) { nextState.canvasWidth = nextProps.width; }
+    if (nextProps.workflow) { nextState.workflow = nextProps.workflow; }
     this.setState(nextState);
   }
 
-  componentDidMount() {
-    this.handleWorkflowChange = () => {
-      this.setState({
-        version: this.state.version + 1
-      });
-    }
-  }
+  componentDidMount() {}
 
   componenWillUnmount() {}
 
+  state = {
+    canvasHeight: this.props.height,
+    canvasWidth: this.props.width,
+    version: 0,
+    workflow: this.props.workflow,
+    worldHeight: this.props.worldHeight,
+    worldWidth: this.props.worldWidth
+  };
+
+  css = {
+    root: {
+      transition: 'width 1s'
+    },
+
+    overlay: {
+      textAlign: 'center',
+      position: 'absolute',
+      height: 0,
+      width: '100%',
+      top: this.props.toolbarHeight || 0,
+      zIndex: 9
+    }
+  };
+
   render() {
+    let { props, state } = this;
+
     let css = {
-      root: [this.css.root, this.props.css.root, this.props.style]
+      root: [this.css.root, props.css.root, props.style],
+      overlay: [this.css.overlay, props.css.overlay]
     };
+
+    let operation = new Operation(state.workflow, this.context.operationsCenter);
 
     return (
       <div className="Operations" ref="root" style={css.root}>
         <GraphCanvas
-            key={'graphCanvas' + this.state.version}
+            key={'graphCanvas' + state.version}
             ref="graphCanvas"
             grid={{}}
             scale={this.lastGraphCanvas ? this.lastGraphCanvas.state.scale : 1}
             x={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.x : 0}
             y={this.lastGraphCanvas ? this.lastGraphCanvas.state.position.y : 0}
-            viewHeight={this.state.canvasHeight}
-            viewWidth={this.state.canvasWidth}
-            worldHeight={this.state.worldHeight}
-            worldWidth={this.state.worldWidth}
+            viewHeight={state.canvasHeight}
+            viewWidth={state.canvasWidth}
+            worldHeight={state.worldHeight}
+            worldWidth={state.worldWidth}
             onChange={(graphCanvas) => this.lastGraphCanvas = graphCanvas}>
-
-          <GCNode key="a" initialId="a" initialName="A" initialColor="#999"
-              initialBounds={[
-                1350,
-                1450,
-                1450,
-                1550
-              ]}
-              isRemovable={false} >
-            <GCPort key="a-io" initialId="a-io" initialName="IO" initialColor="#6cf">
-              <GCSocket key="a-in-0" dir={[-1, 0]}
-                  initialId="a-in-0"
-                  initialName="IN 0"
-                  initialColor="#6cf" />
-              <GCSocket key="a-in-1" dir={[-1, 0]}
-                  initialId="a-in-1"
-                  initialName="IN 1"
-                  initialColor="#6cf" />
-              <GCSocket key="a-out-0" dir={[1, 0]}
-                  initialId="a-out-0"
-                  initialName="OUT 0"
-                  initialColor="#6cf" />
-              <GCSocket key="a-out-1" dir={[1, 0]}
-                  initialId="a-out-1"
-                  initialName="OUT 1"
-                  initialColor="#6cf" />
-            </GCPort>
-          </GCNode>
-
-          <GCNode key="b" initialId="b" initialName="B" initialColor="#999"
-              initialBounds={[
-                1550,
-                1450,
-                1650,
-                1550
-              ]}
-              isRemovable={false} >
-            <GCPort key="b-io" initialId="b-io" initialName="IO" initialColor="#6cf">
-              <GCSocket key="b-in-0" dir={[-1, 0]}
-                  initialId="b-in-0"
-                  initialName="IN 0"
-                  initialColor="#6cf" />
-              <GCSocket key="b-in-1" dir={[-1, 0]}
-                  initialId="b-in-1"
-                  initialName="IN 1"
-                  initialColor="#6cf" />
-              <GCSocket key="b-out-0" dir={[1, 0]}
-                  initialId="b-out-0"
-                  initialName="OUT 0"
-                  initialColor="#6cf" />
-              <GCSocket key="b-out-1" dir={[1, 0]}
-                  initialId="b-out-1"
-                  initialName="OUT 1"
-                  initialColor="#6cf" />
-            </GCPort>
-          </GCNode>
-
-          <GCLink key="l-0"
-              from="a-out-0"
-              to="b-in-1"
-              initialId="l-0"
-              initialColor="#6cf" />
-          <GCLink key="l-1"
-              from="a-out-1"
-              to="b-in-0"
-              initialId="l-1"
-              initialColor="#6cf" />
+          {operation && operation.renderGraph()}
         </GraphCanvas>
+
+        <OverlayLegend ref="overlay" style={css.overlay}>{props.overlay}</OverlayLegend>
       </div>
     );
   }

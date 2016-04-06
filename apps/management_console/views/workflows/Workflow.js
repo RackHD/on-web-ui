@@ -2,9 +2,10 @@
 
 'use strict';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import moment from 'moment';
 
-import mixin from 'rui-common/lib/mixin';
+import ElasticsearchAPI from 'rui-common/messengers/ElasticsearchAPI';
 import DialogHelpers from 'rui-common/mixins/DialogHelpers';
 
 import EditWorkflow from './EditWorkflow';
@@ -13,9 +14,11 @@ export { CreateWorkflow, EditWorkflow };
 
 import {
     FlatButton,
+    FontIcon,
     LinearProgress,
     List, ListItem,
     RaisedButton,
+    Tabs, Tab,
     Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle
   } from 'material-ui';
 
@@ -26,16 +29,20 @@ import Console from 'rui-common/views/Console';
 import WorkflowMonitor from '../../lib/WorkflowMonitor';
 import WorkflowStore from 'rui-common/stores/WorkflowStore';
 
-@mixin(DialogHelpers)
 export default class Workflow extends Component {
+
+  static contextTypes = {
+    router: PropTypes.any
+  };
 
   workflows = new WorkflowStore();
 
   state = {
-    workflow: null,
     loading: true,
+    previousLogs: [],
+    realtimeLogs: [],
     state: 'Pending',
-    logs: []
+    workflow: null
   };
 
   componentDidMount() {
@@ -44,7 +51,7 @@ export default class Workflow extends Component {
       this.workflowMonitor = new WorkflowMonitor(this.state.workflow, {
         logs: msg => {
           this.setState(state => {
-            return {logs: [msg.data].concat(state.logs)}
+            return {realtimeLogs: [msg.data].concat(state.realtimeLogs)}
           });
         },
         events: (msg, pattern) => {
@@ -62,52 +69,101 @@ export default class Workflow extends Component {
     }
   }
 
+  loadPreviousLogs(offset=0, size=100) {
+    let nodeId = this.workflows.getNodeId(this.state.workflow);
+    if (!nodeId) return Promise.resolve();
+
+    return ElasticsearchAPI.search({
+      q: 'subject:' + this.state.workflow.node,
+      sort: 'timestamp:desc',
+      index: 'logstash-*',
+      from: offset,
+      size: size
+    });
+  }
+
   render() {
-    let workflow = this.state.workflow || {};
+    let { state } = this;
+
+    let workflow = state.workflow || {};
+
+    let logs = state.previousLogs.concat(state.realtimeLogs).sort(
+      (a, b) => moment(a.timestamp).unix() - moment(b.timestamp).unix()
+    );
+
     return (
       <div className="Workflow">
-        <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
-        <Toolbar>
-          <ToolbarGroup key={0} float="left">
-            <ToolbarTitle text="Workflow Details" />
-          </ToolbarGroup>
-          <ToolbarGroup key={1} float="right">
-            <RaisedButton
-                label="Delete Workflow"
-                primary={true}
-                onClick={this.deleteWorkflow.bind(this)}
-                disabled={this.state.loading} />
-          </ToolbarGroup>
-        </Toolbar>
-        <div className="ungrid collapse">
-          <div className="line">
-            <div className="cell">
-              <List>
-                <ListItem
-                  primaryText={workflow._status || this.state.state || '(Unknown)'}
+        <LinearProgress mode={state.loading ? 'indeterminate' : 'determinate'} value={100} />
+
+        <Tabs>
+          <Tab
+              icon={<FontIcon className="fa fa-server" />}
+              label="Details">
+
+            <Toolbar>
+              <ToolbarGroup key={0} float="left">
+                <ToolbarTitle text="Workflow Details" />
+              </ToolbarGroup>
+              <ToolbarGroup key={1} float="right">
+                <RaisedButton
+                    label="View Graph"
+                    onClick={() =>
+                      this.context.router.push('/oc/' + workflow.instanceId)
+                    }
+                    primary={true} />
+                <RaisedButton
+                    label="Edit Definition"
+                    onClick={() =>
+                      workflow.definition &&
+                        this.context.router.push('/we/' + workflow.definition.injectableName)
+                    }
+                    primary={true} />
+                <RaisedButton
+                    label="Delete Workflow"
+                    primary={true}
+                    onClick={this.deleteWorkflow.bind(this)}
+                    disabled={state.loading} />
+              </ToolbarGroup>
+            </Toolbar>
+            <List>
+              <ListItem
+                  primaryText={workflow._status || state.state || '(Unknown)'}
                   secondaryText="Status" />
-              </List>
-              <Console rows={this.state.logs} mapper={data => (
-                <p style={{color: Console.colors[data.level]}}>
-                  <b>{data.timestamp}</b>&nbsp;&nbsp;
-                  <i>[{data.name}]</i>&nbsp;&nbsp;
-                  <i>[{data.module}]</i>&nbsp;&nbsp;
-                  <i>[{data.subject}]</i>&nbsp;--&nbsp;
-                  <b>{data.message}</b>&nbsp;->&nbsp;
-                  <u>{data.caller}</u>
-                </p>
-              )} />
+            </List>
+            <div style={{overflow: 'auto', margin: 10}}>
+              <JsonInspector
+                  isExpanded={() => !true}
+                  data={state.workflow || {}} />
             </div>
-            <div className="cell">
-              <div style={{overflow: 'auto', margin: 10, maxHeight: 300}}>
-                <JsonInspector
-                    isExpanded={() => !true}
-                    data={this.state.workflow || {}} />
-              </div>
-            </div>
-          </div>
-        </div>
-        <EditWorkflow workflow={this.state.workflow} />
+          </Tab>
+
+          <Tab
+              icon={<FontIcon className="fa fa-terminal" />}
+              label="Console">
+
+            <Console
+              elements={logs}
+              height={Math.max(500, window.innerHeight * 0.75)}
+              handleInfiniteLoad={cb => {
+                this.loadPreviousLogs(logs.length).then(res => {
+                  let previousLogs = res.hits.hits.map(hit => hit._source);
+
+                  this.setState(state => {
+                    previousLogs = previousLogs.concat(state.previousLogs)
+                    return { previousLogs };
+                  }, cb);
+                }).catch(cb);
+              }} />
+
+          </Tab>
+          <Tab
+              icon={<FontIcon className="fa fa-edit" />}
+              label="Editor">
+
+            <EditWorkflow workflow={state.workflow} />
+
+          </Tab>
+        </Tabs>
       </div>
     );
   }
@@ -122,7 +178,7 @@ export default class Workflow extends Component {
   deleteWorkflow() {
     var id = this.state.workflow.id;
     this.setState({loading: true});
-    this.confirmDialog('Are you sure want to delete: ' + id,
+    DialogHelpers.confirmDialog('Are you sure want to delete: ' + id,
       (confirmed) => confirmed ? this.workflows.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
   }
 

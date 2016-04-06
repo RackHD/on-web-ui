@@ -151,8 +151,8 @@ export default class Store extends EventEmitter {
 
   publish(id) {
     if (id) { this.emit('change:' + id, id); }
-    else { this.emit('change', id); }
     if (this.onChange) { this.onChange(id); }
+    this.emit('change', id);
   }
 
   insert(id, data, silent) {
