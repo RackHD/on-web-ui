@@ -30,6 +30,7 @@ export default class GCPanelElement extends Component {
     initialColor: PropTypes.string,
     initialId: PropTypes.string,
     initialName: PropTypes.string,
+    isChangable: PropTypes.bool,
     isRemovable: PropTypes.bool,
     isResizable: PropTypes.bool,
     onChange: PropTypes.func,
@@ -50,6 +51,7 @@ export default class GCPanelElement extends Component {
     initialColor: 'grey',
     initialId: null,
     initialName: '(Unamed)',
+    isChangable: true,
     isRemovable: true,
     isResizable: false,
     onChange: null,
@@ -141,7 +143,8 @@ export default class GCPanelElement extends Component {
                 style={css.nameInput}
                 onChange={this.handleNameChange.bind(this)}
                 onFocus={this.focusInput.bind(this)}
-                onBlur={this.blurInput.bind(this)} />
+                onBlur={this.blurInput.bind(this)}
+                disabled={!this.props.isChangable} />
             {props.children}
             {this.props.rightSockets}
           </div>
@@ -155,7 +158,8 @@ export default class GCPanelElement extends Component {
               style={css.colorInput}
               onChange={this.handleColorChange.bind(this)}
               onFocus={this.focusInput.bind(this)}
-              onBlur={this.blurInput.bind(this)} /> : null}
+              onBlur={this.blurInput.bind(this)}
+              disabled={!this.props.isChangable} /> : null}
           {props.isRemovable && props.showRemoveButton ? <a ref="remove"
               style={css.remove}
               onMouseDown={this.stopEventPropagation}

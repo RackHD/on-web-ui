@@ -79,7 +79,7 @@ export default class MonoRailToolbar extends Component {
       if (!routes) return false;
       if (!routes[1]) return false;
       if (!routes[1].path) return false;
-      return routes[1].path.substr(1) === target;
+      return routes[1].path.substr(1).indexOf(target) === 0;
     };
 
     let getLinkStyle = (target) => {
@@ -120,12 +120,12 @@ export default class MonoRailToolbar extends Component {
                   primaryText="Network Topology" />
             </Link>*/}
 
-            {/*<Link to="/oc" style={linkStyle}>
+            <Link to="/oc" style={linkStyle}>
               <ListItem
                   style={getLinkStyle('oc')}
                   leftIcon={<FontIcon className="fa fa-fw fa-tasks" style={getIconStyle('oc')}/>}
                   primaryText="Operations Center" />
-            </Link>*/}
+            </Link>
 
             {/*<Link to="/va" style={linkStyle}>
               <ListItem

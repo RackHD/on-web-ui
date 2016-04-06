@@ -16,22 +16,26 @@ export default class GCLinkElement extends Component {
 
   static propTypes = {
     confirmRemove: PropTypes.bool,
+    dashed: PropTypes.bool,
     from: PropTypes.string,
-    to: PropTypes.any,
-    isPartial: PropTypes.bool,
     initialColor: PropTypes.string,
     initialId: PropTypes.string,
-    onRemove: PropTypes.func
+    isPartial: PropTypes.bool,
+    isRemovable: PropTypes.bool,
+    onRemove: PropTypes.func,
+    to: PropTypes.any
   };
 
   static defaultProps = {
     confirmRemove: false,
+    dashed: false,
     from: null,
-    to: null,
-    isPartial: false,
     initialColor: 'black',
     initialId: null,
-    onRemove: null
+    isPartial: false,
+    isRemovable: false,
+    onRemove: null,
+    to: null
   };
 
   static contextTypes = {
@@ -169,6 +173,12 @@ export default class GCLinkElement extends Component {
       //   position: 'absolute', top: 0, left: 0,
       //   transform: transform
       // }}
+
+      let pathProps = {};
+      if (this.props.dashed) {
+        pathProps.strokeDasharray = '5, 5';
+      }
+
       return (
         <svg
             className={'GraphCanvasLink ' + hover}
@@ -190,12 +200,13 @@ export default class GCLinkElement extends Component {
               stroke={color}
               strokeWidth={stroke}
               strokeLinecap="round"
-              style={{
+              {...pathProps}
+              // style={{
                 // pointerEvents: 'all',
                 // ':hover': {
                 //   stroke: 'red'
                 // }
-              }}
+              // }}
               onMouseOver={this.onHoverCurve.bind(this)}
               onMouseMove={this.onHoverCurve.bind(this)}
               onMouseOut={this.onLeaveCurve.bind(this)} />
@@ -270,6 +281,7 @@ export default class GCLinkElement extends Component {
   }
 
   removeLink(event) {
+    if (!this.props.isRemovable) return;
     var e = event.nativeEvent || event;
     e.stopPropagation();
     e.preventDefault();

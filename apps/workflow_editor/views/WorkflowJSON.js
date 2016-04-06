@@ -105,7 +105,7 @@ export default class WorkflowJson extends Component {
     clearTimeout(this.updateTimer);
     this.updateTimer = setTimeout(() => {
       this.compileJSON(newValue);
-    }, absDiff > 15 ? 1500 : 5000);
+    }, absDiff > 15 ? 6000 : 12000);
   }
 
   compileJSON(newJsonObject) {

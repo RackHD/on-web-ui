@@ -61,9 +61,11 @@ export default class WorkflowsGrid extends Component {
           loadingContent={<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />}
           mapper={workflow => {
             let row = {};
-            row.Name = <Link to={'/mc/workflows/' + workflow.id}>{workflow.name}</Link>;
+            row.Name = <Link to={'/mc/workflows/' + workflow.instanceId}>{workflow.name}</Link>;
             if (!this.nodeId) {
-              row.Node = <Link to={'/mc/nodes/' + workflow.node}>{FormatHelpers.shortId(workflow.node)}</Link>;
+              row.Node = <Link to={'/mc/nodes/' + workflow.node}>
+                {FormatHelpers.shortId(this.workflows.getNodeId(workflow))}
+              </Link>;
             }
             row.Status = workflow.completeEventString || (workflow.cancelled ? 'cancelled' : workflow._status);
             row.Status = row.Status.charAt(0).toUpperCase() + row.Status.substr(1);

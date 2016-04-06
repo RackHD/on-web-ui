@@ -15,12 +15,14 @@ import {
 
 import Rectangle from 'rui-graph-canvas/lib/Rectangle';
 
-import ObjectDiff from './ObjectDiff';
+export default class Operation {
 
-export default class Workflow {
-
-  constructor(template) {
-    template = template || {};
+  constructor(instance, operationsCenter) {
+    this.operationsCenter = operationsCenter;
+    instance = instance || {};
+    let template = this.operationsCenter.getWorkflowTemplate(instance.injectableName) || {
+      tasks: []
+    };
     this.meta = {
       bounds: null,
       cols: null,
@@ -33,152 +35,14 @@ export default class Workflow {
       rows: null,
       width: null
     };
-    this.tasks = [];
-    merge(this, template);
-    delete template.meta;
+    this.instance = instance;
     this.template = template;
-    this.json = cloneDeep(template);
-    delete this.json.id;
-    this.cleanTasks();
+    // console.log(this);
   }
 
-  cleanTasks(customTaskList) {
-    let nullTasks = (t) => {
-      if (!t || Object.keys(t).length === 0) return false;
-      if (t.waitOn && Object.keys(t.waitOn).length === 0) {
-        delete t.waitOn;
-      }
-      return true;
-    };
-    let taskSort = (a, b) => {
-      if (a.label > b.label) return -1;
-      if (a.label < b.label) return 1;
-      return 0;
-    };
-    let filter = (array, func) => {
-      if (Array.isArray(array)) { return array.filter(func); }
-      if (array) {
-        return Array.prototype.slice.call(array, 0).filter(func);
-      }
-    }
-    this.tasks = filter(this.tasks, nullTasks).sort(taskSort)
-    if (this.template.tasks) {
-      this.template.tasks = filter(this.template.tasks, nullTasks).sort(taskSort);
-    }
-    if (this.json.tasks) {
-      this.json.tasks = filter(this.json.tasks, nullTasks).sort(taskSort);
-    }
-    if (customTaskList) {
-      return filter(customTaskList, nullTasks).sort(taskSort);
-    }
-  }
-
-  get source() {
-    return JSON.stringify(this.json, '\t', 2) + '\n';
-  }
-
-  refresh(viewContext, source, callback) {
-    this.cleanTasks();
-    viewContext.workflowOperator.emitWorkflowChange(source);
-    if (callback) { callback(); }
-  }
-
-  graphUpdate(viewContext, callback) {
-    this.mergeGraph();
-    this.refresh(viewContext, 'graph', callback);
-  }
-
-  mergeGraph() {
-    this.cleanTasks();
-    let objectDiff = new ObjectDiff(),
-        patches = objectDiff.diff(this.json, this.template);
-    objectDiff.patch(this.json, patches);
-    delete this.json.id;
-    objectDiff.patch(this, patches);
-  }
-
-  jsonUpdate(viewContext, newJsonObject, callback) {
-    this.mergeJson(newJsonObject);
-    this.refresh(viewContext, 'json', callback);
-  }
-
-  mergeJson(newJsonObject) {
-    if (!newJsonObject) { return; }
-    newJsonObject.tasks = this.cleanTasks(newJsonObject.tasks);
-    let objectDiff = new ObjectDiff(),
-        patches = objectDiff.diff(this.json, newJsonObject);
-    objectDiff.patch(this.json, patches);
-    delete this.json.id;
-    objectDiff.patch(this.template, patches);
-    objectDiff.patch(this, patches);
-  }
-
-  addTask(graphContext, taskDefinition, label) {
-    this.cleanTasks();
-
-    let task = { label }
-
-    if (taskDefinition) {
-      task.taskDefinition = taskDefinition;
-    }
-    else {
-      task.taskName = 'Task.noop';
-    }
-
-    this.template.tasks.push(task);
-
-    this.graphUpdate(graphContext);
-  }
-
-  changeTask(graphContext, node, nodeView, panelView) {
-    if (panelView.state.name !== node.task.label) {
-      this.renameTask(graphContext, node.task.label, panelView.state.name);
-    }
-  }
-
-  renameTask(graphContext, oldName, newName) {
-    this.template.tasks.forEach(task => {
-      if (task.label === oldName) {
-        task.label = newName;
-      }
-
-      if (task.waitOn && task.waitOn[oldName]) {
-        task.waitOn[newName] = task.waitOn[oldName];
-        delete task.waitOn[oldName];
-      }
-    });
-
-    this.graphUpdate(graphContext);
-  }
-
-  removeTask(graphContext, node) {
-    this.cleanTasks();
-
-    let index = this.tasks.indexOf(node.task);
-
-    if (index !== -1) {
-      this.template.tasks[index] = null;
-    }
-
-    this.graphUpdate(graphContext);
-  }
-
-  changeWorkflow(graphContext, groupView, panelView) {
-    if (panelView.state.name !== this.friendlyName) {
-      this.renameWorkflow(panelView.state.name);
-    }
-  }
-
-  renameWorkflow(newName) {
-    this.template.friendlyName = newName;
-    this.template.injectableName =
-      this.injectableName || 'Graph.' + newName.replace(' ', '.');
-    this.graphUpdate(graphContext);
-  }
-
-  renderGraph(graphContext, parentWorkflow) {
+  renderGraph(parentWorkflow) {
     if (!parentWorkflow) {
-      this.loadGraph(graphContext, parentWorkflow);
+      this.loadGraph(null);
     }
 
     let nodes = Object.keys(this.meta.nodes).map(label => {
@@ -231,20 +95,28 @@ export default class Workflow {
             hideLabel={true} />
       ];
 
-      let GCElement = node.workflow ? GCGroup : GCNode;
+      let color = ({
+        failed: 'yellow',
+        succeeded: 'green',
+        finished: '#6cf'
+      })[node.instance.state] || '#999';
+
+      if (node.instance.state === 'failed' && node.instance.error) {
+        color = 'red';
+      }
 
       return (
-        <GCElement key={node.id}
+        <GCNode key={node.id}
             initialBounds={node.bounds}
-            initialColor="#999"
+            initialColor={color}
             initialId={node.id}
             initialName={node.task.label}
-            onRemove={this.removeTask.bind(this, graphContext, node)}
-            onChange={this.changeTask.bind(this, graphContext, node)}
+            isRemovable={false}
+            isChangable={false}
             leftSockets={leftSockets}
             rightSockets={rightSockets}>
-          {node.workflow && node.workflow.renderGraph(graphContext, this)}
-        </GCElement>
+          {/*{node.workflow && node.workflow.renderGraph(this)}*/}
+        </GCNode>
       );
     });
 
@@ -254,13 +126,13 @@ export default class Workflow {
 
       if (!source || !target) { return null; }
 
-      let color = ({failed: 'red', succeeded: 'green', 'finished': '#6cf'})[link.waitOn];
+      let color = ({failed: 'red', succeeded: 'green', finished: '#6cf'})[link.waitOn];
 
       return (
         <GCLink key={link.id}
             from={link.source.orderSocketIds.waitOn}
             to={link.target.orderSocketIds[link.waitOn]}
-            isRemovable={true}
+            dashed={true}
             initialId={link.id}
             initialColor={color} />
       );
@@ -269,42 +141,61 @@ export default class Workflow {
     return nodes.concat(links);
   }
 
-  loadGraph(graphContext, parentWorkflow) {
-    let { workflowOperator } = graphContext;
-
+  loadGraph(parentWorkflow) {
     this.meta.nodes = {};
     this.meta.links = [];
 
-    this.tasks.forEach((task, i) => {
-      let definition = workflowOperator.getTaskDefinitionFromTask(task),
-          isNestedWorkflow =
-            definition &&
-            definition.implementsTask &&
-            definition.implementsTask === 'Task.Base.Graph.Run';
+    if (!this.instance.tasks) {
+      return;
+    }
+
+    // debugger;
+    let taskHash = {};
+
+    this.template.tasks.forEach((task, i) => {
+      let definition = this.operationsCenter.getTaskDefinitionFromTask(task);
+
+      taskHash[definition.injectableName] = {
+        task: task,
+        definition: definition,
+        i: i
+      }
+    });
+
+    Object.keys(this.instance.tasks).forEach(taskId => {
+      let taskInstance = this.instance.tasks[taskId];
+
+      let {task, definition, i} = taskHash[taskInstance.injectableName];
+
+      // let isNestedWorkflow =
+      //     definition &&
+      //     definition.implementsTask &&
+      //     definition.implementsTask === 'Task.Base.Graph.Run';
 
       let node = {
         id: GCNode.id(),
         x: 0,
         y: 0,
         bounds: null,
+        instance: taskInstance,
         definition: definition || null,
         task: task,
         template: this.template.tasks[i],
         workflow: null
       };
 
-      if (isNestedWorkflow) {
-        let workflowName = definition.options.graphName,
-            workflow = workflowOperator.getWorkflowTemplate(workflowName);
-
-        workflow.loadGraph(graphContext, this);
-        node.workflow = workflow;
-      }
+      // if (isNestedWorkflow) {
+      //   let workflowName = definition.options.graphName,
+      //       workflow = this.operationsCenter.getWorkflowTemplate(workflowName);
+      //
+      //   workflow.loadGraph(this);
+      //   node.workflow = workflow;
+      // }
 
       this.meta.nodes[task.label] = node;
     });
 
-    this.tasks.forEach(task => {
+    this.template.tasks.forEach(task => {
       let source = this.meta.nodes[task.label];
 
       if (task.waitOn) {
@@ -323,13 +214,13 @@ export default class Workflow {
       }
     })
 
-    this.layoutGraph(graphContext, parentWorkflow || this);
+    this.layoutGraph(parentWorkflow || this);
     this.calculateGraphBounds(parentWorkflow);
   }
 
-  layoutGraph(graphContext, parentWorkflow) {
+  layoutGraph(parentWorkflow) {
     let columns = [
-      this.tasks
+      this.template.tasks
         .filter(task => !task.waitOn)
         .map((task, i) => {
           let node = this.meta.nodes[task.label]
@@ -354,7 +245,7 @@ export default class Workflow {
       return Math.max.apply(Math, depths);
     }
 
-    this.tasks.filter(task => task.waitOn).forEach(task => {
+    this.template.tasks.filter(task => task.waitOn).forEach(task => {
       let column = findMaxDepth(task),
           node = this.meta.nodes[task.label];
 
@@ -365,9 +256,9 @@ export default class Workflow {
 
       columns[column].push(node);
 
-      if (node.workflow) {
-        this.layoutGraph(graphContext, node.workflow);
-      }
+      // if (node.workflow) {
+      //   this.layoutGraph(graphContext, node.workflow);
+      // }
     });
 
     let numRows = 0,
@@ -395,29 +286,29 @@ export default class Workflow {
     Object.keys(this.meta.nodes).map(label => {
       let node = this.meta.nodes[label];
 
-      if (node.workflow) {
-        node.workflow.calculateGraphBounds(this);
-      }
+      // if (node.workflow) {
+      //   node.workflow.calculateGraphBounds(this);
+      // }
 
-      let nestedWorkflowBounds =
-        node.workflow &&
-        node.workflow.meta.bounds;
+      // let nestedWorkflowBounds =
+      //   node.workflow &&
+      //   node.workflow.meta.bounds;
 
-      if (nestedWorkflowBounds) {
-        node.bounds = nestedWorkflowBounds.clone();
-        // console.log(node.bounds.toArray());
-        node.bounds.right = node.bounds.right + (taskGutter * 4) + minTaskSizeX;
-        node.bounds.bottom = node.bounds.bottom + (taskGutter * 2) + minTaskSizeY;
-        // console.log(node.bounds.toArray());
-      }
+      // if (nestedWorkflowBounds) {
+      //   node.bounds = nestedWorkflowBounds.clone();
+      //   // console.log(node.bounds.toArray());
+      //   node.bounds.right = node.bounds.right + (taskGutter * 4) + minTaskSizeX;
+      //   node.bounds.bottom = node.bounds.bottom + (taskGutter * 2) + minTaskSizeY;
+      //   // console.log(node.bounds.toArray());
+      // }
 
-      else {
-        node.bounds =
-          new Rectangle(0, 0,
-            Math.max(minTaskSizeX, (label.length * letterSizeX + taskGutter)),
-            minTaskSizeY
-          );
-      }
+      // else {
+      node.bounds =
+        new Rectangle(0, 0,
+          Math.max(minTaskSizeX, (label.length * letterSizeX + taskGutter)),
+          minTaskSizeY
+        );
+      // }
     });
 
     let colWidths = [],
