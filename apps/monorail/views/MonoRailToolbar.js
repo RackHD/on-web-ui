@@ -127,6 +127,13 @@ export default class MonoRailToolbar extends Component {
                   primaryText="Operations Center" />
             </Link>
 
+            <Link to="/sp" style={linkStyle}>
+              <ListItem
+                  style={getLinkStyle('sp')}
+                  leftIcon={<FontIcon className="fa fa-cubes fa-rotate-90" style={getIconStyle('sp')}/>}
+                  primaryText="SKU Packs" />
+            </Link>
+
             {/*<Link to="/va" style={linkStyle}>
               <ListItem
                   style={getLinkStyle('va')}
