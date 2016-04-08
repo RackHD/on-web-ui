@@ -28,7 +28,8 @@
     "react-router": "^2.0.0",
     "react-select": "^1.0.0-beta9",
     "react-tap-event-plugin": "^0.2.2",
-    "superagent": "^1.6.0"
+    "superagent": "^1.6.0",
+    "swagger-client": "^2.1.13"
   },
   "devDependencies": {
     "babel": "^6.5.2",

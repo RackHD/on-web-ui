@@ -4,7 +4,7 @@
   "Enable_RackHD_SSL": false,
   "MonoRail_API": "localhost:9090/api/1.1",
   "MonoRail_WSS": "localhost:9090",
-  "RackHD_API": "localhost:9090/api/2",
+  "RackHD_API": "localhost:9090/api/2.0",
   "RackHD_API_Auth_Token": "",
   "RedFish_API": "localhost:9090/redfish"
 }

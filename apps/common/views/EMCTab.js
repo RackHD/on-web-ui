@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import radium from 'radium';
 
 @radium
-export default class AppHeader extends Component {
+export default class EMCTab extends Component {
 
   static defaultProps = {
     opacity: 1
