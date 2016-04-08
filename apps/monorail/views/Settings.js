@@ -23,6 +23,10 @@ export default class Settings extends Component {
     css: {}
   };
 
+  static contextTypes = {
+    routes: PropTypes.any
+  };
+
   css = {
     root: {}
   };
@@ -42,6 +46,9 @@ export default class Settings extends Component {
   render() {
     let { props } = this;
 
+    let route = this.context.routes[1],
+        showHelp = route.path.lastIndexOf('/help') !== -1;
+
     let css = {
       root: [
         this.css.root,
@@ -53,6 +60,9 @@ export default class Settings extends Component {
     return (
       <div style={css.root} {...props}>
         <div style={{padding: 20}}>
+          {showHelp && <p style={{background: 'red', padding: 5, borderRadius: 5, color: 'white'}}>
+            Failed to reach RackHD API Endpoints, please correctly adjust these settings.
+          </p>}
           <fieldset>
             <legend style={{padding: 5}}>RacKHD </legend>
             <Toggle
@@ -91,13 +101,13 @@ export default class Settings extends Component {
                   floatingLabelText="RackHD API Auth Token"
                   onChange={(e) => this.setState({rackhdAuthToken: e.target.value})} />
             </fieldset>}
-            {/*<TextField
+            <TextField
                 ref="rackhdAPI"
                 fullWidth={true}
                 hintText={this.rackhdAPI}
                 value={this.state.rackhdAPI}
                 floatingLabelText="RackHD Northbound API v2"
-                onChange={(e) => this.setState({rackhdAPI: e.target.value})} />*/}
+                onChange={(e) => this.setState({rackhdAPI: e.target.value})} />
             <TextField
                 ref="monorailAPI"
                 fullWidth={true}
@@ -182,7 +192,7 @@ export default class Settings extends Component {
     this.enableSSL = this.state.enableSSL;
     this.monorailAPI = this.state.monorailAPI;
     this.monorailWSS = this.state.monorailWSS;
-    // this.rackhdAPI = this.state.rackhdAPI;
+    this.rackhdAPI = this.state.rackhdAPI;
     this.rackhdAuthToken = this.state.rackhdAuthToken;
     // this.redfishAPI = this.state.redfishAPI;
     setTimeout(() => window.location.reload(), 250);

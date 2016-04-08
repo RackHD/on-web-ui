@@ -19,6 +19,9 @@ import emcTheme from 'rui-common/lib/emcTheme';
 import FormatHelpers from 'rui-common/mixins/FormatHelpers';
 import SplitView from 'rui-common/views/SplitView';
 
+import RackHDRestAPIv2_0 from 'rui-common/messengers/RackHDRestAPIv2_0';
+import RackHDRestAPIv1_1 from 'rui-common/messengers/RackHDRestAPIv1_1';
+
 import MonoRailToolbar from './MonoRailToolbar';
 import Logs from './Logs';
 import icons from '../icons';
@@ -33,7 +36,8 @@ export default class MonoRailApp extends Component {
   };
 
   static contextTypes = {
-    muiTheme: PropTypes.any
+    muiTheme: PropTypes.any,
+    router: PropTypes.any
   };
 
   static childContextTypes = {
@@ -50,6 +54,19 @@ export default class MonoRailApp extends Component {
       muiTheme: emcTheme,
       routes: this.props.routes
     };
+  }
+
+  componentWillMount() {
+    let route = this.props.routes && this.props.routes[1];
+    if (!route || route.name !== 'Settings') {
+      let settingsRedirect = err => {
+        this.context.router.push('/settings/help');
+      };
+
+      RackHDRestAPIv2_0.catch(settingsRedirect).then(() => {
+        RackHDRestAPIv1_1.config.get().catch(settingsRedirect);
+      });
+    }
   }
 
   toolbarTimer = null;
