@@ -5,7 +5,11 @@
 import { EventEmitter } from 'events';
 
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom'
 import radium from 'radium';
+
+import RackHDRestAPIv1_1 from 'rui-common/messengers/RackHDRestAPIv1_1';
+import { FileReceiver, FileStatus } from 'rui-common/views/file_uploader';
 
 @radium
 export default class OperationsCenter extends Component {
@@ -30,22 +34,18 @@ export default class OperationsCenter extends Component {
     };
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 
-  componentWillReceiveProps(nextProps) {
-  }
+  componentWillReceiveProps(nextProps) {}
 
-  state = {
-  };
+  state = {};
 
   css = {
     root: {
       position: 'relative',
-      overflow: 'hidden',
+      overflow: 'auto', //hidden
       transition: 'width 1s'
     }
   };
@@ -68,7 +68,13 @@ export default class OperationsCenter extends Component {
 
     return (
       <div ref="root" style={css.root}>
-        SKU PACKS
+        <div style={{padding: 15}}>
+          <p>Drag and Drop your SKU packs to automatically add them to RackHD</p>
+          <FileReceiver ref="fileReceiver"
+              fileHandlerProps={{
+                uploadUrl: RackHDRestAPIv1_1.url + '/skus/pack'
+              }} />
+        </div>
       </div>
     );
   }
