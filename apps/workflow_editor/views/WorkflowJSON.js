@@ -100,12 +100,10 @@ export default class WorkflowJson extends Component {
     if (this.silentUpdating) { return; }
     if (newValue === this.lastValue) { return; }
 
-    let absDiff = Math.abs(newValue.length - this.lastValue.length);
-
     clearTimeout(this.updateTimer);
     this.updateTimer = setTimeout(() => {
-      this.compileJSON(newValue);
-    }, absDiff > 15 ? 6000 : 12000);
+      this.compileJSON();
+    }, 7000);
   }
 
   compileJSON(newJsonObject) {

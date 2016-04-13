@@ -11,7 +11,7 @@ export default class NotFound extends Component {
   render() {
     return (
       <div className="NotFound container">
-        The page you are looking for could not be found. Please go <Link href="/">home</Link>
+        The page you are looking for could not be found. Please go <Link to="/">home</Link>
       </div>
     );
   }

@@ -5,9 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
-import {
-    CircularProgress
-  } from 'material-ui';
+import { RefreshIndicator } from 'material-ui';
 
 @radium
 export default class WorkflowOverlay extends Component {
@@ -82,10 +80,15 @@ export default class WorkflowOverlay extends Component {
           <li style={{color: '#6cf'}}>Finished</li>
         </ul>
 
-        {state.loading && <CircularProgress
-            mode="indeterminate"
-            size={2}
-            style={{marginTop: 200}} />}
+        {state.loading && <RefreshIndicator
+            size={50}
+            left={0}
+            top={250}
+            status="loading"
+            style={{
+              display: 'inline-block',
+              position: 'relative',
+            }} /> }
       </div>
     );
   }

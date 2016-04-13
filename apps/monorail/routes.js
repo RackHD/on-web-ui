@@ -9,7 +9,6 @@ import { Router, Route, IndexRedirect, hashHistory } from 'react-router';
 
 import onReady from 'rui-common/lib/onReady';
 import NotFound from 'rui-common/views/NotFound';
-import RackHDRestAPIv2_0 from 'rui-common/messengers/RackHDRestAPIv2_0';
 
 import ManagementConsole from 'rui-management-console/views/ManagementConsole';
 import NetworkTopology from 'rui-network-topology/views/NetworkTopology';
@@ -39,13 +38,10 @@ const main = () => {
         <Route name="Workflow Editor" path="/we" component={WorkflowEditor} />
         <Route name="Workflow Editor" path="/we/:workflow" component={WorkflowEditor} />
         <Route name="Settings" path="/settings" component={Settings} />
-        <Route name="Settings" path="/settings/help" component={Settings} />
         <Route name="Not Found" path="*" component={NotFound} />
       </Route>
     </Router>
   ), container);
 };
 
-onReady(() => {
-  RackHDRestAPIv2_0.then(main).catch(main);
-});
+onReady(main);

@@ -23,14 +23,31 @@ if (config.check('Enable_RackHD_API_Auth')) {
 let swaggerPromise = new Swagger({
   usePromise: true,
   authorizations : authorizations,
-  // success: () => console.log('RackHD 2.0 Rest API is ready.'),
   url: API + '/swagger'
 });
 
 module.exports = new Promise((resolve, reject) => {
-  swaggerPromise.catch(reject).then(swaggerClient => {
+  let done = false;
+
+  const finish = (api2_0) => {
+    if (done) return;
+    done = true;
+    if (!api2_0) {
+      let err = new Error('Failed to load RackHD API 2.0');
+      console.error(err);
+      return reject(err);
+    }
+    console.log('RackHD API 2.0 is ready.'),
+    resolve(api2_0);
+  }
+
+  const failed = () => finish();
+
+  setTimeout(failed, 5000);
+
+  swaggerPromise.catch(failed).then(swaggerClient => {
     let api2_0 = swaggerClient['/api/2.0'];
     Object.defineProperty(api2_0, 'swagger', {value: swaggerClient});
-    resolve(api2_0);
+    finish(api2_0);
   });
 });

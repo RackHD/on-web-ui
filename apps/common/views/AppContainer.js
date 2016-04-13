@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
 
 import { AppCanvas } from 'material-ui';
-import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
+import MuiThemeProvider from 'material-ui/build/styles/MuiThemeProvider';
 
 import ErrorNotification from './ErrorNotification';
 
