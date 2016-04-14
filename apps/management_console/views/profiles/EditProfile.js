@@ -4,9 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import EditorHelpers from 'rui-common/mixins/EditorHelpers';
-
 import {
     FlatButton,
     LinearProgress,
@@ -17,7 +14,6 @@ import {
 
 import ProfileStore from 'rui-common/stores/ProfileStore';
 
-@mixin(EditorHelpers)
 export default class EditProfile extends Component {
 
   static contextTypes = {router: PropTypes.any};
@@ -35,9 +31,7 @@ export default class EditProfile extends Component {
   }
 
   render() {
-    var profile = this.state.profile || {},
-        nameLink = this.linkObjectState('profile', 'name'),
-        contentsLink = this.linkObjectState('profile', 'contents');
+    var profile = this.state.profile || {};
     return (
       <div className="EditProfile">
         <Toolbar>
@@ -59,17 +53,25 @@ export default class EditProfile extends Component {
         <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{padding: '0 10px 10px'}}>
           <TextField
-              valueLink={nameLink}
               hintText="Name"
               floatingLabelText="Name"
               disabled={this.state.disabled}
+              value={profile.name}
+              onChange={e => {
+                profile.name = e.target.value;
+                this.setState({ profile });
+              }}
               fullWidth={true} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Profile Content:</h5>
           <textarea
-              valueLink={contentsLink}
               disabled={this.state.disabled}
               rows={5}
               cols={40}
+              value={profile.contents}
+              onChange={e => {
+                profile.contents = e.target.value;
+                this.setState({ profile });
+              }}
               style={{width: '99%', height: 300}} />
         </div>
       </div>
@@ -89,6 +91,12 @@ export default class EditProfile extends Component {
       this.setState({loading: false});
       if (isNewProfile) this.context.router.goBack();
     });
+  }
+
+  disable() { this.setState({disabled: true}); }
+
+  enable() {
+    setTimeout(() => this.setState({disabled: false}), 500);
   }
 
 }

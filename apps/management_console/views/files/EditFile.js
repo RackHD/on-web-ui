@@ -4,9 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import EditorHelpers from 'rui-common/mixins/EditorHelpers';
-
 import {
     FlatButton,
     LinearProgress,
@@ -17,7 +14,6 @@ import {
 
 import FileStore from 'rui-common/stores/FileStore';
 
-@mixin(EditorHelpers)
 export default class EditFile extends Component {
 
   static contextTypes = {router: PropTypes.any};
@@ -35,9 +31,7 @@ export default class EditFile extends Component {
   }
 
   render() {
-    let file = this.state.file || {},
-        nameLink = this.linkObjectState('file', 'basename'),
-        bodyLink = this.linkObjectState('file', 'body');
+    let file = this.state.file || {};
     return (
       <div className="EditFile">
         <Toolbar>
@@ -59,17 +53,25 @@ export default class EditFile extends Component {
         <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{padding: '0 10px 10px'}}>
           <TextField
-              valueLink={nameLink}
               hintText="Name"
               floatingLabelText="Name"
               disabled={this.state.disabled}
+              value={file.basename}
+              onChange={e => {
+                file.basename = e.target.value;
+                this.setState({ file });
+              }}
               fullWidth={true} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>File Content:</h5>
           <textarea
-              valueLink={bodyLink}
               disabled={this.state.disabled}
               rows={5}
               cols={40}
+              value={file.body}
+              onChange={e => {
+                file.body = e.target.value;
+                this.setState({ file });
+              }}
               style={{boxSizing: 'border-box', width: '100%', height: 300}} />
         </div>
       </div>
@@ -85,6 +87,12 @@ export default class EditFile extends Component {
       this.setState({loading: false});
       if (isNewFile) this.context.router.goBack();
     });
+  }
+
+  disable() { this.setState({disabled: true}); }
+
+  enable() {
+    setTimeout(() => this.setState({disabled: false}), 500);
   }
 
 }

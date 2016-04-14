@@ -4,9 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import EditorHelpers from 'rui-common/mixins/EditorHelpers';
-
 import Select from 'react-select';
 
 import {
@@ -22,7 +19,6 @@ import JsonEditor from 'rui-common/views/JsonEditor';
 import PollerStore from 'rui-common/stores/PollerStore';
 import NodeStore from 'rui-common/stores/NodeStore';
 
-@mixin(EditorHelpers)
 export default class EditPoller extends Component {
 
   static contextTypes = {router: PropTypes.any};
@@ -60,7 +56,6 @@ export default class EditPoller extends Component {
         });
       })
     }
-    // var nameLink = this.linkObjectState('poller', 'name');
     return (
       <div className="EditPoller">
         <Toolbar>
@@ -156,6 +151,12 @@ export default class EditPoller extends Component {
     else {
       this.pollers.create(this.state.poller).then(() => this.context.router.goBack());
     }
+  }
+
+  disable() { this.setState({disabled: true}); }
+
+  enable() {
+    setTimeout(() => this.setState({disabled: false}), 500);
   }
 
 }
