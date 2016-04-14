@@ -3,8 +3,9 @@
 import React, { Component, PropTypes } from 'react';
 import superagent from 'superagent';
 
-import mixin from '../../lib/mixin';
 import FileStatus from './FileStatus';
+
+const assign = Object.assign;
 
 const defaultFileView = function (file, fileHandler) {
   let { fileRef } = file;
@@ -73,7 +74,7 @@ export default class FileHandler extends Component {
       } = this.props;
 
       onUploadStart(
-        mixin(file, { status: FileStatus.UPLOADING }),
+        assign(file, { status: FileStatus.UPLOADING }),
         this);
 
       if (!formData) {
@@ -89,18 +90,18 @@ export default class FileHandler extends Component {
         .send(formData)
         .on('progress', ({ percent }) => {
           onUploadProgress(
-            mixin(file, { progress: percent, status: FileStatus.UPLOADING }),
+            assign(file, { progress: percent, status: FileStatus.UPLOADING }),
             this);
         })
         .end((err, res) => {
           if (err) {
             onUploadEnd(
-              mixin(file, { error: err, status: FileStatus.FAILED }),
+              assign(file, { error: err, status: FileStatus.FAILED }),
               this);
           }
           else {
             onUploadEnd(
-              mixin(file, { result: res.body, status: FileStatus.UPLOADED }),
+              assign(file, { result: res.body, status: FileStatus.UPLOADED }),
               this);
           }
         });
