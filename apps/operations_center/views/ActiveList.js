@@ -4,6 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
+import moment from 'moment';
 
 import { RouteHandler, Link } from 'react-router';
 
@@ -104,7 +105,13 @@ export default class MonoRailToolbar extends Component {
     //   return null;
     // };
 
-    let list = this.state.workflows.map(workflow => {
+    let list = this.state.workflows;
+
+    list = list.sort(
+      (a, b) => moment(b.createdAt).unix() - moment(a.createdAt).unix()
+    );
+
+    list = list.map(workflow => {
       let status = workflow.completeEventString ||
         (workflow.cancelled ? 'cancelled' : workflow._status);
 

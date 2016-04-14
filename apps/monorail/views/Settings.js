@@ -4,6 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import radium from 'radium';
+
 import { RouteHandler, Link } from 'react-router';
 import {
     RaisedButton,
@@ -11,10 +12,15 @@ import {
     Toggle
   } from 'material-ui';
 
+import Swagger from 'swagger-client';
+import RackHD from 'rackhd-client';
+
 import config from 'rui-common/config/index';
 import UserLogin from 'rui-common/views/UserLogin';
 
-import LookupsRestAPI from 'rackhd-client/LoginRestAPI';
+import LoginRestAPI from 'rackhd-client/LoginRestAPI';
+
+import EndpointInput from './EndpointInput';
 
 @radium
 export default class Settings extends Component {
@@ -24,8 +30,21 @@ export default class Settings extends Component {
   };
 
   static contextTypes = {
-    routes: PropTypes.any
+    router: PropTypes.any
   };
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.monorailAPICheck({
+        resolve: this.refs.monorailAPI.resolve,
+        reject: this.refs.monorailAPI.reject
+      });
+      this.rackhdAPICheck({
+        resolve: this.refs.rackhdAPI.resolve,
+        reject: this.refs.rackhdAPI.reject
+      });
+    }, 0);
+  }
 
   css = {
     root: {}
@@ -46,9 +65,6 @@ export default class Settings extends Component {
   render() {
     let { props } = this;
 
-    let route = this.context.routes[1],
-        showHelp = route.path.lastIndexOf('/help') !== -1;
-
     let css = {
       root: [
         this.css.root,
@@ -57,14 +73,18 @@ export default class Settings extends Component {
       ]
     };
 
+    // {showHelp && <p style={{background: 'red', padding: 5, borderRadius: 5, color: 'white'}}>
+    //   Failed to reach RackHD API Endpoints, please correctly adjust these settings.
+    // </p>}
+
     return (
       <div style={css.root} {...props}>
         <div style={{padding: 20}}>
-          {showHelp && <p style={{background: 'red', padding: 5, borderRadius: 5, color: 'white'}}>
-            Failed to reach RackHD API Endpoints, please correctly adjust these settings.
-          </p>}
+          <p>
+            Do not include "http(s)://" or any other protocol when entering API endpoints.
+          </p>
           <fieldset>
-            <legend style={{padding: 5}}>RacKHD </legend>
+            <legend style={{padding: 5}}>RacKHD</legend>
             <Toggle
                 label={(this.state.enableSSL ? 'Disable' : 'Enable') + ' Secure Connections'}
                 labelPosition="right"
@@ -78,7 +98,7 @@ export default class Settings extends Component {
             {this.state.enableAuth && <fieldset style={{width: '80%'}}>
               <legend style={{padding: 5}}>Authentication</legend>
               <UserLogin header="" submitLabel="Update Auth Token" onSubmit={(user, pass) => {
-                let loginAPI = new LookupsRestAPI(
+                let loginAPI = new LoginRestAPI(
                   'http' + (this.enableSSL ? 's' : '') + '://' + this.monorailAPI.split('/')[0]
                 );
                 loginAPI.authenticate(user, pass)
@@ -101,34 +121,37 @@ export default class Settings extends Component {
                   floatingLabelText="RackHD API Auth Token"
                   onChange={(e) => this.setState({rackhdAuthToken: e.target.value})} />
             </fieldset>}
-            <TextField
+            <EndpointInput
                 ref="rackhdAPI"
-                fullWidth={true}
+                check={this.rackhdAPICheck}
                 hintText={this.rackhdAPI}
                 value={this.state.rackhdAPI}
                 floatingLabelText="RackHD Northbound API v2"
-                onChange={(e) => this.setState({rackhdAPI: e.target.value})} />
-            <TextField
+                onChange={({ value, checkCallback }) =>
+                  this.setState({rackhdAPI: value}, checkCallback)} />
+            <EndpointInput
                 ref="monorailAPI"
+                check={this.monorailAPICheck}
                 fullWidth={true}
                 hintText={this.monorailAPI}
                 value={this.state.monorailAPI}
                 floatingLabelText="RackHD Northbound API v1.1"
-                onChange={(e) => this.setState({monorailAPI: e.target.value})} />
-            <TextField
+                onChange={({ value, checkCallback }) =>
+                  this.setState({monorailAPI: value}, checkCallback)} />
+            <EndpointInput
                 ref="monorailWSS"
                 fullWidth={true}
                 hintText={this.monorailWSS}
                 value={this.state.monorailWSS}
                 floatingLabelText="RackHD WebSocket URL"
-                onChange={(e) => this.setState({monorailWSS: e.target.value})} />
-            {/*<TextField
+                onChange={({ value }) => this.setState({monorailWSS: value})} />
+            {/*<EndpointInput
                 ref="redfishAPI"
                 fullWidth={true}
                 hintText={this.redfishAPI}
                 value={this.state.redfishAPI}
                 floatingLabelText="RackHD RedFish API"
-                onChange={(e) => this.setState({redfishAPI: e.target.value})} />*/}
+                onChange={({ value }) => this.setState({redfishAPI: value})} />*/}
           </fieldset>
           <fieldset style={{marginTop: 20}}>
             <legend style={{padding: 5}}>Elasticsearch</legend>
@@ -195,7 +218,37 @@ export default class Settings extends Component {
     this.rackhdAPI = this.state.rackhdAPI;
     this.rackhdAuthToken = this.state.rackhdAuthToken;
     // this.redfishAPI = this.state.redfishAPI;
+    this.context.router.push('/settings');
     setTimeout(() => window.location.reload(), 250);
   }
+
+  get rackhdProtocol() {
+    return 'http' + (this.state.enableSSL ? 's' : '') + '://'
+  }
+
+  monorailAPICheck = ({ resolve, reject }) => {
+    let api1_1 = RackHD.v1_1.create(
+      this.rackhdProtocol + this.state.monorailAPI,
+      this.state.enableAuth == true && this.state.rackhdAuthToken || null);
+    api1_1.config.get().
+      then(() => resolve('Connected to RackHD 1.1 endpoint!')).
+      catch(() => reject('Failed to reach RackHD 1.1 endpoint.'));
+  };
+
+  rackhdAPICheck = ({ resolve, reject }) => {
+    let swaggerOptions = {
+      usePromise: true,
+      authorizations : {},
+      url: this.rackhdProtocol + this.state.rackhdAPI + '/swagger'
+    };
+    if (this.state.enableAuth == true) {
+      swaggerOptions.authorizations['Authentication-Token'] =
+        new Swagger.ApiKeyAuthorization(
+          'Authorization', 'JWT ' + this.state.rackhdAuthToken, 'header');
+    }
+    new Swagger(swaggerOptions).
+      then(() => resolve('Connected to RackHD 2.0 endpoint!')).
+      catch(() => reject('Failed to reach RackHD 2.0endpoint.'));
+  };
 
 }

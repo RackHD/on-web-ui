@@ -11,6 +11,7 @@ import {
     IconButton,
     Popover,
     RaisedButton,
+    RefreshIndicator,
     TextField
   } from 'material-ui';
 
@@ -56,16 +57,25 @@ export default class MonoRailApp extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let route = this.props.routes && this.props.routes[1];
-    if (!route || route.name !== 'Settings') {
+
+    if (!route || (route.name !== 'Settings' && route.name !== 'Not Found')) {
       let settingsRedirect = err => {
-        this.context.router.push('/settings/help');
+        this.setState({loadingAPIs: false}, () => {
+          this.context.router.push('/settings');
+        });
       };
 
-      RackHDRestAPIv2_0.catch(settingsRedirect).then(() => {
-        RackHDRestAPIv1_1.config.get().catch(settingsRedirect);
+      RackHDRestAPIv1_1.config.get().catch(settingsRedirect).then(() => {
+        RackHDRestAPIv2_0.catch(settingsRedirect).then(() => {
+          this.setState({loadingAPIs: false});
+        });
       });
+    }
+
+    else {
+      this.setState({loadingAPIs: false});
     }
   }
 
@@ -108,6 +118,7 @@ export default class MonoRailApp extends Component {
   };
 
   state = {
+    loadingAPIs: true,
     isToolbarExpanded: false,
     showLogs: false,
     toolbarWidth: this.props.collapsedToolbarWidth,
@@ -115,6 +126,18 @@ export default class MonoRailApp extends Component {
   };
 
   render() {
+    if (this.state.loadingAPIs) {
+      return <RefreshIndicator
+          size={50}
+          left={window.innerWidth / 2 - 25}
+          top={window.innerHeight / 2 - 25}
+          status="loading"
+          style={{
+            display: 'inline-block',
+            position: 'relative',
+          }} />
+    }
+
     let renderToolbar = ({ width, height }) => {
       return (
         <MonoRailToolbar key="toolbar"

@@ -3,10 +3,10 @@
 import merge from 'lodash/merge';
 import Color from 'color';
 
-import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
+import getMuiTheme from 'material-ui/build/styles/getMuiTheme';
 
-import * as muiColors from 'material-ui/lib/styles/colors';
-import darkBaseTheme from 'material-ui/lib/styles/baseThemes/darkBaseTheme';
+import * as muiColors from 'material-ui/build/styles/colors';
+import darkBaseTheme from 'material-ui/build/styles/baseThemes/darkBaseTheme';
 
 import emcColors from './emcColors';
 
