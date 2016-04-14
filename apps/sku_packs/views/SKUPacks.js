@@ -11,6 +11,8 @@ import radium from 'radium';
 import RackHDRestAPIv1_1 from 'rui-common/messengers/RackHDRestAPIv1_1';
 import { FileReceiver, FileStatus } from 'rui-common/views/file_uploader';
 
+import SkusGrid from 'rui-management-console/views/skus/SkusGrid';
+
 @radium
 export default class OperationsCenter extends Component {
 
@@ -75,6 +77,7 @@ export default class OperationsCenter extends Component {
                 uploadUrl: RackHDRestAPIv1_1.url + '/skus/pack'
               }} />
         </div>
+        <SkusGrid />
       </div>
     );
   }
