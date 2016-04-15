@@ -34,7 +34,8 @@ export default class Lookups extends Component {
       <div className="Lookups">
         <TextField
           hintText="Search"
-          valueLink={this.linkSearchState()} />
+          // valueLink={this.linkSearchState()}
+          />
         {results}
       </div>
     );

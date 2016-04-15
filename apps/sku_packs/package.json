@@ -1,0 +1,16 @@
+{
+  "name": "rui-sku-packs",
+  "main": "bundle.js",
+  "private": true,
+  "version": "0.0.0",
+  "description": "RackHD UI - SKU Packs",
+  "repository": "",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">= 4.0",
+    "npm": ">= 2.1"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {}
+}

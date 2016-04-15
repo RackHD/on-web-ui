@@ -4,9 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import EditorHelpers from 'rui-common/mixins/EditorHelpers';
-
 import {
     FlatButton,
     LinearProgress,
@@ -17,7 +14,6 @@ import {
 
 import TemplateStore from 'rui-common/stores/TemplateStore';
 
-@mixin(EditorHelpers)
 export default class EditTemplate extends Component {
 
   static contextTypes = {router: PropTypes.any};
@@ -35,9 +31,7 @@ export default class EditTemplate extends Component {
   }
 
   render() {
-    var template = this.state.template || {},
-        nameLink = this.linkObjectState('template', 'name'),
-        contentsLink = this.linkObjectState('template', 'contents');
+    var template = this.state.template || {};
     return (
       <div className="EditTemplate">
         <Toolbar>
@@ -59,17 +53,25 @@ export default class EditTemplate extends Component {
         <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{padding: '0 10px 10px'}}>
           <TextField
-              valueLink={nameLink}
               hintText="Name"
               floatingLabelText="Name"
               disabled={this.state.disabled}
+              value={template.name}
+              onChange={e => {
+                template.name = e.target.value;
+                this.setState({ template });
+              }}
               fullWidth={true} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Template Content:</h5>
           <textarea
-              valueLink={contentsLink}
               disabled={this.state.disabled}
               rows={5}
               cols={40}
+              value={template.contents}
+              onChange={e => {
+                template.contents = e.target.value;
+                this.setState({ template });
+              }}
               style={{width: '99%', height: 300}} />
         </div>
       </div>
@@ -89,6 +91,12 @@ export default class EditTemplate extends Component {
       this.setState({loading: false});
       if (isNewTemplate) this.context.router.goBack();
     });
+  }
+
+  disable() { this.setState({disabled: true}); }
+
+  enable() {
+    setTimeout(() => this.setState({disabled: false}), 500);
   }
 
 }

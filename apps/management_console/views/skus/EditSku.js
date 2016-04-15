@@ -5,7 +5,6 @@
 import React, { Component, PropTypes } from 'react';
 
 import mixin from 'rui-common/lib/mixin';
-import EditorHelpers from 'rui-common/mixins/EditorHelpers';
 
 import {
     FlatButton,
@@ -19,7 +18,6 @@ import JsonEditor from 'rui-common/views/JsonEditor';
 
 import SkuStore from 'rui-common/stores/SkuStore';
 
-@mixin(EditorHelpers)
 export default class EditSku extends Component {
 
   static contextTypes = {router: PropTypes.any};
@@ -37,8 +35,7 @@ export default class EditSku extends Component {
   }
 
   render() {
-    var sku = this.state.sku || {},
-        nameLink = this.linkObjectState('sku', 'name');
+    var sku = this.state.sku || {};
     return (
       <div className="EditSku">
         <Toolbar>
@@ -59,10 +56,15 @@ export default class EditSku extends Component {
         </Toolbar>
         <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{padding: '0 10px 10px'}}>
-          <TextField valueLink={nameLink}
+          <TextField
               hintText="Name"
               floatingLabelText="Name"
               disabled={this.state.disabled}
+              value={sku.name}
+              onChange={e => {
+                sku.name = e.target.value;
+                this.setState({ sku });
+              }}
               fullWidth={true} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>SKU JSON:</h5>
           <JsonEditor
@@ -87,6 +89,12 @@ export default class EditSku extends Component {
     else {
       this.skus.create(this.state.sku).then(() => this.context.router.goBack());
     }
+  }
+
+  disable() { this.setState({disabled: true}); }
+
+  enable() {
+    setTimeout(() => this.setState({disabled: false}), 500);
   }
 
 }

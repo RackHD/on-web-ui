@@ -4,9 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import EditorHelpers from 'rui-common/mixins/EditorHelpers';
-
 import Select from 'react-select';
 
 import {
@@ -21,7 +18,6 @@ import JsonEditor from 'rui-common/views/JsonEditor';
 
 import NodeStore from 'rui-common/stores/NodeStore';
 
-@mixin(EditorHelpers)
 export default class EditNode extends Component {
 
   static contextTypes = {router: PropTypes.any};
@@ -43,8 +39,7 @@ export default class EditNode extends Component {
   render() {
     let { state } = this;
 
-    let node = state.node || {},
-        nameLink = this.linkObjectState('node', 'name');
+    let node = state.node || {};
 
     return (
       <div className="EditNode">
@@ -68,10 +63,14 @@ export default class EditNode extends Component {
         <LinearProgress mode={state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <div style={{padding: '0 10px 10px'}}>
           <TextField
-              valueLink={nameLink}
               hintText="Name"
               floatingLabelText="Name"
               disabled={state.disabled}
+              value={node.name}
+              onChange={e => {
+                node.name = e.target.value;
+                this.setState({ node });
+              }}
               fullWidth={true} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Node Type:</h5>
           <Select
@@ -116,6 +115,12 @@ export default class EditNode extends Component {
     else {
       this.nodes.create(this.state.node).then(() => this.context.router.goBack());
     }
+  }
+
+  disable() { this.setState({disabled: true}); }
+
+  enable() {
+    setTimeout(() => this.setState({disabled: false}), 500);
   }
 
 }

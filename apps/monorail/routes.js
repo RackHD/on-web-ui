@@ -13,6 +13,7 @@ import NotFound from 'rui-common/views/NotFound';
 import ManagementConsole from 'rui-management-console/views/ManagementConsole';
 import NetworkTopology from 'rui-network-topology/views/NetworkTopology';
 import OperationsCenter from 'rui-operations-center/views/OperationsCenter';
+import SKUPacks from 'rui-sku-packs/views/SKUPacks';
 import VisualAnalytics from 'rui-visual-analytics/views/VisualAnalytics'
 import WorkflowEditor from 'rui-workflow-editor/views/WorkflowEditor';
 
@@ -34,6 +35,7 @@ const main = () => {
         <Route name="Network Topology" path="/nt" component={NetworkTopology} />
         <Route name="Operations Center" path="/oc" component={OperationsCenter} />
         <Route name="Operations Center" path="/oc/:workflow" component={OperationsCenter} />
+        <Route name="SKU Packs" path="/sp" component={SKUPacks} />
         <Route name="Visual Analytics" path="/va" component={VisualAnalytics} />
         <Route name="Workflow Editor" path="/we" component={WorkflowEditor} />
         <Route name="Workflow Editor" path="/we/:workflow" component={WorkflowEditor} />

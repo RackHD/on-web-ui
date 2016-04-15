@@ -4,9 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import EditorHelpers from 'rui-common/mixins/EditorHelpers';
-
 import Select from 'react-select';
 
 import {
@@ -24,7 +21,6 @@ import WorkflowTemplateStore from 'rui-common/stores/WorkflowTemplateStore';
 import WorkflowStore from 'rui-common/stores/WorkflowStore';
 import NodeStore from 'rui-common/stores/NodeStore';
 
-@mixin(EditorHelpers)
 export default class EditWorkflow extends Component {
 
   static contextTypes = {router: PropTypes.any};
@@ -157,6 +153,12 @@ export default class EditWorkflow extends Component {
     else {
       this.enable();
     }
+  }
+
+  disable() { this.setState({disabled: true}); }
+
+  enable() {
+    setTimeout(() => this.setState({disabled: false}), 500);
   }
 
 }
