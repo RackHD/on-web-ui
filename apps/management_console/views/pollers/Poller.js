@@ -4,9 +4,8 @@
 
 import React, { Component } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import DialogHelpers from 'rui-common/mixins/DialogHelpers';
-import FormatHelpers from 'rui-common/mixins/FormatHelpers';
+import FormatHelpers from 'rui-common/lib/FormatHelpers';
+import ConfirmDialog from 'rui-common/views/ConfirmDialog';
 
 import EditPoller from './EditPoller';
 import CreatePoller from './CreatePoller';
@@ -25,14 +24,14 @@ import JsonInspector from 'react-json-inspector';
 
 import PollerStore from 'rui-common/stores/PollerStore';
 
-@mixin(DialogHelpers, FormatHelpers)
 export default class Poller extends Component {
 
   poller = new PollerStore();
 
   state = {
-    poller: null,
-    loading: true
+    confirmDelete: false,
+    loading: true,
+    poller: null
   };
 
   componentDidMount() {
@@ -47,6 +46,19 @@ export default class Poller extends Component {
     return (
       <div className="Poller">
         <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
+
+        <ConfirmDialog
+            open={this.state.confirmDelete}
+            callback={confirmed => {
+              if (confirmed) {
+                return this.pollers.destroy(poller.id).
+                  then(() => this.context.router.goBack());
+              }
+              this.setState({loading: false, confirmDelete: false})
+            }}>
+          Are you sure want to delete this Poller? "{poller.id}"
+        </ConfirmDialog>
+
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="Poller Details" />
@@ -67,7 +79,7 @@ export default class Poller extends Component {
                   primaryText={poller.type || '(Unknown)'}
                   secondaryText="Type" />
                 <ListItem
-                  primaryText={this.fromNow(poller.lastStarted)}
+                  primaryText={FormatHelpers.fromNow(poller.lastStarted)}
                   secondaryText="Run" />
               </List>
             </div>
@@ -97,10 +109,7 @@ export default class Poller extends Component {
   }
 
   deletePoller() {
-    var id = this.state.poller.id;
-    this.setState({loading: true});
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? this.pollers.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+    this.setState({loading: true, confirmDelete: true});
   }
 
 }

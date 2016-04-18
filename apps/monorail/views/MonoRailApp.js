@@ -17,7 +17,7 @@ import {
 
 import AppContainer from 'rui-common/views/AppContainer';
 import emcTheme from 'rui-common/lib/emcTheme';
-import FormatHelpers from 'rui-common/mixins/FormatHelpers';
+import FormatHelpers from 'rui-common/lib/FormatHelpers';
 import SplitView from 'rui-common/views/SplitView';
 
 import RackHDRestAPIv2_0 from 'rui-common/messengers/RackHDRestAPIv2_0';

@@ -5,8 +5,7 @@
 import React, { Component } from 'react';
 
 import mixin from 'rui-common/lib/mixin';
-import DialogHelpers from 'rui-common/mixins/DialogHelpers';
-import FormatHelpers from 'rui-common/mixins/FormatHelpers';
+import FormatHelpers from 'rui-common/lib/FormatHelpers';
 
 import EditTemplate from './EditTemplate';
 import CreateTemplate from './CreateTemplate';
@@ -21,7 +20,6 @@ import {
 
 import TemplateStore from 'rui-common/stores/TemplateStore';
 
-@mixin(DialogHelpers, FormatHelpers)
 export default class Template extends Component {
 
   templates = new TemplateStore();
@@ -55,14 +53,14 @@ export default class Template extends Component {
             <div className="cell">
               <List>
                 <ListItem
-                  primaryText={this.fromNow(template.updatedAt)}
+                  primaryText={FormatHelpers.fromNow(template.updatedAt)}
                   secondaryText="Updated" />
               </List>
             </div>
             <div className="cell">
               <List>
                 <ListItem
-                  primaryText={this.fromNow(template.createdAt)}
+                  primaryText={FormatHelpers.fromNow(template.createdAt)}
                   secondaryText="Created" />
               </List>
             </div>

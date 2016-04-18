@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
 
 import ElasticsearchAPI from 'rui-common/messengers/ElasticsearchAPI';
-import DialogHelpers from 'rui-common/mixins/DialogHelpers';
+import ConfirmDialog from 'rui-common/views/ConfirmDialog';
 
 import EditWorkflow from './EditWorkflow';
 import CreateWorkflow from './CreateWorkflow';
@@ -38,6 +38,7 @@ export default class Workflow extends Component {
   workflows = new WorkflowStore();
 
   state = {
+    // confirmDelete: false,
     loading: true,
     previousLogs: [],
     realtimeLogs: [],
@@ -94,6 +95,18 @@ export default class Workflow extends Component {
     return (
       <div className="Workflow">
         <LinearProgress mode={state.loading ? 'indeterminate' : 'determinate'} value={100} />
+
+        {/*<ConfirmDialog
+            open={state.confirmDelete}
+            callback={confirmed => {
+              if (confirmed) {
+                return this.workflows.destroy(workflow.id).
+                  then(() => this.context.routes.goBack())
+              }
+              this.setState({loading: false, confirmDelete: false})
+            }} >
+          Are you sure want to delete this Workflow? "{workflow.id}"
+        </ConfirmDialog>*/}
 
         <Tabs>
           <Tab
@@ -175,11 +188,8 @@ export default class Workflow extends Component {
     return this.workflows.read(this.getWorkflowId()).then(() => this.setState({loading: false}));
   }
 
-  deleteWorkflow() {
-    var id = this.state.workflow.id;
-    this.setState({loading: true});
-    DialogHelpers.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? this.workflows.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
-  }
+  // deleteWorkflow() {
+  //   this.setState({loading: true, confirmDelete: true});
+  // }
 
 }

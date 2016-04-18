@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
 
 import ElasticsearchAPI from 'rui-common/messengers/ElasticsearchAPI';
-import DialogHelpers from 'rui-common/mixins/DialogHelpers';
+import ConfirmDialog from 'rui-common/views/ConfirmDialog';
 
 import EditNode from './EditNode';
 import CreateNode from './CreateNode';
@@ -42,11 +42,12 @@ export default class Node extends Component {
   nodes = new NodeStore();
 
   state = {
-    previousLogs: [],
-    realtimeLogs: [],
-    obm: null,
+    confirmDelete: false,
+    loading: true,
     node: null,
-    loading: true
+    obm: null,
+    previousLogs: [],
+    realtimeLogs: []
   };
 
   componentWillMount() {
@@ -93,6 +94,18 @@ export default class Node extends Component {
     return (
       <div className="Node">
         <LinearProgress mode={state.loading ? 'indeterminate' : 'determinate'} value={100} />
+
+        <ConfirmDialog
+            open={state.confirmDelete}
+            callback={confirmed => {
+              if (confirmed) {
+                return this.nodes.destroy(node.id).
+                  then(() => this.context.router.goBack());
+              }
+              this.setState({loading: false, confirmDelete: false})
+            }}>
+          Are you sure want to delete this Node? "{node.id}"
+        </ConfirmDialog>
 
         <Tabs>
           <Tab
@@ -187,12 +200,7 @@ export default class Node extends Component {
   }
 
   deleteNode() {
-    var id = this.state.node.id;
-    this.setState({loading: true});
-    DialogHelpers.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ?
-        this.nodes.destroy(id).then(() => this.context.router.goBack()) :
-        this.setState({loading: false}));
+    this.setState({loading: true, confirmDelete: true});
   }
 
 }

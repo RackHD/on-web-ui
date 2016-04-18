@@ -10,12 +10,12 @@ import generateId from '../../lib/generateId';
 import Vector from '../../lib/Vector';
 import Rectangle from '../../lib/Rectangle';
 
-import ConfirmDialog from 'rui-common/views/dialogs/Confirm';
+// import ConfirmDialog from 'rui-common/views/ConfirmDialog';
 
 export default class GCLinkElement extends Component {
 
   static propTypes = {
-    confirmRemove: PropTypes.bool,
+    // confirmRemove: PropTypes.bool,
     dashed: PropTypes.bool,
     from: PropTypes.string,
     initialColor: PropTypes.string,
@@ -27,7 +27,7 @@ export default class GCLinkElement extends Component {
   };
 
   static defaultProps = {
-    confirmRemove: false,
+    // confirmRemove: false,
     dashed: false,
     from: null,
     initialColor: 'black',
@@ -103,6 +103,7 @@ export default class GCLinkElement extends Component {
   }
 
   state = {
+    // confirmRemove: false,
     from: this.props.from,
     to: this.props.to,
     isPartial: this.props.isPartial,
@@ -285,19 +286,21 @@ export default class GCLinkElement extends Component {
     var e = event.nativeEvent || event;
     e.stopPropagation();
     e.preventDefault();
-    if (!this.props.confirmRemove) {
-      return this.destroyLink();
-    }
-    var confirmProps = {
-      callback: (ok) => {
-        if (ok) {
-          this.destroyLink();
-        }
-      },
-      children: 'Are you sure you want to delete this link?',
-      title: 'Confirm Delete:'
-    };
-    ConfirmDialog.create(confirmProps);
+    // if (!this.props.confirmRemove) {
+    return this.destroyLink();
+    // }
+    // TODO: use ConfirmDialog
+    // this.setState({confirmRemove: true});
+    // var confirmProps = {
+    //   callback: (ok) => {
+    //     if (ok) {
+    //       this.destroyLink();
+    //     }
+    //   },
+    //   children: 'Are you sure you want to delete this link?',
+    //   title: 'Confirm Delete:'
+    // };
+    // ConfirmDialog.create(confirmProps);
   }
 
   destroyLink() {

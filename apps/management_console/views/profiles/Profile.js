@@ -4,9 +4,7 @@
 
 import React, { Component } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import DialogHelpers from 'rui-common/mixins/DialogHelpers';
-import FormatHelpers from 'rui-common/mixins/FormatHelpers';
+import FormatHelpers from 'rui-common/lib/FormatHelpers';
 
 import EditProfile from './EditProfile';
 import CreateProfile from './CreateProfile';
@@ -21,7 +19,6 @@ import {
 
 import ProfileStore from 'rui-common/stores/ProfileStore';
 
-@mixin(DialogHelpers, FormatHelpers)
 export default class Profile extends Component {
 
   profiles = new ProfileStore();
@@ -55,14 +52,14 @@ export default class Profile extends Component {
             <div className="cell">
               <List>
                 <ListItem
-                  primaryText={this.fromNow(profile.updatedAt)}
+                  primaryText={FormatHelpers.fromNow(profile.updatedAt)}
                   secondaryText="Updated" />
               </List>
             </div>
             <div className="cell">
               <List>
                 <ListItem
-                  primaryText={this.fromNow(profile.createdAt)}
+                  primaryText={FormatHelpers.fromNow(profile.createdAt)}
                   secondaryText="Created" />
               </List>
             </div>
