@@ -13,17 +13,13 @@ import {
     RaisedButton,
     Toolbar,
     ToolbarGroup,
-    // ToolbarSeparator,
     ToolbarTitle
   } from 'material-ui';
 
-import ConfirmDialog from 'rui-common/views/dialogs/Confirm';
+import ConfirmDialog from 'rui-common/views/ConfirmDialog';
 
 import WorkflowEditorIconButton from './WorkflowEditorIconButton';
-
-// import RunningWorkflows from './RunningWorkflows';
 import RunWorkflow from './RunWorkflow';
-
 import TaskJsonView from './TaskJsonView';
 
 @radium
@@ -58,6 +54,9 @@ export default class WorkflowEditorToolbar extends Component {
   }
 
   state = {
+    confirmCreateWorkflow: false,
+    newWorkflowFriendlyName: '',
+    newWorkflowInjectableName: '',
     task: null,
     tasks: this.workflowOperator.taskDefinitionStore.all(),
     taskTerm: '',
@@ -105,6 +104,36 @@ export default class WorkflowEditorToolbar extends Component {
       <div className="WorkflowEditorToolbar" style={divStyle}>
         {this.renderToolbar()}
         {this.renderPopovers()}
+
+        <ConfirmDialog
+            open={this.state.confirmCreateWorkflow}
+            callback={confirmed => {
+              let workflowName = this.state.newWorkflowFriendlyName,
+                  workflowId = this.state.newWorkflowInjectableName;
+              this.setState({
+                confirmCreateWorkflow: false,
+                newWorkflowFriendlyName: '',
+                newWorkflowInjectableName: ''
+              }, () => {
+                if (!confirmed) return;
+                this.workflowOperator.workflowTemplateStore.create(workflowId, {
+                  friendlyName: workflowName,
+                  injectableName: workflowId,
+                  tasks: [
+                    {
+                      label: 'no-op',
+                      taskName: 'Task.noop'
+                    }
+                  ]
+                }).then((workflow) => {
+                  this.context.router.push('/we/' + workflowId);
+                  // HACK: force UI to update and render new workflow.
+                  setTimeout(() => window.location.reload(), 250);
+                });
+              });
+            }}>
+          Create new Workflow? "{this.state.newWorkflowInjectableName}"?'
+        </ConfirmDialog>
       </div>
     );
   }
@@ -136,7 +165,6 @@ export default class WorkflowEditorToolbar extends Component {
               onClick={(e) => this.setState({
                 runPopoverAnchor: this.state.runPopoverAnchor === e.currentTarget ? null : e.currentTarget
               })} />
-          {/*<ToolbarSeparator />*/}
         </ToolbarGroup>
         <ToolbarGroup float="right">
           <ToolbarTitle text="Task:" />
@@ -156,19 +184,7 @@ export default class WorkflowEditorToolbar extends Component {
               icon="plus"
               float="left"
               onClick={this.workflowOperator.add.bind(this.workflowOperator)}/>
-          {/*<ToolbarSeparator />*/}
         </ToolbarGroup>
-        {/*<ToolbarGroup float="right">
-          <ToolbarTitle text="Ops:" />
-          <WorkflowEditorIconButton key="active"
-              muiTheme={this.context.muiTheme}
-              tooltip="Running Workflows"
-              icon="tasks"
-              float="right"
-              onClick={(e) => this.setState({
-                runningPopoverAnchor: this.state.runningPopoverAnchor === e.currentTarget ? null : e.currentTarget
-              })} />
-        </ToolbarGroup>*/}
       </Toolbar>
     );
   }
@@ -187,8 +203,6 @@ export default class WorkflowEditorToolbar extends Component {
       if (!workflow) { return; }
       options.push(workflow.friendlyName);
     });
-
-
 
     return (
       <AutoComplete key="workflows"
@@ -231,29 +245,12 @@ export default class WorkflowEditorToolbar extends Component {
             else {
               value = value.split(/\s+/).map(word => {
                 return word.charAt(0).toUpperCase() + word.substr(1);
-              }).join(' ')
-              let newTaskInjectableName = 'Graph.' + value.replace(' ', '.');
+              }).join(' ');
 
-              ConfirmDialog.create({
-                callback: (ok) => {
-                  if (ok) {
-                    this.workflowOperator.workflowTemplateStore.create(newTaskInjectableName, {
-                      friendlyName: value,
-                      injectableName: newTaskInjectableName,
-                      tasks: [
-                        {
-                          label: 'no-op',
-                          taskName: 'Task.noop'
-                        }
-                      ]
-                    }).then((workflow) => {
-                      debugger;
-                      this.context.router.push('/we/' + newTaskInjectableName);
-                    });
-                  }
-                },
-                children: 'Create new workflow: "' + newTaskInjectableName + '"?',
-                title: 'Confirm:'
+              this.setState({
+                confirmCreateWorkflow: true,
+                newWorkflowFriendlyName: value,
+                newWorkflowInjectableName: 'Graph.' + value.replace(' ', '.')
               });
             }
           }}
@@ -362,19 +359,7 @@ export default class WorkflowEditorToolbar extends Component {
                 closeRunPopover();
               }} />
         </div>
-      </Popover>//,
-      // <Popover key="viewRunning"
-      //     style={{width: 800}}
-      //     animated={true}
-      //     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-      //     targetOrigin={{horizontal: 'right', vertical: 'top'}}
-      //     open={this.state.runningPopoverAnchor ? true : false}
-      //     anchorEl={this.state.runningPopoverAnchor}
-      //     onRequestClose={closeRunningPopover} >
-      //   <div style={containerStyle}>
-      //     <RunningWorkflows />
-      //   </div>
-      // </Popover>
+      </Popover>
     ];
   }
 

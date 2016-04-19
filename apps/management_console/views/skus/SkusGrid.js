@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { RaisedButton, LinearProgress } from 'material-ui';
 
-import FormatHelpers from 'rui-common/mixins/FormatHelpers';
+import FormatHelpers from 'rui-common/lib/FormatHelpers';
 import ResourceTable from 'rui-common/views/ResourceTable';
 import SkuStore from 'rui-common/stores/SkuStore';
 

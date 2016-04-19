@@ -8,7 +8,7 @@ import { Link } from 'react-router';
 import moment from 'moment';
 import { RaisedButton, LinearProgress } from 'material-ui';
 
-import FormatHelpers from 'rui-common/mixins/FormatHelpers';
+import FormatHelpers from 'rui-common/lib/FormatHelpers';
 import ResourceTable from 'rui-common/views/ResourceTable';
 import RackHDRestAPIv1_1 from 'rui-common/messengers/RackHDRestAPIv1_1';
 import WorkflowStore from 'rui-common/stores/WorkflowStore';

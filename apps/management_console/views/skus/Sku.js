@@ -2,10 +2,10 @@
 
 'use strict';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import DialogHelpers from 'rui-common/mixins/DialogHelpers';
+import ConfirmDialog from 'rui-common/views/ConfirmDialog';
+import SkuStore from 'rui-common/stores/SkuStore';
 
 import EditSku from './EditSku';
 import CreateSku from './CreateSku';
@@ -21,16 +21,18 @@ import {
 
 import JsonInspector from 'react-json-inspector';
 
-import SkuStore from 'rui-common/stores/SkuStore';
-
-@mixin(DialogHelpers)
 export default class Sku extends Component {
+
+  static contextTypes = {
+    router: PropTypes.any
+  };
 
   skus = new SkuStore();
 
   state = {
-    sku: null,
-    loading: true
+    confirmDelete: false,
+    loading: true,
+    sku: null
   };
 
   componentDidMount() {
@@ -45,6 +47,19 @@ export default class Sku extends Component {
     return (
       <div className="Sku">
         <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
+
+        <ConfirmDialog
+            open={this.state.confirmDelete}
+            callback={confirmed => {
+              if (confirmed) {
+                return this.skus.destroy(sku.id).
+                  then(() => this.context.router.goBack());
+              }
+              this.setState({loading: false, confirmDelete: false})
+            }}>
+          Are you sure want to delete this SKU? "{sku.id}"
+        </ConfirmDialog>
+
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="SKU Details" />
@@ -89,10 +104,7 @@ export default class Sku extends Component {
   }
 
   deleteSku() {
-    var id = this.state.sku.id;
-    this.setState({loading: true});
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? this.skus.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+    this.setState({loading: true, confirmDelete: true});
   }
 
 }

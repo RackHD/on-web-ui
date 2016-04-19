@@ -7,17 +7,16 @@ import { render, unmountComponentAtNode } from 'react-dom';
 
 import radium from 'radium';
 
-import { Dialog } from 'material-ui';
+import { Dialog, FlatButton } from 'material-ui';
 
 @radium
-export default class AlertDialog extends Component {
+export default class ConfirmDialog extends Component {
 
   static propTypes = {
     callback: PropTypes.func,
     className: PropTypes.string,
-    container: PropTypes.any,
     modal: PropTypes.bool,
-    defaultOpen: PropTypes.bool,
+    open: PropTypes.bool,
     style: PropTypes.any,
     title: PropTypes.string
   };
@@ -25,36 +24,28 @@ export default class AlertDialog extends Component {
   static defaultProps = {
     callback: null,
     className: '',
-    container: null,
     modal: false,
-    defaultOpen: true,
+    open: true,
     style: {},
-    title: 'Alert'
+    title: 'Confirm'
   };
-
-  static create(props, parent) {
-    // TODO: dry this code
-    props = props || {};
-    parent = parent || document.body;
-
-    var container = document.createElement('div');
-    props.container = container;
-    parent.appendChild(container);
-
-    var component = <this {...props}/>;
-    return render(component, container);
-  }
 
   state = {
-    open: true
+    open: this.props.open
   };
 
-  componentDidMount() {}
-
-  componentWillUnmount() {}
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.open && nextProps.open !== this.state.open) {
+      this.setState({open: nextProps.open});
+    }
+  }
 
   render() {
-    const alertActions = [
+    const confirmActions = [
+      <FlatButton
+          label="Cancel"
+          secondary={true}
+          onTouchTap={this.dismiss.bind(this, false)} />,
       <FlatButton ref="ok"
           label="Submit"
           primary={true}
@@ -65,29 +56,22 @@ export default class AlertDialog extends Component {
     return (
       <Dialog ref="root"
         open={this.state.open}
-        actions={alertActions}
+        actions={confirmActions}
         actionFocus="ok"
         autoDetectWindowHeight={true}
         autoScrollBodyContent={true}
         contentClassName={this.props.className}
         contentStyle={this.props.style}
         modal={this.props.modal}
-        defaultOpen={this.props.defaultOpen}
         title={this.props.title}>
         {this.props.children}
       </Dialog>
     );
   }
 
-  remove() {
-    unmountComponentAtNode(this.props.container);
-    this.props.container.parentNode.removeChild(this.props.container);
-  }
-
-  dismiss() {
+  dismiss(acknowledged) {
     this.setState({open: false}, () => {
-      if (this.props.callback) { this.props.callback(true); }
-      this.remove();
+      if (this.props.callback) { this.props.callback(acknowledged); }
     });
   }
 

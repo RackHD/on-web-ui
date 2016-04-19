@@ -11,7 +11,7 @@ import Color from 'color';
 
 import DragEventHelpers from '../../mixins/DragEventHelpers';
 
-import ConfirmDialog from 'rui-common/views/dialogs/Confirm';
+// import ConfirmDialog from 'rui-common/views/ConfirmDialog';
 
 import generateId from '../../lib/generateId';
 
@@ -24,7 +24,7 @@ export default class GCPanelElement extends Component {
 
   static propTypes = {
     className: PropTypes.string,
-    confirmRemove: PropTypes.bool,
+    // confirmRemove: PropTypes.bool,
     css: PropTypes.object,
     initialBounds: PropTypes.any,
     initialColor: PropTypes.string,
@@ -45,7 +45,7 @@ export default class GCPanelElement extends Component {
 
   static defaultProps = {
     className: 'GCPanelElement',
-    confirmRemove: false,
+    // confirmRemove: false,
     css: {},
     initialBounds: [0, 0, 750, 500],
     initialColor: 'grey',
@@ -105,6 +105,7 @@ export default class GCPanelElement extends Component {
   }
 
   state = {
+    // confirmRemove: false,
     name: this.props.initialName,
     color: this.props.initialColor,
     bounds: new Rectangle(this.props.initialBounds),
@@ -375,27 +376,30 @@ export default class GCPanelElement extends Component {
 
   removePanel(e) {
     e.stopPropagation();
-    let remove = () => {
-      this.setState({removed: true});
-      this.graphCanvas.unregister(this);
-      let links = this.graphCanvas.lookupLinks(this.id);
-      links.forEach(link => link.destroyLink());
-      if (this.props.onRemove) { this.props.onRemove(this); }
-      if (this.props.onRemovePanel) {
-        this.props.onRemovePanel();
-      }
-    };
-    if (!this.props.confirmRemove) {
-      return remove();
+    // if (!this.props.confirmRemove) {
+    return this.destroyPanel();
+    // }
+    // TODO: use ConfirmDialog
+    // this.setState({confirmRemove: true});
+    // var confirmProps = {
+    //   callback: (ok) => {
+    //     if (ok) { remove(); }
+    //   },
+    //   children: 'Are you sure you want to delete this node?',
+    //   title: 'Confirm Delete:'
+    // };
+    // ConfirmDialog.create(confirmProps);
+  }
+
+  destroyPanel() {
+    this.setState({removed: true});
+    this.graphCanvas.unregister(this);
+    let links = this.graphCanvas.lookupLinks(this.id);
+    links.forEach(link => link.destroyLink());
+    if (this.props.onRemove) { this.props.onRemove(this); }
+    if (this.props.onRemovePanel) {
+      this.props.onRemovePanel();
     }
-    var confirmProps = {
-      callback: (ok) => {
-        if (ok) { remove(); }
-      },
-      children: 'Are you sure you want to delete this node?',
-      title: 'Confirm Delete:'
-    };
-    ConfirmDialog.create(confirmProps);
   }
 
   movePanel(e) {

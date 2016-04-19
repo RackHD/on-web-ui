@@ -4,8 +4,8 @@
 
 import React, { Component } from 'react';
 
-import mixin from 'rui-common/lib/mixin';
-import DialogHelpers from 'rui-common/mixins/DialogHelpers';
+import ConfirmDialog from 'rui-common/views/ConfirmDialog';
+import FileStore from 'rui-common/stores/FileStore';
 
 import EditFile from './EditFile';
 import CreateFile from './CreateFile';
@@ -19,14 +19,12 @@ import {
     Snackbar
   } from 'material-ui';
 
-import FileStore from 'rui-common/stores/FileStore';
-
-@mixin(DialogHelpers)
 export default class File extends Component {
 
   files = new FileStore();
 
   state = {
+    confirmDelete: false,
     file: null,
     loading: true
   };
@@ -47,6 +45,19 @@ export default class File extends Component {
     return (
       <div className="File">
         <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
+
+        <ConfirmDialog
+            open={this.state.confirmDelete}
+            callback={confirmed => {
+              if (confirmed) {
+                return this.files.destroy(file.id).
+                  then(() => this.context.router.goBack());
+              }
+              this.setState({loading: false, confirmDelete: false})
+            }}>
+          Are you sure want to delete this File? "{file.id}"
+        </ConfirmDialog>
+
         <Toolbar>
           <ToolbarGroup key={0} float="left">
             <ToolbarTitle text="File Details" />
@@ -116,10 +127,7 @@ export default class File extends Component {
   }
 
   deleteFile() {
-    var id = this.state.file.id;
-    this.setState({loading: true});
-    this.confirmDialog('Are you sure want to delete: ' + id,
-      (confirmed) => confirmed ? this.files.destroy(id).then(() => this.routeBack()) : this.setState({loading: false}));
+    this.setState({loading: true, confirmDelete: true});
   }
 
 }
