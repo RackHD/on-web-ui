@@ -10,6 +10,7 @@ import radium from 'radium';
 
 import RackHDRestAPIv1_1 from 'rui-common/messengers/RackHDRestAPIv1_1';
 import { FileReceiver, FileStatus } from 'rui-common/views/file_uploader';
+import ConfirmDialog from 'rui-common/views/ConfirmDialog';
 
 import SkusGrid from 'rui-management-console/views/skus/SkusGrid';
 
@@ -42,7 +43,10 @@ export default class OperationsCenter extends Component {
 
   componentWillReceiveProps(nextProps) {}
 
-  state = {};
+  state = {
+    cleanupSkus: [],
+    newSku: {}
+  };
 
   css = {
     root: {
@@ -74,10 +78,34 @@ export default class OperationsCenter extends Component {
           <p>Drag and Drop your SKU packs to automatically add them to RackHD</p>
           <FileReceiver ref="fileReceiver"
               fileHandlerProps={{
+                onUploadEnd: (file, fileHandler) => {
+                  if (file.error) { return; }
+                  RackHDRestAPIv1_1.skus.list().then(skus => {
+                    let newSku = skus.filter(sku => sku.id === file.result.id)[0];
+                    if (!newSku) return;
+                    let cleanupSkus = skus.filter(sku => sku !== newSku && sku.name === newSku.name);
+                    this.setState({ cleanupSkus, newSku });
+                  });
+                },
                 uploadUrl: RackHDRestAPIv1_1.url + '/skus/pack'
               }} />
         </div>
         <SkusGrid />
+
+        <ConfirmDialog
+            open={state.cleanupSkus && state.cleanupSkus.length !== 0}
+            callback={confirmed => {
+              if (confirmed) {
+                let skuDeletes = state.cleanupSkus.map(sku => {
+                  return RackHDRestAPIv1_1.skus.delete(sku.id);
+                });
+              }
+              this.setState({cleanupSkus: [], newSku: {}});
+            }}>
+          Detected {state.cleanupSkus.length} SKU(s) also called "{state.newSku.name}".
+          <br/>
+          Should the older SKU(s) be deleted?
+        </ConfirmDialog>
       </div>
     );
   }
