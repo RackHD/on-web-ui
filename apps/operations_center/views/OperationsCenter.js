@@ -61,7 +61,7 @@ export default class OperationsCenter extends Component {
     this.load(this.props.params.workflow);
     this.reloadInterval = setInterval(() => {
       this.load(this.props.params.workflow)
-    }, 2500);
+    }, 6000);
   }
 
   componentWillUnmount() {

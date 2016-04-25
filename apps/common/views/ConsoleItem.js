@@ -22,7 +22,7 @@ export default class ConsoleItem extends Component {
     alert: 'yellow',
     crit: 'red',
     error: 'red',
-    warning: 'red',
+    warning: 'yellow',
     notice: 'yellow',
     info: 'green',
     debug: 'blue',

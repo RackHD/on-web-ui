@@ -10,6 +10,18 @@ export default class PollersRestAPI extends RestAPI {
 
   unsupportedMethods = ['put'];
 
+  recentData(id) {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.url + id + '/data')
+        .accept('json')
+        .set('authorization', this.jwtAuthorization)
+        .end((err, res) => {
+          if (err) { return reject(err); }
+          resolve(res && res.body);
+        });
+    });
+  }
+
   currentData(id) {
     return new Promise((resolve, reject) => {
       this.http.get(this.url + id + '/data/current')
