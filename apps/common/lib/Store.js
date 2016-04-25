@@ -139,7 +139,7 @@ export default class Store extends EventEmitter {
   key = 'id';
 
   collect(list, silent) {
-    list.forEach(item => this.insert(item[this.key], item, silent));
+    list.forEach(item => this.insert(item[this.key], item, true));
     if (!silent) { this.publish(); }
   }
 

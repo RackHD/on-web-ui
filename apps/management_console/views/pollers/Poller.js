@@ -26,7 +26,7 @@ import PollerStore from 'rui-common/stores/PollerStore';
 
 export default class Poller extends Component {
 
-  poller = new PollerStore();
+  pollers = new PollerStore();
 
   state = {
     confirmDelete: false,
@@ -35,7 +35,7 @@ export default class Poller extends Component {
   };
 
   componentDidMount() {
-    this.unwatchPoller = this.poller.watchOne(this.getPollerId(), 'poller', this);
+    this.unwatchPoller = this.pollers.watchOne(this.getPollerId(), 'poller', this);
     this.readPoller();
   }
 
@@ -105,7 +105,7 @@ export default class Poller extends Component {
 
   readPoller() {
     this.setState({loading: true});
-    this.poller.read(this.getPollerId()).then(() => this.setState({loading: false}));
+    this.pollers.read(this.getPollerId()).then(() => this.setState({loading: false}));
   }
 
   deletePoller() {

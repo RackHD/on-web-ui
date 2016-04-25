@@ -46,7 +46,7 @@ export default class MonoRailToolbar extends Component {
   componentDidMount() {
     this.unwatchWorkflows = this.workflowStore.watchAll('workflows', this);
     this.listWorkflows();
-    this.reloadInterval = setInterval(this.listWorkflows.bind(this), 5000);
+    this.reloadInterval = setInterval(this.listWorkflows.bind(this), 12000);
   }
 
   componentWillUnmount() {
