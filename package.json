@@ -83,7 +83,7 @@
     "lint": "eslint --ignore-path .gitignore {src,tasks,test} gulpfile.js",
     "start": "npm run build-dev",
     "test-ci": "npm run -s lint-ci && karma start test/karma.conf.js --single-run",
-    "test-travis-ci": "karma start karma.travis-ci.conf.js",
+    "test-travis-ci": "npm run -s lint-ci && karma start test/karma.travis-ci.conf.js",
     "test": "karma start test/karma.conf.js --auto-watch"
   },
   "main": "",
