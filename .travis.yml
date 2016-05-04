@@ -27,7 +27,6 @@ addons:
 
 install:
   - npm install
-  - npm run install
 
 before_script:
   - export DISPLAY=:99.0
