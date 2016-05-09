@@ -3,6 +3,9 @@
 import reactTapEventPlugin from 'react-tap-event-plugin';
 reactTapEventPlugin();
 
+import React from 'react';
+global.React = React;
+
 // bootstrap bundle
 import 'src-config';
 import 'src-monorail/routes';
