@@ -221,7 +221,7 @@ export default class GCLinkElement extends Component {
     _retry = _retry || 0;
 
     try {
-      let fromSocket = this.graphCanvas.lookup(this.state.from);
+      let fromSocket = this.graphCanvas.lookup(this.state.from, true);
       if (!fromSocket) { throw new Error(); }
 
       let fromSocketElement = findDOMNode(fromSocket).querySelector('.GraphCanvasSocketIcon'),
@@ -234,7 +234,7 @@ export default class GCLinkElement extends Component {
         toVector = new Vector(this.state.to);
       }
       else {
-        toSocket = this.graphCanvas.lookup(this.state.to);
+        toSocket = this.graphCanvas.lookup(this.state.to, true);
         toSocketElement = findDOMNode(toSocket).querySelector('.GraphCanvasSocketIcon');
         toVector = this.linksManager.getSocketCenter(toSocketElement);
         // if (this.newLink) {

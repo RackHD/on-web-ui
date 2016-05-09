@@ -158,12 +158,13 @@ export default class GraphCanvas extends Component {
     if (this.props.onSelect) { this.props.onSelect(this.selected); }
   }
 
-  lookup(id) {
+  lookup(id, throwWhenMissing) {
     let obj = this.index[id];
     if (!obj) {
       let err = new Error('GraphCanvas: Unable to find element with id: ' + id);
       err.gcIsSafe = true;
-      throw err;
+      if (throwWhenMissing) throw err;
+      else console.warn(err);
     }
     if (obj.matches) {
       if (obj.matches.length === 1) { return obj.matches[0]; }
