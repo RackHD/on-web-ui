@@ -129,11 +129,11 @@ export default class Workflow extends Component {
                         this.context.router.push('/we/' + workflow.definition.injectableName)
                     }
                     primary={true} />
-                <RaisedButton
+                {/*<RaisedButton
                     label="Delete Workflow"
                     primary={true}
                     onClick={this.deleteWorkflow.bind(this)}
-                    disabled={state.loading} />
+                    disabled={state.loading} />*/}
               </ToolbarGroup>
             </Toolbar>
             <List>

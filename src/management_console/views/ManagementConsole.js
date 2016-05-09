@@ -31,58 +31,6 @@ import ManagementConsoleToolbar from './ManagementConsoleToolbar';
 
 export default class ManagementConsole extends Component {
 
-  static routes = (
-    <Route name="Management Console" path="/mc" component={ManagementConsole}>
-      <IndexRedirect to="/mc/dashboard" />
-
-      <Route name="New File" path="/mc/files/new" component={CreateFile} />
-      <Route name="New Node Poller" path="/mc/nodes/:nodeId/pollers/new" component={CreatePoller} />
-      <Route name="New Node Workflow" path="/mc/nodes/:nodeId/workflows/new" component={CreateWorkflow} />
-      <Route name="New Node" path="/mc/nodes/new" component={CreateNode} />
-      <Route name="New Poller" path="/mc/pollers/new" component={CreatePoller} />
-      <Route name="New Profile" path="/mc/profiles/new" component={CreateProfile} />
-      <Route name="New SKU" path="/mc/skus/new" component={CreateSku} />
-      <Route name="New Template" path="/mc/templates/new" component={CreateTemplate} />
-      <Route name="New Workflow" path="/mc/workflows/new" component={CreateWorkflow} />
-
-      <Route name="Catalogs" path="/mc/catalogs" component={Catalogs} />
-      <Route name="Catalog" path="/mc/catalogs/:catalogId" component={Catalog} />
-
-      <Route name="Config" path="/mc/config" component={Config} />
-
-      <Route name="Files" path="/mc/files" component={Files} />
-      <Route name="Files" path="/mc/files/:fileId" component={File} />
-
-      <Route name="Dashboard" path="/mc/dashboard" component={Dashboard} />
-
-      <Route name="Node Catalog" path="/mc/nodes/:nodeId/catalogs/:source" component={Catalog} />
-      <Route name="Node Catalogs" path="/mc/nodes/:nodeId/catalogs" component={Catalogs} />
-      <Route name="Node Pollers" path="/mc/nodes/:nodeId/pollers" component={Pollers} />
-      <Route name="Node Workflows" path="/mc/nodes/:nodeId/workflows" component={Workflows} />
-
-      <Route name="Nodes" path="/mc/nodes" component={Nodes} />
-      <Route name="Nodes" path="/mc/nodes/:nodeId" component={Node} />
-
-      <Route name="OBM Services" path="/mc/obms" component={OBMServices} />
-      <Route name="OBM Services" path="/mc/obms/:obmsId" component={OBMService} />
-
-      <Route name="Pollers" path="/mc/pollers" component={Pollers} />
-      <Route name="Pollers" path="/mc/pollers/:pollerId" component={Poller} />
-
-      <Route name="Profiles" path="/mc/profiles" component={Profiles} />
-      <Route name="Profiles" path="/mc/profiles/:profileId" component={Profile} />
-
-      <Route name="SKUs" path="/mc/skus" component={Skus} />
-      <Route name="SKUs" path="/mc/skus/:skuId" component={Sku} />
-
-      <Route name="Templates" path="/mc/templates" component={Templates} />
-      <Route name="Templates" path="/mc/templates/:templateId" component={Template} />
-
-      <Route name="Workflows" path="/mc/workflows" component={Workflows} />
-      <Route name="Workflows" path="/mc/workflows/:workflowId" component={Workflow} />
-    </Route>
-  )
-
   static contextTypes = {
     parentSplit: PropTypes.any
   };
@@ -130,3 +78,55 @@ export default class ManagementConsole extends Component {
   }
 
 }
+
+ManagementConsole.routes = (
+  <Route name="Management Console" path="/mc" component={ManagementConsole}>
+    <IndexRedirect to="/mc/dashboard" />
+
+    <Route name="New File" path="/mc/files/new" component={CreateFile} />
+    <Route name="New Node Poller" path="/mc/nodes/:nodeId/pollers/new" component={CreatePoller} />
+    <Route name="New Node Workflow" path="/mc/nodes/:nodeId/workflows/new" component={CreateWorkflow} />
+    <Route name="New Node" path="/mc/nodes/new" component={CreateNode} />
+    <Route name="New Poller" path="/mc/pollers/new" component={CreatePoller} />
+    <Route name="New Profile" path="/mc/profiles/new" component={CreateProfile} />
+    <Route name="New SKU" path="/mc/skus/new" component={CreateSku} />
+    <Route name="New Template" path="/mc/templates/new" component={CreateTemplate} />
+    <Route name="New Workflow" path="/mc/workflows/new" component={CreateWorkflow} />
+
+    <Route name="Catalogs" path="/mc/catalogs" component={Catalogs} />
+    <Route name="Catalog" path="/mc/catalogs/:catalogId" component={Catalog} />
+
+    <Route name="Config" path="/mc/config" component={Config} />
+
+    <Route name="Files" path="/mc/files" component={Files} />
+    <Route name="Files" path="/mc/files/:fileId" component={File} />
+
+    <Route name="Dashboard" path="/mc/dashboard" component={Dashboard} />
+
+    <Route name="Node Catalog" path="/mc/nodes/:nodeId/catalogs/:source" component={Catalog} />
+    <Route name="Node Catalogs" path="/mc/nodes/:nodeId/catalogs" component={Catalogs} />
+    <Route name="Node Pollers" path="/mc/nodes/:nodeId/pollers" component={Pollers} />
+    <Route name="Node Workflows" path="/mc/nodes/:nodeId/workflows" component={Workflows} />
+
+    <Route name="Nodes" path="/mc/nodes" component={Nodes} />
+    <Route name="Nodes" path="/mc/nodes/:nodeId" component={Node} />
+
+    <Route name="OBM Services" path="/mc/obms" component={OBMServices} />
+    <Route name="OBM Services" path="/mc/obms/:obmsId" component={OBMService} />
+
+    <Route name="Pollers" path="/mc/pollers" component={Pollers} />
+    <Route name="Pollers" path="/mc/pollers/:pollerId" component={Poller} />
+
+    <Route name="Profiles" path="/mc/profiles" component={Profiles} />
+    <Route name="Profiles" path="/mc/profiles/:profileId" component={Profile} />
+
+    <Route name="SKUs" path="/mc/skus" component={Skus} />
+    <Route name="SKUs" path="/mc/skus/:skuId" component={Sku} />
+
+    <Route name="Templates" path="/mc/templates" component={Templates} />
+    <Route name="Templates" path="/mc/templates/:templateId" component={Template} />
+
+    <Route name="Workflows" path="/mc/workflows" component={Workflows} />
+    <Route name="Workflows" path="/mc/workflows/:workflowId" component={Workflow} />
+  </Route>
+);
