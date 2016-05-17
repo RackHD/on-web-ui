@@ -166,7 +166,7 @@ export default class GraphCanvas extends Component {
       if (throwWhenMissing) throw err;
       else console.warn(err);
     }
-    if (obj.matches) {
+    else if (obj.matches) {
       if (obj.matches.length === 1) { return obj.matches[0]; }
       console.warn('GraphCanvas lookup returned multitple elements for an id.');
       return obj.matches;

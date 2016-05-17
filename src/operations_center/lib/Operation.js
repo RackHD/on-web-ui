@@ -20,9 +20,6 @@ export default class Operation {
   constructor(instance, operationsCenter) {
     this.operationsCenter = operationsCenter;
     instance = instance || {};
-    let template = this.operationsCenter.getWorkflowTemplate(instance.injectableName) || {
-      tasks: []
-    };
     this.meta = {
       bounds: null,
       cols: null,
@@ -31,13 +28,15 @@ export default class Operation {
       height: null,
       isSubGraph: null,
       links: null,
-      nodes: null,
+      nodes: {
+        byId: {},
+        byLabel: {}
+      },
       rows: null,
       width: null
     };
     this.instance = instance;
-    this.template = template;
-    // console.log(this);
+    this.definition = instance.definition;
   }
 
   renderGraph(parentWorkflow) {
@@ -45,28 +44,28 @@ export default class Operation {
       this.loadGraph(null);
     }
 
-    let nodes = Object.keys(this.meta.nodes).map(label => {
-      let node = this.meta.nodes[label];
+    let nodes = Object.keys(this.meta.nodes.byLabel).map(label => {
+      let node = this.meta.nodes.byLabel[label];
 
       let orderPortId = GCPort.id(),
-          waitOnId = GCSocket.id(),
+          waitingOnId = GCSocket.id(),
           failedId = GCSocket.id(),
           succeededId = GCSocket.id(),
           finishedId = GCSocket.id();
 
       node.orderPortId = orderPortId;
       node.orderSocketIds = {
-        waitOn: waitOnId,
+        waitingOn: waitingOnId,
         failed: failedId,
         succeeded: succeededId,
         finished: finishedId
       };
 
       let leftSockets = [
-        <GCSocket key={waitOnId}
+        <GCSocket key={waitingOnId}
           dir={[-1, 0]}
           initialColor="#6cf"
-          initialId={waitOnId}
+          initialId={waitingOnId}
           initialName="Wait On"
           hideLabel={true} />
       ];
@@ -116,22 +115,26 @@ export default class Operation {
             leftSockets={leftSockets}
             rightSockets={rightSockets}>
           {/*{node.workflow && node.workflow.renderGraph(this)}*/}
+          {node.instance.error &&
+            <div style={{float: 'left', width: '80%', overflow: 'auto', height: 260, background: 'white', color: 'red'}}>
+              {node.instance.error}
+            </div>
+          }
         </GCNode>
       );
     });
 
-    let links = Object.keys(this.meta.links).map(label => {
-      let link = this.meta.links[label],
-          { source, target } = link;
+    let links = this.meta.links.map(link => {
+      let { source, target } = link;
 
       if (!source || !target) { return null; }
 
-      let color = ({failed: 'red', succeeded: 'green', finished: '#6cf'})[link.waitOn];
+      let color = ({failed: 'red', succeeded: 'green', finished: '#6cf'})[link.waitingOn];
 
       return (
         <GCLink key={link.id}
-            from={link.source.orderSocketIds.waitOn}
-            to={link.target.orderSocketIds[link.waitOn]}
+            from={link.source.orderSocketIds.waitingOn}
+            to={link.target.orderSocketIds[link.waitingOn]}
             dashed={true}
             initialId={link.id}
             initialColor={color} />
@@ -142,45 +145,38 @@ export default class Operation {
   }
 
   loadGraph(parentWorkflow) {
-    this.meta.nodes = {};
+    this.meta.nodes = {byId: {}, byLabel: {}};
     this.meta.links = [];
 
     if (!this.instance.tasks) {
       return;
     }
 
-    // debugger;
     let taskHash = {};
 
-    this.template.tasks.forEach((task, i) => {
-      let definition = this.operationsCenter.getTaskDefinitionFromTask(task);
+    this.definition.tasks.forEach((task, i) => {
+      let definition = this.definition[task.label];
 
-      taskHash[definition.injectableName] = {
+      taskHash[task.label] = {
         task,
         definition,
         i
       };
     });
 
-    Object.keys(this.instance.tasks).forEach(taskId => {
-      let taskInstance = this.instance.tasks[taskId];
+    Object.keys(this.instance.tasks).forEach(instanceId => {
+      let instance = this.instance.tasks[instanceId];
 
-      let {task, definition, i} = taskHash[taskInstance.injectableName];
-
-      // let isNestedWorkflow =
-      //     definition &&
-      //     definition.implementsTask &&
-      //     definition.implementsTask === 'Task.Base.Graph.Run';
+      let {task, definition, i} = taskHash[instance.label];
 
       let node = {
-        id: GCNode.id(),
+        id: instance.instanceId,
         x: 0,
         y: 0,
         bounds: null,
-        instance: taskInstance,
-        definition: definition || null,
+        instance,
+        definition,
         task,
-        template: this.template.tasks[i],
         workflow: null
       };
 
@@ -192,27 +188,27 @@ export default class Operation {
       //   node.workflow = workflow;
       // }
 
-      this.meta.nodes[task.label] = node;
+      this.meta.nodes.byId[instance.instanceId] = node;
+      this.meta.nodes.byLabel[instance.label] = node;
     });
 
-    this.template.tasks.forEach(task => {
-      let source = this.meta.nodes[task.label];
-
-      if (task.waitOn) {
-        Object.keys(task.waitOn).forEach(label => {
-          let target = this.meta.nodes[label],
-              waitOn = task.waitOn[label];
+    this.definition.tasks
+      .map(task => this.meta.nodes.byLabel[task.label])
+      .filter(node => node.instance.waitingOn)
+      .forEach(node => {
+        Object.keys(node.instance.waitingOn).forEach(instanceId => {
+          let target = this.meta.nodes.byId[instanceId],
+              waitingOn = node.instance.waitingOn[instanceId];
 
           this.meta.links.push({
-            id: GCLink.id(),
-            name: 'waitOn',
-            source,
+            id: node.instance.label + ':>' + target.instance.label,
+            name: 'waitingOn',
+            source: node,
             target,
-            waitOn
+            waitingOn
           });
         });
-      }
-    });
+      });
 
     this.layoutGraph(parentWorkflow || this);
     this.calculateGraphBounds(parentWorkflow);
@@ -220,10 +216,10 @@ export default class Operation {
 
   layoutGraph(parentWorkflow) {
     let columns = [
-      this.template.tasks
-        .filter(task => !task.waitOn)
-        .map((task, i) => {
-          let node = this.meta.nodes[task.label];
+      this.definition.tasks
+        .map(instance => this.meta.nodes.byLabel[instance.label])
+        .filter(node => !node.instance.waitingOn)
+        .map((node, i) => {
           node.y = i;
           return node;
         })
@@ -231,35 +227,36 @@ export default class Operation {
 
     this.meta.columns = columns;
 
-    let findMaxDepth = (task, depth = 0) => {
-      if (!task.waitOn) { return depth; }
+    let findMaxDepth = (instance, depth = 0) => {
+      if (!instance.waitingOn) { return depth; }
 
-      depth += 1;
+      let depths = Object.keys(instance.waitingOn).map(instanceId => {
+        let node = this.meta.nodes.byId[instanceId];
 
-      let depths = Object.keys(task.waitOn).map(taskLabel => {
-        let node = this.meta.nodes[taskLabel];
-
-        return node ? findMaxDepth(node.task, depth) : depth;
+        return node ? findMaxDepth(node.instance, depth + 1) : depth;
       });
 
-      return Math.max(...depths);
+      return Math.max(depth, ...depths);
     };
 
-    this.template.tasks.filter(task => task.waitOn).forEach(task => {
-      let column = findMaxDepth(task),
-          node = this.meta.nodes[task.label];
+    this.definition.tasks
+      .map(instance => this.meta.nodes.byLabel[instance.label])
+      .filter(node => node.instance.waitingOn)
+      .forEach(node => {
+        // debugger;
+        let column = findMaxDepth(node.instance);
 
-      columns[column] = columns[column] || [];
+        columns[column] = columns[column] || [];
 
-      node.x = column;
-      node.y = columns[column].length;
+        node.x = column;
+        node.y = columns[column].length;
 
-      columns[column].push(node);
+        columns[column].push(node);
 
-      // if (node.workflow) {
-      //   this.layoutGraph(graphContext, node.workflow);
-      // }
-    });
+        // if (node.workflow) {
+        //   this.layoutGraph(graphContext, node.workflow);
+        // }
+      });
 
     let numRows = 0,
         numCols = 0;
@@ -283,8 +280,8 @@ export default class Operation {
         minTaskSizeY = 70,
         taskGutter = 30;
 
-    Object.keys(this.meta.nodes).map(label => {
-      let node = this.meta.nodes[label];
+    Object.keys(this.meta.nodes.byLabel).map(label => {
+      let node = this.meta.nodes.byLabel[label];
 
       // if (node.workflow) {
       //   node.workflow.calculateGraphBounds(this);
@@ -302,13 +299,17 @@ export default class Operation {
       //   // console.log(node.bounds.toArray());
       // }
 
-      // else {
-      node.bounds =
-        new Rectangle(0, 0,
-          Math.max(minTaskSizeX, (label.length * letterSizeX + taskGutter)),
-          minTaskSizeY
-        );
-      // }
+      if (node.instance.error) {
+        node.bounds = new Rectangle(0, 0, 300, 300);
+      }
+
+      else {
+        node.bounds =
+          new Rectangle(0, 0,
+            Math.max(minTaskSizeX, (label.length * letterSizeX + taskGutter)),
+            minTaskSizeY
+          );
+      }
     });
 
     let colWidths = [],
@@ -366,8 +367,8 @@ export default class Operation {
       return new Rectangle(left, top, right, bottom);
     };
 
-    Object.keys(this.meta.nodes).map(label => {
-      let node = this.meta.nodes[label];
+    Object.keys(this.meta.nodes.byLabel).forEach(label => {
+      let node = this.meta.nodes.byLabel[label];
       node.bounds = getTaskBounds(node.x, node.y);
     });
 
@@ -392,8 +393,8 @@ export default class Operation {
 
     this.meta.bounds = this.meta.bounds.translate(offsetVector);
 
-    Object.keys(this.meta.nodes).map(label => {
-      let node = this.meta.nodes[label];
+    Object.keys(this.meta.nodes.byLabel).forEach(label => {
+      let node = this.meta.nodes.byLabel[label];
       node.bounds = node.bounds.translate(offsetVector);
     });
   }

@@ -94,13 +94,13 @@ export default class TestWrapper extends Component {
       let { TestComponent, componentProps } = this.props,
           styles = {
             background: 'rgba(255, 255, 255, 0.75)',
-            minHeight: '20%',
+            minHeight: '40%',
             position: 'absolute',
             padding: 10,
             zIndex: 1,
             border: '2px dotted rgba(255, 0, 0, 0.25)',
-            width: '80%',
-            left: '10%',
+            width: '90%',
+            left: '5%',
             top: '5%'
           };
       return (
