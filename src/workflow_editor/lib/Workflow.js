@@ -343,15 +343,13 @@ export default class Workflow {
     let findMaxDepth = (task, depth = 0) => {
       if (!task.waitOn) { return depth; }
 
-      depth += 1;
-
       let depths = Object.keys(task.waitOn).map(taskLabel => {
         let node = this.meta.nodes[taskLabel];
 
-        return node ? findMaxDepth(node.task, depth) : depth;
+        return node ? findMaxDepth(node.task, depth + 1) : depth;
       });
 
-      return Math.max(...depths);
+      return Math.max(depth, ...depths);
     };
 
     this.tasks.filter(task => task.waitOn).forEach(task => {

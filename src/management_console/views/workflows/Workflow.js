@@ -98,12 +98,12 @@ export default class Workflow extends Component {
             open={state.confirmDelete}
             callback={confirmed => {
               if (confirmed) {
-                return this.workflows.destroy(workflow.id).
+                return this.workflows.destroy(workflow.context.graphId).
                   then(() => this.context.routes.goBack())
               }
               this.setState({loading: false, confirmDelete: false})
             }} >
-          Are you sure want to delete this Workflow? "{workflow.id}"
+          Are you sure want to delete this Workflow? "{workflow.context.graphId}"
         </ConfirmDialog>*/}
 
         <Tabs>

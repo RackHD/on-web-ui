@@ -76,7 +76,8 @@ export default class EditWorkflow extends Component {
       <div className="EditWorkflow">
         <Toolbar>
           <ToolbarGroup key={0} float="left">
-            <ToolbarTitle text={this.props.title || workflow.id ? 'Edit Workflow' : 'Create Workflow'} />
+            <ToolbarTitle text={this.props.title ||
+              (workflow.context && workflow.context.graphId ? 'Edit Workflow' : 'Create Workflow')} />
           </ToolbarGroup>
           <ToolbarGroup key={1} float="right">
             <RaisedButton
@@ -131,8 +132,8 @@ export default class EditWorkflow extends Component {
 
   saveWorkflow() {
     this.disable();
-    if (this.state.workflow.id) {
-      this.workflows.update(this.state.workflow.id, this.state.workflow).then(() => this.enable());
+    if (this.state.workflow.context && this.state.workflow.context.graphId) {
+      this.workflows.update(this.state.workflow.context.graphId, this.state.workflow).then(() => this.enable());
     }
     else if (this.state.workflow.node) {
       RackHDRestAPIv1_1.nodes.postWorkflow(this.state.workflow.node, this.state.workflow).then(workflow => {
@@ -141,7 +142,7 @@ export default class EditWorkflow extends Component {
           this.props.onDone();
         }
         else {
-          this.context.router.push('/mc/workflows/' + workflow.id);
+          this.context.router.push('/mc/workflows/' + workflow.context.graphId);
         }
       }).catch((err) => {
         if (this.props.onDone) {

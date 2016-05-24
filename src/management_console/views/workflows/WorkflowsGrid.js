@@ -60,9 +60,9 @@ export default class WorkflowsGrid extends Component {
             let row = {};
             row.Name = <Link to={'/mc/workflows/' + workflow.instanceId}>{workflow.name}</Link>;
             if (!this.nodeId) {
-              row.Node = <Link to={'/mc/nodes/' + workflow.node}>
-                {FormatHelpers.shortId(this.workflows.getNodeId(workflow))}
-              </Link>;
+              let node = this.workflows.getNodeId(workflow);
+              if (node) row.Node =
+                <Link to={'/mc/nodes/' + node}>{FormatHelpers.shortId(node)}</Link>;
             }
             row.Status = workflow.completeEventString || (workflow.cancelled ? 'cancelled' : workflow._status);
             row.Status = row.Status.charAt(0).toUpperCase() + row.Status.substr(1);
