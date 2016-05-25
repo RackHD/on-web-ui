@@ -64,7 +64,10 @@ export default class OperationsGraph extends Component {
     if (nextProps.worldWidth) { nextState.worldWidth = nextProps.worldWidth; }
     if (nextProps.height) { nextState.canvasHeight = nextProps.height; }
     if (nextProps.width) { nextState.canvasWidth = nextProps.width; }
-    if (nextProps.workflow) { nextState.workflow = nextProps.workflow; }
+    if (nextProps.workflow) {
+      nextState.workflow = nextProps.workflow;
+      nextState.version = this.state.version + 1;
+    }
     this.setState(nextState);
   }
 

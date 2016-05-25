@@ -265,8 +265,12 @@ export default class GCLinkElement extends Component {
     if (skipSocket === true) { return; }
     let fromSocket = this.graphCanvas.lookup(this.state.from),
         toSocket = this.graphCanvas.lookup(this.state.to);
-    if (skipSocket !== fromSocket) { fromSocket.onHover(skipSocket ? true : this); }
-    if (skipSocket !== toSocket) { toSocket.onHover(toSocket ? true : this); }
+    if (fromSocket && fromSocket.onHover && skipSocket !== fromSocket) {
+      fromSocket.onHover(skipSocket ? true : this);
+    }
+    if (toSocket && toSocket.onHover && skipSocket !== toSocket) {
+      toSocket.onHover(toSocket ? true : this);
+    }
   }
 
   onLeaveCurve(skipSocket) {
@@ -275,8 +279,12 @@ export default class GCLinkElement extends Component {
     if (skipSocket === true) { return; }
     let fromSocket = this.graphCanvas.lookup(this.state.from),
         toSocket = this.graphCanvas.lookup(this.state.to);
-    if (skipSocket !== fromSocket) { fromSocket.onLeave(skipSocket ? true : this); }
-    if (skipSocket !== toSocket) { toSocket.onLeave(toSocket ? true : this); }
+    if (fromSocket && fromSocket.onLeave && skipSocket !== fromSocket) {
+      fromSocket.onLeave(skipSocket ? true : this);
+    }
+    if (toSocket && toSocket.onLeave && skipSocket !== toSocket) {
+      toSocket.onLeave(toSocket ? true : this);
+    }
   }
 
   removeLink(event) {
