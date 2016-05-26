@@ -9,6 +9,8 @@ export default class WorkflowStore extends Store {
   api = RackHDRestAPIv1_1.url;
   resource = 'graphObjs';
 
+  key = 'instanceId';
+
   static getNodeId(workflow) {
     return this.prototype.getNodeId(workflow);
   }

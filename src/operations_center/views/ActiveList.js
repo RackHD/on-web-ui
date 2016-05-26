@@ -22,8 +22,6 @@ import EMCTab from 'src-common/views/EMCTab';
 
 import emcTheme from 'src-common/lib/emcTheme';
 
-import WorkflowStore from 'src-common/stores/WorkflowStore';
-
 @radium
 export default class MonoRailToolbar extends Component {
 
@@ -35,22 +33,10 @@ export default class MonoRailToolbar extends Component {
     css: {}
   };
 
-  workflowStore = new WorkflowStore();
-
-  componentWillMount() {
-    this.workflowStore.startMessenger();
-  }
-
-  componentDidMount() {
-    this.unwatchWorkflows = this.workflowStore.watchAll('workflows', this);
-    this.listWorkflows();
-    this.reloadInterval = setInterval(this.listWorkflows.bind(this), 12000);
-  }
-
-  componentWillUnmount() {
-    this.workflowStore.stopMessenger();
-    this.unwatchWorkflows();
-    clearInterval(this.reloadInterval);
+  componentWillReceiveProps(nextProps) {
+    let nextState = {};
+    if (nextProps.workflows) { nextState.workflows = nextProps.workflows; }
+    this.setState(nextState);
   }
 
   css = {
@@ -62,8 +48,8 @@ export default class MonoRailToolbar extends Component {
   };
 
   state = {
-    loading: false,
-    workflows: []
+    loading: this.props.loading,
+    workflows: this.props.workflows
   };
 
   render() {
@@ -127,8 +113,6 @@ export default class MonoRailToolbar extends Component {
         succeeded: 'green'
       };
 
-      let nodeId = this.workflowStore.getNodeId(workflow);
-
       return (
         <Link key={workflow.instanceId} to={'/oc/' + workflow.instanceId} style={linkStyle}>
           <ListItem
@@ -139,7 +123,7 @@ export default class MonoRailToolbar extends Component {
                     style={{color: (statusColorMap[status] || 'white')}} />
               }
               primaryText={workflow.name}
-              secondaryText={nodeId && <div style={{color: '#999'}}>{nodeId}</div>} />
+              secondaryText={workflow.nodeId && <div style={{color: '#999'}}>{workflow.nodeId}</div>} />
         </Link>
       );
     });
@@ -150,11 +134,6 @@ export default class MonoRailToolbar extends Component {
         <List>{list}</List>
       </div>
     );
-  }
-
-  listWorkflows() {
-    this.setState({loading: true});
-    this.workflowStore.list().then(() => this.setState({loading: false}));
   }
 
 }

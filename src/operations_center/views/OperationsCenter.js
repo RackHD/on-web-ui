@@ -37,33 +37,24 @@ export default class OperationsCenter extends Component {
     };
   }
 
-  taskDefinitionStore = new TaskDefinitionStore();
-
-  workflowTemplateStore = new WorkflowTemplateStore();
-
   workflowStore = new WorkflowStore();
 
-  getTaskDefinition(name) {
-    return this.taskDefinitionStore.collection[name];
-  }
-
-  getWorkflowTemplate(name) {
-    return this.workflowTemplateStore.collection[name];
-  }
-
-  getTaskDefinitionFromTask(task) {
-    return task.taskDefinition || this.getTaskDefinition(task.taskName) || {};
+  componentWillMount() {
+    this.workflowStore.startMessenger();
   }
 
   componentDidMount() {
+    this.unwatchWorkflows = this.workflowStore.watchAll('workflows', this);
     this.load(this.props.params.workflow);
-    // this.reloadInterval = setInterval(() => {
-    //   this.load(this.props.params.workflow);
-    // }, 6000);
+    this.listWorkflows();
   }
 
   componentWillUnmount() {
-    clearInterval(this.reloadInterval);
+    if (this.cleanupWorkflowMonitor) {
+      this.cleanupWorkflowMonitor();
+    }
+    this.workflowStore.stopMessenger();
+    this.unwatchWorkflows();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -80,7 +71,8 @@ export default class OperationsCenter extends Component {
   state = {
     loading: false,
     split: 0.7,
-    workflow: null
+    workflow: null,
+    workflows: []
   };
 
   css = {
@@ -107,8 +99,6 @@ export default class OperationsCenter extends Component {
       ]
     };
 
-    let overlay = [];
-
     return (
       <div ref="root" style={css.root}>
         <SplitView key="sv"
@@ -131,6 +121,11 @@ export default class OperationsCenter extends Component {
                 height={height} />}
             b={({ width, height }) => <ActiveList key="activeList"
                 ref="activeList"
+                loading={this.state.loading}
+                workflows={this.state.workflows.map(workflow => {
+                  workflow.nodeId = this.workflowStore.getNodeId(workflow);
+                  return workflow;
+                })}
                 width={width}
                 height={height} />} />
       </div>
@@ -138,23 +133,35 @@ export default class OperationsCenter extends Component {
   }
 
   load(workflowId) {
+    if (!workflowId) return;
     this.setState({loading: true});
-
-    let promises = [
-      this.taskDefinitionStore.list(),
-      this.workflowTemplateStore.list()
-    ];
-
-    if (workflowId) {
-      promises.push(this.workflowStore.read(workflowId));
-    }
-
-    Promise.all(promises).then(() => {
+    const getWorkflow = () => {
+      let workflow = this.workflowStore.get(workflowId);
+      return workflow ? Object.assign({}, workflow) : null;
+    };
+    this.workflowStore.read(workflowId).then(() => {
       this.setState({
         loading: false,
-        workflow: this.workflowStore.get(workflowId) || null
+        workflow: getWorkflow()
       });
     });
+    const updateWorkflow = () => {
+      this.setState({
+        workflow: getWorkflow()
+      });
+    };
+    this.workflowStore.subscribe(workflowId, updateWorkflow);
+    if (this.cleanupWorkflowMonitor) {
+      this.cleanupWorkflowMonitor();
+    }
+    this.cleanupWorkflowMonitor = () => {
+      this.workflowStore.unsubscribe(workflowId, updateWorkflow);
+    };
+  }
+
+  listWorkflows() {
+    this.setState({loading: true});
+    this.workflowStore.list().then(() => this.setState({loading: false}));
   }
 
 }

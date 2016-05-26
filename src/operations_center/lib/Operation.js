@@ -116,9 +116,9 @@ export default class Operation {
             rightSockets={rightSockets}>
           {/*{node.workflow && node.workflow.renderGraph(this)}*/}
           {node.instance.error &&
-            <div style={{float: 'left', width: '80%', overflow: 'auto', height: 260, background: 'white', color: 'red'}}>
+            <pre style={{float: 'left', width: '80%', overflow: 'auto', height: 200, background: 'white', color: 'red'}}>
               {node.instance.error}
-            </div>
+            </pre>
           }
         </GCNode>
       );
