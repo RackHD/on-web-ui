@@ -45,8 +45,9 @@ export default class OperationsCenter extends Component {
 
   componentDidMount() {
     this.unwatchWorkflows = this.workflowStore.watchAll('workflows', this);
-    this.load(this.props.params.workflow);
-    this.listWorkflows();
+    this.listWorkflows().then(() => {
+      this.load(this.props.params.workflow);
+    });
   }
 
   componentWillUnmount() {
@@ -55,6 +56,10 @@ export default class OperationsCenter extends Component {
     }
     this.workflowStore.stopMessenger();
     this.unwatchWorkflows();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -139,29 +144,21 @@ export default class OperationsCenter extends Component {
       let workflow = this.workflowStore.get(workflowId);
       return workflow ? Object.assign({}, workflow) : null;
     };
-    this.workflowStore.read(workflowId).then(() => {
+    if (this.cleanupWorkflowMonitor) {
+      this.cleanupWorkflowMonitor();
+    }
+    this.cleanupWorkflowMonitor = this.workflowStore.watchOne(workflowId, 'workflow', this);
+    return this.workflowStore.read(workflowId).then(() => {
       this.setState({
         loading: false,
         workflow: getWorkflow()
       });
     });
-    const updateWorkflow = () => {
-      this.setState({
-        workflow: getWorkflow()
-      });
-    };
-    this.workflowStore.subscribe(workflowId, updateWorkflow);
-    if (this.cleanupWorkflowMonitor) {
-      this.cleanupWorkflowMonitor();
-    }
-    this.cleanupWorkflowMonitor = () => {
-      this.workflowStore.unsubscribe(workflowId, updateWorkflow);
-    };
   }
 
   listWorkflows() {
     this.setState({loading: true});
-    this.workflowStore.list().then(() => this.setState({loading: false}));
+    return this.workflowStore.list().then(() => this.setState({loading: false}));
   }
 
 }
