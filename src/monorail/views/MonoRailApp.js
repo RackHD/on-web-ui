@@ -56,17 +56,24 @@ export default class MonoRailApp extends Component {
   }
 
   componentDidMount() {
+    console.log('mount monorail app');
     let route = this.props.routes && this.props.routes[1];
 
     if (!route || (route.name !== 'Settings' && route.name !== 'Not Found')) {
+      console.log('check apis');
       let settingsRedirect = err => {
         this.setState({loadingAPIs: false}, () => {
+          console.log('redirect to settings');
           this.context.router.push('/settings');
         });
       };
 
+      console.log('got here');
       RackHDRestAPIv1_1.config.get().catch(settingsRedirect).then(() => {
+        console.log('and here');
+        console.log('v1.1 api up');
         RackHDRestAPIv2_0.catch(settingsRedirect).then(() => {
+          console.log('v2 api up');
           this.setState({loadingAPIs: false});
         });
       });

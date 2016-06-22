@@ -7,7 +7,12 @@ describe('Dashboard', function() {
 
   before(function(done) {
     window.location.hash = '#/mc/dashboard';
-    setTimeout(done, 50);
+    const check = () => {
+      let dashboardContainer = document.querySelector('.Dashboard');
+      if (dashboardContainer) return done();
+      setTimeout(check, 50);
+    };
+    check();
   });
 
   after(function(done) {
@@ -15,7 +20,6 @@ describe('Dashboard', function() {
   });
 
   it('is ok', function() {
-    let dashboardContainer = document.querySelector('.Dashboard');
-    expect(dashboardContainer).to.be.ok;
+    expect(true).to.be.ok;
   });
 });

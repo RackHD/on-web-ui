@@ -18,7 +18,7 @@ export default class Messenger extends EventEmitter {
     super();
     this.channel = channel || this.channel;
     this.host = host || this.host ||
-      (window && window.location.host) || 'localhost';
+      (window && window.location.host) || '127.0.0.1';
     this.secure = secure || this.secure;
     this.url = 'ws';
     if (this.secure) this.url += 's';

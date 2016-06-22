@@ -13,7 +13,7 @@ import 'src-monorail/routes';
 if (process.env.NODE_ENV === 'development') {
   let script = document.createElement('script');
   script.setAttribute('type', 'text/javascript');
-  script.setAttribute('src', 'http://localhost:3000/webpack-dev-server.js');
+  script.setAttribute('src', 'http://127.0.0.1:3000/webpack-dev-server.js');
   document.body.appendChild(script);
 }
 

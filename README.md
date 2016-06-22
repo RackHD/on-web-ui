@@ -24,7 +24,7 @@ Extract the zip file to any directory served over HTTP. This is done automatical
 $ git clone https://github.com/RackHD/on-web-ui.git
 $ cd on-web-ui
 $ npm install
-$ npm start             # Start development server at http://localhost:3000.
+$ npm start             # Start development server at http://127.0.0.1:3000.
 $ npm test              # Run automated tests.
 ```
 
