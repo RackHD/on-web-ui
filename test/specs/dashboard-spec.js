@@ -3,13 +3,14 @@
 /* eslint-disable prefer-arrow-callback */
 
 describe('Dashboard', function() {
-  this.timeout(5000);
+  this.timeout(2500);
 
   before(function(done) {
     window.location.hash = '#/mc/dashboard';
     const check = () => {
-      let dashboardContainer = document.querySelector('.Dashboard');
-      if (dashboardContainer) return done();
+      let dashboardContainer = document.querySelector('.Dashboard'),
+          managementConsoleContainer = document.querySelector('.ManagementConsole');
+      if (dashboardContainer && managementConsoleContainer) return done();
       setTimeout(check, 50);
     };
     check();

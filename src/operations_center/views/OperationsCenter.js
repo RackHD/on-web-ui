@@ -105,7 +105,7 @@ export default class OperationsCenter extends Component {
     };
 
     return (
-      <div ref="root" style={css.root}>
+      <div ref="root" className="OperationsCenter" style={css.root}>
         <SplitView key="sv"
             ref="splitView"
             split={this.state.split}

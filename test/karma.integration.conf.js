@@ -1,7 +1,5 @@
 // Copyright 2015, EMC, Inc.
 
-const karmaConf = require('./karma.conf');
-
 const karmaCIConf = require('./karma.ci.conf');
 
 module.exports = (config) => {

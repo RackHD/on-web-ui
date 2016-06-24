@@ -80,6 +80,7 @@
     "build": "npm run build-css && npm run build-js",
     "deploy": "npm run-script build && rm -f static/monorail.js.map* && gulp deploy",
     "integration-test": "karma start test/karma.integration.conf.js",
+    "integration-test-dev": "karma start test/karma.integration.dev.conf.js",
     "lint-ci": "eslint --ignore-path .gitignore {src,tasks,test} gulpfile.js -f checkstyle -o checkstyle-result.xml",
     "lint": "eslint --ignore-path .gitignore {src,tasks,test} gulpfile.js",
     "start": "npm run build-dev",

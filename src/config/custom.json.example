@@ -3,7 +3,7 @@
   "Enable_RackHD_API_Auth": false,
   "Enable_RackHD_SSL": false,
   "MonoRail_API": "127.0.0.1:9090/api/1.1",
-  "MonoRail_WSS": "127.0.0.1:9090",
+  "MonoRail_WSS": "127.0.0.1:9100",
   "RackHD_API": "127.0.0.1:9090/api/2.0",
   "RackHD_API_Auth_Token": "",
   "RedFish_API": "127.0.0.1:9090/redfish"
