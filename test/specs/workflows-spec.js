@@ -21,10 +21,6 @@ describe('Operation Center', function() {
     check();
   });
 
-  after(function() {
-    delete this.domNodes;
-  });
-
   it('is ok', function() {
     expect(true).to.be.ok;
   });
@@ -41,7 +37,6 @@ describe('Operation Center', function() {
           node: this.node.id
         }).catch(done).then(workflow => {
           this.workflow = workflow;
-          // global.monorailApp.forceUpdate(done);
           done();
         });
       });
@@ -53,7 +48,6 @@ describe('Operation Center', function() {
     });
 
     it('is ok', function() {
-      // console.log(this.node, this.workflow);
       expect(this.node).to.be.ok;
       expect(this.workflow).to.be.ok;
     });
@@ -61,11 +55,40 @@ describe('Operation Center', function() {
     it('should appear in the active workflow list', function(done) {
       const domCheck = () => {
         let workflowLink = document.querySelector('.Workflow-' + this.workflow.instanceId);
-        // console.log(workflowLink, this.workflow);
         if (workflowLink) return done();
         setTimeout(domCheck, 50);
       };
       domCheck();
+    });
+
+    describe('graph view', function() {
+      before(function(done) {
+        const check = () => {
+          let firstWorkflowTaskId;
+          for (firstWorkflowTaskId in this.workflow.tasks) {
+            if (this.workflow.tasks.hasOwnProperty(firstWorkflowTaskId)) break;
+          }
+          let firstWorkflowTask = document.querySelector('div[data-id="' + firstWorkflowTaskId + '"]');
+          if (firstWorkflowTask) return done();
+          setTimeout(check, 50);
+        };
+        window.location.hash = '#/oc/' + this.workflow.instanceId;
+        check();
+      });
+
+      it('is ok', function() {
+        expect(true).to.be.ok;
+      });
+
+      function assertSuccess(workflowTaskId) {
+        let workflowTask = document.querySelector('div[data-id="' + workflowTaskId + '"]');
+        expect(workflowTask).to.be.ok;
+        expect(workflowTask.firstChild.style.borderColor).to.match(/0, 128, 0/);
+      }
+
+      it('should have succeded', function() {
+        Object.keys(this.workflow.tasks).forEach(assertSuccess);
+      });
     });
   });
 });
