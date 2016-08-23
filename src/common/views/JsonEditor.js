@@ -46,13 +46,6 @@ export default class JsonEditor extends Component {
     }
   }
 
-  linkState() {
-    return {
-      value: this.currentValue,
-      requestChange: this.handleChange.bind(this)
-    };
-  }
-
   get currentValue() {
     return this.state.rawValue ?
       this.state.rawValue : JSON.stringify(this.state.value, null, 2);
@@ -66,7 +59,8 @@ export default class JsonEditor extends Component {
         ) : null}
         <textarea ref="textarea"
                   defaultValue={this.props.value}
-                  valueLink={this.linkState()}
+                  value={this.currentValue}
+                  onChange={this.handleChange.bind(this)}
                   rows={this.props.rows}
                   cols={this.props.cols}
                   disabled={this.props.disabled}

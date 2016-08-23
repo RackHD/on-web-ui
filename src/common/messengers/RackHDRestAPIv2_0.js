@@ -18,6 +18,11 @@ if (config.check('Enable_RackHD_API_Auth')) {
     new Swagger.ApiKeyAuthorization('Authorization', 'JWT ' + TOKEN, 'header');
 }
 
+// console.log(API, TOKEN, authorizations);
+// console.log(config, config.check('Enable_RackHD_SSL'));
+// debugger;
+
+
 let swaggerPromise = new Swagger({
   authorizations,
   usePromise: true,

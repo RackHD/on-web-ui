@@ -9,7 +9,7 @@ import {
 
 export default function WorkflowEditorIconButton (props) {
   let emcTheme = props.muiTheme;
-  let capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+  let capitalize = (word) => word ? word.charAt(0).toUpperCase() + word.slice(1) : '';
   return (
     <IconButton
         tooltip={props.tooltip}

@@ -63,10 +63,10 @@ export default class EditPoller extends Component {
     return (
       <div className="EditPoller">
         <Toolbar>
-          <ToolbarGroup key={0} float="left">
+          <ToolbarGroup key={0} firstChild={true}>
             <ToolbarTitle text={poller.id ? 'Edit Poller' : 'Create Poller'} />
           </ToolbarGroup>
-          <ToolbarGroup key={1} float="right">
+          <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
                 onClick={this.routeBack}

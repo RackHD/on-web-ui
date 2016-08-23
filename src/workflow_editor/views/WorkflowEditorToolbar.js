@@ -139,7 +139,7 @@ export default class WorkflowEditorToolbar extends Component {
   renderToolbar() {
     return (
       <Toolbar>
-        <ToolbarGroup firstChild={true} float="left">
+        <ToolbarGroup firstChild={true} firstChild={true}>
           <ToolbarTitle text="&nbsp;" />
           <ToolbarTitle text="Workflow:" />
           {this.renderWorkflowSelect()}
@@ -147,24 +147,24 @@ export default class WorkflowEditorToolbar extends Component {
               muiTheme={this.context.muiTheme}
               tooltip="Refresh Workflow"
               icon="refresh"
-              float="left"
+              firstChild={true}
               onClick={this.workflowOperator.reload.bind(this.workflowOperator)} />
           <WorkflowEditorIconButton key="save"
               muiTheme={this.context.muiTheme}
               tooltip="Save Workflow"
               icon="floppy-o"
-              float="left"
+              firstChild={true}
               onClick={this.workflowOperator.save.bind(this.workflowOperator)} />
           <WorkflowEditorIconButton key="run"
               muiTheme={this.context.muiTheme}
               tooltip="Run this Workflow"
               icon="play"
-              float="right"
+              lastChild={true}
               onClick={(e) => this.setState({
                 runPopoverAnchor: this.state.runPopoverAnchor === e.currentTarget ? null : e.currentTarget
               })} />
         </ToolbarGroup>
-        <ToolbarGroup float="right">
+        <ToolbarGroup lastChild={true}>
           <ToolbarTitle text="Task:" />
           {this.renderTaskSelect()}
           <WorkflowEditorIconButton key="view"
@@ -172,7 +172,7 @@ export default class WorkflowEditorToolbar extends Component {
               margin={20}
               tooltip="View Task"
               icon="search"
-              float="left"
+              firstChild={true}
               onClick={(e) => this.setState({
                 taskPopoverAnchor: this.state.taskPopoverAnchor === e.currentTarget ? null : e.currentTarget
               })} />
@@ -180,7 +180,7 @@ export default class WorkflowEditorToolbar extends Component {
               muiTheme={this.context.muiTheme}
               tooltip="Add Task"
               icon="plus"
-              float="left"
+              firstChild={true}
               onClick={this.workflowOperator.add.bind(this.workflowOperator)}/>
         </ToolbarGroup>
       </Toolbar>
@@ -280,7 +280,7 @@ export default class WorkflowEditorToolbar extends Component {
           menuStyle={{maxHeight: 250, width: 276, overflow: 'auto'}}
           animated={true}
           hintText="Select"
-          searchText={state.taskTerm || state.task && state.task.friendlyName}
+          searchText={state.taskTerm || state.task && state.task.friendlyName || ''}
           dataSource={options}
           onUpdateInput={(value) => {
             this.setState({taskTerm: value});

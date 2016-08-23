@@ -112,10 +112,10 @@ export default class Workflow extends Component {
               label="Details">
 
             <Toolbar>
-              <ToolbarGroup key={0} float="left">
+              <ToolbarGroup key={0} firstChild={true}>
                 <ToolbarTitle text="Workflow Details" />
               </ToolbarGroup>
-              <ToolbarGroup key={1} float="right">
+              <ToolbarGroup key={1} lastChild={true}>
                 <RaisedButton
                     label="View Graph"
                     onClick={() =>

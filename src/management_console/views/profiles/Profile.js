@@ -39,10 +39,10 @@ export default class Profile extends Component {
       <div className="Profile">
         <LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />
         <Toolbar>
-          <ToolbarGroup key={0} float="left">
+          <ToolbarGroup key={0} firstChild={true}>
             <ToolbarTitle text="Profile Details" />
           </ToolbarGroup>
-          <ToolbarGroup key={1} float="right">
+          <ToolbarGroup key={1} lastChild={true}>
           </ToolbarGroup>
         </Toolbar>
         <div className="ungrid collapse">

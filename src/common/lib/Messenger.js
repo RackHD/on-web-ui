@@ -21,7 +21,7 @@ export default class Messenger extends EventEmitter {
       (window && window.location.host) || '127.0.0.1';
     this.secure = secure || this.secure;
     this.url = 'ws';
-    if (this.secure) this.url += 's';
+    if (this.secure || window.location.protocol === 'https:') this.url += 's';
     this.url += '://' + this.host;
     if (this.url.charAt(this.url.length - 1) !== '/') this.url += '/';
     if (this.channel) this.url += this.channel;
@@ -33,7 +33,11 @@ export default class Messenger extends EventEmitter {
 
     this.removeAllListeners();
 
-    this.connection = new WebSocket(this.url);
+    try {
+      this.connection = new WebSocket(this.url);
+    } catch (err) {
+      console.error(err);
+    }
 
     if (this.handlers) {
       this.handlers.forEach(name => this.on(name, this[name].bind(this)));
