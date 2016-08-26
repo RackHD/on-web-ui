@@ -39,15 +39,15 @@ Note, that the endpoint URL is stored in your browsers local storage. This means
 ### How to build On Web UI applications.
 
 ```bash
-$ rpm run build         # Build `static/monorail.css` & `static/monorail.js` for production.
+$ npm run build         # Build `static/monorail.css` & `static/monorail.js` for production.
 ```
 
 ```bash
-$ rpm run build-css     # Build minified `static/monorail.css` from `less/monorail.less`.
+$ npm run build-css     # Build minified `static/monorail.css` from `less/monorail.less`.
 ```
 
 ```bash
-$ rpm run build-js      # Build production `static/monorail.js`.
+$ npm run build-js      # Build production `static/monorail.js`.
 ```
 
 ### Automated Testing.
