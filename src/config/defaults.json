@@ -1,6 +1,6 @@
 {
   "Elasticsearch_API": "127.0.0.1:9200",
-  "Enable_RackHD_API_Auth": false,
+  "Enable_RackHD_API_Auth": true,
   "Enable_RackHD_SSL": false,
   "MonoRail_API": "127.0.0.1:9090/api/1.1",
   "MonoRail_WSS": "127.0.0.1:9100",
