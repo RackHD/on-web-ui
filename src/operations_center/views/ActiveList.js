@@ -114,7 +114,10 @@ export default class MonoRailToolbar extends Component {
       };
 
       return (
-        <Link key={workflow.instanceId} to={'/oc/' + workflow.instanceId} style={linkStyle}>
+        <Link className={'Workflow-' + workflow.instanceId}
+              key={workflow.instanceId}
+              style={linkStyle}
+              to={'/oc/' + workflow.instanceId}>
           <ListItem
               style={getLinkStyle(workflow.instanceId)}
               leftIcon={
@@ -129,7 +132,7 @@ export default class MonoRailToolbar extends Component {
     });
 
     return (
-      <div style={css.root}>
+      <div className="ActiveOperationsList" style={css.root}>
         {/*<LinearProgress mode={this.state.loading ? 'indeterminate' : 'determinate'} value={100} />*/}
         <List>{list}</List>
       </div>

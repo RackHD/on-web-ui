@@ -19,11 +19,12 @@ import MonoRailApp from './views/MonoRailApp';
 import Settings from './views/Settings';
 
 const main = () => {
-  if (global.isTesting) { return; }
+  if (global.isUnitTesting) { return; }
 
   let container = document.createElement('div');
   container.className = 'react-container';
   document.body.appendChild(container);
+  global.monorailContainer = container;
 
   render((
     <Router history={hashHistory}>

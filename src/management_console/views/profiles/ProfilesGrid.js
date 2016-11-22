@@ -49,7 +49,7 @@ export default class ProfilesGrid extends Component {
   }
 
   createProfile() {
-    this.context.router.push('/mc/pollers/new');
+    this.context.router.push('/mc/profiles/new');
   }
 
 }

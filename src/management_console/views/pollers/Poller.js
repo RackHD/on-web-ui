@@ -58,10 +58,10 @@ export default class Poller extends Component {
         </ConfirmDialog>
 
         <Toolbar>
-          <ToolbarGroup key={0} float="left">
+          <ToolbarGroup key={0} firstChild={true}>
             <ToolbarTitle text="Poller Details" />
           </ToolbarGroup>
-          <ToolbarGroup key={1} float="right">
+          <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Delete Poller"
                 primary={true}

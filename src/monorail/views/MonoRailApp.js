@@ -55,6 +55,12 @@ export default class MonoRailApp extends Component {
     };
   }
 
+  componentWillMount() {
+    if (process.env.NODE_ENV !== 'production') {
+      global.monorailApp = this;
+    }
+  }
+
   componentDidMount() {
     let route = this.props.routes && this.props.routes[1];
 

@@ -92,6 +92,7 @@ module.exports = {
   devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
 
   devServer: {
+    // https: true,
     port: process.env.PORT || 3000,
     host: '0.0.0.0',
     colors: true,

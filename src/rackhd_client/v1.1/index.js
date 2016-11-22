@@ -1,6 +1,6 @@
 // Copyright 2015, EMC, Inc.
 
-exports.MONORAIL_API_v1_1 = 'http://localhost:8080/api/1.1/';
+exports.MONORAIL_API_v1_1 = 'http://127.0.0.1:8080/api/1.1/';
 
 exports.RestAPIs = {
   Catalogs: require('./CatalogsRestAPI'),

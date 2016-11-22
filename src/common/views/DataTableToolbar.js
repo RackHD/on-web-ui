@@ -30,12 +30,12 @@ export default class DataTableToolbar extends Component {
     let emcTheme = this.context.muiTheme;
     return (
       <Toolbar className={this.props.className} style={this.props.style}>
-        <ToolbarGroup key={0} float="left">
+        <ToolbarGroup key={0} firstChild={true}>
           <h3 style={{margin: '15px 0', color: emcTheme.rawTheme.palette.textColor}}>
             {this.props.icon} &nbsp; {this.props.label} &nbsp; ({this.props.count})
           </h3>
         </ToolbarGroup>
-        <ToolbarGroup key={1} float="right" style={{zIndex: 1}}>
+        <ToolbarGroup key={1} lastChild={true} style={{zIndex: 1}}>
           {this.props.children}
         </ToolbarGroup>
       </Toolbar>

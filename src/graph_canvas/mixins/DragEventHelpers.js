@@ -61,6 +61,9 @@ export default {
 
   dragDownHandler(listeners={}, dragState={}) {
     return (event) => {
+      if (event.isPersistent) {
+        event.isPersistent = () => true;
+      }
       let e = event.nativeEvent || event;
       this.offsetEventXY(event, e,
         dragState.offsetDOMNode,
@@ -97,6 +100,9 @@ export default {
 
   dragUpHandler(upListener, dragState) {
     return (event) => {
+      if (dragState.event.isPersistent) {
+        dragState.event.isPersistent = () => false;
+      }
       let e = event.nativeEvent || event;
       this.offsetEventXY(event, e,
         dragState.offsetDOMNode,

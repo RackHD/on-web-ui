@@ -151,9 +151,9 @@ export default class HorizontalSplitView extends Component {
         (props.orientation === 'horizontal' ? 'col-resize' : 'row-resize') :
         (props.collapsable ? 'pointer' : 'default');
 
-    resize[':hover'] = (this.props.resizable || this.props.collapsable) && {
-      background: 'rgba(127,127,127,0.66)'
-    } || null;
+    // resize[':hover'] = (this.props.resizable || this.props.collapsable) && {
+    //   background: 'rgba(127,127,127,0.66)'
+    // } || null;
 
     let resizeFix = state.resizing && {transition: null};
 

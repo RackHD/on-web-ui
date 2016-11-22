@@ -76,7 +76,7 @@ export default class Settings extends Component {
     // </p>}
 
     return (
-      <div style={css.root} {...props}>
+      <div style={css.root}>
         <div style={{padding: 20}}>
           <p>
             Do not include "http(s)://" or any other protocol when entering API endpoints.

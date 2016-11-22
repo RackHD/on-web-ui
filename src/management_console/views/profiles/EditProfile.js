@@ -35,10 +35,10 @@ export default class EditProfile extends Component {
     return (
       <div className="EditProfile">
         <Toolbar>
-          <ToolbarGroup key={0} float="left">
-            <ToolbarTitle text={profile.id ? 'Edit File' : 'Create File'} />
+          <ToolbarGroup key={0} firstChild={true}>
+            <ToolbarTitle text={profile.id ? 'Edit Profile' : 'Create Profile'} />
           </ToolbarGroup>
-          <ToolbarGroup key={1} float="right">
+          <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
                 onClick={this.routeBack}

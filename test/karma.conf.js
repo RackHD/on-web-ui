@@ -37,12 +37,10 @@ module.exports = (config) => {
     singleRun: false,
 
     files: [
-      // 'test/specs/**/*.js'
-      'test/src/entry.js'
+      'test/src/unit_tests.js'
     ],
 
     preprocessors: {
-      // 'test/specs/**/*.js': ['webpack'],
       'test/src/**/*.js': ['webpack'],
       'src/**/*.js': ['webpack'],
       '**/*.js': ['sourcemap']

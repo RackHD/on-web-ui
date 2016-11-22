@@ -110,7 +110,7 @@ export default class OperationsGraph extends Component {
     let operation = new Operation(state.workflow, this.context.operationsCenter);
 
     return (
-      <div className="Operations" ref="root" style={css.root}>
+      <div className="OperationsCenterGraph" ref="root" style={css.root}>
         <GraphCanvas
             key={'graphCanvas' + state.version}
             ref="graphCanvas"

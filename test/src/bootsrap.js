@@ -5,8 +5,6 @@ import chai from 'chai';
 import React from 'react';
 import reactDom from 'react-dom';
 
-global.isTesting = true;
-
 global.chaiSpies = chaiSpies;
 
 global.chai = chai;
