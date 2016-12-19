@@ -2,42 +2,54 @@
 
 import Store from 'src-common/lib/Store';
 
-import RackHDRestAPIv1_1 from '../messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from '../messengers/RackHDRestAPIv2_0';
 
 export default class CatalogStore extends Store {
 
-  api = RackHDRestAPIv1_1.url;
+  api = RackHDRestAPIv2_0.url;
   resource = 'catalogs';
 
   read(id) {
-    return RackHDRestAPIv1_1.catalogs.get(id)
-      .then(item => this.change(id, item))
+    return RackHDRestAPIv2_0.api.catalogsIdGet({identifier: id})
+      .then(res => {
+        console.log(res.obj);
+        this.change(id, res.obj);
+      })
       .catch(err => this.error(id, err));
   }
 
   list() {
-    return RackHDRestAPIv1_1.catalogs.list()
-      .then(list => this.recollect(list))
+    return RackHDRestAPIv2_0.api.catalogsGet()
+      .then(res => this.collect(res.obj))
       .catch(err => this.error(null, err));
   }
 
   listNode(nodeId) {
     this.empty();
-    return RackHDRestAPIv1_1.nodes.listCatalogs(nodeId)
-      .then(list => this.collect(list))
+    return RackHDRestAPIv2_0.api.nodesGetCatalogById({identifier: nodeId})
+      .then(res => this.collect(res.obj))
       .catch(err => this.error(null, err));
   }
 
   listNodeSource(nodeId, source) {
     this.empty();
-    return RackHDRestAPIv1_1.nodes.listSourceCatalogs(nodeId, source)
-      .then(items => Array.isArray(items) ? this.collect(items) : this.change(items.id, items))
+    return RackHDRestAPIv2_0.api.nodesGetCatalogSourceById({identifier: nodeId, source })
+      .then(res => {
+        let items = res.obj;
+        if (Array.isArray(items)) {
+          this.collect(items);
+        }
+        else {
+          this.change(items.id, items);
+        }
+      })
       .catch(err => this.error(null, err));
   }
 
   relateNode(node, source, nodeStore) {
-    return RackHDRestAPIv1_1.nodes.listSourceCatalogs(node.id, source)
-      .then(catalog => {
+    return RackHDRestAPIv2_0.api.nodesGetCatalogSourceById({identifier: node.id, source })
+      .then(res => {
+        let catalog = res.obj;
         this.change(catalog.id, catalog);
         node[source] = catalog || node[source];
         if (nodeStore) {

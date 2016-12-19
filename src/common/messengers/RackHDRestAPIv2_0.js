@@ -36,6 +36,7 @@ module.exports = new Promise((resolve, reject) => {
       return reject(err);
     }
     console.log('RackHD API 2.0 is ready.'),
+    module.exports.api = api2_0;
     resolve(api2_0);
   };
 
@@ -49,3 +50,5 @@ module.exports = new Promise((resolve, reject) => {
     finish(api2_0);
   });
 });
+
+module.exports.url = API;

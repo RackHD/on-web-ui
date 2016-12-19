@@ -14,7 +14,7 @@ import {
 
 import JsonEditor from 'src-common/views/JsonEditor';
 
-import RackHDRestAPIv1_1 from 'src-common/messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from 'src-common/messengers/RackHDRestAPIv2_0';
 import WorkflowTemplateStore from 'src-common/stores/WorkflowTemplateStore';
 import WorkflowStore from 'src-common/stores/WorkflowStore';
 import NodeStore from 'src-common/stores/NodeStore';
@@ -136,7 +136,8 @@ export default class EditWorkflow extends Component {
       this.workflows.update(this.state.workflow.context.graphId, this.state.workflow).then(() => this.enable());
     }
     else if (this.state.workflow.node) {
-      RackHDRestAPIv1_1.nodes.postWorkflow(this.state.workflow.node, this.state.workflow).then(workflow => {
+      RackHDRestAPIv2_0.api.workflowsPost({body: this.state.workflow}).then(res => {
+        let workflow = res.obj;
         this.enable();
         if (this.props.onDone) {
           this.props.onDone();

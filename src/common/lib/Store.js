@@ -56,7 +56,7 @@ export default class Store extends EventEmitter {
       return console.error(new Error('A messenger already exists.').stack);
     }
     resource = resource || this.resource;
-    host = host || config.MonoRail_WSS;
+    host = host || config.RackHD_WSS;
     secure = secure || config.check('Enable_RackHD_SSL');
     this.messenger = new Messenger(resource, host, secure);
     this.messenger.connect(() => {

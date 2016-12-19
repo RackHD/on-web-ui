@@ -2,11 +2,11 @@
 
 import Store from 'src-common/lib/Store';
 
-import RackHDRestAPIv1_1 from '../messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from '../messengers/RackHDRestAPIv2_0';
 
 export default class WorkflowStore extends Store {
 
-  api = RackHDRestAPIv1_1.url;
+  api = RackHDRestAPIv2_0.url;
   resource = 'graphObjs';
 
   key = 'instanceId';
@@ -23,40 +23,41 @@ export default class WorkflowStore extends Store {
       workflow.definition.options.defaults.nodeId));
   }
 
-  list() {
-    return RackHDRestAPIv1_1.workflows.list()
-      .then(list => this.recollect(list))
+  list(params) {
+    return RackHDRestAPIv2_0.api.workflowsGet(params)
+      .then(res => this.recollect(res.obj))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return RackHDRestAPIv1_1.workflows.get(id)
-      .then(item => this.change(id, item))
+    return RackHDRestAPIv2_0.api.workflowsGetByInstanceId({identifier: id})
+      .then(res => this.change(id, res.obj))
       .catch(err => this.error(id, err));
   }
 
   create(id, data) {
-    return RackHDRestAPIv1_1.workflows.put(id, data)
+    data.id = id;
+    return RackHDRestAPIv2_0.api.workflowsPost({body: data})
       .then(() => this.insert(id, data))
       .catch(err => this.error(id, err));
   }
 
-  update(id, data) {
-    return RackHDRestAPIv1_1.workflows.put(id, data)
-      .then(() => this.change(id, data))
-      .catch(err => this.error(id, err));
-  }
+  // update(id, data) {
+  //   return RackHDRestAPIv2_0.api.put(id, data)
+  //     .then(() => this.change(id, data))
+  //     .catch(err => this.error(id, err));
+  // }
 
   listNode(nodeId) {
     this.empty();
-    return RackHDRestAPIv1_1.nodes.listWorkflows(nodeId)
-      .then(list => this.collect(list))
+    return RackHDRestAPIv2_0.api.nodesGetWorkflowById({identifier: nodeId})
+      .then(res => this.collect(res.obj))
       .catch(err => this.error(null, err));
   }
 
   activeNode(nodeId) {
     this.empty();
-    return RackHDRestAPIv1_1.nodes.getActiveWorkflow(nodeId)
+    return RackHDRestAPIv2_0.api.nodesGetWorkflowById({identifier: nodeId, active: true})
       .then(items => Array.isArray(items) ? this.collect(items) : this.change(items.id, items))
       .catch(err => this.error(null, err));
   }

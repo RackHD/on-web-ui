@@ -30,7 +30,6 @@ module.exports = {
       'src-monorail': `${__dirname}/src/monorail`,
       'src-network-topology': `${__dirname}/src/network_topology`,
       'src-operations-center': `${__dirname}/src/operations_center`,
-      'src-rackhd-client': `${__dirname}/src/rackhd_client`,
       'src-sku-packs': `${__dirname}/src/sku_packs`,
       'src-visual-analytics': `${__dirname}/src/visual_analytics`,
       'src-workflow-editor': `${__dirname}/src/workflow_editor`
@@ -89,7 +88,7 @@ module.exports = {
     setImmediate: false
   },
 
-  devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
+  // devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
 
   devServer: {
     // https: true,

@@ -11,12 +11,11 @@ import {
   } from 'material-ui';
 
 import Swagger from 'swagger-client';
-import RackHD from 'src-rackhd-client';
 
 import config from 'src-config/index';
 import UserLogin from 'src-common/views/UserLogin';
 
-import LoginRestAPI from 'src-rackhd-client/LoginRestAPI';
+import LoginRestAPI from '../../../deprecated/rackhd_client/LoginRestAPI';
 
 import EndpointInput from './EndpointInput';
 
@@ -33,10 +32,6 @@ export default class Settings extends Component {
 
   componentDidMount() {
     setTimeout(() => {
-      this.monorailAPICheck({
-        resolve: this.refs.monorailAPI.resolve,
-        reject: this.refs.monorailAPI.reject
-      });
       this.rackhdAPICheck({
         resolve: this.refs.rackhdAPI.resolve,
         reject: this.refs.rackhdAPI.reject
@@ -53,8 +48,7 @@ export default class Settings extends Component {
     enableSSL: this.enableSSL,
     enableAuth: this.enableAuth,
     elasticsearchAPI: this.elasticsearchAPI,
-    monorailAPI: this.monorailAPI,
-    monorailWSS: this.monorailWSS,
+    rackhdWSS: this.rackhdWSS,
     rackhdAPI: this.rackhdAPI,
     rackhdAuthToken: this.rackhdAuthToken,
     redfishAPI: this.redfishAPI
@@ -97,7 +91,7 @@ export default class Settings extends Component {
               <legend style={{padding: 5}}>Authentication</legend>
               <UserLogin header="" submitLabel="Update Auth Token" onSubmit={(user, pass) => {
                 let loginAPI = new LoginRestAPI(
-                  'http' + (this.enableSSL ? 's' : '') + '://' + this.monorailAPI.split('/')[0]
+                  'http' + (this.enableSSL ? 's' : '') + '://' + this.rackhdAPI.split('/')[0]
                 );
                 loginAPI.authenticate(user, pass)
                   .then(token => {
@@ -128,21 +122,12 @@ export default class Settings extends Component {
                 onChange={({ value, checkCallback }) =>
                   this.setState({rackhdAPI: value}, checkCallback)} />
             <EndpointInput
-                ref="monorailAPI"
-                check={this.monorailAPICheck}
+                ref="rackhdWSS"
                 fullWidth={true}
-                hintText={this.monorailAPI}
-                value={this.state.monorailAPI}
-                floatingLabelText="RackHD Northbound API v1.1"
-                onChange={({ value, checkCallback }) =>
-                  this.setState({monorailAPI: value}, checkCallback)} />
-            <EndpointInput
-                ref="monorailWSS"
-                fullWidth={true}
-                hintText={this.monorailWSS}
-                value={this.state.monorailWSS}
+                hintText={this.rackhdWSS}
+                value={this.state.rackhdWSS}
                 floatingLabelText="RackHD WebSocket URL"
-                onChange={({ value }) => this.setState({monorailWSS: value})} />
+                onChange={({ value }) => this.setState({rackhdWSS: value})} />
             {/*<EndpointInput
                 ref="redfishAPI"
                 fullWidth={true}
@@ -192,11 +177,8 @@ export default class Settings extends Component {
   get enableSSL() { return this.getConfigBoolean('Enable_RackHD_SSL'); }
   set enableSSL(value) { return this.setConfigValue('Enable_RackHD_SSL', !!value); }
 
-  get monorailAPI() { return this.getConfigValue('MonoRail_API'); }
-  set monorailAPI(value) { return this.setConfigValue('MonoRail_API', value); }
-
-  get monorailWSS() { return this.getConfigValue('MonoRail_WSS'); }
-  set monorailWSS(value) { return this.setConfigValue('MonoRail_WSS', value); }
+  get rackhdWSS() { return this.getConfigValue('RackHD_WSS'); }
+  set rackhdWSS(value) { return this.setConfigValue('RackHD_WSS', value); }
 
   get rackhdAPI() { return this.getConfigValue('RackHD_API'); }
   set rackhdAPI(value) { return this.setConfigValue('RackHD_API', value); }
@@ -211,8 +193,7 @@ export default class Settings extends Component {
     this.elasticsearchAPI = this.state.elasticsearchAPI;
     this.enableAuth = this.state.enableAuth;
     this.enableSSL = this.state.enableSSL;
-    this.monorailAPI = this.state.monorailAPI;
-    this.monorailWSS = this.state.monorailWSS;
+    this.rackhdWSS = this.state.rackhdWSS;
     this.rackhdAPI = this.state.rackhdAPI;
     this.rackhdAuthToken = this.state.rackhdAuthToken;
     // this.redfishAPI = this.state.redfishAPI;
@@ -224,23 +205,13 @@ export default class Settings extends Component {
     return 'http' + (this.state.enableSSL ? 's' : '') + '://';
   }
 
-  monorailAPICheck = ({ resolve, reject }) => {
-    let api1_1 = RackHD.v1_1.create(
-      this.rackhdProtocol + this.state.monorailAPI,
-      this.state.enableAuth == true &&
-        this.state.rackhdAuthToken || null);
-    api1_1.config.get().
-      then(() => resolve('Connected to RackHD 1.1 endpoint!')).
-      catch(() => reject('Failed to reach RackHD 1.1 endpoint.'));
-  };
-
   rackhdAPICheck = ({ resolve, reject }) => {
     let swaggerOptions = {
       usePromise: true,
       authorizations : {},
       url: this.rackhdProtocol + this.state.rackhdAPI + '/swagger'
     };
-    if (this.state.enableAuth == true) {
+    if (this.state.enableAuth === true || this.state.enableAuth === 'true') {
       swaggerOptions.authorizations['Authentication-Token'] =
         new Swagger.ApiKeyAuthorization(
           'Authorization', 'JWT ' + this.state.rackhdAuthToken, 'header');

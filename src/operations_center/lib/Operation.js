@@ -148,6 +148,9 @@ export default class Operation {
     this.meta.nodes = {byId: {}, byLabel: {}};
     this.meta.links = [];
 
+    if (!this.definition || typeof this.definition !== 'object') {
+      return;
+    }
     if (!this.instance.tasks) {
       return;
     }

@@ -10,7 +10,7 @@ export default class WorkflowLogsMessenger extends Messenger {
 
   constructor(host, secure) {
     super('mq',
-      host || config.MonoRail_WSS,
+      host || config.RackHD_WSS,
       secure || config.check('Enable_RackHD_SSL'));
   }
 

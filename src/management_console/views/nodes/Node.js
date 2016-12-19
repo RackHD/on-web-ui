@@ -28,7 +28,7 @@ import {
 import JsonInspector from 'react-json-inspector';
 
 import Console from 'src-common/views/Console';
-import RackHDRestAPIv1_1 from 'src-common/messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from 'src-common/messengers/RackHDRestAPIv2_0';
 
 import NodeMonitor from '../../lib/NodeMonitor';
 import NodeStore from 'src-common/stores/NodeStore';
@@ -189,8 +189,10 @@ export default class Node extends Component {
     this.setState({loading: true});
     this.nodes.read(this.getNodeId()).then(node => {
       if (this.state.node && this.state.node.id) {
-        RackHDRestAPIv1_1.nodes.getObm(this.state.node.id).then(
-          obm => this.setState({obm, loading: false}),
+        RackHDRestAPIv2_0.api.nodesGetObmsByNodeId({
+          identifier: this.state.node.id
+        }).then(
+          res => this.setState({obm: res.obj, loading: false}),
           () => this.setState({loading: false}));
       }
       else this.setState({loading: false});

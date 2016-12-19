@@ -2,38 +2,38 @@
 
 import Store from 'src-common/lib/Store';
 
-import RackHDRestAPIv1_1 from '../messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from '../messengers/RackHDRestAPIv2_0';
 
-export default class NodeStore extends Store {
+export default class LookupStore extends Store {
 
   list(q) {
     this.empty();
-    return RackHDRestAPIv1_1.lookups.list(q)
-      .then(list => this.recollect(list))
+    return RackHDRestAPIv2_0.api.lookupsGet({ q })
+      .then(res => this.recollect(res.obj))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return RackHDRestAPIv1_1.lookups.get(id)
-      .then(item => this.change(id, item))
+    return RackHDRestAPIv2_0.api.lookupsGetById({ id })
+      .then(res => this.change(id, res.obj))
       .catch(err => this.error(id, err));
   }
 
   create(id, data) {
-    return RackHDRestAPIv1_1.lookups.post(id, data)
-      .then(() => this.insert(id, data))
+    return RackHDRestAPIv2_0.api.lookupsPost({body: data})
+      .then(res => this.insert(id, data))
       .catch(err => this.error(id, err));
   }
 
   update(id, data) {
-    return RackHDRestAPIv1_1.lookups.patch(id, data)
-      .then(() => this.change(id, data))
+    return RackHDRestAPIv2_0.api.lookupsPatchById({ id, body: data})
+      .then(res => this.change(id, data))
       .catch(err => this.error(id, err));
   }
 
   destroy(id) {
-    return RackHDRestAPIv1_1.lookups.delete(id)
-      .then(() => this.remove(id))
+    return RackHDRestAPIv2_0.api.lookupsDelById({ id })
+      .then(res => this.remove(id))
       .catch(err => this.error(id, err));
   }
 

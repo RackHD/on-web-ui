@@ -105,7 +105,12 @@ export default class WorkflowJson extends Component {
   }
 
   compileJSON(newJsonObject) {
-    newJsonObject = newJsonObject || this.refs.aceEditor.editor.getValue();
+    try {
+      newJsonObject = newJsonObject || this.refs.aceEditor.editor.getValue();
+    } catch (err) {
+      console.warn('WOrkflowJSON editor unavailable.', err);
+      return;
+    }
 
     if (typeof newJsonObject === 'string') {
       try {

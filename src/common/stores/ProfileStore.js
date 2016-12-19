@@ -2,35 +2,35 @@
 
 import Store from 'src-common/lib/Store';
 
-import RackHDRestAPIv1_1 from '../messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from '../messengers/RackHDRestAPIv2_0';
 
 export default class ProfileStore extends Store {
 
-  api = RackHDRestAPIv1_1.url;
+  api = RackHDRestAPIv2_0.url;
   resource = 'profiles';
 
   list() {
-    return RackHDRestAPIv1_1.profiles.list()
-      .then(list => this.recollect(list))
+    return RackHDRestAPIv2_0.api.profilesGetMetadata()
+      .then(res => this.recollect(res.obj))
       .catch(err => this.error(null, err));
   }
 
-  read(id) {
-    return RackHDRestAPIv1_1.profiles.get(id)
-      .then(item => this.change(id, item))
-      .catch(err => this.error(id, err));
+  read(name) {
+    return RackHDRestAPIv2_0.api.profilesGetLibByName({ name })
+      .then(res => this.change(name, res.obj))
+      .catch(err => this.error(name, err));
   }
 
-  create(id, data) {
-    return RackHDRestAPIv1_1.profiles.put(id, data)
-      .then(() => this.insert(id, data))
-      .catch(err => this.error(id, err));
+  create(name, data) {
+    return RackHDRestAPIv2_0.api.profilesPutLibByName({name, content: data })
+      .then(() => this.insert(name, data))
+      .catch(err => this.error(name, err));
   }
 
   update(id, data) {
-    return RackHDRestAPIv1_1.profiles.put(id, data)
-      .then(() => this.change(id, data))
-      .catch(err => this.error(id, err));
+    return RackHDRestAPIv2_0.api.profilesPutLibByName({name, content: data })
+      .then(() => this.insert(name, data))
+      .catch(err => this.error(name, err));
   }
 
 }

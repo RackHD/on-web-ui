@@ -96,10 +96,12 @@ export default class MonoRailToolbar extends Component {
     );
 
     list = list.map(workflow => {
-      let status = workflow.completeEventString ||
-        (workflow.cancelled ? 'cancelled' : workflow._status);
+      // let status = workflow.completeEventString ||
+      //   (workflow.cancelled ? 'cancelled' : workflow._status);
+      let status = (workflow.status || 'unknown').toLowerCase();
 
       const statusIconMap = {
+        unknown: 'fa-ban',
         cancelled: 'fa-ban',
         failed: 'fa-times',
         finished: 'fa-circle',
@@ -107,6 +109,7 @@ export default class MonoRailToolbar extends Component {
       };
 
       const statusColorMap = {
+        unknown: 'yellow',
         cancelled: 'yellow',
         failed: 'red',
         finished: '#6cf',
@@ -125,7 +128,7 @@ export default class MonoRailToolbar extends Component {
                     className={'fa fa-fw ' + (statusIconMap[status] || 'fa-spinner fa-spin')}
                     style={{color: (statusColorMap[status] || 'white')}} />
               }
-              primaryText={workflow.name}
+              primaryText={workflow.name + ' - ' + status.charAt(0).toUpperCase() + status.substr(1)}
               secondaryText={workflow.nodeId && <div style={{color: '#999'}}>{workflow.nodeId}</div>} />
         </Link>
       );
