@@ -14,8 +14,7 @@ import Swagger from 'swagger-client';
 
 import config from 'src-config/index';
 import UserLogin from 'src-common/views/UserLogin';
-
-import LoginRestAPI from '../../../deprecated/rackhd_client/LoginRestAPI';
+import LoginRestAPI from 'src-common/messengers/LoginRestAPI';
 
 import EndpointInput from './EndpointInput';
 

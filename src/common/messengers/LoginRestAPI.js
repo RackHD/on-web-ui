@@ -1,8 +1,8 @@
 // Copyright 2015, EMC, Inc.
 
-import RestAPI from './lib/RestAPI';
+import RestAPI from '../lib/RestAPI';
 
-export default class LookupsRestAPI extends RestAPI {
+export default class LoginRestAPI extends RestAPI {
 
   entity = 'login';
 
