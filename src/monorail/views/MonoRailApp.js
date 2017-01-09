@@ -19,7 +19,6 @@ import FormatHelpers from 'src-common/lib/FormatHelpers';
 import SplitView from 'src-common/views/SplitView';
 
 import RackHDRestAPIv2_0 from 'src-common/messengers/RackHDRestAPIv2_0';
-import RackHDRestAPIv1_1 from 'src-common/messengers/RackHDRestAPIv1_1';
 
 import MonoRailToolbar from './MonoRailToolbar';
 import Logs from './Logs';
@@ -71,10 +70,8 @@ export default class MonoRailApp extends Component {
         });
       };
 
-      RackHDRestAPIv1_1.config.get().catch(settingsRedirect).then(() => {
-        RackHDRestAPIv2_0.catch(settingsRedirect).then(() => {
-          this.setState({loadingAPIs: false});
-        });
+      RackHDRestAPIv2_0.catch(settingsRedirect).then(() => {
+        this.setState({loadingAPIs: false});
       });
     }
 

@@ -2,31 +2,34 @@
 
 import Store from 'src-common/lib/Store';
 
-import RackHDRestAPIv1_1 from '../messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from '../messengers/RackHDRestAPIv2_0';
 
 export default class WorkflowTemplateStore extends Store {
 
-  api = RackHDRestAPIv1_1.url;
+  api = RackHDRestAPIv2_0.url;
   resource = 'graphDefs';
 
   key = 'injectableName';
 
   list() {
-    return RackHDRestAPIv1_1.workflows.library()
-      .then(list => this.recollect(list))
+    return RackHDRestAPIv2_0.api.workflowsGetGraphs()
+      .then(res => this.recollect(res.obj))
       .catch(err => this.error(null, err));
   }
 
   read(id) {
-    return RackHDRestAPIv1_1.workflows.get(id)
-      .then(item => this.change(id, item))
+    return RackHDRestAPIv2_0.api.workflowsGetGraphsByName({injectableName: id})
+      .then(res => this.change(id, res.obj))
       .catch(err => this.error(id, err));
   }
 
   create(id, data) {
-    return RackHDRestAPIv1_1.workflows.put(data)
+    data.id = id;
+    return RackHDRestAPIv2_0.api.workflowsPutGraphs({body: data})
       .then(() => this.insert(id, data))
       .catch(err => this.error(id, err));
   }
+
+  // TODO: add patch and delete :)
 
 }

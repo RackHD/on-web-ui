@@ -7,7 +7,7 @@ import { RaisedButton, LinearProgress } from 'material-ui';
 
 import FormatHelpers from 'src-common/lib/FormatHelpers';
 import ResourceTable from 'src-common/views/ResourceTable';
-import RackHDRestAPIv1_1 from 'src-common/messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from 'src-common/messengers/RackHDRestAPIv2_0';
 import WorkflowStore from 'src-common/stores/WorkflowStore';
 
 export default class WorkflowsGrid extends Component {
@@ -64,12 +64,13 @@ export default class WorkflowsGrid extends Component {
               if (node) row.Node =
                 <Link to={'/mc/nodes/' + node}>{FormatHelpers.shortId(node)}</Link>;
             }
-            row.Status = workflow.completeEventString || (workflow.cancelled ? 'cancelled' : workflow._status);
+            row.Status = workflow.status || 'unknown';
+                // workflow.completeEventString ||
+                // (workflow.cancelled ? 'cancelled' : workflow._status);
             row.Status = row.Status.charAt(0).toUpperCase() + row.Status.substr(1);
-            // console.log(workflow);
             let tmp = {};
             Object.keys(workflow.tasks).forEach(taskId => {
-              let state = workflow.tasks[taskId].state;
+              let state = workflow.tasks[taskId].state || 'unknown';
               state = state.charAt(0).toUpperCase() + state.substr(1);
               tmp[state] = (tmp[state] || 0) + 1;
             });
@@ -104,7 +105,7 @@ export default class WorkflowsGrid extends Component {
 
   cancelActiveWorkflow() {
     if (!this.nodeId) { return; }
-    RackHDRestAPIv1_1.nodes.deleteActiveWorkflow(this.nodeId).then(() => {
+    RackHDRestAPIv2_0.nodes.deleteActiveWorkflow(this.nodeId).then(() => {
       this.listWorkflows();
     });
   }

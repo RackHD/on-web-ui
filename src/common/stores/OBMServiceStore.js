@@ -2,21 +2,21 @@
 
 import Store from 'src-common/lib/Store';
 
-import RackHDRestAPIv1_1 from '../messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from '../messengers/RackHDRestAPIv2_0';
 
 export default class OBMServiceStore extends Store {
 
   key = 'service';
 
   read(id) {
-    return RackHDRestAPIv1_1.obms.get(id)
-      .then(item => this.change(id, item))
-      .catch(err => this.error(id, err));
+    return RackHDRestAPIv2_0.api.obmsGetById({identifier: id})
+      .then(res => this.change(id, res.obj))
+      .catch(err => this.error(null, err));
   }
 
   list() {
-    return RackHDRestAPIv1_1.obms.list()
-      .then(list => this.recollect(list))
+    return RackHDRestAPIv2_0.api.obmsGet()
+      .then(res => this.recollect(res.obj))
       .catch(err => this.error(null, err));
   }
 

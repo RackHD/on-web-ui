@@ -2,7 +2,7 @@
 
 import Store from 'src-common/lib/Store';
 
-import RackHDRestAPIv1_1 from '../messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from '../messengers/RackHDRestAPIv2_0';
 
 export default class TaskDefinitionStore extends Store {
 
@@ -12,8 +12,8 @@ export default class TaskDefinitionStore extends Store {
   key = 'injectableName';
 
   list() {
-    return RackHDRestAPIv1_1.tasks.library()
-      .then(list => this.recollect(list))
+    return RackHDRestAPIv2_0.api.workflowsGetAllTasks()
+      .then(res => this.recollect(res.obj))
       .catch(err => this.error(null, err));
   }
 

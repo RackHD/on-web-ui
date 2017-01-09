@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import radium from 'radium';
 
-import RackHDRestAPIv1_1 from 'src-common/messengers/RackHDRestAPIv1_1';
+import RackHDRestAPIv2_0 from 'src-common/messengers/RackHDRestAPIv2_0';
 import { FileReceiver, FileStatus } from 'src-common/views/file_uploader';
 import ConfirmDialog from 'src-common/views/ConfirmDialog';
 
@@ -78,14 +78,15 @@ export default class OperationsCenter extends Component {
               fileHandlerProps={{
                 onUploadEnd: (file, fileHandler) => {
                   if (file.error) { return; }
-                  RackHDRestAPIv1_1.skus.list().then(skus => {
+                  RackHDRestAPIv2_0.api.skusGet().then(res => {
+                    let skus = res.obj;
                     let newSku = skus.filter(sku => sku.id === file.result.id)[0];
                     if (!newSku) return;
                     let cleanupSkus = skus.filter(sku => sku !== newSku && sku.name === newSku.name);
                     this.setState({ cleanupSkus, newSku });
                   });
                 },
-                uploadUrl: RackHDRestAPIv1_1.url + '/skus/pack'
+                uploadUrl: RackHDRestAPIv2_0.url + '/skus/pack'
               }} />
         </div>
         <SkusGrid />
@@ -95,7 +96,7 @@ export default class OperationsCenter extends Component {
             callback={confirmed => {
               if (confirmed) {
                 let skuDeletes = state.cleanupSkus.map(sku => {
-                  return RackHDRestAPIv1_1.skus.delete(sku.id);
+                  return RackHDRestAPIv2_0.api.skusIdDeletePack({identifier: sku.id});
                 });
               }
               this.setState({cleanupSkus: [], newSku: {}});

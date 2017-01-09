@@ -22,7 +22,7 @@ import {
   } from 'src-graph-canvas/views/GraphCanvas';
 
 @radium
-export default class OperationsGraph extends Component {
+export default class OperationsCenterGraph extends Component {
 
   static propTypes = {
     css: PropTypes.object,

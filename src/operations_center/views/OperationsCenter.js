@@ -38,15 +38,20 @@ export default class OperationsCenter extends Component {
   }
 
   workflowStore = new WorkflowStore();
+  workflowTemplateStore = new WorkflowTemplateStore();
 
   componentWillMount() {
     this.workflowStore.startMessenger();
+    this.workflowTemplateStore.startMessenger();
   }
 
   componentDidMount() {
     this.unwatchWorkflows = this.workflowStore.watchAll('workflows', this);
-    this.listWorkflows().then(() => {
-      this.load(this.props.params.workflow);
+    this.unwatchWorkflowTemplates = this.workflowTemplateStore.watchAll('workflowTemplates', this);
+    this.listWorkflowTemplates().then(() => {
+      this.listWorkflows().then(() => {
+        this.load(this.props.params.workflow);
+      });
     });
   }
 
@@ -55,7 +60,9 @@ export default class OperationsCenter extends Component {
       this.cleanupWorkflowMonitor();
     }
     this.workflowStore.stopMessenger();
+    this.workflowTemplateStore.stopMessenger();
     this.unwatchWorkflows();
+    this.unwatchWorkflowTemplates();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -77,7 +84,8 @@ export default class OperationsCenter extends Component {
     loading: false,
     split: 0.7,
     workflow: null,
-    workflows: []
+    workflows: [],
+    workflowTemplates: []
   };
 
   css = {
@@ -142,12 +150,16 @@ export default class OperationsCenter extends Component {
     this.setState({loading: true});
     const getWorkflow = () => {
       let workflow = this.workflowStore.get(workflowId);
+      let workflowTemplate = this.workflowTemplateStore.get(workflow.injectableName);
+      workflow.definition = workflowTemplate;
       return workflow ? Object.assign({}, workflow) : null;
     };
     if (this.cleanupWorkflowMonitor) {
       this.cleanupWorkflowMonitor();
     }
     this.cleanupWorkflowMonitor = this.workflowStore.watchOne(workflowId, 'workflow', this);
+    // TODO: watch workflow template deinition for updates
+    // this.cleanupWorkflowTemplateMonitor = this.workflowTemplateStore.watchOne()
     return this.workflowStore.read(workflowId).then(() => {
       this.setState({
         loading: false,
@@ -159,6 +171,11 @@ export default class OperationsCenter extends Component {
   listWorkflows() {
     this.setState({loading: true});
     return this.workflowStore.list().then(() => this.setState({loading: false}));
+  }
+
+  listWorkflowTemplates() {
+    this.setState({loading: true});
+    return this.workflowTemplateStore.list().then(() => this.setState({loading: false}));
   }
 
 }
