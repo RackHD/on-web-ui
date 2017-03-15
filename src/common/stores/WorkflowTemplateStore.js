@@ -24,7 +24,6 @@ export default class WorkflowTemplateStore extends Store {
   }
 
   create(id, data) {
-    data.id = id;
     return RackHDRestAPIv2_0.api.workflowsPutGraphs({body: data})
       .then(() => this.insert(id, data))
       .catch(err => this.error(id, err));
