@@ -117,7 +117,7 @@ export default class EditWorkflow extends Component {
               }} />
           <h5 style={{margin: '15px 0 5px', color: '#666'}}>Workflow JSON:</h5>
           <JsonEditor
-              value={this.state.workflow}
+              value={{"options": this.state.workflow && this.state.workflow.options || {}}}
               updateParentState={this.updateStateFromJsonEditor.bind(this)}
               disabled={this.state.disabled}
               ref="jsonEditor" />
@@ -136,7 +136,11 @@ export default class EditWorkflow extends Component {
       this.workflows.update(this.state.workflow.context.graphId, this.state.workflow).then(() => this.enable());
     }
     else if (this.state.workflow.node) {
-      RackHDRestAPIv2_0.api.workflowsPost({body: this.state.workflow}).then(res => {
+      RackHDRestAPIv2_0.api.nodesPostWorkflowById({
+          body: {"options": this.state.workflow && this.state.workflow.options || {}},
+          identifier: this.state.workflow.node,
+          name: this.state.workflow.name
+      }).then(res => {
         let workflow = res.obj;
         this.enable();
         if (this.props.onDone) {
