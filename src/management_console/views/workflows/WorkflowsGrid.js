@@ -105,7 +105,10 @@ export default class WorkflowsGrid extends Component {
 
   cancelActiveWorkflow() {
     if (!this.nodeId) { return; }
-    RackHDRestAPIv2_0.nodes.deleteActiveWorkflow(this.nodeId).then(() => {
+    RackHDRestAPIv2_0.api.nodesWorkflowActionById({
+        identifier: this.nodeId,
+        action:{"command" : "cancel"}
+    }).then(() => {
       this.listWorkflows();
     });
   }
