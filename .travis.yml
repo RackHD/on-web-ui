@@ -34,6 +34,7 @@ before_script:
 
 script:
   - npm run test-travis-ci
+  - npm run build
 
 notifications:
   slack:
@@ -42,3 +43,10 @@ notifications:
     on_success: never
     on_failure: always
     on_start: never
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: ./publish-to-gh-pages.sh
+  on: 
+    branch: master
