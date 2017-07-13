@@ -30,7 +30,10 @@ module.exports = (config) => {
     },
 
     frameworks: ['mocha', 'chai-spies', 'chai'],
-    reporters: ['mocha'],
+    reporters: ['mocha', 'junit'],
+    junitReporter: {
+      outputFile: 'test/on-web-ui.xml'
+    },
 
     browsers: ['Chrome', 'Firefox'],
 

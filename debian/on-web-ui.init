@@ -1,0 +1,176 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          on-web-ui
+# Required-Start:    $syslog $network mongodb rabbitmq-server
+# Required-Stop:     $syslog $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: on-web-ui
+# Description:       RackHD on-web-ui service
+### END INIT INFO
+
+NAME="on-web-ui"
+USER="root"
+APP_DIR="/var/renasar/$NAME"
+NPM_SCRIPT="build-js-dev"
+PID_DIR="/var/run"
+PID_FILE="$PID_DIR/$NAME.pid"
+LOG_DIR="/var/log/rackhd"
+LOG_FILE="$LOG_DIR/$NAME.log"
+NPM_EXEC=$(which npm)
+
+USAGE="Usage: $0 {start|stop|restart|status}"
+RESTART=false
+
+# Time to wait for the server to die, in seconds
+DIETIME=1
+STARTTIME=20
+if [ ! -f "/etc/default/$NAME" ]
+then
+    echo "Service disabled due to absence of /etc/default/$NAME" 1>&2
+    exit 1
+else
+     . "/etc/default/$NAME"
+fi
+
+
+pid_file_exists() {
+    [ -f "$PID_FILE" ]
+}
+
+get_pid() {
+    echo "$(cat "$PID_FILE")"
+}
+
+is_running() {
+    PID=$(get_pid)
+    ! [ -z "$(ps aux | awk '{print $2}' | grep "^$PID$")" ]
+}
+
+start_it() {
+    if [ ! -d $PID_DIR ]; then mkdir -p "$PID_DIR"; fi
+    if [ ! -d $LOG_DIR ]; then mkdir -p "$LOG_DIR"; fi
+
+    echo "Starting $NAME ..."
+    /sbin/start-stop-daemon --background --start --quiet\
+        --make-pidfile --pidfile $PID_FILE \
+        -d $APP_DIR \
+        --startas /bin/bash -- -c "exec $NPM_EXEC run --prefix $APP_DIR $NPM_SCRIPT >> $LOG_FILE 2>&1"
+}
+
+stop_process() {
+    echo "Killing process $PID"
+    kill_process_chain $PID
+    #/sbin/start-stop-daemon -K --quiet --pidfile $PID_FILE --retry 300
+    return $?
+}
+
+kill_process_chain() {
+    cpids=$(ps -o pid= --ppid $1)
+    if [ -z "$cpids" ]; then
+      kill -9 $1 > /dev/null 2>&1
+      return 0
+    fi
+    for cpid in $(ps -o pid= --ppid $1)
+    do
+        kill_process_chain $cpid
+    done
+}
+
+
+remove_pid_file() {
+    echo "Removing pid file"
+    rm -f "$PID_FILE"
+}
+
+start_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "$NAME already running with pid $PID"
+            exit 0
+        else
+            echo "$NAME stopped, but pid file exists"
+            remove_pid_file
+        fi
+    fi
+
+    start_it && sleep $STARTTIME
+    if is_running
+    then
+        echo "$NAME started with pid $(get_pid)"
+    else
+        echo "Failed to start $NAME"
+        exit 1
+    fi
+}
+
+stop_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            echo "Stopping $NAME ..."
+            if stop_process
+            then
+                remove_pid_file
+                echo "$NAME stopped"
+            else
+                echo "Failed to stop $NAME"
+                exit 1
+            fi
+        else
+            echo "$NAME already stopped, but pid file exists"
+            remove_pid_file
+            echo "$NAME stopped"
+        fi
+    else
+        echo "$NAME already stopped, pid file does not exist"
+    fi
+}
+
+status_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "$NAME running with pid $PID"
+            exit 0
+        else
+            echo "$NAME stopped, but pid file exists"
+            exit 1
+        fi
+    else
+        echo "$NAME stopped"
+        exit 2
+    fi
+}
+
+case "$1" in
+    start)
+        start_app
+    ;;
+
+    stop)
+        stop_app
+    ;;
+
+    restart)
+        stop_app && sleep $DIETIME
+        start_app
+    ;;
+
+    status)
+        status_app
+    ;;
+
+    *)
+        echo $USAGE
+        exit 1
+    ;;
+esac
+
