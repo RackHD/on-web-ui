@@ -1,0 +1,8 @@
+node_modules /var/renasar/on-web-ui
+src /var/renasar/on-web-ui
+static /var/renasar/on-web-ui
+tasks /var/renasar/on-web-ui
+package.json /var/renasar/on-web-ui
+webpack.config.babel.js /var/renasar/on-web-ui
+commitstring.txt /var/renasar/on-web-ui
+.babelrc /var/renasar/on-web-ui
