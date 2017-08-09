@@ -1,0 +1,13 @@
+Source: on-web-ui
+Section: utilties
+Priority: optional
+Maintainer: Joe Heck <joseph.heck@emc.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+
+Package: on-web-ui
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         on-wss
+Description: RackHD web ui
