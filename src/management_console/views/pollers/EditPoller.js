@@ -129,7 +129,7 @@ export default class EditPoller extends Component {
               ]}
               onChange={(option) => {
                 let poller = this.state.poller;
-                poller.pollInterval = option && option.value;
+                poller.pollInterval = option && Number(option.value);
                 this.setState({ poller });
               }} />
             <h5 style={{margin: '15px 0 5px', color: '#666'}}>Poller JSON:</h5>
@@ -150,7 +150,15 @@ export default class EditPoller extends Component {
   savePoller() {
     this.disable();
     if (this.state.poller.id) {
-      this.pollers.update(this.state.poller.id, this.state.poller).then(() => this.enable());
+      let poller = this.state.poller;
+      let updateData = {
+          type : poller.type,
+          pollInterval: poller.pollInterval,
+          node : poller.node,
+          config: poller.config,
+          paused: poller.paused
+      };
+      this.pollers.update(this.state.poller.id, updateData).then(() => this.enable());
     }
     else {
       this.pollers.create(this.state.poller).then(() => this.context.router.goBack());

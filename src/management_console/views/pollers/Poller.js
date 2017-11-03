@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router'
 
 import FormatHelpers from 'src-common/lib/FormatHelpers';
 import ConfirmDialog from 'src-common/views/ConfirmDialog';
@@ -50,7 +51,7 @@ export default class Poller extends Component {
             callback={confirmed => {
               if (confirmed) {
                 return this.pollers.destroy(poller.id).
-                  then(() => this.context.router.goBack());
+                  then(() => { browserHistory.goBack(); });
               }
               this.setState({loading: false, confirmDelete: false});
             }}>
