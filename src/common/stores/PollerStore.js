@@ -35,7 +35,7 @@ export default class PollerStore extends Store {
   }
 
   destroy(id) {
-    return RackHDRestAPIv2_0.api.pollersDelete(id)
+    return RackHDRestAPIv2_0.api.pollersDelete({identifier:id})
       .then(() => this.remove(id))
       .catch(err => this.error(id, err));
   }
