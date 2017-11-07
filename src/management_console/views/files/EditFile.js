@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 
 import {
     FlatButton,
@@ -41,7 +42,7 @@ export default class EditFile extends Component {
           <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
-                onClick={this.routeBack}
+                onClick={browserHistory.goBack.bind(this)}
                 disabled={this.state.disabled} />
             <RaisedButton
                 label="Save"
@@ -85,7 +86,7 @@ export default class EditFile extends Component {
     this.files.update(this.state.file.basename, this.state.file.body).then(() => {
       this.enable();
       this.setState({loading: false});
-      if (isNewFile) this.context.router.goBack();
+      if (isNewFile) browserHistory.goBack();
     });
   }
 

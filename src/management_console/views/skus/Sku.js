@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 
 import ConfirmDialog from 'src-common/views/ConfirmDialog';
 import SkuStore from 'src-common/stores/SkuStore';
@@ -51,7 +52,7 @@ export default class Sku extends Component {
             callback={confirmed => {
               if (confirmed) {
                 return this.skus.destroy(sku.id).
-                  then(() => this.context.router.goBack());
+                  then(() => browserHistory.goBack());
               }
               this.setState({loading: false, confirmDelete: false});
             }}>

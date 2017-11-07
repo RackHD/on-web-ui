@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 
 import Select from 'react-select';
 
@@ -49,7 +50,7 @@ export default class EditNode extends Component {
           <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
-                onClick={this.routeBack}
+                onClick={browserHistory.goBack.bind(this)}
                 disabled={state.disabled} />
             <RaisedButton
                 label="Save"
@@ -111,7 +112,7 @@ export default class EditNode extends Component {
     }
 
     else {
-      this.nodes.create(this.state.node).then(() => this.context.router.goBack());
+      this.nodes.create(this.state.node).then(() => browserHistory.goBack());
     }
   }
 

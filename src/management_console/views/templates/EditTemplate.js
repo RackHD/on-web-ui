@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 
 import {
     FlatButton,
@@ -39,7 +40,7 @@ export default class EditTemplate extends Component {
           <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
-                onClick={this.routeBack}
+                onClick={browserHistory.goBack.bind(this)}
                 disabled={this.state.disabled} />
             <RaisedButton
                 label="Save"
@@ -87,7 +88,7 @@ export default class EditTemplate extends Component {
     this.templates.update(this.state.template.name, this.state.template.contents).then(() => {
       this.enable();
       this.setState({loading: false});
-      if (isNewTemplate) this.context.router.goBack();
+      if (isNewTemplate) browserHistory.goBack();
     });
   }
 

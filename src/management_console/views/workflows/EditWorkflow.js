@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 
 import Select from 'react-select';
 
@@ -82,7 +83,7 @@ export default class EditWorkflow extends Component {
           <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
-                onClick={this.props.onDone || this.routeBack}
+                onClick={this.props.onDone || browserHistory.goBack.bind(this)}
                 disabled={this.state.disabled} />
             <RaisedButton
                 label="Save"

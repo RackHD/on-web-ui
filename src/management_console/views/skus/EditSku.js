@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 
 import mixin from 'src-common/lib/mixin';
 
@@ -45,7 +46,7 @@ export default class EditSku extends Component {
           <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
-                onClick={this.routeBack}
+                onClick={browserHistory.goBack.bind(this)}
                 disabled={this.state.disabled} />
             <RaisedButton
                 label="Save"
@@ -87,7 +88,7 @@ export default class EditSku extends Component {
       this.skus.update(this.state.sku.id, this.state.sku).then(() => this.enable());
     }
     else {
-      this.skus.create(this.state.sku).then(() => this.context.router.goBack());
+      this.skus.create(this.state.sku).then(() => browserHistory.goBack());
     }
   }
 
