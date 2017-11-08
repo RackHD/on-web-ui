@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 
 import ConfirmDialog from 'src-common/views/ConfirmDialog';
 import FileStore from 'src-common/stores/FileStore';
@@ -49,7 +50,7 @@ export default class File extends Component {
             callback={confirmed => {
               if (confirmed) {
                 return this.files.destroy(file.id).
-                  then(() => this.context.router.goBack());
+                  then(() => browserHistory.goBack());
               }
               this.setState({loading: false, confirmDelete: false});
             }}>

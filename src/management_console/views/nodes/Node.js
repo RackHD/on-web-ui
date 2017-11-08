@@ -1,6 +1,8 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
+
 import moment from 'moment';
 
 import ElasticsearchAPI from 'src-common/messengers/ElasticsearchAPI';
@@ -98,7 +100,7 @@ export default class Node extends Component {
             callback={confirmed => {
               if (confirmed) {
                 return this.nodes.destroy(node.id).
-                  then(() => this.context.router.goBack());
+                  then(() => browserHistory.goBack());
               }
               this.setState({loading: false, confirmDelete: false});
             }}>

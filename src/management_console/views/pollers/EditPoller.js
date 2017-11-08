@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 
 import Select from 'react-select';
 
@@ -69,7 +70,7 @@ export default class EditPoller extends Component {
           <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
-                onClick={this.routeBack}
+                onClick={browserHistory.goBack.bind(this)}
                 disabled={this.state.disabled} />
             <RaisedButton
                 label="Save"
@@ -161,7 +162,7 @@ export default class EditPoller extends Component {
       this.pollers.update(this.state.poller.id, updateData).then(() => this.enable());
     }
     else {
-      this.pollers.create(this.state.poller).then(() => this.context.router.goBack());
+      this.pollers.create(this.state.poller).then(() => browserHistory.goBack());
     }
   }
 

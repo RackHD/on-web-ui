@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 
 import {
     FlatButton,
@@ -41,7 +42,7 @@ export default class EditProfile extends Component {
           <ToolbarGroup key={1} lastChild={true}>
             <RaisedButton
                 label="Cancel"
-                onClick={this.routeBack}
+                onClick={browserHistory.goBack.bind(this)}
                 disabled={this.state.disabled} />
             <RaisedButton
                 label="Save"
@@ -89,7 +90,7 @@ export default class EditProfile extends Component {
     this.profiles.update(this.state.profile.name, this.state.profile.contents).then(() => {
       this.enable();
       this.setState({loading: false});
-      if (isNewProfile) this.context.router.goBack();
+      if (isNewProfile) browserHistory.goBack();
     });
   }
 
