@@ -1,6 +1,7 @@
 // Copyright 2015, EMC, Inc.
 
 import React, { Component, PropTypes } from 'react';
+import lodash from 'lodash'
 
 export default class JsonEditor extends Component {
 
@@ -24,21 +25,21 @@ export default class JsonEditor extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.props.value) {
+    if (!lodash.isEqual(nextProps.value, this.props.value)){
       this.setState({value: nextProps.value});
     }
   }
 
-  handleChange(newValue) {
+  handleChange(event) {
     let newState;
 
     try {
-      newState = JSON.parse(newValue);
+      newState = JSON.parse(event.target.value);
       this.setState({rawValue: null, value: newState, error: false});
     }
 
     catch (err) {
-      this.setState({rawValue: newValue, error: err});
+      this.setState({rawValue: event.target.value, error: err});
     }
 
     if (this.props.updateParentState) {
