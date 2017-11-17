@@ -28,6 +28,14 @@ $ npm start             # Start development server at http://127.0.0.1:3000.
 $ npm test              # Run automated tests.
 ```
 
+**Note:**
+
+This was a secure fix since webpack-dev-server v2.4.3, devServer.host='0.0.0.0' in webpack.config.babel.js will give
+"Invalid Host header". There are two solutions for this:
+
+ * Add disableHostCheck=false for devServer configuration, or
+ * Change the IP '0.0.0.0' to your IP that will be accessed in browser.
+
 ### How to configure API endpoints.
 
 You can change the RackHD API endpoint dynamically from the UI. Look for the settings link in the main navigation. This will open the Settings page where you can specify API endpoints.
