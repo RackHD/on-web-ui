@@ -71,8 +71,11 @@ export default class ObjectDiff {
       if (handler && handler(current, diff)) { return; }
 
       if (diff.operation === 'remove') {
-       // delete current[last];
-       current.splice(last,1);    
+          if (Array.isArray(current)) {
+              current.splice(last, 1);
+          } else {
+              delete current[last];
+          }
       }
       else {
         current[last] = diff.value;
