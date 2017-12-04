@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+set -x
+
+rm -rf node_modules
+npm install
+
+# run unit test, xvfb is necessary for running selenium
+xvfb-run ./node_modules/.bin/karma start test/karma.conf.js

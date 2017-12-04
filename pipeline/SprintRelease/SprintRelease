@@ -1,0 +1,67 @@
+
+    timestamps{
+        withEnv([
+            "tag_name=${env.tag_name}",
+            "branch=${env.branch}",
+            "date=current",
+            "timezone=-0500",
+            "IS_OFFICIAL_RELEASE=true",
+            "TAG=${env.TAG}",
+            "JUMP_VERSION=${env.JUMP_VERSION}",
+            "PUBLISH=${env.PUBLISH}",
+            "MANIFEST_TEMPLATE=manifest-web-ui.json",
+            "BINTRAY_SUBJECT=${env.BINTRAY_SUBJECT}",
+            "BINTRAY_REPO=binary"
+        ]){
+            def message = "Job Name: ${env.JOB_NAME} \n" + "Build Full URL: ${env.BUILD_URL} \n" + "Phase: STARTED \n"
+            echo "$message"
+            slackSend "$message"
+            deleteDir()
+            checkout scm
+            def shareMethod = new rackhd.utils.ShareMethod()
+
+            try{
+                // If MANIFEST_FILE_URL is not defined, the value of "${env.MANIFEST_FILE_URL}" is "null"
+                // If MANIFEST_FILE_URL is defined but not assigned, the value of "${env.MANIFEST_FILE_URL}" is ""
+                if("${env.MANIFEST_FILE_URL}" == "null" || "${env.MANIFEST_FILE_URL}" == ""){
+                    stage("Create Manifest"){
+                        // The script create_manifest.groovy will upload a manifest file to bintray
+                        // and save the download link in variable : env.MANIFEST_FILE_URL
+                        new rackhd.create_manifest.create_manifest().execute()
+                    }
+                }
+
+                if(JUMP_VERSION == "true"){
+                    new rackhd.SprintRelease.bump_version().execute()
+                }
+
+                def manifest_name=env.MANIFEST_FILE_URL.tokenize('/')[-1];
+                currentBuild.description = "<a href=${env.MANIFEST_FILE_URL}>${manifest_name}</a>";
+ 
+                shareMethod.downloadManifest(env.MANIFEST_FILE_URL, manifest_name)
+
+                stash name: "masterci_manifest", includes: "${manifest_name}"
+                env.stash_manifest_name = "masterci_manifest"
+                env.stash_manifest_path = "${manifest_name}"
+
+                // Create an instance of UnitTest/UnitTest.groovy
+                def unit_test = load("pipeline/UnitTest/UnitTest.groovy")
+                try{
+                    stage("Unit Test"){
+                        // Call the function runTest to run unit test
+                        unit_test.runTest(env.stash_manifest_name, env.stash_manifest_path)
+                    }
+                } finally{
+                    unit_test.archiveArtifactsToTarget("UnitTest")
+                }
+                Boolean create_tag = TAG.toBoolean()
+                Boolean publish = PUBLISH.toBoolean()
+                def BuildAndPublish = load('pipeline/BuildAndPublish.groovy')
+                BuildAndPublish.buildAndPublish(publish, create_tag)
+                currentBuild.result="SUCCESS"
+            } finally{
+                shareMethod.sendResult(true, true)
+            }
+        }
+    }
+
