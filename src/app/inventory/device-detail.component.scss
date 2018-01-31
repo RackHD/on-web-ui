@@ -1,0 +1,14 @@
+.device-name {
+  padding-left: 12px;
+  color: #007db8;
+}
+
+.progress-static {
+  margin-bottom: 12px;
+  &.cpu .progress-meter::before{
+    background-color: #b96b5c;
+  }
+  &.harddisk .progress-meter::before {
+    background-color: #60b515;
+  }
+}

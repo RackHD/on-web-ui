@@ -1,0 +1,14 @@
+---
+platform: linux
+
+inputs:
+- name:  ui
+  path: "ui"
+run:
+  path: bash
+  args:
+  - -exc
+  -  |
+     npm install
+     npm run build:aot
+  dir: "ui"

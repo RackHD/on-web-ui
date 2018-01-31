@@ -1,0 +1,9 @@
+<clr-modal [(clrModalOpen)]="modalOpen" [clrModalClosable]="false">
+    <h3 class="modal-title">Login Expired!</h3>
+    <div class="modal-body">
+        <p>Please click the button blew to re-login.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="reLogin()">LOG IN</button>
+    </div>
+</clr-modal>

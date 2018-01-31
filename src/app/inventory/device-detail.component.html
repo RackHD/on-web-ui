@@ -1,0 +1,100 @@
+<div class="row" *ngIf="device">
+  <div class="row offset-lg-1 offset-md-1 offset-sm-1 offset-xs-1">
+    <h2 class="device-name">{{device.name}}</h2><h2>. details!</h2>
+  </div>
+  <div class="row offset-lg-1 offset-md-1 offset-sm-1 offset-xs-1
+    col-lg-10 device-detail">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+      <ul class="list">
+        <div class="" *ngIf="deviceTypeMap[device.type]==='Compute'">
+          <li>
+            <clr-icon shape="computer"></clr-icon>
+            SN:{{ device.serialNumber }}
+          </li>
+        </div>
+        <div class="" *ngIf="deviceTypeMap[device.type]==='Storage Arrays'">
+          <li>
+            <clr-icon shape="data-cluster"></clr-icon>
+            SN:{{ device.serialNumber }}
+          </li>
+        </div>
+        <div class="" *ngIf="deviceTypeMap[device.type]==='Network Switches'">
+          <li>
+            <clr-icon shape="network-switch"></clr-icon>
+            SN:{{ device.serialNumber }}
+          </li>
+        </div>
+        <div class="" *ngIf="deviceTypeMap[device.type]==='Data Domain'">
+          <li>
+            <clr-icon shape="storage"></clr-icon>
+            SN:{{ device.serialNumber }}
+          </li>
+        </div>
+        <div class="" *ngIf="deviceTypeMap[device.type]==='HC/HCI Systems'">
+          <li>
+            <clr-icon shape="alarm-clock"></clr-icon>
+            SN:{{ device.serialNumber }}
+          </li>
+        </div>
+        <li>
+          Status: {{ deviceStatusMap[device.status] }}
+        </li>
+        <li>
+          Provisioned: {{ device.provisioned }}
+        </li>
+        <li *ngIf="device.provisioned && device.os">
+          OS: {{device.os}}
+        </li>
+        <li>
+          <ul class="list">
+          Networking:
+            <li *ngIf="device.ip">IP: {{device.ip}}</li>
+            <li *ngIf="device.mac">MAC: {{device.mac}}</li>
+            <li *ngIf="device.bmc">BMC: {{device.bmc}}</li>
+          </ul>
+        </li>
+        <li>
+          Rack: {{ device.rack}}
+        </li>
+        <li>
+          Site: {{ device.site }}
+        </li>
+        <li>
+          TelemetryDate: {{ device.telemetryDate | date:'yyyy-MM-dd HH:mm' }}
+        </li>
+      </ul>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+      <div class="progress-block">
+        <div class="progress-group">
+            <div class = 'row' *ngIf="device.systemCapacity.cpu">
+                <clr-icon shape="cpu" size="24"></clr-icon>
+                CPU Utilization
+            </div>
+            <div class="progress-static labeled cpu" *ngIf="device.systemCapacity.cpu">
+                <div class="progress-meter" [attr.data-value]="device.systemCapacity.cpu"></div>
+                <span>{{ device.systemCapacity.cpu}}%</span>
+            </div>
+            <div class = 'row' *ngIf="device.systemCapacity.networking">
+                <clr-icon shape="network-globe" size="24"></clr-icon>
+                Network Utilization
+            </div>
+            <div class="progress-static labeled networking" *ngIf="device.systemCapacity.networking">
+                <div class="progress-meter" [attr.data-value]="device.systemCapacity.networking"></div>
+                <span>{{ device.systemCapacity.networking}}%</span>
+            </div>
+            <div class = 'row' *ngIf="device.systemCapacity.harddisk">
+                <clr-icon shape="storage" size="24"></clr-icon>
+                Disk Utilization
+            </div>
+            <div class="progress-static labeled harddisk" *ngIf="device.systemCapacity.harddisk">
+                <div class="progress-meter" [attr.data-value]="device.systemCapacity.harddisk"></div>
+                <span>{{ device.systemCapacity.harddisk }}%</span>
+            </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-small btn-primary "(click)="goBack()">Back</button>
+  </div>
+</div>
+

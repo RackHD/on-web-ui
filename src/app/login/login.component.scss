@@ -1,0 +1,21 @@
+a.link{
+  color: #007db8;
+  cursor: pointer;
+}
+
+.login-wrapper {
+  .branding{
+    clr-icon {
+      &[shape="library"]{
+        color: white;
+        width: 170px;
+        height: 100%;
+      }
+    }
+
+    h1 {
+      color: white;
+      font-size: 56px;
+    }
+  }
+}

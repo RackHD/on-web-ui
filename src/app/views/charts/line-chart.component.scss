@@ -1,0 +1,44 @@
+app-chart-line-chart {
+  text {
+    fill: grey;
+    &.label {
+      font-size: 12px;
+    }
+  }
+
+  .dot {
+      fill: steelblue;
+      r: 3.5;
+  }
+
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
+  }
+
+  %lines {
+      stroke: grey;
+      stroke-opacity: 0.4;
+      shape-rendering: crispEdges;
+  }
+
+  .grid {
+    line {
+      @extend %lines;
+    }
+    path {
+      stroke-width: 0;
+    }
+  }
+
+  .x.axis{
+    path {
+      @extend %lines;
+    }
+    .tick line {
+        @extend %lines;
+    }
+  }
+
+}

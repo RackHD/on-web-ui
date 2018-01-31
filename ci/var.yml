@@ -1,0 +1,17 @@
+github_repo: ****/****
+github_repo_owner: ****
+local-registry: 1.2.3.4:5000
+local-registry-repo-ui-release: 1.2.3.4:5000/****/****
+local-registry-repo-pr: 1.2.3.4:5000/concourse/pull-request
+local-registry-repo-ut: 1.2.3.4:5000/****/****
+local-artifactory: http://10.62.59.204:8081/artifactory
+local-artifactory-password: xxxxxxxxx
+artifactory-docker-image: 1.2.3.4:5000/pivotalservices/artifactory-resource
+demo-server-ip: 10.**.**.***
+demo-server-uname: aaa
+demo-server-password: bbbbbbb
+eos2github-token: 9b3a2a...........******
+eos2github-private-key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    .................
+    -----END RSA PRIVATE KEY-----

@@ -1,0 +1,51 @@
+<span *ngFor=" let r of allRacks"  >
+    <a  routerLink="/inventory/rack/{{r.rackID}}" class="label clickable label-green"  >
+        rack{{r.rackID}}
+        <span class="badge">  {{r.cnt}} </span>
+    </a>
+</span>
+<div class="alert alert-warning" *ngIf="warnMessage.length>0">
+    <div class="alert-items">
+        <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="info-circle"></clr-icon>
+            </div>
+            <span class="alert-text"><b>{{warnMessage}}</b></span>
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="!loading">
+    <div class="offset-lg-1 offset-md-1 offset-sm-1 offset-xs-1 col-lg-11 col-md-11 col-sm-11 col-xs-11">
+        <h1>Rack <b>{{rackID}}</b> View </h1>
+    </div>
+
+    <div class="offset-lg-1 offset-md-1 offset-sm-1 offset-xs-1 col-lg-5 col-md-5 col-sm-11 col-xs-11" *ngFor="let viewPoint of ['Front','Rear']">
+
+        <h3> {{viewPoint}} View</h3>
+
+        <ul class="rack_legend">
+        <!--Draw the unit per u ruler aside -->
+            <li *ngFor="let i of rackUnit">{{rackUnit.length - i}}</li>
+        </ul>
+
+        <div class="rack_frame">
+            <!-- Render Rack-->
+            <ul class="rack">
+                <span *ngFor="let n of rackLayout" >
+                    <a routerLink="../../device/{{n.deviceSN}}" *ngIf="n.name" >
+                        <li class="occupied"
+                        [style.background-color]="viewPoint=='Rear'?'gray':deviceTypeColorMap[n.type]||'yellow'"
+                        [style.height]="n.height*20+'px'"
+                        [style.padding]="(n.height-1)*10 + 'px 0'" >
+                        <span class="node-font">  {{n.name}} </span>
+                        </li>
+                    </a>
+                    <li class="h1u" *ngIf="!n.name" >
+                    </li>
+                </span>
+            </ul>
+        </div>
+    </div>
+
+</div>
+

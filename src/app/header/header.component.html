@@ -1,0 +1,46 @@
+<header class="header-6 app-header">
+
+    <div class="branding">
+        <a routerLink="/home">
+          <img src="../../assets/logo.png" alt="/home">
+        </a>
+    </div>
+
+    <div class="header-nav" >
+        <form>
+            <div class="form-group">
+                <div class="toggle-switch" style="float:middle">
+                    <input type="checkbox"  (click)="onSwitchMode()"  id="demoModeSwitcher" name="demoModeToggle" [checked]="demoMode" >
+                    <label for="demoModeSwitcher" [style.color]="demoMode?'lightgreen':'#656363' "  >Demo Mode </label>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="header-actions">
+        <a routerLink="profile"  class="nav-link nav-icon" *ngIf="authService.isLogined">
+            <clr-icon shape="user"></clr-icon>
+        </a>
+        <a routerLink="profile"  class="nav-link nav-icon user-name" *ngIf="authService.isLogined">
+            {{ authService.loginUser}}
+        </a>
+        <a *ngIf="authService.isLogined" (click)="logout()" class="nav-link nav-icon logout">
+            <clr-icon  shape="logout"></clr-icon>
+        </a>
+    </div>
+</header>
+
+<!--Modal to warn the mode change -->
+<clr-modal [(clrModalOpen)]="modeSwitchModalOpened" [clrModalClosable]="false">
+    <h3 class="modal-title">{{demoMode?"Demo Mode":"Production Mode"}}</h3>
+    <div class="modal-body">
+        <p>Switch to {{demoMode?"Demo Mode":"Production Mode"}}.</p>
+        <br>
+        <p>The customized setting will get lost and set to default.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onModalClosed()">
+            ok
+        </button>
+    </div>
+</clr-modal>

@@ -1,0 +1,17 @@
+---
+platform: linux
+
+inputs:
+- name:  ui
+  path: "ui" 
+
+run:
+  path: bash
+  args:
+  - -exc
+  -  |
+     ./ci/check_focused_ut.sh
+     npm install
+     echo "[Info] Run Karma Unit-Test with env var CI to be set: "
+     CI="Concourse"  npm run unit-test
+  dir: "ui"

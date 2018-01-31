@@ -1,0 +1,15 @@
+header {
+  background: linear-gradient(to right, #000000 20%, #00447C 80%);
+}
+.app-header {
+  .logo-placeholder {
+    color: white;
+    font-size: x-large;
+  }
+  .branding {
+    img {
+      height: 60px;
+      width: 60px;
+    }
+  }
+}
