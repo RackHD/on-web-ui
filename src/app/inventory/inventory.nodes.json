@@ -1,0 +1,416 @@
+[
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/5a6ed8cce64144405f1cc6ef/catalogs",
+        "ibms": [],
+        "id": "5a6ed8cce64144405f1cc6ef",
+        "identifiers": [],
+        "name": "Enclosure Node 18D2182",
+        "obms": [],
+        "pollers": "/api/2.0/nodes/5a6ed8cce64144405f1cc6ef/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "encloses",
+                "targets": [
+                    "5a6ed7dbe64144405f1cc6d3"
+                ]
+            }
+        ],
+        "tags": "/api/2.0/nodes/5a6ed8cce64144405f1cc6ef/tags",
+        "type": "enclosure",
+        "workflows": "/api/2.0/nodes/5a6ed8cce64144405f1cc6ef/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/5a6ed7dbe64144405f1cc6d3/catalogs",
+        "ibms": [
+            {
+                "ref": "/api/2.0/ibms/5a6edfff963c83465fedd024",
+                "service": "ssh-ibm-service"
+            }
+        ],
+        "id": "5a6ed7dbe64144405f1cc6d3",
+        "identifiers": [
+            "00:8c:fa:f3:78:18"
+        ],
+        "name": "00:8c:fa:f3:78:18",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/5a6edb37963c83465fedd023",
+                "service": "ipmi-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/5a6ed7dbe64144405f1cc6d3/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "enclosedBy",
+                "targets": [
+                    "5a6ed8cce64144405f1cc6ef"
+                ]
+            }
+        ],
+        "sku": null,
+        "tags": "/api/2.0/nodes/5a6ed7dbe64144405f1cc6d3/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/5a6ed7dbe64144405f1cc6d3/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/5a787f48ad2b3d494c69e18a/catalogs",
+        "ibms": [],
+        "id": "5a787f48ad2b3d494c69e18a",
+        "identifiers": [],
+        "name": "Enclosure Node cfcb12",
+        "obms": [],
+        "pollers": "/api/2.0/nodes/5a787f48ad2b3d494c69e18a/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "encloses",
+                "targets": [
+                    "5a787ee3ad2b3d494c69e16e"
+                ]
+            }
+        ],
+        "tags": "/api/2.0/nodes/5a787f48ad2b3d494c69e18a/tags",
+        "type": "enclosure",
+        "workflows": "/api/2.0/nodes/5a787f48ad2b3d494c69e18a/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/5a787ee3ad2b3d494c69e16e/catalogs",
+        "ibms": [],
+        "id": "5a787ee3ad2b3d494c69e16e",
+        "identifiers": [
+            "52:54:be:ef:12:1c"
+        ],
+        "name": "52:54:be:ef:12:1c",
+        "obms": [],
+        "pollers": "/api/2.0/nodes/5a787ee3ad2b3d494c69e16e/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "enclosedBy",
+                "targets": [
+                    "5a787f48ad2b3d494c69e18a"
+                ]
+            }
+        ],
+        "sku": null,
+        "tags": "/api/2.0/nodes/5a787ee3ad2b3d494c69e16e/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/5a787ee3ad2b3d494c69e16e/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/5a53d8634319db421a122e9e/catalogs",
+        "ibms": [],
+        "id": "5a53d8634319db421a122e9e",
+        "identifiers": [],
+        "name": "Enclosure Node ..................",
+        "obms": [],
+        "pollers": "/api/2.0/nodes/5a53d8634319db421a122e9e/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "encloses",
+                "targets": [
+                    "5a53d6be4319db421a122e82"
+                ]
+            }
+        ],
+        "tags": "/api/2.0/nodes/5a53d8634319db421a122e9e/tags",
+        "type": "enclosure",
+        "workflows": "/api/2.0/nodes/5a53d8634319db421a122e9e/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/5a53d6be4319db421a122e82/catalogs",
+        "ibms": [],
+        "id": "5a53d6be4319db421a122e82",
+        "identifiers": [
+            "00:1e:67:d3:17:65"
+        ],
+        "name": "00:1e:67:d3:17:65",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/5a53d8784319db421a122eab",
+                "service": "ipmi-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/5a53d6be4319db421a122e82/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "enclosedBy",
+                "targets": [
+                    "5a53d8634319db421a122e9e"
+                ]
+            }
+        ],
+        "sku": null,
+        "tags": "/api/2.0/nodes/5a53d6be4319db421a122e82/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/5a53d6be4319db421a122e82/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/59ca22c8a9c4fca9044f4570/catalogs",
+        "ibms": [],
+        "id": "59ca22c8a9c4fca9044f4570",
+        "identifiers": [],
+        "name": "Enclosure Node 27MNBD2",
+        "obms": [],
+        "pollers": "/api/2.0/nodes/59ca22c8a9c4fca9044f4570/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "encloses",
+                "targets": [
+                    "59ca21d73a0bb58304df131d"
+                ]
+            }
+        ],
+        "sku": null,
+        "tags": "/api/2.0/nodes/59ca22c8a9c4fca9044f4570/tags",
+        "type": "enclosure",
+        "workflows": "/api/2.0/nodes/59ca22c8a9c4fca9044f4570/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/59ca21d73a0bb58304df131d/catalogs",
+        "ibms": [],
+        "id": "59ca21d73a0bb58304df131d",
+        "identifiers": [
+            "7c:d3:0a:b0:52:9e"
+        ],
+        "name": "7c:d3:0a:b0:52:9e",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/59ca22d1a9c4fca9044f457d",
+                "service": "ipmi-obm-service"
+            },
+            {
+                "ref": "/api/2.0/obms/59cca499ebfd8d402c54e0fa",
+                "service": "dell-wsman-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/59ca21d73a0bb58304df131d/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "enclosedBy",
+                "targets": [
+                    "59ca22c8a9c4fca9044f4570"
+                ]
+            }
+        ],
+        "sku": "/api/2.0/skus/aa239f03-c764-4f42-9a6c-56992fd140f0",
+        "tags": "/api/2.0/nodes/59ca21d73a0bb58304df131d/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/59ca21d73a0bb58304df131d/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/598c857d6f4101360960d720/catalogs",
+        "ibms": [],
+        "id": "598c857d6f4101360960d720",
+        "identifiers": [
+            "10.240.19.70:org-root/ls-RackMount2"
+        ],
+        "name": "ls-RackMount2",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/598c857e6f4101360960d724",
+                "service": "ucs-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/598c857d6f4101360960d720/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "associatedTo",
+                "targets": [
+                    ""
+                ]
+            }
+        ],
+        "tags": "/api/2.0/nodes/598c857d6f4101360960d720/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/598c857d6f4101360960d720/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/598c857d6f4101360960d721/catalogs",
+        "ibms": [],
+        "id": "598c857d6f4101360960d721",
+        "identifiers": [
+            "10.240.19.70:org-root/ls-RackMount1"
+        ],
+        "name": "ls-RackMount1",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/598c857e6f4101360960d722",
+                "service": "ucs-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/598c857d6f4101360960d721/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "associatedTo",
+                "targets": [
+                    ""
+                ]
+            }
+        ],
+        "tags": "/api/2.0/nodes/598c857d6f4101360960d721/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/598c857d6f4101360960d721/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/598c857d6f4101360960d71f/catalogs",
+        "ibms": [],
+        "id": "598c857d6f4101360960d71f",
+        "identifiers": [
+            "10.240.19.70:org-root/ls-Chassis1Server2"
+        ],
+        "name": "ls-Chassis1Server2",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/598c857e6f4101360960d723",
+                "service": "ucs-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/598c857d6f4101360960d71f/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "associatedTo",
+                "targets": [
+                    ""
+                ]
+            }
+        ],
+        "tags": "/api/2.0/nodes/598c857d6f4101360960d71f/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/598c857d6f4101360960d71f/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/598c85866f4101360960d725/catalogs",
+        "ibms": [],
+        "id": "598c85866f4101360960d725",
+        "identifiers": [
+            "10.240.19.70:sys/rack-unit-2"
+        ],
+        "name": "sys/rack-unit-2",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/598c85866f4101360960d727",
+                "service": "ucs-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/598c85866f4101360960d725/pollers",
+        "relations": [],
+        "tags": "/api/2.0/nodes/598c85866f4101360960d725/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/598c85866f4101360960d725/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/598c85866f4101360960d726/catalogs",
+        "ibms": [],
+        "id": "598c85866f4101360960d726",
+        "identifiers": [
+            "10.240.19.70:sys/rack-unit-1"
+        ],
+        "name": "sys/rack-unit-1",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/598c85866f4101360960d728",
+                "service": "ucs-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/598c85866f4101360960d726/pollers",
+        "relations": [],
+        "tags": "/api/2.0/nodes/598c85866f4101360960d726/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/598c85866f4101360960d726/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/598c85906f4101360960d72b/catalogs",
+        "ibms": [],
+        "id": "598c85906f4101360960d72b",
+        "identifiers": [
+            "10.240.19.70:sys/chassis-1/blade-2"
+        ],
+        "name": "sys/chassis-1/blade-2",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/598c85906f4101360960d72c",
+                "service": "ucs-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/598c85906f4101360960d72b/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "enclosedBy",
+                "targets": [
+                    "598c85906f4101360960d729"
+                ]
+            }
+        ],
+        "tags": "/api/2.0/nodes/598c85906f4101360960d72b/tags",
+        "type": "compute",
+        "workflows": "/api/2.0/nodes/598c85906f4101360960d72b/workflows"
+    },
+    {
+        "autoDiscover": false,
+        "catalogs": "/api/2.0/nodes/598c85906f4101360960d729/catalogs",
+        "ibms": [],
+        "id": "598c85906f4101360960d729",
+        "identifiers": [
+            "10.240.19.70:sys/chassis-1"
+        ],
+        "name": "sys/chassis-1",
+        "obms": [
+            {
+                "ref": "/api/2.0/obms/598c85906f4101360960d72a",
+                "service": "ucs-obm-service"
+            }
+        ],
+        "pollers": "/api/2.0/nodes/598c85906f4101360960d729/pollers",
+        "relations": [
+            {
+                "info": null,
+                "relationType": "encloses",
+                "targets": [
+                    "598c85906f4101360960d72b"
+                ]
+            }
+        ],
+        "tags": "/api/2.0/nodes/598c85906f4101360960d729/tags",
+        "type": "enclosure",
+        "workflows": "/api/2.0/nodes/598c85906f4101360960d729/workflows"
+    },
+    {
+        "autoDiscover": "false",
+        "catalogs": "/api/2.0/nodes/5914ceae064ee0b857dcff71/catalogs",
+        "id": "5914ceae064ee0b857dcff71",
+        "identifiers": [
+            "cc:16:7e:fa:66:ce"
+        ],
+        "name": "cc:16:7e:fa:66:ce",
+        "obms": [],
+        "pollers": "/api/2.0/nodes/5914ceae064ee0b857dcff71/pollers",
+        "relations": [],
+        "tags": "/api/2.0/nodes/5914ceae064ee0b857dcff71/tags",
+        "type": "switch"
+    }
+]

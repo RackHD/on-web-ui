@@ -1,9 +1,8 @@
 export const DeviceTypeMap = {
   'compute': 'Compute',
-  'storage': 'Storage Arrays',
-  'network': 'Network Switches',
-  'DD': 'Data Domain',
-  'HC/HCI': 'HC/HCI Systems'
+  'enclosure': 'Enclosure',
+  'switch': 'Switch',
+  'pdu': 'PDU',
 }
 
 export const DeviceStatusMap = {
