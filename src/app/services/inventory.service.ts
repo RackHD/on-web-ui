@@ -8,7 +8,7 @@ import {
   Device,
   DeviceType,
   SystemCapacity,
-  mockDeviceTypes,
+  DeviceTypes,
   mockDevices,
   mockDeviceStatus
 } from '../inventory/inventory.model';
@@ -21,7 +21,7 @@ export class InventoryService {
   constructor() {}
 
   getDeviceTypes(): Observable<string[]> {
-    return Observable.of(mockDeviceTypes).delay(500);
+    return Observable.of(DeviceTypes).delay(500);
   }
 
   getDeviceStatus(): Observable<string[]> {
@@ -48,24 +48,6 @@ export class InventoryService {
       .delay(500);
   }
 
-  getDeviceFromSerialNumber(sn: string){
-    return Observable.of(mockDevices)
-      .pipe(map((devices) => _.find(devices, (device) => device.serialNumber === sn)))
-      .delay(500);
-  }
-  getDeviceByRackID(rackID: string): Observable<Device[]>{
-    return Observable.of(mockDevices)
-      .pipe(
-        map((devices) => _.filter(devices, (device) =>  device.rack === rackID))
-      )
-      .delay(500);
-  }
-  getAllRacks(): Observable<any>{
-    let ret = _.countBy(mockDevices, 'rack'); // e.x:{'1':12,'2':14,'3':5};
-    return Observable.of(ret)
-      .delay(100);
-  }
-
   searchDevices(term: string){
     function contains(src: string): boolean{
       if(!src) {return false};
@@ -74,14 +56,11 @@ export class InventoryService {
     return Observable.of(
       _.filter(mockDevices, (device) => {
         return contains(device.name) ||
-          contains(DeviceTypeMap[device.type]) ||
-          contains(device.serialNumber) ||
-          contains(DeviceStatusMap[device.status]) ||
-          contains('rack'+device.rack) ||
-          contains(device.site) ||
+          contains(DeviceTypeMap[device.type])
+          /*
           contains(device.telemetryDate.toString()) ||
           contains(device.ip) ||
-          contains(''+device.provisioned)
+          contains(''+device.provisioned)*/
       })
     ).delay(500);
   }

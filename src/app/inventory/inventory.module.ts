@@ -8,10 +8,7 @@ import { InventoryRoutingModule } from './inventory-routing.module';
 import { InventoryListComponent } from './inventory-list.component';
 import { InventoryService } from '../services/inventory.service';
 
-import { DeviceDetailComponent } from './device-detail.component';
-import { RackViewComponent } from './rack-view.component';
-
-
+import { TreeModule } from 'angular-tree-component';
 
 @NgModule({
   imports: [
@@ -19,11 +16,10 @@ import { RackViewComponent } from './rack-view.component';
     CommonModule,
     FormsModule,
     ClarityModule.forChild(),
+    TreeModule,
    ],
   declarations: [
-    InventoryListComponent,
-    DeviceDetailComponent,
-    RackViewComponent
+    InventoryListComponent
    ],
   providers: [ InventoryService ]
 })
