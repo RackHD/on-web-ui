@@ -8,9 +8,9 @@ import { User } from '../models/index';
 import { UserService } from '../services/core/index';
 
 @Component({
-    selector: 'app-signup-form',
-    templateUrl: './signup-form.component.html',
-    styleUrls: ['./signup-form.component.css']
+    selector: 'app-setting-form',
+    templateUrl: './setting-form.component.html',
+    styleUrls: ['./setting-form.component.css']
 })
 
 
