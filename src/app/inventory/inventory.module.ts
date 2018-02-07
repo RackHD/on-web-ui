@@ -8,6 +8,7 @@ import { InventoryRoutingModule } from './inventory-routing.module';
 import { InventoryListComponent } from './inventory-list.component';
 import { InventoryService } from '../services/inventory.service';
 
+
 @NgModule({
   imports: [
     InventoryRoutingModule,
