@@ -12,16 +12,6 @@
           <span class="count-text">{{ type.displayName }}</span>
         </div>
       </div>
-      <div class="vl"></div>
-      <div class="row col-lg-5 col-md-5 col-sm-5 col-xs-5">
-        <div class="col-lg-4 count-summary"
-          *ngFor="let status of deviceStatus"
-          (click)="selectStatus(status)"
-          [class.selected]="selectedStatus==status.displayName">
-          <h2 class="count-number">{{ devicesStatusCountMatrix[status.identifier] || 0 }}</h2>
-          <span class="count-text {{status.identifier}}">{{ status.displayName }}</span>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -43,70 +33,38 @@
           </div>
         </div>
       </div>
-      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSingleSelected)]="selectedDevice" [clDgRowSelection]="true">
-          <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-          <clr-dg-column [clrDgSortBy]="nameComparator">Name</clr-dg-column>
+
+      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedDevices">
+          <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
           <clr-dg-column [clrDgSortBy]="typeComparator">Type
             <clr-dg-string-filter
               [(clrFilterValue)]="typeFilterValue"
-              [clrDgStringFilter]="typeFilter"></clr-dg-string-filter>
+              [clrDgStringFilter]="typeFilter">
+            </clr-dg-string-filter>
           </clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="provisionComparator">Provisioned</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="ipComparator">IP</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="serialNumberComparator">ServiceTag</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="statusComparator">Status
+          <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
+          <clr-dg-column [clrDgSortBy]="nameComparator">Name</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="identifiersComparator">Identifiers</clr-dg-column>
+          <clr-dg-column >OBM</clr-dg-column>
+          <clr-dg-column >IBM</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="skuComparator">SKU
             <clr-dg-string-filter
-              [(clrFilterValue)]="statusFilterValue"
-              [clrDgStringFilter]="statusFilter"></clr-dg-string-filter>
+              [(clrFilterValue)]="skuFilterValue"
+              [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
           </clr-dg-column>
-          <clr-dg-column>
-            Capacity
-            <clr-signpost>
-                <clr-signpost-content [clrPosition]="'top-middle'" *clrIfOpen>
-                    <p><span class="color-square cpu"></span> cpu</p>
-                    <p><span class="color-square networking"></span> networking</p>
-                    <p><span class="color-square harddisk"></span> disk</p>
-                </clr-signpost-content>
-            </clr-signpost>
-          </clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="rackComparator">Rack(click for rack view)</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="siteComparator">Site</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="telemetryDateComparator">TelemetryDate</clr-dg-column>
-          <clr-dg-row *clrDgItems="let device of allDevices" [clrDgItem]="device" (click)="goToDetail(device)">
-            <clr-dg-cell>{{device.name}}</clr-dg-cell>
-            <clr-dg-cell>
-              <clr-icon [attr.shape]="shapeMap[device.type]"></clr-icon>
-              {{deviceTypeMap[device.type] || device.type}}
-            </clr-dg-cell>
-            <clr-dg-cell>{{device.provisioned}}</clr-dg-cell>
-            <clr-dg-cell>{{device.ip}}</clr-dg-cell>
-            <clr-dg-cell>{{device.serialNumber}}</clr-dg-cell>
-            <clr-dg-cell>{{deviceStatusMap[device.status]}}</clr-dg-cell>
-            <clr-dg-cell>
-              <div class="row">
-                <div class="progress-block">
-                  <div class="progress-group" style="font-size: 2px">
-                      <div class="progress-static cpu" *ngIf="device.systemCapacity.cpu">
-                          <div class="progress-meter" [attr.data-value]="device.systemCapacity.cpu"></div>
-                      </div>
-                      <div class="progress-static networking" *ngIf="device.systemCapacity.networking">
-                          <div class="progress-meter" [attr.data-value]="device.systemCapacity.networking"></div>
-                      </div>
-                      <div class="progress-static harddisk" *ngIf="device.systemCapacity.harddisk">
-                          <div class="progress-meter" [attr.data-value]="device.systemCapacity.harddisk"></div>
-                      </div>
-                  </div>
-                </div>
-              </div>
-            </clr-dg-cell>
-            <clr-dg-cell>
-                  <a routerLink="rack/{{device.rack}}">
-                  <clr-icon shape="rack-server"></clr-icon>
-                  rack{{device.rack}}
-                  </a>
-            </clr-dg-cell>
-            <clr-dg-cell>{{device.site}}</clr-dg-cell>
-            <clr-dg-cell>{{device.telemetryDate | date:'yyyy-MM-dd HH:mm'}}</clr-dg-cell>
+          <clr-dg-column [clrDgSortBy]="discoveredTimeComparator">DiscoveredTime</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="autoDiscoverComparator">AutoDiscover</clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let device of allDevices" [clrDgItem]="device" >
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.id}}</clr-dg-cell>
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.type}}</clr-dg-cell>
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.name}}</clr-dg-cell>
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.identifiers}}</clr-dg-cell>
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.obms | json}}</clr-dg-cell>
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.ibms | json}}</clr-dg-cell>
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.sku}}</clr-dg-cell>
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.discoveredTime}}</clr-dg-cell>
+            <clr-dg-cell (click)="goToDetail(device)" >{{device.autoDiscover}}</clr-dg-cell>
           </clr-dg-row>
           <clr-dg-footer>
               <div class="row">
@@ -126,6 +84,16 @@
               </clr-dg-pagination>
           </clr-dg-footer>
       </clr-datagrid>
+      <clr-modal [(clrModalOpen)]= "isShowDetail" [clrModalSize]="'xl'">
+        <h3 class="modal-title">Details of this node</h3>
+        <div class="modal-body">
+          <pre>{{selectedDevice | json}}</pre>
+          <!--tree-root [nodes]="selectedDevice"></tree-root-->
+        </div>
+      </clr-modal>
+      <div class="selected">
+          Selected Nodes: <span *ngFor="let node of selectedDevices">{{node? node.id : null}}, </span>
+      </div>
     </div>
   </div>
 </div>

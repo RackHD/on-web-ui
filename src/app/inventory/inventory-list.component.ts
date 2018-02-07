@@ -35,8 +35,13 @@ export class InventoryListComponent implements OnInit {
   deviceStatusMap = DeviceStatusMap;
 
   selectedType: string;
+  selectedSku : string;
   selectedStatus: string;
-  selectedDevice: Device;
+  selectedDevice: Device [];
+
+  selectedDevices: Device [];
+
+  isShowDetail: boolean;
 
   // data grid helper
   searchTerms = new Subject<string>();
@@ -49,25 +54,21 @@ export class InventoryListComponent implements OnInit {
 
 
   public nameComparator = new AlphabeticalComparator('name');
+  public idComparator = new AlphabeticalComparator('id');
   public typeComparator = new AlphabeticalComparator('type');
-  public provisionComparator = new AlphabeticalComparator('provisioned')
-  public ipComparator = new IpComparator('ip')
-  public serialNumberComparator = new AlphabeticalComparator('serialNumber');
-  public statusComparator = new AlphabeticalComparator('status');
-  public rackComparator = new AlphabeticalComparator('rack');
-  public siteComparator = new AlphabeticalComparator('site');
-  public telemetryDateComparator = new DateComparator('telemetryDate');
-  public typeFilter = new GridStringFilter('type', this.deviceTypeMap);
-  public statusFilter = new GridStringFilter('status', this.deviceStatusMap);
+  public skuComparator = new AlphabeticalComparator('sku');
+  public autoDiscoverComparator = new AlphabeticalComparator('autoDiscover');
+  public identifiersComparator = new AlphabeticalComparator('identifiers');
+  public discoveredTimeComparator = new DateComparator('discoveredTime');
+  public typeFilter = new ObjectFilterByKey('type');
+  public skuFilter = new ObjectFilterByKey('sku');
   typeFilterValue: string = this.selectedType;
-  statusFilterValue: string = this.selectedStatus;
+  skuFilterValue: string = this.selectedSku;
 
   shapeMap = {
     'compute': 'computer',
     'storage': 'data-cluster',
-    'network': 'network-switch',
-    'DD': 'storage',
-    'HC/HCI': 'alarm-clock'
+    'network': 'network-switch'
   }
 
   constructor(
@@ -93,8 +94,7 @@ export class InventoryListComponent implements OnInit {
             }
           },[]
         )
-        this.deviceTypes.push({identifier: 'other', displayName: 'Other'});
-
+        //this.deviceTypes.push({identifier: 'other', displayName: 'Other'}); //Krein: What is this for?
         this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
           let type = params.get('type');
           if(type){
@@ -105,26 +105,10 @@ export class InventoryListComponent implements OnInit {
           }
         })
 
-        }
+      }
     );
 
-    // get device status list
-    this.inventoryService.getDeviceStatus().subscribe(
-      data => this.deviceStatus = _.transform(
-        data,
-        function(result, item){
-          let dt = new DeviceStatus();
-          if(_.has(DeviceStatusMap, item)){
-            dt.identifier = item;
-            dt.displayName = DeviceStatusMap[item];
-            result.push(dt);
-          }
-        },[]
-      )
-    )
-
-    // set defult filter vaule
-    // this.selectType(this.deviceTypes[0]);
+    this.selectedDevices = [];
 
     // get all devices directly
     // or concat all devices of different types
@@ -161,18 +145,20 @@ export class InventoryListComponent implements OnInit {
       if (!_.has(DeviceTypeMap, type)) { type = 'other'; }
       result[type] ? result[type] += 1 : result[type] = 1;
     }, []);
-
+    /*
     this.devicesStatusCountMatrix = _.transform(this.allDevices, (result, item) => {
       let status = item.status;
       result[status] ? result[status] += 1 : result[status] = 1;
     }, []);
+     */
   }
 
   // main data resourse
   getAllDevices() {
     return this.inventoryService.getAllDevices().toPromise().then(
       data => {
-        this.allDevices = data
+        this.allDevices = data;
+        console.log(this.allDevices);
         this.dgDataLoading = false;
         this.afterGetDevices();
       }
@@ -194,7 +180,7 @@ export class InventoryListComponent implements OnInit {
     this.selectedStatus = '';
     if(this.selectedType === type.displayName){
       this.selectedType = '';
-    } else{
+    } else {
       //two types of filter.
       // type 1
       this.selectedType = type.displayName;
@@ -202,10 +188,11 @@ export class InventoryListComponent implements OnInit {
       // this.devices = this.devicesDataMatrix[type.identifier];
     }
     this.typeFilterValue = this.selectedType;
-    this.statusFilterValue = this.selectedStatus;
+    //this.statusFilterValue = this.selectedStatus;
     this.changeDetectorRef.detectChanges();
   }
-
+ 
+  /*
   selectStatus(status: DeviceStatus){
     this.selectedType = '';
     if(this.selectedStatus === status.displayName){
@@ -218,14 +205,16 @@ export class InventoryListComponent implements OnInit {
       // this.devices = this.devicesDataMatrix[type.identifier];
     }
     this.typeFilterValue = this.selectedType;
-    this.statusFilterValue = this.selectedStatus;
+    //this.statusFilterValue = this.selectedStatus;
     this.changeDetectorRef.detectChanges();
-  }
+  } 
+   */
 
   goToDetail(device: Device){
-    this.selectedDevice = device;
+    this.selectedDevice = [device];
+    this.isShowDetail = true;
     console.log(this.activatedRoute)
-    this.router.navigate(['device', device.serialNumber], {relativeTo: this.activatedRoute});
+    //this.router.navigate(['device', device.id], {relativeTo: this.activatedRoute});
   }
 
 }
@@ -241,21 +230,6 @@ class AlphabeticalComparator implements Comparator<Device> {
     }
 }
 
-class IpComparator implements Comparator<Device>{
-    sortBy: string;
-    constructor(sortBy: string){
-      this.sortBy = sortBy;
-    }
-    compare(a: Device, b: Device) {
-      let ipA = _.split(a.ip, '.');
-      let ipB = _.split(b.ip, '.');
-      for (let i = 0; i < 4; i++) {
-        if(ipA[i] !== ipB[i]){
-          return parseInt(ipA[i]) - parseInt(ipB[i]);
-        }
-      }
-    }
-}
 
 class DateComparator implements Comparator<Device> {
     sortBy: string;
@@ -267,24 +241,28 @@ class DateComparator implements Comparator<Device> {
     }
 }
 
-class GridStringFilter implements StringFilter<Device> {
-    filterBy: string;
-    valueMap: any;
-    constructor(filterBy: string, valueMap: any){
-      this.filterBy = filterBy;
-      this.valueMap = valueMap;
+
+///////////////////////////////////////////////////////////////////
+//
+// Filter for specific field of a Obj
+//
+// Usage:  if you want to filter Event by ID, then new ObjectFilterByKey<Event>('ID').
+///////////////////////////////////////////////////////////////////
+export class ObjectFilterByKey <T> implements StringFilter<T> {
+    private _field:string;
+    constructor( field: string ){
+        this._field = field;
     }
-    accepts(device: Device, search: string):boolean {
-        if (!this.valueMap){
-          return "" + device[this.filterBy] == search
-              || device[this.filterBy].toLowerCase().indexOf(search) >= 0;
+    accepts(obj: T, searchKey: string ):boolean {
+        if( !obj || ! obj[this._field] ){
+            return false;
         }
-        if(_.hasIn(this.valueMap, device[this.filterBy])){
-          return "" + this.valueMap[device[this.filterBy]] == search
-              || this.valueMap[device[this.filterBy]].toLowerCase().indexOf(search) >= 0;
+        if( typeof(obj[this._field]) !== 'string' )
+        {
+            console.error(`Error,Only accept string in ObjectFilterByKey for: ${obj.constructor.name}[${this._field}].`);
+            return false;
         }
-        if ( search === 'other'){
-          return true;
-        }
+        return obj[this._field].toLowerCase().indexOf(searchKey) >= 0;
     }
 }
+

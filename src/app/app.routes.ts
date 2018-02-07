@@ -17,7 +17,7 @@ export const ROUTES: Routes = [
    */
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', loadChildren: 'app/home/home.module#HomeModule', canLoad: [AuthGuard]},
-  { path: 'signup', loadChildren: 'app/signup/signup.module#SignupModule', canLoad: [UnAuthGuard] },
+  //{ path: 'signup', loadChildren: 'app/signup/signup.module#SignupModule', canLoad: [UnAuthGuard] },
   { path: 'login', loadChildren: 'app/login/login.module#LoginModule', canLoad: [UnAuthGuard] }, //without parameter
   { path: 'login/:user', loadChildren: 'app/login/login.module#LoginModule', canLoad: [UnAuthGuard] }, // with parameter
   { path: 'profile', loadChildren: 'app/user-profile/user-profile.module#UserProfileModule', canLoad: [AuthGuard] },
