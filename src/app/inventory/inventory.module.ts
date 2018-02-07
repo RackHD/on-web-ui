@@ -8,7 +8,6 @@ import { InventoryRoutingModule } from './inventory-routing.module';
 import { InventoryListComponent } from './inventory-list.component';
 import { InventoryService } from '../services/inventory.service';
 
-import { TreeModule } from 'angular-tree-component';
 
 @NgModule({
   imports: [
@@ -16,7 +15,6 @@ import { TreeModule } from 'angular-tree-component';
     CommonModule,
     FormsModule,
     ClarityModule.forChild(),
-    TreeModule,
    ],
   declarations: [
     InventoryListComponent
