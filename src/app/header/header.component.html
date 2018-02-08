@@ -1,35 +1,3 @@
-<!--<header class="header-6 app-header">-->
-
-<!--<div class="branding">-->
-<!--<a routerLink="/home">-->
-<!--<img src="../../assets/logo.png" alt="/home">-->
-<!--</a>-->
-<!--</div>-->
-
-<!--<div class="header-nav">-->
-<!--<form>-->
-<!--<div class="form-group">-->
-<!--<div class="toggle-switch" style="float:middle">-->
-<!--<input type="checkbox" (click)="onSwitchMode()" id="demoModeSwitcher" name="demoModeToggle"-->
-<!--[checked]="demoMode">-->
-<!--<label for="demoModeSwitcher" [style.color]="demoMode?'lightgreen':'#656363' ">Demo Mode </label>-->
-<!--</div>-->
-<!--</div>-->
-<!--</form>-->
-<!--</div>-->
-
-<!--<div class="header-actions">-->
-<!--<a routerLink="profile" class="nav-link nav-icon" *ngIf="authService.isLogined">-->
-<!--<clr-icon shape="user"></clr-icon>-->
-<!--</a>-->
-<!--<a routerLink="profile" class="nav-link nav-icon user-name" *ngIf="authService.isLogined">-->
-<!--{{ authService.loginUser}}-->
-<!--</a>-->
-<!--<a *ngIf="authService.isLogined" (click)="logout()" class="nav-link nav-icon logout">-->
-<!--<clr-icon shape="logout"></clr-icon>-->
-<!--</a>-->
-<!--</div>-->
-<!--</header>-->
 <header class="header-6">
   <div class="branding">
     <a class="nav-link">
@@ -38,12 +6,10 @@
     </a>
   </div>
   <div class="header-nav">
-    <a href="/home" class="nav-link nav-icon">
-      <clr-icon shape="cloud"></clr-icon>
-    </a>
-    <a href="" class="nav-link nav-icon">
-      <clr-icon shape="folder"></clr-icon>
-    </a>
+    <a href="/managementCenter" class="active nav-link"><span class="nav-text">Management Center</span></a>
+    <a href="/operationsCenter" class="active nav-link"><span class="nav-text">Operations Center</span></a>
+    <a href="/workflowEditor" class="active nav-link"><span class="nav-text">Workflow Editor</span></a>
+    <a href="/solutionCenter" class="active nav-link"><span class="nav-text">Solution Center</span></a>
   </div>
   <div class="header-actions">
     <clr-dropdown>
@@ -52,24 +18,24 @@
         <clr-icon shape="caret down"></clr-icon>
       </button>
       <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-        <a href="..." clrDropdownItem>About</a>
+        <a (click)="showSettingModal = true" clrDropdownItem>Setting</a>
         <a href="..." clrDropdownItem>Preferences</a>
         <a href="..." clrDropdownItem>Log out</a>
       </clr-dropdown-menu>
     </clr-dropdown>
   </div>
 </header>
-<!--Modal to warn the mode change -->
-<clr-modal [(clrModalOpen)]="modeSwitchModalOpened" [clrModalClosable]="false">
-  <h3 class="modal-title">{{demoMode?"Demo Mode":"Production Mode"}}</h3>
+
+<!--setting-modal-->
+<clr-modal [(clrModalOpen)]="showSettingModal">
+  <h3 class="modal-title">I have a nice title</h3>
   <div class="modal-body">
-    <p>Switch to {{demoMode?"Demo Mode":"Production Mode"}}.</p>
-    <br>
-    <p>The customized setting will get lost and set to default.</p>
+    <p>But not much to say...</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="onModalClosed()">
-      ok
-    </button>
+    <button type="button" class="btn btn-outline" (click)="showModal = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="showModal = false">Ok</button>
   </div>
 </clr-modal>
+
+

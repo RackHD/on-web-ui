@@ -60,7 +60,6 @@ import {
   IconService,
   AuthService
 } from './services/core/index';
-
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
