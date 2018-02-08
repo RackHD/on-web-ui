@@ -1,22 +1,21 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { InventoryService } from '../services/inventory.service';
-import { Device, DeviceStatus, DeviceType } from './inventory.model';
+import { InventoryService } from '../../services/inventory.service';
+import { Device, DeviceStatus, DeviceType } from '../../inventory/inventory.model';
 
-import { DeviceStatusMap, DeviceTypeMap } from '../../config/inventory.config';
+import { DeviceStatusMap, DeviceTypeMap } from '../../../config/inventory.config';
 import { Comparator, StringFilter } from "@clr/angular";
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'app-inventory-list',
-  templateUrl: './inventory-list.component.html',
-  styleUrls: ['./inventory-list.component.scss'],
+  selector: 'app-nodes',
+  templateUrl: './nodes.component.html',
+  styleUrls: ['./nodes.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-
-export class InventoryListComponent implements OnInit {
+export class NodesComponent implements OnInit {
   deviceTypes: DeviceType[];
   deviceStatus: DeviceStatus[];
   allDevices: Device[] = [];
@@ -265,4 +264,3 @@ export class ObjectFilterByKey<T> implements StringFilter<T> {
     return obj[this._field].toLowerCase().indexOf(searchKey) >= 0;
   }
 }
-

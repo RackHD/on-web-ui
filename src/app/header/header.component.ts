@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/core/index';
-import { Router } from '@angular/router'
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
-import { EnvironmentService } from '../services/environment.service'
+import { EnvironmentService } from '../services/environment.service';
 import { Location } from '@angular/common';
-
 
 @Component({
   selector: 'app-header',
@@ -14,6 +13,7 @@ import { Location } from '@angular/common';
 })
 
 export class HeaderComponent {
+  showSettingModal = false;
   demoMode:boolean;
   modeSwitchModalOpened = false;
   constructor(
@@ -21,7 +21,7 @@ export class HeaderComponent {
     public authService: AuthService,
     private location: Location
   ){
-      this.demoMode = false; 
+      this.demoMode = false;
   }
 
   logout(){

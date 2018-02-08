@@ -108,6 +108,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-optimizer": "^0.0.32",
+    "@angular/cli": "^1.6.7",
     "@angular/compiler-cli": "~5.0.1",
     "@compodoc/compodoc": "^1.0.0-beta.15",
     "@ngtools/webpack": "^1.8.0",
