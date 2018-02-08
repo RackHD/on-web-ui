@@ -1,0 +1,100 @@
+//.app-inventory-list {
+//  .count-summary-bar {
+//    text-align: center;
+//    margin-top: 24px;
+//
+//    .count-summary {
+//      padding-bottom: 6px;
+//      cursor: pointer;
+//      &:hover {
+//        border-bottom: solid 1px lightblue;
+//      }
+//      &.selected {
+//        box-shadow: 5px 5px 20px 0px rgb(107, 193, 227);
+//      }
+//      .count-text {
+//        color: #78838e;
+//        &.ok {
+//          color: green;
+//        }
+//        &.warning {
+//          color: orange;
+//        }
+//        &.error {
+//          color: red;
+//        }
+//      }
+//      .count-number {
+//        margin: 0px;
+//        color: #42a5f5;
+//      }
+//    }
+//  }
+//
+//  .vl {
+//    border-left: 1px solid lightgrey;
+//  }
+//
+//  .grid-header {
+//    margin-bottom: -24px;
+//    .grid-toolbar {
+//      padding-top: 18px;
+//      .search {
+//        float: right;
+//        margin-top: 8px;
+//      }
+//      .refresh {
+//        float: right;
+//      }
+//    }
+//  }
+//
+//  .datagrid {
+//    .datagrid-row {
+//      cursor: pointer;
+//    }
+//  }
+//
+//  .progress-static {
+//    &.cpu .progress-meter::before {
+//      background-color: #b96b5c;
+//    }
+//    &.harddisk .progress-meter::before {
+//      background-color: #60b515;
+//    }
+//  }
+//
+//  .signpost {
+//    position: static;
+//    display: inline-block;
+//    p {
+//      margin-top: 0px;
+//    }
+//    .signpost-action {
+//      min-width: 1rem;
+//      margin: 0;
+//      padding: 0;
+//      outline: none;
+//      line-height: 0px;
+//      height: 12px;;
+//    }
+//  }
+//
+//  .color-square {
+//    display: inline-block;
+//    vertical-align: text-bottom;
+//    height: 14px;
+//    width: 14px;
+//    border: 1px solid black;
+//    border-radius: 4px;
+//    &.cpu {
+//      background-color: #b96b5c
+//    }
+//    &.networking {
+//      background-color: #007DB8
+//    }
+//    &.harddisk {
+//      background-color: #60b515
+//    }
+//  }
+//}
