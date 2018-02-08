@@ -1,3 +1,48 @@
-<p>
-  management-center works!
-</p>
+<div class="content-container" style="height: 100vh;">
+  <!--Secondary nav bar-->
+  <clr-vertical-nav style="background: #ddd" [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsed">
+    <a clrVerticalNavLink routerLink="./nodes" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="rack-server"></clr-icon>
+      Nodes
+    </a>
+    <a clrVerticalNavLink routerLink="./pollers" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="nvme"></clr-icon>
+      Pollers
+    </a>
+    <a clrVerticalNavLink routerLink="./workflows" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="organization"></clr-icon>
+      Workflows
+    </a>
+    <a clrVerticalNavLink routerLink="./catalogs" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="view-list"></clr-icon>
+      Catalogs
+    </a>
+    <a clrVerticalNavLink routerLink="./skuservices" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="certificate"></clr-icon>
+      SKUs
+    </a>
+    <a clrVerticalNavLink routerLink="./obmservices" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="bug"></clr-icon>
+      OBM Services
+    </a>
+    <a clrVerticalNavLink routerLink="./files" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="file"></clr-icon>
+      Files
+    </a>
+    <a clrVerticalNavLink routerLink="./profiles" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="vmw-app"></clr-icon>
+      Profiles
+    </a>
+    <a clrVerticalNavLink routerLink="./templates" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="image"></clr-icon>
+      Templates
+    </a>
+    <a clrVerticalNavLink routerLink="./config" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="file-settings"></clr-icon>
+      Config
+    </a>
+  </clr-vertical-nav>
+  <div class="content-area">
+    <router-outlet></router-outlet>
+  </div>
+</div>

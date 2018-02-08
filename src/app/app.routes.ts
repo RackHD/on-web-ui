@@ -3,25 +3,20 @@ import { Routes } from '@angular/router';
 import { DataResolver } from './app.resolver';
 import { AuthGuard } from './services/core/index';
 
-
 import { NoContentComponent } from './no-content/no-content.component';
-import { OperationsCenterModule } from './operations-center/operations-center.module';
 
-
+/**
+ * The order or route is important.
+ * Never put a Guard with canActivateChild to path '', then all the loadChildren
+ * route after '' will be denied. Cause angular will regard all routes as '' children
+ */
 export const ROUTES: Routes = [
-  /**
-   * The order or route is important.
-   * Never put a Guard with canActivateChild to path '', then all the loadChildren
-   * route after '' will be denied. Cause angular will regard all routes as '' children
-   */
-
-
   /**
    * @description Four first-level routings
    * @date 2018-02-07 18:52:36
-   * @author flower
+   * @author xiaoyu.chu@emc.com
    */
-  {path: '', redirectTo: '/home', pathMatch: 'full'},
+  {path: '', redirectTo: '/managementCenter', pathMatch: 'full'},
   {
     path: 'managementCenter',
     loadChildren: 'app/management-center/management-center.module#ManagementCenterModule',
@@ -44,8 +39,11 @@ export const ROUTES: Routes = [
   },
   // 404 page, page with ** can not be lazily loaded.
   {path: '**', component: NoContentComponent},
-  /* ==============分割线==============*/
-  //{ path: 'signup', loadChildren: 'app/signup/signup.module#SignupModule', canLoad: [UnAuthGuard] },
+
+  /*
+   * earlier routes
+   */
+  // { path: 'signup', loadChildren: 'app/signup/signup.module#SignupModule', canLoad: [UnAuthGuard] },
   // {path: 'home', loadChildren: 'app/home/home.module#HomeModule', canLoad: [AuthGuard]},
   // {path: 'login', loadChildren: 'app/login/login.module#LoginModule', canLoad: [UnAuthGuard]}, //without parameter
   // {path: 'login/:user', loadChildren: 'app/login/login.module#LoginModule', canLoad: [UnAuthGuard]}, // with parameter

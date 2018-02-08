@@ -13,6 +13,7 @@ import { Location } from '@angular/common';
 })
 
 export class HeaderComponent {
+  showSettingModal = false;
   demoMode:boolean;
   modeSwitchModalOpened = false;
   constructor(
