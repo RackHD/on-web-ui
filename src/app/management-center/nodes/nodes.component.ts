@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-nodes',
   templateUrl: './nodes.component.html',
-  styleUrls: ['./nodes.component.css'],
+  styleUrls: ['./nodes.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class NodesComponent implements OnInit {
