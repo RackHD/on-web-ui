@@ -1,3 +1,57 @@
+.app-inventory-list {
+  margin-bottom: 50px;
+  height: auto;
+  .selected-infor {
+    display: inline-block;
+    margin-bottom: 50px;
+  }
+  .selected-nodes {
+    margin-top: 12px;
+    display: flex;
+    strong {
+      flex: 1;
+    }
+    span {
+      flex: 5;
+      em {
+        color: #555;
+        border-bottom: solid 1px lightblue;
+      }
+    }
+  }
+  .count-summary {
+    padding-bottom: 6px;
+    cursor: pointer;
+    text-align: center;
+    h2{
+      margin-top: 0;
+    }
+    &:hover {
+      border-bottom: solid 1px lightblue;
+    }
+    &.selected {
+      box-shadow: 5px 5px 20px 0px rgb(107, 193, 227);
+    }
+    .count-text {
+      color: #78838e;
+      &.ok {
+        color: green;
+      }
+      &.warning {
+        color: orange;
+      }
+      &.error {
+        color: red;
+      }
+    }
+    .count-number {
+      margin: 0px;
+      color: #42a5f5;
+    }
+  }
+
+}
+
 //.app-inventory-list {
 //  .count-summary-bar {
 //    text-align: center;

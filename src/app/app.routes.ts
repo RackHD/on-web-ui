@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 
 import { DataResolver } from './app.resolver';
-import { AuthGuard } from './services/core/index';
+// import { AuthGuard } from './services/core/index';
 
-import { NoContentComponent } from './no-content/no-content.component';
+// import { NoContentComponent } from './no-content/no-content.component';
 
 /**
  * The order or route is important.
@@ -16,29 +16,29 @@ export const ROUTES: Routes = [
    * @date 2018-02-07 18:52:36
    * @author xiaoyu.chu@emc.com
    */
-  {path: '', redirectTo: '/managementCenter', pathMatch: 'full'},
+  {path: '', redirectTo: '/managementCenter/nodes', pathMatch: 'full'},
   {
     path: 'managementCenter',
     loadChildren: 'app/management-center/management-center.module#ManagementCenterModule',
-    canLoad: [AuthGuard]
+    // canLoad: [AuthGuard]
   },
   {
     path: 'operationsCenter',
     loadChildren: 'app/operations-center/operations-center.module#OperationsCenterModule',
-    canLoad: [AuthGuard]
+    // canLoad: [AuthGuard]
   },
   {
     path: 'solutionCenter',
     loadChildren: 'app/solution-center/solution-center.module#SolutionCenterModule',
-    canLoad: [AuthGuard]
+    // canLoad: [AuthGuard]
   },
   {
     path: 'workflowEditor',
     loadChildren: 'app/workflow-editor/workflow-editor.module#WorkflowEditorModule',
-    canLoad: [AuthGuard]
+    // canLoad: [AuthGuard]
   },
   // 404 page, page with ** can not be lazily loaded.
-  {path: '**', component: NoContentComponent},
+  {path: '**', redirectTo: '/managementCenter/nodes', pathMatch: 'full'},
 
   /*
    * earlier routes
