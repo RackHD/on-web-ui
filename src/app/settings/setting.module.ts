@@ -2,17 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
-import { SignupRoutingModule } from './signup-routing.module';
-import { SignupFormComponent } from './signup-form.component';
+import { SettingComponent } from './setting-form.component';
 
 @NgModule({
     imports: [
         CommonModule,
         ClarityModule.forChild(),
-        SignupRoutingModule,
         FormsModule,
         ReactiveFormsModule
     ],
-    declarations: [SignupFormComponent]
+    declarations: [SettingComponent], //Krein: why we must desclare
+    exports: [SettingComponent] //Krein: why we must exports, use import in app.module.ts doesn't work.
 })
-export class SignupModule { }
+export class SettingModule { }

@@ -12,30 +12,16 @@
     <a href="/solutionCenter" [ngClass]="{'active':selectedTab == '/solutionCenter'}" (click)="selectedTab = '/solutionCenter'" class=" nav-link"><span class="nav-text">Solution Center</span></a>
   </div>
   <div class="header-actions">
-    <clr-dropdown>
-      <button class="nav-icon" clrDropdownTrigger>
-        <clr-icon shape="cog"></clr-icon>
-        <clr-icon shape="caret down"></clr-icon>
-      </button>
-      <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-        <a (click)="showSettingModal = true" clrDropdownItem>Setting</a>
-        <a href="..." clrDropdownItem>Preferences</a>
-        <a href="..." clrDropdownItem>Log out</a>
-      </clr-dropdown-menu>
-    </clr-dropdown>
+    <!--Krein: style is added for hove display-->
+    <div class="active nav-link nav-icon" (click)="openSetting=true" style="cursor:pointer" >
+      <clr-icon shape="cog"></clr-icon>
+    </div>
   </div>
 </header>
-
-<!--setting-modal-->
-<clr-modal [(clrModalOpen)]="showSettingModal">
-  <h3 class="modal-title">I have a nice title</h3>
+<clr-modal [(clrModalOpen)]="openSetting">
+  <h3 class="modal-title">RackHD Configurations</h3>
   <div class="modal-body">
-    <p>But not much to say...</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="showModal = false">Cancel</button>
-    <button type="button" class="btn btn-primary" (click)="showModal = false">Ok</button>
+    <!--Krein: app-setting-form can't show button if directly use dropdown, Why -->
+    <app-setting-form></app-setting-form>
   </div>
 </clr-modal>
-
-

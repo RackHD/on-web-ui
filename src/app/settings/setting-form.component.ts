@@ -1,86 +1,86 @@
 import { Component, OnInit } from '@angular/core';
-import { Router   } from '@angular/router';
 import { FormsModule, ReactiveFormsModule ,
-         FormBuilder, FormGroup,FormControl, Validators }   from '@angular/forms'; 
+  FormBuilder, FormGroup,FormControl, Validators }   from '@angular/forms';
 import { EmailValidator } from '@angular/forms';
 
-import { User } from '../models/index';
-import { UserService } from '../services/core/index';
+import { rackhdConfig, apiPattern, addrPattern } from '../models/index';
+
+import { ClarityModule } from '@clr/angular';
 
 @Component({
-    selector: 'app-setting-form',
-    templateUrl: './setting-form.component.html',
-    styleUrls: ['./setting-form.component.css']
+  selector: 'app-setting-form',
+  templateUrl: './setting-form.component.html',
+  styleUrls: ['./setting-form.component.scss']
 })
 
+export class SettingComponent {
+  submitted = false;
+  settingClicked = false;
 
-export class SignupFormComponent implements OnInit {
+  settingFormGroup = new FormGroup({
+    rackhdNorthboundApi: new FormControl('', Validators.pattern(apiPattern)),
+    rackhdWsUrl: new FormControl('', Validators.pattern(addrPattern)),
+    rackhdElasticApi: new FormControl('', Validators.pattern(addrPattern)),
+    rackhdSslEnabled: new FormControl(''),
+    rackhdAuthEnabled: new FormControl(''),
+    rackhdPassword: new FormControl({value: '', disabled: this.enableAuth}),//Krein: Suggestion by browser
+    rackhdUsername: new FormControl({value: '', disabled: this.enableAuth}),
+    rackhdAuthToken: new FormControl({value: '', disabled: this.enableAuth}),
+  });
 
-    signupForm: FormGroup;
-    submitted: boolean = false;
-    redirectElaspedTime : number = 0;
-    redirectTotalTime: number = 5; // wait 5000 ms before redirect to other page
+  constructor () {};
 
-    intervalSet:any;
-    timeoutSet:any;
+  onSubmit() {
+    this.settingFormGroup.reset();
+    this.submitted = false;
+  }
 
-    isUserNameOccupied():boolean{
-        return ( this.userService.getUserByName(this.signupForm.value.username) != null );
-    }
+  setDefaultSettings() {
+    this.settingFormGroup.reset();
+  }
 
+  getConfigValue(key) {
+    return window.localStorage.getItem(key) || rackhdConfig[key];
+  }
 
-    /* Model Driven Form */
-    get usernameFC() { return this.signupForm.get('username'); }
-    get passwordFC() { return this.signupForm.get('password'); }
-    get emailFC()    { return this.signupForm.get('email'); }
+  setConfigValue(key, value) {
+    window.localStorage.setItem(key, (rackhdConfig[key] = value));
+    return value;
+  }
 
-    createForm(){
-        this.signupForm = this.formBuilder.group({
-            'username': new FormControl("",
-                                         [ Validators.required,
-                                           Validators.minLength(3)    ]),   
-            'password': new FormControl("",
-                                         [ Validators.required,
-                                           Validators.minLength(4)    ]),   
-            'email': new FormControl("", [ Validators.required    ]), 
-        });
+  get elasticsearchAPI() { return this.getConfigValue('elasticSearchUrl'); }
+  set elasticsearchAPI(value) { this.setConfigValue('elasticSearchUrl', value); }
 
-    }
+  get enableAuth() { return this.getConfigValue('authEnabled'); }
+  set enableAuth(value) { this.setConfigValue('authEnabled', !!value);}
 
-    submitForm() {
-        this.submitted = true;
-        //create a new User by UserService
-        let newUser = new User();
-        const formModel = this.signupForm.value;
-        newUser.username = formModel.username;
-        newUser.password = formModel.password;
-        newUser.email    = formModel.email;
-        this.userService.createUser(newUser);
+  get enableSSL() { return this.getConfigValue('connSecured'); }
+  set enableSSL(value) { this.setConfigValue('connSecured', !!value); }
 
-        this.intervalSet = setInterval( ()=>{ this.redirectElaspedTime += 1; }, 1000);
-        this.timeoutSet  = setTimeout((router: Router) => { this.redirectToLoginPage()}, this.redirectTotalTime*1000);
-    }
+  get rackhdWSS() { return this.getConfigValue('websocketUrl'); }
+  set rackhdWSS(value) { this.setConfigValue('websocketUrl', value); }
 
-    constructor(
-        private userService: UserService,
-        private router: Router,
-        private formBuilder: FormBuilder
+  get rackhdAPI() { return this.getConfigValue('northboundApi'); }
+  set rackhdAPI(value) { this.setConfigValue('northboundApi', value); }
 
-    ){
-        this.createForm();
-    }
+  get rackhdAuthToken() { return this.getConfigValue('autoToken'); }
+  set rackhdAuthToken(value) { this.setConfigValue('autoToken', value); }
 
-    ngOnDestroy() {
-        clearTimeout(this.timeoutSet);
-        clearInterval(this.intervalSet);
-    }
+  formClassInvalid (value) {
+    return this.settingFormGroup.get(value).invalid
+      && (this.settingFormGroup.get(value).dirty
+        || this.settingFormGroup.get(value).touched);
+  }
 
-    ngOnInit() {
-        this.submitted = false;
-    }
+  updateSettings() {
+    this.settingFormGroup.reset();
+    this.elasticsearchAPI = this.settingFormGroup.get('rackhdElasticApi').value;
+    this.enableAuth = this.settingFormGroup.get('rackhdAuthEnabled').value;
+    this.enableSSL = this.settingFormGroup.get('rackhdSslEnabled').value;
+    this.rackhdWSS = this.settingFormGroup.get('rackhdWsUrl').value;
+    this.rackhdAPI = this.settingFormGroup.get('rackhdNorthBoundApi').value;
+    this.rackhdAuthToken = this.settingFormGroup.get('rackhdAuthToken').value;
+    this.submitted = false;
+  }
 
-    redirectToLoginPage(){
-        this.router.navigate(['login/' + this.signupForm.value.username ]);
-    }
 }
-

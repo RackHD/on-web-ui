@@ -60,6 +60,9 @@ import {
   IconService,
   AuthService
 } from './services/core/index';
+
+import { SettingModule } from './settings/setting.module';
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -68,7 +71,7 @@ import {
   declarations: [
     AppComponent,
     LoginExpiredComponent,
-    HeaderComponent
+    HeaderComponent,
   ],
   /**
    * Import Angular's modules.
@@ -84,6 +87,7 @@ import {
     SharedServicesModule,
     // Feature module
     NoContentModule,
+    SettingModule,
     /**
      * This section will import the `DevModuleModule` only in certain build types.
      * When the module is not imported it will get tree shaked.
