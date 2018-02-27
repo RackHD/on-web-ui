@@ -26,6 +26,5 @@ export const rackhdConfig = new RackhdSetting({
   connSecured: false
 });
 
-export const apiPattern = '^(\d{1,3}\.){3}\d{1,3}:\d{1,5}/api/(2.0|current)$';
-//export const addrPattern = '^(\d{1,3}\.){3}\d{1,3}:\d{1,5}$';
-export const addrPattern = '^\w*$';
+export const apiPattern = '^(\\d{1,3}\\.){3}\\d{1,3}\\:\\d{1,5}\\/api\\/(2\\.0|current)$';
+export const addrPattern = '^(\\d{1,3}\\.){3}\\d{1,3}\\:\\d{1,5}$';

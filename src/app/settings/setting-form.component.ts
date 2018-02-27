@@ -13,26 +13,36 @@ import { ClarityModule } from '@clr/angular';
   styleUrls: ['./setting-form.component.scss']
 })
 
-export class SettingComponent {
-  submitted = false;
-  settingClicked = false;
+export class SettingComponent implements OnInit{
+  submitted : boolean;
+  rackhdAuthEnabled : boolean;
+  rackhdSslEnabled : boolean;
+  settingFormGroup: any;
 
-  settingFormGroup = new FormGroup({
-    rackhdNorthboundApi: new FormControl('', Validators.pattern(apiPattern)),
-    rackhdWsUrl: new FormControl('', Validators.pattern(addrPattern)),
-    rackhdElasticApi: new FormControl('', Validators.pattern(addrPattern)),
-    rackhdSslEnabled: new FormControl(''),
-    rackhdAuthEnabled: new FormControl(''),
-    rackhdPassword: new FormControl({value: '', disabled: this.enableAuth}),//Krein: Suggestion by browser
-    rackhdUsername: new FormControl({value: '', disabled: this.enableAuth}),
-    rackhdAuthToken: new FormControl({value: '', disabled: this.enableAuth}),
-  });
+  constructor () {
+  };
 
-  constructor () {};
-
-  onSubmit() {
-    this.settingFormGroup.reset();
+  ngOnInit(){
+    this.createForm();
     this.submitted = false;
+    this.rackhdAuthEnabled = this.enableAuth;
+    this.rackhdSslEnabled = this.enableSSL;
+    window.localStorage.clear(); //Krein TODO: clear is required
+    console.log(rackhdConfig);
+    console.log(window.localStorage);
+  }
+
+  createForm() {
+    this.settingFormGroup = new FormGroup({
+      rackhdNorthboundApi: new FormControl(this.rackhdAPI, Validators.pattern(apiPattern)),
+      rackhdWebsocketUrl: new FormControl(this.rackhdWSS, Validators.pattern(addrPattern)),
+      rackhdElasticApi: new FormControl(this.elasticsearchAPI, Validators.pattern(addrPattern)),
+      rackhdAuth: new FormGroup({
+        rackhdPassword: new FormControl({value: '', disabled: this.enableAuth}),//Krein: Suggestion by browser
+        rackhdUsername: new FormControl({value: '', disabled: this.enableAuth}),
+        rackhdAuthToken: new FormControl({value: '', disabled: this.enableAuth})
+      })
+    });
   }
 
   setDefaultSettings() {
@@ -44,42 +54,44 @@ export class SettingComponent {
   }
 
   setConfigValue(key, value) {
-    window.localStorage.setItem(key, (rackhdConfig[key] = value));
+    //rackhdConfig[key] = value;
+    window.localStorage.setItem(key, value);
     return value;
   }
 
-  get elasticsearchAPI() { return this.getConfigValue('elasticSearchUrl'); }
-  set elasticsearchAPI(value) { this.setConfigValue('elasticSearchUrl', value); }
 
-  get enableAuth() { return this.getConfigValue('authEnabled'); }
-  set enableAuth(value) { this.setConfigValue('authEnabled', !!value);}
+  get rackhdAPI():string { return this.getConfigValue('northboundApi'); }
+  set rackhdAPI(value:string) { this.setConfigValue('northboundApi', value); }
 
-  get enableSSL() { return this.getConfigValue('connSecured'); }
-  set enableSSL(value) { this.setConfigValue('connSecured', !!value); }
+  get rackhdWSS():string { return this.getConfigValue('websocketUrl'); }
+  set rackhdWSS(value:string) { this.setConfigValue('websocketUrl', value); }
 
-  get rackhdWSS() { return this.getConfigValue('websocketUrl'); }
-  set rackhdWSS(value) { this.setConfigValue('websocketUrl', value); }
+  get elasticsearchAPI():string { return this.getConfigValue('elasticSearchUrl'); }
+  set elasticsearchAPI(value:string) { this.setConfigValue('elasticSearchUrl', value); }
 
-  get rackhdAPI() { return this.getConfigValue('northboundApi'); }
-  set rackhdAPI(value) { this.setConfigValue('northboundApi', value); }
+  get enableAuth():boolean { return this.getConfigValue('authEnabled'); }
+  set enableAuth(value:boolean) { this.setConfigValue('authEnabled', !!value);}
 
-  get rackhdAuthToken() { return this.getConfigValue('autoToken'); }
-  set rackhdAuthToken(value) { this.setConfigValue('autoToken', value); }
+  get enableSSL():boolean { return this.getConfigValue('connSecured'); }
+  set enableSSL(value:boolean) { this.setConfigValue('connSecured', !!value); }
 
-  formClassInvalid (value) {
+  get rackhdAuthToken():string { return this.getConfigValue('autoToken'); }
+  set rackhdAuthToken(value:string) { this.setConfigValue('autoToken', value); }
+
+  formClassInvalid(value) {
     return this.settingFormGroup.get(value).invalid
       && (this.settingFormGroup.get(value).dirty
-        || this.settingFormGroup.get(value).touched);
+      || this.settingFormGroup.get(value).touched);
   }
 
-  updateSettings() {
-    this.settingFormGroup.reset();
+  onSubmit() {
+    //this.settingFormGroup.reset(); //Krein: Set values to null instead of default value
     this.elasticsearchAPI = this.settingFormGroup.get('rackhdElasticApi').value;
-    this.enableAuth = this.settingFormGroup.get('rackhdAuthEnabled').value;
-    this.enableSSL = this.settingFormGroup.get('rackhdSslEnabled').value;
-    this.rackhdWSS = this.settingFormGroup.get('rackhdWsUrl').value;
-    this.rackhdAPI = this.settingFormGroup.get('rackhdNorthBoundApi').value;
-    this.rackhdAuthToken = this.settingFormGroup.get('rackhdAuthToken').value;
+    this.enableAuth = this.rackhdAuthEnabled;
+    this.enableSSL = this.rackhdSslEnabled;
+    this.rackhdWSS = this.settingFormGroup.get('rackhdWebsocketUrl').value;
+    this.rackhdAPI = this.settingFormGroup.get('rackhdNorthboundApi').value;
+    this.rackhdAuthToken = this.settingFormGroup.get('rackhdAuth.rackhdAuthToken').value;
     this.submitted = false;
   }
 

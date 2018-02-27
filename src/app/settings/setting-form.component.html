@@ -7,13 +7,13 @@
         <label for="rackhdApi"
           aria-haspopup="true"
           role="tooltip"
-          class="tooltip tooltip-validation tooltip-md"
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdNorthboundApi')">
           <input type="text" id="rackhdApi"
-          placeholder="127.0.0.1:9090/api/2.0"
-          formControlName="rackhdNorthboundApi" >
+            placeholder="127.0.0.1:9090/api/2.0"
+            formControlName="rackhdNorthboundApi" >
           <span class="tooltip-content">
-            RackHD Northbound API is required.
+            Invalid Northbound API.
           </span>
         </label>
       </div>
@@ -22,13 +22,13 @@
         <label for="rackhdWs"
           aria-haspopup="true"
           role="tooltip"
-          class="tooltip tooltip-validation tooltip-md"
-          [class.invalid]="formClassInvalid('rackhdWsUrl')">
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+          [class.invalid]="formClassInvalid('rackhdWebsocketUrl')">
           <input type="text" id="rackhdWs"
-          placeholder="127.0.0.1:9100"
-          formControlName="rackhdWsUrl">
+            placeholder="127.0.0.1:9100"
+            formControlName="rackhdWebsocketUrl">
           <span class="tooltip-content">
-            RackHD Websocket URL is required.
+            Invalid Websocket URL.
           </span>
         </label>
       </div>
@@ -37,13 +37,13 @@
         <label for="rackhdElastic"
           aria-haspopup="true"
           role="tooltip"
-          class="tooltip tooltip-validation tooltip-md"
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdElasticApi')">
           <input type="text" id="rackhdElasticApi"
-          placeholder="127.0.0.1:9200"
-          formControlName="rackhdElasticApi">
+            placeholder="127.0.0.1:9200"
+            formControlName="rackhdElasticApi">
           <span class="tooltip-content">
-            RackHD Elasticsearch API is required.
+           Invalid Elasticsearch API.
           </span>
         </label>
       </div>
@@ -52,64 +52,69 @@
       <!--Krein: can not use form-group/ngModel-->
       <div class="check-box" style="margin-bottom: 1em;">
         <clr-checkbox
-          name="authEnable"
-          id="authEnable"
-          formControlName="rackhdAuthEnabled">
-          Enable Authetication
+          name="checkSecureEnable"
+          id="secureConnEnable"
+          [(clrChecked)]="rackhdSslEnabled">
+          Enable Secure Connections
         </clr-checkbox>
       </div>
 
-      <section style="margin-left: 1em;">
-      <div class="form-group">
-        <label for="rackhdUser">RackHD API Username</label>
-        <label for="rackhhUser"
-          aria-haspopup="true"
-          role="tooltip"
-          class="tooltip tooltip-validation tooltip-md"
-          [class.invalid]="formClassInvalid('rackhdUsername')">
-          <input type="text" id="rackhdUsername" formControlName="rackhdUsername">
-          <span class="tooltip-content">
-            RackHD Username is required for authentication.
-          </span>
-        </label>
+      <div class="check-box" style="margin-bottom: 1em;">
+        <clr-checkbox
+          name="checkAuthEnable"
+          id="authEnable"
+          [(clrChecked)]="rackhdAuthEnabled">
+          Enable Authentication
+        </clr-checkbox>
       </div>
-      <div class="form-group">
-        <label for="rackhdPassword">RackHD API Password</label>
-        <label for="rackhdPassword"
-          aria-haspopup="true"
-          role="tooltip"
-          class="tooltip tooltip-validation tooltip-md"
-          [class.invalid]="formClassInvalid('rackhdPassword')">
-          <input type="password" id="rackhdPwd" formControlName="rackhdPassword">
-          <span class="tooltip-content">
-            RackHD Password is required for authentication.
-          </span>
-        </label>
-      </div>
-      <div class="form-group">
-        <label for="rackhdAuthToken">RackHD API Auth Token</label>
-        <label for="rackhdAuthToken"
-          aria-haspopup="true"
-          role="tooltip"
-          class="tooltip tooltip-validation tooltip-md"
-          [class.invalid]="formClassInvalid('rackhdAuthToken')">
-          <input type="text" id="rackhdAuthToken" formControlName="rackhdAuthToken">
-          <span class="tooltip-content">
-            RackHD Authentication Token is required.
-          </span>
-        </label>
-      </div>
+
+      <section formGroupName="rackhdAuth">
+        <div class="form-group">
+          <label for="rackhdUser">RackHD API Username</label>
+          <label for="rackhhUser"
+            aria-haspopup="true"
+            role="tooltip"
+            class="tooltip tooltip-validation tooltip-xs"
+            [class.invalid]="formClassInvalid('rackhdAuth.rackhdUsername')">
+            <input type="text" id="rackhdUsername" formControlName="rackhdUsername">
+            <span class="tooltip-content">
+              Username required.
+            </span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="rackhdPassword">RackHD API Password</label>
+          <label for="rackhdPassword"
+            aria-haspopup="true"
+            role="tooltip"
+            class="tooltip tooltip-validation tooltip-md"
+            [class.invalid]="formClassInvalid('rackhdAuth.rackhdPassword')">
+            <input type="password" id="rackhdPwd" formControlName="rackhdPassword">
+            <span class="tooltip-content">
+              Password required.
+            </span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="rackhdAuthToken">RackHD API Auth Token</label>
+          <label for="rackhdAuthToken"
+            aria-haspopup="true"
+            role="tooltip"
+            class="tooltip tooltip-validation tooltip-md"
+            [class.invalid]="formClassInvalid('rackhdAuth.rackhdAuthToken')">
+            <input type="text" id="rackhdAuthToken" formControlName="rackhdAuthToken">
+            <span class="tooltip-content">
+              Authentication Token required.
+            </span>
+          </label>
+        </div>
       </section>
-      <clr-checkbox
-        name="secureConnEnable"
-        id="secureConnEnable"
-        formControlName="rackhdSslEnabled">
-        Enable Secure Connections
-      </clr-checkbox>
     </section>
     <clr-button-group>
       <clr-button type="reset" class="btn-primary" (click)="setDefaultSettings()">Default</clr-button>
-      <clr-button type="submit" class="btn btn-success" [disabled]="settingFormGroup.invalid">Save</clr-button>
+      <clr-button type="submit"
+        class="btn btn-success"
+        [disabled]="settingFormGroup.invalid">Save</clr-button>
     </clr-button-group>
   </form>
 </div>

@@ -37,7 +37,6 @@ import { environment } from 'environments/environment';
 
 // App is our top level component
 import { AppComponent } from './app.component';
-import { LoginExpiredComponent } from './login/index';
 
 // Services Modules
 import { SharedServicesModule } from './services/sharedServices.module'
@@ -58,7 +57,6 @@ import '../styles/headings.css';
 // import serives, objs use only in this module.
 import {
   IconService,
-  AuthService
 } from './services/core/index';
 
 import { SettingModule } from './settings/setting.module';
@@ -70,7 +68,6 @@ import { SettingModule } from './settings/setting.module';
   bootstrap: [ AppComponent ],
   declarations: [
     AppComponent,
-    LoginExpiredComponent,
     HeaderComponent,
   ],
   /**

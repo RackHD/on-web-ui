@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { EnvironmentService } from '../services/environment.service';
 
 @Component({
@@ -16,8 +19,7 @@ export class HeaderComponent implements OnInit {
     this.selectedTab = window.location.pathname;
   }
 
-  constructor() {
-  }
+  constructor() {}
 
   popSettings(){
     this.openSetting = true;
