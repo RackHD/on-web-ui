@@ -1,0 +1,72 @@
+import { Injectable } from '@angular/core';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { rackhdConfig, apiPattern, addrPattern } from '../models/index';
+
+import * as _ from 'lodash';
+
+@Injectable()
+export class SettingService {
+
+  constructor(private http: HttpClient) {}
+
+  get northboundApi():string { return this.getConfigValue('northboundApi'); }
+  set northboundApi(value:string) {this.setConfigValue('northboundApi', value); }
+
+  get websocketUrl():string { return this.getConfigValue('websocketUrl'); }
+  set websocketUrl(value:string) { this.setConfigValue('websocketUrl', value); }
+
+  get elasticSearchUrl():string { return this.getConfigValue('elasticSearchUrl'); }
+  set elasticSearchUrl(value:string) { this.setConfigValue('elasticSearchUrl', value); }
+
+  get authEnabled():boolean { return this.getConfigValue('authEnabled'); }
+  set authEnabled(value:boolean) { this.setConfigValue('authEnabled', !!value);}
+
+  get connSecured():boolean { return this.getConfigValue('connSecured'); }
+  set connSecured(value:boolean) { this.setConfigValue('connSecured', !!value); }
+
+  get authToken():string { return this.getConfigValue('authToken'); }
+  set authToken(value:string) { this.setConfigValue('authToken', value); }
+
+  getConfigValue(key) {
+    let globalKey = 'rackhd.' + key;
+    let value = window.localStorage.getItem(globalKey);
+    if (!value //window.localStorage only stores string
+      || value === "undefined"
+      || value === "null") { return rackhdConfig[key]; }
+    if (value === "false") return false;
+    return value;
+  }
+
+  setConfigValue(key, value) {
+    let globalKey = 'rackhd.' + key;
+    window.localStorage.setItem(globalKey, value);
+    return value;
+  }
+
+  loadDefaultConfig(){
+    _.assign(this, rackhdConfig);
+  }
+
+  clearAllConfig(){
+    _.forEach(_.keys(rackhdConfig), function(key){
+      key = 'rackhd.' + key;
+      if (window.localStorage.getItem(key)){
+        window.localStorage.removeItem(key);
+      }
+    });
+  }
+
+  generateToken(user, password){
+    let url = this.northboundApi.split("/")[0];
+    let body = {
+      username: user,
+      password: password,
+      role: "Administrator"
+    }
+    url = (this.connSecured ? "https" : "http") + "://" + url + "/login";
+    return this.http.post(url, JSON.stringify(body),
+      {headers: new HttpHeaders({"Content-Type": "application/json"})}
+    );
+  }
+
+}

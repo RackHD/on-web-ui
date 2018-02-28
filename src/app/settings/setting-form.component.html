@@ -1,5 +1,4 @@
 <div class="container">
-  <!--Krein: W/O div, No provider for ControlContainer!-->
   <form [formGroup]="settingFormGroup" (ngSubmit)="onSubmit()" [hidden]="submitted" novalidate>
     <section class="form-block compact">
       <div class="form-group">
@@ -10,7 +9,7 @@
           class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdNorthboundApi')">
           <input type="text" id="rackhdApi"
-            placeholder="127.0.0.1:9090/api/2.0"
+            [placeholder]="settings.northboundApi"
             formControlName="rackhdNorthboundApi" >
           <span class="tooltip-content">
             Invalid Northbound API.
@@ -18,17 +17,17 @@
         </label>
       </div>
       <div class="form-group">
-        <label for="rackhdWs">RackHD Websocket URL</label>
+        <label for="rackhdWs">RackHD Websocket API</label>
         <label for="rackhdWs"
           aria-haspopup="true"
           role="tooltip"
           class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdWebsocketUrl')">
           <input type="text" id="rackhdWs"
-            placeholder="127.0.0.1:9100"
+            [placeholder]="settings.websocketUrl"
             formControlName="rackhdWebsocketUrl">
           <span class="tooltip-content">
-            Invalid Websocket URL.
+            Invalid Websocket API.
           </span>
         </label>
       </div>
@@ -40,7 +39,7 @@
           class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdElasticApi')">
           <input type="text" id="rackhdElasticApi"
-            placeholder="127.0.0.1:9200"
+            [placeholder]="settings.elasticSearchUrl"
             formControlName="rackhdElasticApi">
           <span class="tooltip-content">
            Invalid Elasticsearch API.
@@ -48,13 +47,12 @@
         </label>
       </div>
 
-      <!-- ----------------------------Auth--------------------------------- -->
       <!--Krein: can not use form-group/ngModel-->
       <div class="check-box" style="margin-bottom: 1em;">
         <clr-checkbox
           name="checkSecureEnable"
           id="secureConnEnable"
-          [(clrChecked)]="rackhdSslEnabled">
+          [(clrChecked)]="settings.connSecured">
           Enable Secure Connections
         </clr-checkbox>
       </div>
@@ -63,58 +61,60 @@
         <clr-checkbox
           name="checkAuthEnable"
           id="authEnable"
-          [(clrChecked)]="rackhdAuthEnabled">
+          (change)="handleAuthEnabled($event.target.checked)"
+          [(clrChecked)]="settings.authEnabled">
           Enable Authentication
         </clr-checkbox>
       </div>
 
-      <section formGroupName="rackhdAuth">
-        <div class="form-group">
+      <section formGroupName="rackhdAuth" style="margin: 0 2em;">
+        <div class="form-group" >
           <label for="rackhdUser">RackHD API Username</label>
-          <label for="rackhhUser"
+          <label for="rackhdUser"
             aria-haspopup="true"
             role="tooltip"
-            class="tooltip tooltip-validation tooltip-xs"
+            class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
             [class.invalid]="formClassInvalid('rackhdAuth.rackhdUsername')">
-            <input type="text" id="rackhdUsername" formControlName="rackhdUsername">
+            <input type="text" id="rackhdUser"
+              formControlName="rackhdUsername">
             <span class="tooltip-content">
-              Username required.
+              Username required!
             </span>
           </label>
         </div>
         <div class="form-group">
-          <label for="rackhdPassword">RackHD API Password</label>
-          <label for="rackhdPassword"
+          <label for="rackhdPwd">RackHD API Password</label>
+          <label for="rackhdPwd"
             aria-haspopup="true"
             role="tooltip"
-            class="tooltip tooltip-validation tooltip-md"
+            class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
             [class.invalid]="formClassInvalid('rackhdAuth.rackhdPassword')">
-            <input type="password" id="rackhdPwd" formControlName="rackhdPassword">
+            <input type="password" id="rackhdPwd"
+              formControlName="rackhdPassword">
             <span class="tooltip-content">
-              Password required.
+              Password required!
             </span>
           </label>
         </div>
+        <div>
+          <button type="button"
+            class="btn btn-warning-outline"
+            (click)="generateToken()"
+            [disabled]="generateTokenDisabled()">Generate Token</button>
+        </div>
         <div class="form-group">
-          <label for="rackhdAuthToken">RackHD API Auth Token</label>
-          <label for="rackhdAuthToken"
-            aria-haspopup="true"
-            role="tooltip"
-            class="tooltip tooltip-validation tooltip-md"
-            [class.invalid]="formClassInvalid('rackhdAuth.rackhdAuthToken')">
-            <input type="text" id="rackhdAuthToken" formControlName="rackhdAuthToken">
-            <span class="tooltip-content">
-              Authentication Token required.
-            </span>
-          </label>
+          <label for="rackhdToken">RackHD API Auth Token</label>
+          <input type="text" id="rackhdToken"
+            formControlName="rackhdAuthToken">
         </div>
       </section>
     </section>
-    <clr-button-group>
-      <clr-button type="reset" class="btn-primary" (click)="setDefaultSettings()">Default</clr-button>
-      <clr-button type="submit"
+    <!-- <div class="button-group btn-group-justified" style="float: right" role="group"> -->
+    <div class="button-group float-right" role="group">
+      <button type="button" class="btn btn-primary" (click)="resetSettings()">Default</button>
+      <button type="submit"
         class="btn btn-success"
-        [disabled]="settingFormGroup.invalid">Save</clr-button>
-    </clr-button-group>
+        [disabled]="saveButtonDisabled()">Save</button>
+    </div>
   </form>
 </div>
