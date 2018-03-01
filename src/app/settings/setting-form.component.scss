@@ -1,0 +1,17 @@
+.fieldset {
+  border: 1px solid silver;
+  margin: 0 2px;
+  padding: .35em .625em .75em;
+}
+
+.legend {
+  display: block;
+  padding: 0;
+  line-height: inherit;
+  width: auto;
+}
+
+.disabled-label{
+  color: #565656;
+  opacity: .4;
+}

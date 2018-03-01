@@ -16,8 +16,7 @@ export class RackhdSetting {
 }
 
 export const rackhdConfig = new RackhdSetting({
-  //northboundApi: '127.0.0.1:9090/api/2.0', //Krein for debug
-  northboundApi: '10.62.59.170:9090/api/2.0', //Krein for debug
+  northboundApi: '127.0.0.1:9090/api/2.0',
   websocketUrl: '127.0.0.1:9100',
   elasticSearchUrl: '127.0.0.1:9200',
   authEnabled: false,

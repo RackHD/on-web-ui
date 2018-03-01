@@ -99,6 +99,7 @@ export class SettingComponent implements OnInit, OnDestroy {
   }
 
   generateToken(){
+    this.onSubmit();
     this.settings.generateToken(
       this.settingFormGroup.get('rackhdAuth.rackhdUsername').value,
       this.settingFormGroup.get('rackhdAuth.rackhdPassword').value

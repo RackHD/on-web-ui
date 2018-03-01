@@ -12,7 +12,6 @@
     <a href="/solutionCenter" [ngClass]="{'active':selectedTab == '/solutionCenter'}" (click)="selectedTab = '/solutionCenter'" class=" nav-link"><span class="nav-text">Solution Center</span></a>
   </div>
   <div class="header-actions">
-    <!--Krein: style is added for hove display-->
     <div class="active nav-link nav-icon" (click)="openSetting=true" style="cursor:pointer" >
       <clr-icon shape="cog"></clr-icon>
     </div>
@@ -21,7 +20,6 @@
 <clr-modal [(clrModalOpen)]="openSetting">
   <h3 class="modal-title">RackHD Configurations</h3>
   <div class="modal-body">
-    <!--Krein: app-setting-form can't show button if directly use dropdown, Why -->
     <app-setting-form></app-setting-form>
   </div>
 </clr-modal>

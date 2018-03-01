@@ -47,7 +47,6 @@
         </label>
       </div>
 
-      <!--Krein: can not use form-group/ngModel-->
       <div class="check-box" style="margin-bottom: 1em;">
         <clr-checkbox
           name="checkSecureEnable"
@@ -63,13 +62,17 @@
           id="authEnable"
           (change)="handleAuthEnabled($event.target.checked)"
           [(clrChecked)]="settings.authEnabled">
-          Enable Authentication
+          Enable API Authentication
         </clr-checkbox>
       </div>
 
-      <section formGroupName="rackhdAuth" style="margin: 0 2em;">
+      <fieldset formGroupName="rackhdAuth" class="fieldset" [disabled]='!settings.authEnabled'>
+        <legend [ngClass]="{'legend': true, 'disabled-label': !settings.authEnabled}">
+          Authentication
+        </legend>
         <div class="form-group" >
-          <label for="rackhdUser">RackHD API Username</label>
+          <label for="rackhdUser"
+            [ngClass]="{'disabled-label': !settings.authEnabled}">RackHD API Username</label>
           <label for="rackhdUser"
             aria-haspopup="true"
             role="tooltip"
@@ -83,7 +86,8 @@
           </label>
         </div>
         <div class="form-group">
-          <label for="rackhdPwd">RackHD API Password</label>
+          <label for="rackhdPwd"
+            [ngClass]="{'disabled-label': !settings.authEnabled}">RackHD API Password</label>
           <label for="rackhdPwd"
             aria-haspopup="true"
             role="tooltip"
@@ -103,13 +107,13 @@
             [disabled]="generateTokenDisabled()">Generate Token</button>
         </div>
         <div class="form-group">
-          <label for="rackhdToken">RackHD API Auth Token</label>
+          <label for="rackhdToken"
+            [ngClass]="{'disabled-label': !settings.authEnabled}">RackHD API Auth Token</label>
           <input type="text" id="rackhdToken"
             formControlName="rackhdAuthToken">
         </div>
-      </section>
+      </fieldset>
     </section>
-    <!-- <div class="button-group btn-group-justified" style="float: right" role="group"> -->
     <div class="button-group float-right" role="group">
       <button type="button" class="btn btn-primary" (click)="resetSettings()">Default</button>
       <button type="submit"

@@ -15,8 +15,8 @@ import { SettingService } from './setting.service';
         ReactiveFormsModule,
         HttpClientModule
     ],
-    declarations: [SettingComponent], //Krein: why we must desclare
-    exports: [SettingComponent], //Krein: why we must exports, use import in app.module.ts doesn't work.
+    declarations: [SettingComponent],
+    exports: [SettingComponent],
     providers: [SettingService]
 })
 export class SettingModule { }
