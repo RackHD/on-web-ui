@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { rackhdConfig, apiPattern, addrPattern } from '../models/index';
+import { RACKHD_CONFIG } from '../models/index';
+import { Observable } from 'rxjs/Observable';
 
 import * as _ from 'lodash';
 
@@ -27,28 +28,28 @@ export class SettingService {
   get authToken():string { return this.getConfigValue('authToken'); }
   set authToken(value:string) { this.setConfigValue('authToken', value); }
 
-  getConfigValue(key) {
+  getConfigValue(key: string): any {
     let globalKey = 'rackhd.' + key;
     let value = window.localStorage.getItem(globalKey);
     if (!value //window.localStorage only stores string
       || value === "undefined"
-      || value === "null") { return rackhdConfig[key]; }
+      || value === "null") { return RACKHD_CONFIG[key]; }
     if (value === "false") return false;
     return value;
   }
 
-  setConfigValue(key, value) {
+  setConfigValue(key: string, value: any): any {
     let globalKey = 'rackhd.' + key;
     window.localStorage.setItem(globalKey, value);
     return value;
   }
 
   loadDefaultConfig(){
-    _.assign(this, rackhdConfig);
+    _.assign(this, RACKHD_CONFIG);
   }
 
   clearAllConfig(){
-    _.forEach(_.keys(rackhdConfig), function(key){
+    _.forEach(_.keys(RACKHD_CONFIG), function(key){
       key = 'rackhd.' + key;
       if (window.localStorage.getItem(key)){
         window.localStorage.removeItem(key);
@@ -56,7 +57,7 @@ export class SettingService {
     });
   }
 
-  generateToken(user, password){
+  generateToken(user: string, password: string): Observable<any> {
     let url = this.northboundApi.split("/")[0];
     let body = {
       username: user,

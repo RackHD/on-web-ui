@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, ReactiveFormsModule ,
   FormBuilder, FormGroup,FormControl, Validators }   from '@angular/forms';
 
-import { apiPattern, addrPattern } from '../models/index';
+import { API_PATTERN, ADDR_PATTERN } from '../models/index';
 
 import { SettingService } from './setting.service';
 
@@ -33,14 +33,14 @@ export class SettingComponent implements OnInit, OnDestroy {
     this.settingFormGroup = new FormGroup({
       rackhdNorthboundApi: new FormControl(
         this.settings.northboundApi,
-        {validators: [Validators.pattern(apiPattern), Validators.required]}
+        {validators: [Validators.pattern(API_PATTERN), Validators.required]}
       ),
       rackhdWebsocketUrl: new FormControl(
         this.settings.websocketUrl,
-        {validators: [Validators.pattern(addrPattern), Validators.required]}
+        {validators: [Validators.pattern(ADDR_PATTERN), Validators.required]}
       ),
       rackhdElasticApi: new FormControl(
-        this.settings.elasticSearchUrl, Validators.pattern(addrPattern)
+        this.settings.elasticSearchUrl, Validators.pattern(ADDR_PATTERN)
       ),
       rackhdAuth: new FormGroup({
         rackhdPassword: new FormControl(
@@ -73,19 +73,19 @@ export class SettingComponent implements OnInit, OnDestroy {
     this.submitted = false;
   }
 
-  formClassInvalid(value) {
+  formClassInvalid(value: string): boolean {
     return this.settingFormGroup.get(value).invalid;
     //  && (this.settingFormGroup.get(value).dirty
     //  || this.settingFormGroup.get(value).touched);
   }
 
-  generateTokenDisabled() {
+  generateTokenDisabled(): boolean {
     return this.formClassInvalid('rackhdAuth.rackhdUsername')
       || this.formClassInvalid('rackhdAuth.rackhdPassword')
       || !this.settings.authEnabled;
   }
 
-  saveButtonDisabled() {
+  saveButtonDisabled(): boolean {
     return this.settingFormGroup.invalid
       || !(this.generateTokenDisabled() || this.settingFormGroup.get("rackhdAuth.rackhdAuthToken").value);
   }
@@ -112,8 +112,8 @@ export class SettingComponent implements OnInit, OnDestroy {
           }
         });
         this.submitted = false;
-    }
-  );
+      }
+    );
   }
 
   onSubmit() {

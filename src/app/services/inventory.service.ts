@@ -3,6 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
 
 import * as _ from 'lodash';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/delay';
 
 import {
   Device,

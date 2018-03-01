@@ -8,15 +8,15 @@ import { SettingComponent } from './setting-form.component';
 import { SettingService } from './setting.service';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        ClarityModule.forChild(),
-        FormsModule,
-        ReactiveFormsModule,
-        HttpClientModule
-    ],
-    declarations: [SettingComponent],
-    exports: [SettingComponent],
-    providers: [SettingService]
+  imports: [
+    CommonModule,
+    ClarityModule.forChild(),
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule
+  ],
+  declarations: [SettingComponent],
+  exports: [SettingComponent],
+  providers: [SettingService]
 })
 export class SettingModule { }
