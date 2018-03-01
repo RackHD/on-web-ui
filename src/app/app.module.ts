@@ -102,12 +102,8 @@ import {
 export class AppModule {
   constructor(
     public iconService: IconService,
-    // private authService: AuthService
   ) {
     // must be called once to init IconService
     iconService.load();
-
-    // if token is saved in cookie, use it to login.
-    // authService.initLoginStatus();
   }
 }
