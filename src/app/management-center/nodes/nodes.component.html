@@ -1,16 +1,14 @@
 <div class="app-inventory-list">
   <div class="row">
-    <!--<div class="col-lg-10 row count-summary-bar">-->
-      <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 count-summary"
-             *ngFor="let type of deviceTypes"
-             (click)="selectType(type)"
-             [class.selected]="selectedType==type.displayName">
-          <h2 class="">{{ devicesTypeCountMatrix[type.identifier] || 0 }}</h2>
-          <span class="count-text">{{ type.displayName }}</span>
-        </div>
+    <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 count-summary"
+           *ngFor="let type of deviceTypes"
+           (click)="selectType(type)"
+           [class.selected]="selectedType==type.displayName">
+        <h2>{{ devicesTypeCountMatrix[type.identifier] || 0 }}</h2>
+        <span class="count-text">{{ type.displayName }}</span>
       </div>
-    <!--</div>-->
+    </div>
   </div>
 
   <div class="row">
@@ -53,7 +51,6 @@
         </clr-dg-column>
         <clr-dg-column [clrDgSortBy]="discoveredTimeComparator">DiscoveredTime</clr-dg-column>
         <clr-dg-column [clrDgSortBy]="autoDiscoverComparator">AutoDiscover</clr-dg-column>
-
         <clr-dg-row *clrDgItems="let device of allDevices" [clrDgItem]="device">
           <clr-dg-cell (click)="goToDetail(device)">{{device.id}}</clr-dg-cell>
           <clr-dg-cell (click)="goToDetail(device)">{{device.type}}</clr-dg-cell>
@@ -90,9 +87,29 @@
           <!--tree-root [nodes]="selectedDevice"></tree-root-->
         </div>
       </clr-modal>
-      <div class="selected">
-        Selected Nodes: <span *ngFor="let node of selectedDevices">{{node? node.id : null}}, </span>
-      </div>
     </div>
+  </div>
+
+  <div class="selected-infor" *ngIf="selectedDevices.length !=0">
+    <p class="selected-nodes">
+      <strong>Selected Nodes: </strong>
+      <span>
+        <em *ngFor="let node of selectedDevices">{{node? node.id : null}}, </em>
+      </span>
+    </p>
+
+    <p style="float: right">
+      <button class="btn btn-primary">Primary</button>
+      <button class="btn btn-success">Success</button>
+      <button class="btn btn-warning">Warning</button>
+      <button class="btn btn-danger">Danger</button>
+    </p>
+    <p style="float: right">
+      <button class="btn btn-outline">Regular</button>
+      <button class="btn btn-success-outline">Success-Outline</button>
+      <button class="btn btn-info-outline">Info</button>
+      <button class="btn btn-warning-outline">Warning</button>
+      <button class="btn btn-danger-outline">Danger</button>
+    </p>
   </div>
 </div>
