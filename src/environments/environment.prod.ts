@@ -20,5 +20,7 @@ export const environment: Environment = {
   },
   ENV_PROVIDERS: [
 
-  ]
+  ],
+  CONN_SECURED: localStorage.getItem('rackhd.connSecured'),
+  RACKHD_API: (this.CONN_SECURED ? 'https://' : 'http://') + localStorage.getItem('rackhd.northboundApi'),
 };
