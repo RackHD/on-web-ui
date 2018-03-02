@@ -5,16 +5,11 @@ import {
 } from '@angular/core';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './app.interceptor';
 
 import { AppRoutingModule } from './app-route/app-routing.module';
 import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { IconService } from './icon.service';
-import { AuthService } from './auth.service';
 
-import { AuthGuard } from './auth-guard.service';
-import { UnAuthGuard } from './un-auth-guard.service';
-import { UserService } from './user.service';
 
 
 /**
@@ -23,16 +18,7 @@ import { UserService } from './user.service';
  */
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,
-  IconService,
-  AuthService,
-  AuthGuard,
-  UserService,
-  UnAuthGuard,
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true
-  }
+  IconService
 ];
 
 /**

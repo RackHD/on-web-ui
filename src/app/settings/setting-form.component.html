@@ -1,94 +1,124 @@
-<div>
-    <form  [hidden]="submitted" [formGroup]="signupForm" (ngSubmit)="submitForm()" novalidate >
-        <div class="login-group">
-            <section class="form-block col-lg-8" align="left">
-                <div class="form-group row" >
-                    <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
-                        <label for="gForm_1">User Account <font color="red">*</font></label>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                        <input id="gForm_user" class="usernameClass"
-                               type="text" formControlName="username"
-                               size="15" placeholder="User Name">
-                        <div *ngIf="usernameFC.invalid && (usernameFC.dirty || usernameFC.touched)"
-                            class="alert alert-danger">
-                            <div id="warn_nr" *ngIf="usernameFC.errors.required"> Name is required.   </div>
-                            <div id="warn_ns" *ngIf="usernameFC.errors.minlength">Name must be at least 3 characters long.    </div>
-                        </div>
-                        <div id="warn_no" class="alert alert-danger" *ngIf="isUserNameOccupied() "> Name occupied.   </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                        <input id="gForm_password"  class="passwordClass"
-                               type="password"  formControlName="password"
-                               size="15" placeholder="password">
-                        <div *ngIf="passwordFC.invalid && (passwordFC.dirty || passwordFC.touched)"
-                            class="alert alert-danger">
-                            <div id="warn_pr" *ngIf="passwordFC.errors.required"> password is required.   </div>
-                            <div id="warn_ps" *ngIf="passwordFC.errors.minlength">password must be at least 4 characters long.    </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
-                        <label for="gform_2">Email <font color="red">*</font></label>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                        <input id="gForm_email" class="emailClass"  formControlName="email"
-                               type="email" email="true"
-                               placeholder="Email" size="35">
-                        <div *ngIf="emailFC.invalid && (emailFC.dirty || emailFC.touched)"
-                            class="alert alert-danger">
-                            <div id="warn_ee" *ngIf="emailFC.hasError('email')"> invalid email address.  </div>
-                        </div>
-                    </div>
-                </div>
+<div class="container">
+  <form [formGroup]="settingFormGroup" (ngSubmit)="onSubmit()" [hidden]="submitted" novalidate>
+    <section class="form-block compact">
+      <div class="form-group">
+        <label for="rackhdApi">RackHD Northbound API</label>
+        <label for="rackhdApi"
+          aria-haspopup="true"
+          role="tooltip"
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+          [class.invalid]="formClassInvalid('rackhdNorthboundApi')">
+          <input type="text" id="rackhdApi"
+            [placeholder]="settings.northboundApi"
+            formControlName="rackhdNorthboundApi" >
+          <span class="tooltip-content">
+            Invalid Northbound API.
+          </span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="rackhdWs">RackHD Websocket API</label>
+        <label for="rackhdWs"
+          aria-haspopup="true"
+          role="tooltip"
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+          [class.invalid]="formClassInvalid('rackhdWebsocketUrl')">
+          <input type="text" id="rackhdWs"
+            [placeholder]="settings.websocketUrl"
+            formControlName="rackhdWebsocketUrl">
+          <span class="tooltip-content">
+            Invalid Websocket API.
+          </span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="rackhdElastic">RackHD Elasticsearch API</label>
+        <label for="rackhdElastic"
+          aria-haspopup="true"
+          role="tooltip"
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+          [class.invalid]="formClassInvalid('rackhdElasticApi')">
+          <input type="text" id="rackhdElasticApi"
+            [placeholder]="settings.elasticSearchUrl"
+            formControlName="rackhdElasticApi">
+          <span class="tooltip-content">
+           Invalid Elasticsearch API.
+          </span>
+        </label>
+      </div>
 
-                <div class="form-group row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div class="toggle-switch">
-                            <input type="checkbox" id="othertoggle">
-                            <label for="othertoggle">Subscribe News</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div class="checkbox-inline">
-                            <input type="checkbox" id="othercheckbox" checked>
-                            <label for="othercheckbox">other flag?</label>
-                        </div>
-                    </div>
-                </div>
+      <div class="check-box" style="margin-bottom: 1em;">
+        <clr-checkbox
+          name="checkSecureEnable"
+          id="secureConnEnable"
+          [(clrChecked)]="settings.connSecured">
+          Enable Secure Connections
+        </clr-checkbox>
+      </div>
 
-                <button type="submit"    [disabled]="signupForm.status!=='VALID'" class="btn btn-info-outline">Submit</button>
-            </section>
-        </div>
-    </form>
+      <div class="check-box" style="margin-bottom: 1em;">
+        <clr-checkbox
+          name="checkAuthEnable"
+          id="authEnable"
+          (change)="handleAuthEnabled($event.target.checked)"
+          [(clrChecked)]="settings.authEnabled">
+          Enable API Authentication
+        </clr-checkbox>
+      </div>
 
-   <!-- ######################################################################### -->
-    <div id="success_info" [hidden]="!submitted"  class="offset-lg-4 offset-md-4
-        col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <div class="alert alert-success">
-            <div class="alert-items">
-                <div class="alert-item static">
-                    <div class="alert-icon-wrapper">
-                        <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
-                    </div>
-                    <span class="alert-text">Your account  <b> {{signupForm.value.username}} </b> has been created.</span>
-                </div>
-            </div>
+      <fieldset formGroupName="rackhdAuth" class="fieldset" [disabled]='!settings.authEnabled'>
+        <legend [ngClass]="{'legend': true, 'disabled-label': !settings.authEnabled}">
+          Authentication
+        </legend>
+        <div class="form-group" >
+          <label for="rackhdUser"
+            [ngClass]="{'disabled-label': !settings.authEnabled}">RackHD API Username</label>
+          <label for="rackhdUser"
+            aria-haspopup="true"
+            role="tooltip"
+            class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+            [class.invalid]="formClassInvalid('rackhdAuth.rackhdUsername')">
+            <input type="text" id="rackhdUser"
+              formControlName="rackhdUsername">
+            <span class="tooltip-content">
+              Username required!
+            </span>
+          </label>
         </div>
-        <div class="alert alert-warning">
-            <div class="alert-items">
-                <div class="alert-item static">
-                    <div class="alert-icon-wrapper">
-                        <clr-icon class="alert-icon" shape="exclamation-triangle"></clr-icon>
-                    </div>
-                    <span class="alert-text">You will be redirect to login page in <b>{{redirectTotalTime - redirectElaspedTime}} </b> seconds! </span>
-                </div>
-            </div>
+        <div class="form-group">
+          <label for="rackhdPwd"
+            [ngClass]="{'disabled-label': !settings.authEnabled}">RackHD API Password</label>
+          <label for="rackhdPwd"
+            aria-haspopup="true"
+            role="tooltip"
+            class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+            [class.invalid]="formClassInvalid('rackhdAuth.rackhdPassword')">
+            <input type="password" id="rackhdPwd"
+              formControlName="rackhdPassword">
+            <span class="tooltip-content">
+              Password required!
+            </span>
+          </label>
         </div>
-        <button id="redirectBtn"  class="btn btn-info-outline" (click)="redirectToLoginPage()">Go To Login Immediately</button>
+        <div>
+          <button type="button"
+            class="btn btn-warning-outline"
+            (click)="generateToken()"
+            [disabled]="generateTokenDisabled()">Generate Token</button>
+        </div>
+        <div class="form-group">
+          <label for="rackhdToken"
+            [ngClass]="{'disabled-label': !settings.authEnabled}">RackHD API Auth Token</label>
+          <input type="text" id="rackhdToken"
+            formControlName="rackhdAuthToken">
+        </div>
+      </fieldset>
+    </section>
+    <div class="float-right-local button-group" role="group">
+      <button type="button" class="btn btn-primary" (click)="resetSettings()">Default</button>
+      <button type="submit"
+        class="btn btn-success"
+        [disabled]="saveButtonDisabled()">Save</button>
     </div>
-
+  </form>
 </div>

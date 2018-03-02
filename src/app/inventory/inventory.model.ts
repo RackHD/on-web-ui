@@ -6,8 +6,6 @@ export const DeviceTypes = [
   'switch',
   'pdu',
   'mgmt'
-  // 'DD',
-  // 'HC/HCI'
 ]
 
 export const mockDeviceStatus= [

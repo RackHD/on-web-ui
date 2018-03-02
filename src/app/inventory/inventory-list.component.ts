@@ -87,7 +87,7 @@ export class InventoryListComponent implements OnInit {
             }
           }, []
         )
-        //this.deviceTypes.push({identifier: 'other', displayName: 'Other'}); //Krein: What is this for?
+        //this.deviceTypes.push({identifier: 'other', displayName: 'Other'}); 
         this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
           let type = params.get('type');
           if (type) {
