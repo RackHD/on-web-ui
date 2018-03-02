@@ -17,7 +17,7 @@ import { FilesComponent } from './files/files.component';
 import { TemplatesComponent } from './templates/templates.component';
 import { ConfigComponent } from './config/config.component';
 // the dependent services of ManagementCenter
-import { InventoryService } from '../services/inventory.service';
+import { NodeService } from '../services/node.service';
 
 @NgModule({
   imports: [
@@ -27,8 +27,10 @@ import { InventoryService } from '../services/inventory.service';
     ReactiveFormsModule,
     ManagementCenterRoutingModule
   ],
-  providers: [InventoryService],
-  declarations: [ManagementCenterComponent, NodesComponent, ProfilesComponent, PollersComponent, WorkflowsComponent, CatalogsComponent, ObmComponent, SkuComponent, FilesComponent, TemplatesComponent, ConfigComponent]
+  providers: [NodeService],
+  declarations: [ManagementCenterComponent, NodesComponent, ProfilesComponent, PollersComponent, 
+    WorkflowsComponent, CatalogsComponent, ObmComponent, SkuComponent, FilesComponent, 
+    TemplatesComponent, ConfigComponent]
 })
 
 export class ManagementCenterModule {
