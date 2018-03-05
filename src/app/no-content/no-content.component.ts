@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'no-content',
   template: `
     <div>
-      <h1>404: page missing</h1>
+      <h1 style="margin-top: 60px;">404: page not found</h1>
     </div>
   `
 })
