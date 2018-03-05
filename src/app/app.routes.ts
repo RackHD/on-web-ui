@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { DataResolver } from './app.resolver';
-// import { NoContentComponent } from './no-content/no-content.component';
+import { NoContentComponent } from './no-content/no-content.component';
 
 /**
  * The order or route is important.
@@ -32,6 +32,5 @@ export const ROUTES: Routes = [
     loadChildren: 'app/workflow-editor/workflow-editor.module#WorkflowEditorModule',
   },
   // 404 page, page with ** can not be lazily loaded.
-  {path: '**', redirectTo: '/managementCenter/nodes', pathMatch: 'full'},
-  //TODO: Change to {path: '**', component: NoContentComponent},
+  {path: '**', component: NoContentComponent},
 ];
