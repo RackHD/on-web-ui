@@ -19,7 +19,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  */
 import { ClarityModule } from '@clr/angular';
 import { CookieModule } from 'ngx-cookie';
-import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 /**
  * Customized Service modules, they are used to inject/provide services.
@@ -61,7 +60,6 @@ import {
   IconService,
   AuthService
 } from './services/core/index';
-import { JsonComponent } from './json/json.component';
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -70,8 +68,7 @@ import { JsonComponent } from './json/json.component';
   declarations: [
     AppComponent,
     LoginExpiredComponent,
-    HeaderComponent,
-    JsonComponent
+    HeaderComponent
   ],
   /**
    * Import Angular's modules.
@@ -80,7 +77,6 @@ import { JsonComponent } from './json/json.component';
     BrowserModule,
     ClarityModule.forRoot(),
     CookieModule.forRoot(),
-    NgJsonEditorModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
