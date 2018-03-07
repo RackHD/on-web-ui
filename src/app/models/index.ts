@@ -6,3 +6,8 @@ export * from './obm';
 export * from './poller';
 export * from './task';
 export * from './workflow';
+export * from './profile';
+export * from './config';
+export * from './file';
+export * from './template';
+export * from './inventory';
