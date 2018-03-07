@@ -91,7 +91,6 @@
     "@swimlane/ngx-charts": "^7.0.1",
     "@swimlane/ngx-graph": "^4.0.2",
     "@webcomponents/custom-elements": "^1.0.8",
-    "ang-jsoneditor": "^1.5.9",
     "angular-in-memory-web-api": "^0.5.1",
     "angular2-uuid": "^1.1.1",
     "core-js": "^2.5.1",
