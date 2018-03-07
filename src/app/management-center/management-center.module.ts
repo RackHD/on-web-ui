@@ -16,8 +16,8 @@ import { SkuComponent } from './sku/sku.component';
 import { FilesComponent } from './files/files.component';
 import { TemplatesComponent } from './templates/templates.component';
 import { ConfigComponent } from './config/config.component';
+import { ManagementCenterServicesModule } from './services/management-center-service.module'
 // the dependent services of ManagementCenter
-import { NodeService } from '../services/node.service';
 
 @NgModule({
   imports: [
@@ -25,12 +25,22 @@ import { NodeService } from '../services/node.service';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ManagementCenterRoutingModule
+    ManagementCenterRoutingModule,
+    ManagementCenterServicesModule
   ],
-  providers: [NodeService],
-  declarations: [ManagementCenterComponent, NodesComponent, ProfilesComponent, PollersComponent, 
-    WorkflowsComponent, CatalogsComponent, ObmComponent, SkuComponent, FilesComponent, 
-    TemplatesComponent, ConfigComponent]
+  declarations: [
+    ManagementCenterComponent,
+    NodesComponent,
+    ProfilesComponent,
+    PollersComponent,
+    WorkflowsComponent,
+    CatalogsComponent,
+    ObmComponent,
+    SkuComponent,
+    FilesComponent,
+    TemplatesComponent,
+    ConfigComponent,
+  ]
 })
 
 export class ManagementCenterModule {

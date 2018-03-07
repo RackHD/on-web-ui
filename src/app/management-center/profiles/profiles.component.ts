@@ -3,9 +3,10 @@ import { Comparator, StringFilter } from "@clr/angular";
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import { AlphabeticalComparator } from '../../utils/inventory-operator';
 import * as _ from 'lodash';
 
-import { ProfileService } from '../../services/profile.service';
+import { ProfileService } from '../services/profile.service';
 import { Profile, PAGE_SIZE_OPTIONS } from '../../models';
 
 @Component({
@@ -28,8 +29,8 @@ export class ProfilesComponent implements OnInit {
   selectedPageSize = "15";
   pageSizes = PAGE_SIZE_OPTIONS;
 
-  public scopeComparator = new AlphabeticalComparator('scope');
-  public nameComparator = new AlphabeticalComparator('name');
+  public scopeComparator = new AlphabeticalComparator<Profile>('scope');
+  public nameComparator = new AlphabeticalComparator<Profile>('name');
 
   get dgPageSize() {
     return parseInt(this.selectedPageSize);
@@ -96,17 +97,3 @@ export class ProfilesComponent implements OnInit {
   }
 
 }
-
-class AlphabeticalComparator implements Comparator<Profile> {
-  sortBy: string;
-
-  constructor(sortBy: string) {
-    this.sortBy = sortBy;
-  }
-
-  compare(a: Profile, b: Profile) {
-    let sortedArray = _.sortBy([a, b], [o => o[this.sortBy]]);
-    return _.findIndex(sortedArray, a) - _.findIndex(sortedArray, b);
-  }
-}
-

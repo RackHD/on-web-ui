@@ -9,6 +9,6 @@ export class Template {
 }
 
 export const TEMPLATE_URL = {
-    getAllTemplates: '/profiles/metadata',
-    templateByName: '/profiles/library/',
+    getAllUrl: '/templates/metadata',
+    getByIdentifierUrl: '/templates/library/',
 }
