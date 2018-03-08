@@ -12,7 +12,6 @@ import { Location }           from '@angular/common';
 
 import { AppModule }              from './app.module';
 import { AppComponent }           from './app.component';
-import { LoginModule, LoginComponent }         from './login/index';
 import { HomeModule, HomeComponent } from './home/index';
 import { AuthGuard, UnAuthGuard, UserService } from './services/core/index';
 
@@ -48,13 +47,11 @@ function createTrueComponent() {
   loader   = TestBed.get(NgModuleFactoryLoader);
   loader.stubbedModules = {
     homeModule: HomeModule,
-    loginModule: LoginModule
   };
   // reconfig necessary routes, make sure this totally the same with true routes.
   router.resetConfig([
     { path: '', redirectTo: '/home', pathMatch: 'full' },
-    { path: 'home', loadChildren: 'homeModule', canLoad: [AuthGuard]},
-    { path: 'login', loadChildren: 'loginModule', canLoad: [UnAuthGuard] },
+    { path: 'home', loadChildren: 'homeModule'},
   ]);
 
   // init guard for spy

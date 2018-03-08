@@ -38,7 +38,6 @@ import { environment } from 'environments/environment';
 
 // App is our top level component
 import { AppComponent } from './app.component';
-import { LoginExpiredComponent } from './login/index';
 
 // Services Modules
 import { SharedServicesModule } from './services/sharedServices.module'
@@ -59,8 +58,10 @@ import '../styles/headings.css';
 // import serives, objs use only in this module.
 import {
   IconService,
-  AuthService
 } from './services/core/index';
+
+import { SettingModule } from './settings/setting.module';
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -68,8 +69,7 @@ import {
   bootstrap: [ AppComponent ],
   declarations: [
     AppComponent,
-    LoginExpiredComponent,
-    HeaderComponent
+    HeaderComponent,
   ],
   /**
    * Import Angular's modules.
@@ -85,6 +85,7 @@ import {
     SharedServicesModule,
     // Feature module
     NoContentModule,
+    SettingModule,
     /**
      * This section will import the `DevModuleModule` only in certain build types.
      * When the module is not imported it will get tree shaked.
@@ -103,12 +104,8 @@ import {
 export class AppModule {
   constructor(
     public iconService: IconService,
-    // private authService: AuthService
   ) {
     // must be called once to init IconService
     iconService.load();
-
-    // if token is saved in cookie, use it to login.
-    // authService.initLoginStatus();
   }
 }

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard } from '../services/core/index';
 import { ManagementCenterComponent } from './management-center.component';
 
 import { NodesComponent } from './nodes/nodes.component';
@@ -19,7 +18,6 @@ const ManagementCenterRoutes: Routes = [
   {
     path: '',
     component: ManagementCenterComponent,
-    canLoad: [AuthGuard],
     children: [
       {path: 'nodes', component: NodesComponent},
       {path: 'profiles', component: ProfilesComponent},

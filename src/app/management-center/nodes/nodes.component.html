@@ -1,11 +1,9 @@
-<div class="app-inventory-list">
-  <div class="row">
+<div class="app-nodes">
+  <div class="row toolbar">
     <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 count-summary"
-           *ngFor="let type of deviceTypes"
-           (click)="selectType(type)"
-           [class.selected]="selectedType==type.displayName">
-        <h2>{{ devicesTypeCountMatrix[type.identifier] || 0 }}</h2>
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 count-summary" *ngFor="let type of nodeTypes" (click)="selectType(type)"
+        [class.selected]="selectedType==type.displayName">
+        <h2 class="">{{ nodesTypeCountMatrix[type.identifier] || 0 }}</h2>
         <span class="count-text">{{ type.displayName }}</span>
       </div>
     </div>
@@ -15,7 +13,9 @@
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
       <div class="row grid-header" style="position: relative;margin-bottom: 5px;">
         <div style="margin-left: 15px">
-          <h5><strong>Inventory Grid</strong></h5>
+          <h5>
+            <strong>Node Grid</strong>
+          </h5>
         </div>
         <div class="" style="display: inline-flex;margin-top: 1rem;position: absolute;right: 10px;">
           <div class="search">
@@ -31,12 +31,10 @@
         </div>
       </div>
 
-      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedDevices">
-        <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
+      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedNodes">
+        <clr-dg-column>ID</clr-dg-column>
         <clr-dg-column [clrDgSortBy]="typeComparator">Type
-          <clr-dg-string-filter
-            [(clrFilterValue)]="typeFilterValue"
-            [clrDgStringFilter]="typeFilter">
+          <clr-dg-string-filter [(clrFilterValue)]="typeFilterValue" [clrDgStringFilter]="typeFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
         <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
@@ -45,22 +43,19 @@
         <clr-dg-column>OBM</clr-dg-column>
         <clr-dg-column>IBM</clr-dg-column>
         <clr-dg-column [clrDgSortBy]="skuComparator">SKU
-          <clr-dg-string-filter
-            [(clrFilterValue)]="skuFilterValue"
-            [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
+          <clr-dg-string-filter [(clrFilterValue)]="skuFilterValue" [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
         </clr-dg-column>
         <clr-dg-column [clrDgSortBy]="discoveredTimeComparator">DiscoveredTime</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="autoDiscoverComparator">AutoDiscover</clr-dg-column>
-        <clr-dg-row *clrDgItems="let device of allDevices" [clrDgItem]="device">
-          <clr-dg-cell (click)="goToDetail(device)">{{device.id}}</clr-dg-cell>
-          <clr-dg-cell (click)="goToDetail(device)">{{device.type}}</clr-dg-cell>
-          <clr-dg-cell (click)="goToDetail(device)">{{device.name}}</clr-dg-cell>
-          <clr-dg-cell (click)="goToDetail(device)">{{device.identifiers}}</clr-dg-cell>
-          <clr-dg-cell (click)="goToDetail(device)">{{device.obms | json}}</clr-dg-cell>
-          <clr-dg-cell (click)="goToDetail(device)">{{device.ibms | json}}</clr-dg-cell>
-          <clr-dg-cell (click)="goToDetail(device)">{{device.sku}}</clr-dg-cell>
-          <clr-dg-cell (click)="goToDetail(device)">{{device.discoveredTime}}</clr-dg-cell>
-          <clr-dg-cell (click)="goToDetail(device)">{{device.autoDiscover}}</clr-dg-cell>
+
+        <clr-dg-row *clrDgItems="let node of allNodes" [clrDgItem]="node">
+          <clr-dg-cell (click)="goToDetail(node)">{{node.id}}</clr-dg-cell>
+          <clr-dg-cell>{{node.type}}</clr-dg-cell>
+          <clr-dg-cell>{{node.name}}</clr-dg-cell>
+          <clr-dg-cell>{{node.identifiers}}</clr-dg-cell>
+          <clr-dg-cell (click)="goToShowObmDetail(node)">{{node.obms ? node.obms.length : 0}} service</clr-dg-cell>
+          <clr-dg-cell>{{node.ibms}}</clr-dg-cell>
+          <clr-dg-cell>{{node.sku ? node.sku.split('/')[4] : ''}}</clr-dg-cell>
+          <clr-dg-cell>{{node.discoveredTime}}</clr-dg-cell>
         </clr-dg-row>
         <clr-dg-footer>
           <div class="row">
@@ -74,8 +69,7 @@
               </select>
             </div>
           </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-          of {{pagination.totalItems}} nodes
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
           <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
           </clr-dg-pagination>
         </clr-dg-footer>
@@ -83,33 +77,21 @@
       <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'xl'">
         <h3 class="modal-title">Details of this node</h3>
         <div class="modal-body">
-          <pre>{{selectedDevice | json}}</pre>
-          <!--tree-root [nodes]="selectedDevice"></tree-root-->
+          <pre>{{selectedNode | json}}</pre>
         </div>
       </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isShowObmDetail" [clrModalSize]="'xm'">
+        <h3 class="modal-title">Details of the obm</h3>
+        <div class="modal-body">
+          <pre>{{selectedNode ? (selectedNode.obms | json) : ''}}</pre>
+        </div>
+      </clr-modal>
+
+      <div class="selected">
+        Selected Nodes:
+        <span *ngFor="let node of selectedNodes">{{node? node.id : null}}, </span>
+      </div>
     </div>
-  </div>
-
-  <div class="selected-infor" *ngIf="selectedDevices.length !=0">
-    <p class="selected-nodes">
-      <strong>Selected Nodes: </strong>
-      <span>
-        <em *ngFor="let node of selectedDevices">{{node? node.id : null}}, </em>
-      </span>
-    </p>
-
-    <p style="float: right">
-      <button class="btn btn-primary">Primary</button>
-      <button class="btn btn-success">Success</button>
-      <button class="btn btn-warning">Warning</button>
-      <button class="btn btn-danger">Danger</button>
-    </p>
-    <p style="float: right">
-      <button class="btn btn-outline">Regular</button>
-      <button class="btn btn-success-outline">Success-Outline</button>
-      <button class="btn btn-info-outline">Info</button>
-      <button class="btn btn-warning-outline">Warning</button>
-      <button class="btn btn-danger-outline">Danger</button>
-    </p>
   </div>
 </div>

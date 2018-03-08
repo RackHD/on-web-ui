@@ -1,13 +1,15 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { InventoryService } from '../../services/inventory.service';
-import { Device, DeviceStatus, DeviceType } from '../../inventory/inventory.model';
-
-import { DeviceStatusMap, DeviceTypeMap } from '../../../config/inventory.config';
 import { Comparator, StringFilter } from "@clr/angular";
+
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
+
+import { NODE_TYPE_MAP } from '../../../config/rackhd.config';
+import { NodeService } from '../../services/node.service';
+import { Node, NodeType, NodeStatus } from '../../models/node';
 
 @Component({
   selector: 'app-nodes',
@@ -16,35 +18,31 @@ import * as _ from 'lodash';
   encapsulation: ViewEncapsulation.None
 })
 export class NodesComponent implements OnInit {
-  deviceTypes: DeviceType[];
-  deviceStatus: DeviceStatus[];
-  allDevices: Device[] = [];
-  devicesDataMatrix = {};
-  devicesTypeCountMatrix = {};
-  devicesStatusDataMatrix = {};
-  devicesStatusCountMatrix = {};
-  deviceTypeMap = DeviceTypeMap;
-  deviceStatusMap = DeviceStatusMap;
+  allNodes: Node[] = [];
+  nodesStore: Node[] = [];
+
+  nodeTypes: NodeType[];
+  nodesDataMatrix = {};
+  nodesTypeCountMatrix = {};
+  nodesStatusDataMatrix = {};
+  nodesStatusCountMatrix = {};
 
   selectedType: string;
   selectedSku: string;
-  selectedStatus: string;
-  selectedDevice: Device [];
-
-  selectedDevices: Device [];
-
+  selectedNode: Node;
+  selectedNodes: Node[];
   isShowDetail: boolean;
+  isShowObmDetail: boolean;
 
   // data grid helper
   searchTerms = new Subject<string>();
-  dgDataLoading = true;
-  dgPlaceholder = 'No devices found!'
+  dgDataLoading = false;
+  dgPlaceholder = 'No nodes found!'
   selectedPageSize = '15';
 
   get dgPageSize() {
     return +this.selectedPageSize;
   }
-
 
   public nameComparator = new AlphabeticalComparator('name');
   public idComparator = new AlphabeticalComparator('id');
@@ -65,46 +63,41 @@ export class NodesComponent implements OnInit {
   }
 
   constructor(public activatedRoute: ActivatedRoute,
-              public inventoryService: InventoryService,
-              public router: Router,
-              public changeDetectorRef: ChangeDetectorRef) {
+    public router: Router,
+    public changeDetectorRef: ChangeDetectorRef,
+    public nodeService: NodeService) {
   }
 
   ngOnInit() {
     let self = this;
-    // get device types list
-    this.inventoryService.getDeviceTypes().subscribe(
+    this.nodeService.getNodeTypes().subscribe(
       data => {
-        this.deviceTypes = _.transform(
+        this.nodeTypes = _.transform(
           data,
           function (result, item) {
-            let dt = new DeviceType();
-            if (_.has(DeviceTypeMap, item)) {
+            let dt = new NodeType();
+            if (_.has(NODE_TYPE_MAP, item)) {
               dt.identifier = item;
-              dt.displayName = DeviceTypeMap[item];
+              dt.displayName = NODE_TYPE_MAP[item];
               result.push(dt);
             }
-          }, []
-        )
-        //this.deviceTypes.push({identifier: 'other', displayName: 'Other'}); //Krein: What is this for?
+          }, []);
         this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
           let type = params.get('type');
           if (type) {
-            let dt = new DeviceType();
+            let dt = new NodeType();
             dt.identifier = type;
-            dt.displayName = DeviceTypeMap[type];
+            dt.displayName = NODE_TYPE_MAP[type];
             this.selectType(dt);
           }
-        })
-
+        });
       }
     );
 
-    this.selectedDevices = [];
+    this.selectedNodes = [];
 
-    // get all devices directly
-    // or concat all devices of different types
-    this.getAllDevices();
+    // get all nodes directly or concat all nodes of different types
+    this.getAllNodes();
 
     let searchTrigger = this.searchTerms.pipe(
       // wait 300ms after each keystroke before considering the term
@@ -115,11 +108,11 @@ export class NodesComponent implements OnInit {
 
       // switch to new search observable each time the term changes
       switchMap((term: string) => {
-        return this.searchDevices(term);
+        this.searchNodes(term);
+        return 'whatever';
       })
     );
     searchTrigger.subscribe();
-
   }
 
   search(term: string): void {
@@ -128,50 +121,51 @@ export class NodesComponent implements OnInit {
 
   refreshDatagrid() {
     this.dgDataLoading = true;
-    this.getAllDevices();
+    this.getAllNodes();
   }
 
-  afterGetDevices() {
-    this.devicesTypeCountMatrix = _.transform(this.allDevices, (result, item) => {
+  afterGetNodes() {
+    this.nodesTypeCountMatrix = _.transform(this.allNodes, (result, item) => {
       let type = item.type;
-      if (!_.has(DeviceTypeMap, type)) {
+      if (!_.has(NODE_TYPE_MAP, type)) {
         type = 'other';
       }
       result[type] ? result[type] += 1 : result[type] = 1;
     }, []);
-    /*
-    this.devicesStatusCountMatrix = _.transform(this.allDevices, (result, item) => {
-      let status = item.status;
-      result[status] ? result[status] += 1 : result[status] = 1;
-    }, []);
-     */
   }
 
   // main data resourse
-  getAllDevices() {
-    return this.inventoryService.getAllDevices().toPromise().then(
-      data => {
-        this.allDevices = data;
-        console.log(this.allDevices);
+  getAllNodes(): void {
+    this.nodeService.getAllNodes()
+      .subscribe(data => {
+        this.allNodes = data;
+        this.nodesStore = data;
         this.dgDataLoading = false;
-        this.afterGetDevices();
-      }
-    );
+        this.afterGetNodes();
+      });
   }
 
-  searchDevices(term: string) {
+  searchNodes(term: string): void {
+    const nodes = _.cloneDeep(this.nodesStore);
+    function contains(src: string): boolean {
+      if (!src) {
+        return false;
+      }
+      if (!term) {
+        return true;
+      }
+      return src.toLowerCase().includes(term.toLowerCase());
+    }
     this.dgDataLoading = true;
-    return this.inventoryService.searchDevices(term).toPromise().then(
-      data => {
-        this.allDevices = data
-        this.dgDataLoading = false;
-        this.afterGetDevices();
-      }
-    );
+    this.allNodes = _.filter(nodes, (node) => {
+      return contains(node.name) ||
+        contains(NODE_TYPE_MAP[node.type]);
+    });
+    this.dgDataLoading = false;
+    this.afterGetNodes();
   }
 
-  selectType(type: DeviceType) {
-    this.selectedStatus = '';
+  selectType(type: NodeType) {
     if (this.selectedType === type.displayName) {
       this.selectedType = '';
     } else {
@@ -179,66 +173,47 @@ export class NodesComponent implements OnInit {
       // type 1
       this.selectedType = type.displayName;
       // type 2
-      // this.devices = this.devicesDataMatrix[type.identifier];
+      // this.nodes = this.nodesDataMatrix[type.identifier];
     }
     this.typeFilterValue = this.selectedType;
-    //this.statusFilterValue = this.selectedStatus;
     this.changeDetectorRef.detectChanges();
   }
 
-  /*
-  selectStatus(status: DeviceStatus){
-    this.selectedType = '';
-    if(this.selectedStatus === status.displayName){
-      this.selectedStatus = '';
-    } else{
-      //two types of filter.
-      // type 1
-      this.selectedStatus = status.displayName;
-      // type 2
-      // this.devices = this.devicesDataMatrix[type.identifier];
-    }
-    this.typeFilterValue = this.selectedType;
-    //this.statusFilterValue = this.selectedStatus;
-    this.changeDetectorRef.detectChanges();
-  }
-   */
-
-  goToDetail(device: Device) {
-    this.selectedDevice = [device];
+  goToDetail(node: Node) {
+    this.selectedNode = node;
     this.isShowDetail = true;
-    console.log(this.activatedRoute)
-    //this.router.navigate(['device', device.id], {relativeTo: this.activatedRoute});
   }
 
+  goToShowObmDetail(node: Node) {
+    this.selectedNode = node;
+    this.isShowObmDetail = true;
+  }
 }
 
-class AlphabeticalComparator implements Comparator<Device> {
+class AlphabeticalComparator implements Comparator<Node> {
   sortBy: string;
 
   constructor(sortBy: string) {
     this.sortBy = sortBy;
   }
 
-  compare(a: Device, b: Device) {
+  compare(a: Node, b: Node) {
     let sortedArray = _.sortBy([a, b], [o => o[this.sortBy]]);
     return _.findIndex(sortedArray, a) - _.findIndex(sortedArray, b);
   }
 }
 
-
-class DateComparator implements Comparator<Device> {
+class DateComparator implements Comparator<Node> {
   sortBy: string;
 
   constructor(sortBy: string) {
     this.sortBy = sortBy;
   }
 
-  compare(a: Device, b: Device) {
+  compare(a: Node, b: Node) {
     return Number(a[this.sortBy]) - Number(b[this.sortBy]);
   }
 }
-
 
 ///////////////////////////////////////////////////////////////////
 //
@@ -257,7 +232,7 @@ export class ObjectFilterByKey<T> implements StringFilter<T> {
     if (!obj || !obj[this._field]) {
       return false;
     }
-    if (typeof(obj[this._field]) !== 'string') {
+    if (typeof (obj[this._field]) !== 'string') {
       console.error(`Error,Only accept string in ObjectFilterByKey for: ${obj.constructor.name}[${this._field}].`);
       return false;
     }

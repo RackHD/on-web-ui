@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { EnvironmentService } from '../services/environment.service';
 
 @Component({
@@ -10,42 +13,15 @@ import { EnvironmentService } from '../services/environment.service';
 export class HeaderComponent implements OnInit {
   showSettingModal = false;
   selectedTab = '';
+  openSetting =  false;
 
   ngOnInit() {
     this.selectedTab = window.location.pathname;
   }
 
-  constructor() {
+  constructor() {}
+
+  popSettings(){
+    this.openSetting = true;
   }
-
-  // demoMode:boolean;
-  // modeSwitchModalOpened = false;
-  // constructor(
-  //   public router: Router,
-  //   public authService: AuthService,
-  //   private location: Location
-  // ){
-  //     this.demoMode = false;
-  // }
-  //
-  // logout(){
-  //   this.authService.logout();
-  //   this.goTo('login');
-  // }
-  //
-  // public goTo( path: string ){
-  //   this.router.navigate( [path] );
-  // }
-  //
-  // public onSwitchMode(){
-  //     this.modeSwitchModalOpened = true;
-  //     this.demoMode = ! this.demoMode;
-  // }
-  //
-  // public onModalClosed(){
-  //   this.modeSwitchModalOpened = false;
-  //   location.reload();// refresh page to re-init the app
-  //
-  // }
-
 }
