@@ -49,8 +49,8 @@ import '../../node_modules/@webcomponents/custom-elements/custom-elements.min.js
 import '../../node_modules/prismjs/prism.js';
 import '../../node_modules/prismjs/components/prism-typescript.min.js';
 
-// import '../../node_modules/litegraph.js/build/litegraph.js';
-// import '../../node_modules/jsoneditor/dist/jsoneditor.min.js';
+import 'imports-loader?this=>window!../../node_modules/litegraph.js/build/litegraph.js';
+import '../../node_modules/jsoneditor/dist/jsoneditor.min.js';
 /*
  * global css here, scss will be processed by webpack
  */
