@@ -21,9 +21,14 @@
       "styles": [
         "styles.css",
         "../node_modules/@clr/ui/clr-ui.min.css",
-        "../node_modules/@clr/icons/clr-icons.min.css"
+        "../node_modules/@clr/icons/clr-icons.min.css",
+        "../node_modules/litegraph.js/css/litegraph.css",
+        "../node_modules/jsoneditor/dist/jsoneditor.min.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/litegraph.js/build/litegraph.js",
+        "../node_modules/jsoneditor/dist/jsoneditor.min.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

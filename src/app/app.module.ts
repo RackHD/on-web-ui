@@ -20,6 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { CookieModule } from 'ngx-cookie';
 
+
 /**
  * Customized Service modules, they are used to inject/provide services.
  */
