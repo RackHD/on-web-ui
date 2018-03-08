@@ -24,4 +24,10 @@ export class RackhdHttpService {
     let url = this.baseUrl + this.urlConfig.getByIdentifierUrl + identifier;
     return this.http.get<any>(url, options);
   }
+
+  public patch(body: object, responseType='json'): Observable<any> {
+    let options = {responseType: responseType as 'json'};
+    let url = this.baseUrl + this.urlConfig.patchUrl + identifier;
+    return this.http.patch<any>(url, body, options);
+  }
 }

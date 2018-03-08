@@ -3,7 +3,7 @@ import { Comparator, StringFilter } from "@clr/angular";
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator } from '../../utils/inventory-operator';
+import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../../utils/inventory-operator';
 import * as _ from 'lodash';
 
 import { ProfileService } from '../services/profile.service';
@@ -31,6 +31,9 @@ export class ProfilesComponent implements OnInit {
 
   public scopeComparator = new AlphabeticalComparator<Profile>('scope');
   public nameComparator = new AlphabeticalComparator<Profile>('name');
+  public scopeFilter = new ObjectFilterByKey<Profile>('scope');
+  public nameFilter = new ObjectFilterByKey<Profile>('name');
+  public idFilter = new ObjectFilterByKey<Profile>('id');
 
   get dgPageSize() {
     return parseInt(this.selectedPageSize);
@@ -71,19 +74,7 @@ export class ProfilesComponent implements OnInit {
 
   searchProfile(term: string){
     this.dgDataLoading = true;
-    const profiles = _.cloneDeep(this.allProfiles);
-    function _contains(src: string): boolean {
-      if (!src) {
-        return false;
-      }
-      if (!term) {
-        return true;
-      }
-      return src.toLowerCase().includes(term.toLowerCase());
-    }
-    this.profilesStore = _.filter(profiles, (profile) => {
-      return _contains(profile.name) || _contains(profile.scope);
-    });
+    this.profilesStore = StringOperator.search(term, this.allProfiles, ["name", "scope"]);
     this.dgDataLoading = false;
   }
 

@@ -3,7 +3,7 @@ import { Comparator, StringFilter } from "@clr/angular";
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator } from '../../utils/inventory-operator';
+import { AlphabeticalComparator, StringOperator, ObjectFilterByKey} from '../../utils/inventory-operator';
 import * as _ from 'lodash';
 
 import { TemplateService } from '../services/template.service';
@@ -20,7 +20,7 @@ export class TemplatesComponent implements OnInit {
   allTemplates: Template[] = [];
   isShowRawData: boolean;
   profileRawData: string;
-  selectedProfile: string;
+  selectedTemplate: string;
 
   // data grid helper
   searchTerms = new Subject<string>();
@@ -31,6 +31,9 @@ export class TemplatesComponent implements OnInit {
 
   public scopeComparator = new AlphabeticalComparator<Template>('scope');
   public nameComparator = new AlphabeticalComparator<Template>('name');
+  public scopeFilter = new ObjectFilterByKey('scope');
+  public nameFilter = new ObjectFilterByKey('name');
+  public idFilter = new ObjectFilterByKey('id');
 
   get dgPageSize() {
     return parseInt(this.selectedPageSize);
@@ -44,7 +47,7 @@ export class TemplatesComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
-        this.searchProfile(term);
+        this.searchTemplate(term);
         return 'whatever';
       })
     );
@@ -61,7 +64,7 @@ export class TemplatesComponent implements OnInit {
   }
 
   goToDetail(identifier: string) {
-    this.selectedProfile = identifier;
+    this.selectedTemplate = identifier;
     this.templateService.getByIdentifier(identifier, 'text')
     .subscribe(data => {
       this.profileRawData = data;
@@ -69,21 +72,9 @@ export class TemplatesComponent implements OnInit {
     })
   }
 
-  searchProfile(term: string){
+  searchTemplate(term: string){
     this.dgDataLoading = true;
-    const templates = _.cloneDeep(this.allTemplates);
-    function _contains(src: string): boolean {
-      if (!src) {
-        return false;
-      }
-      if (!term) {
-        return true;
-      }
-      return src.toLowerCase().includes(term.toLowerCase());
-    }
-    this.templatesStore = _.filter(templates, (profile) => {
-      return _contains(profile.name) || _contains(profile.scope);
-    });
+    this.templatesStore = StringOperator.search(term, this.allTemplates, ["name", "scope", "id"]);
     this.dgDataLoading = false;
   }
 

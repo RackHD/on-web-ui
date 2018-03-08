@@ -2,13 +2,15 @@
  This defines the data model of RackHD profiles.
 */
 export class File {
-    id: string;
-    name: string;
-    hash: string;
-    scope: string;
+    uuid: string;
+    version: string;
+    sha256: string;
+    md5: string;
+    filename: string;
+    basename: string;
 }
 
 export const FILE_URL = {
-    getAllfiles: '/files',
-    filesById: '/files/',
+    getAllUrl: '/files',
+    getByIdentifierUrl: '/files/',
 }

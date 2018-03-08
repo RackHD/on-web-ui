@@ -13,31 +13,6 @@ export class AlphabeticalComparator<T> implements Comparator<T> {
     }
 }
 
-// class StringOperator {
-//     static contain: boolean = function (src: string, term: string) {
-//         if (!src) {
-//             return false;
-//         }
-//         if (!term) {
-//             return true;
-//         }
-//         return src.toLowerCase().includes(term.toLowerCase());
-//     }
-
-//     static search: <T> = function (term: string, tableData: T, searchDomain: string[]) {
-//         return _.filter(tableData, data => {
-//             let flag = false;
-//             _.forEach(searchDomain, item => {
-//                 if (this.contain(_.toString(data[item]), term)) {
-//                     flag = true;
-//                     return false;
-//                 }
-//             })
-//             return flag;
-//         });
-//     }
-// }
-
 export class DateComparator implements Comparator<Node> {
     sortBy: string;
 
@@ -57,21 +32,44 @@ export class DateComparator implements Comparator<Node> {
 // Usage:  if you want to filter Event by ID, then new ObjectFilterByKey<Event>('ID').
 ///////////////////////////////////////////////////////////////////
 export class ObjectFilterByKey<T> implements StringFilter<T> {
-    private _field: string;
+  private _field: string;
 
-    constructor(field: string) {
-        this._field = field;
-    }
+  constructor(field: string) {
+    this._field = field;
+  }
 
-    accepts(obj: T, searchKey: string): boolean {
-        if (!obj || !obj[this._field]) {
-            return false;
-        }
-        if (typeof (obj[this._field]) !== 'string') {
-            console.warn(`Warn,Only accept string in ObjectFilterByKey for: ${obj.constructor.name}[${this._field}].`);
-            return JSON.stringify(obj[this._field]).toLowerCase().indexOf(searchKey) >= 0;
-        } else {
-            return obj[this._field].toLowerCase().indexOf(searchKey) >= 0;
-        }
+  accepts(obj: T, searchKey: string): boolean {
+    let stringValue : string;
+    let originValue: any = obj && obj[this._field];
+    if (!originValue) {
+      return false;
     }
+    stringValue = (typeof originValue === "object") ? JSON.stringify(originValue) : originValue.toString();
+    return stringValue.toLowerCase().indexOf(searchKey) >= 0;
+  }
+}
+
+export class StringOperator {
+  static contain(src: string, term: string): boolean {
+    if (!src) {
+      return false;
+    }
+    if (!term) {
+      return true;
+    }
+    return src.toLowerCase().includes(term.toLowerCase());
+  }
+
+  static search<T>(term: string, tableData: Array<T>, searchDomain: string[]): Array<T> {
+    return _.filter(tableData, data => {
+      let flag = false;
+      _.forEach(searchDomain, item => {
+        if(this.contain(_.toString(data[item]), term)){
+          flag = true;
+          return false;
+        }
+      })
+      return flag;
+    });
+  }
 }

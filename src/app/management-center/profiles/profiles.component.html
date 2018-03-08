@@ -21,11 +21,20 @@
         </div>
       </div>
 
-      <clr-datagrid [clrDgLoading]="dgDataLoading">
+      <clr-datagrid class="datagrid-compact"  [clrDgLoading]="dgDataLoading">
         <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-        <clr-dg-column>ID</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nameComparator">Name</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="scopeComparator">Scope</clr-dg-column>
+        <clr-dg-column>ID
+          <clr-dg-string-filter [clrDgStringFilter]="idFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="nameComparator">Name
+          <clr-dg-string-filter [clrDgStringFilter]="nameFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="scopeComparator">Scope
+          <clr-dg-string-filter [clrDgStringFilter]="scopeFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
         <clr-dg-column>Hash</clr-dg-column>
         <clr-dg-column>Actions</clr-dg-column>
 

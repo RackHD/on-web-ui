@@ -21,11 +21,20 @@
         </div>
       </div>
 
-      <clr-datagrid [clrDgLoading]="dgDataLoading">
+      <clr-datagrid  [clrDgLoading]="dgDataLoading">
         <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-        <clr-dg-column>ID</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nameComparator">Name</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="scopeComparator">Scope</clr-dg-column>
+        <clr-dg-column>ID
+          <clr-dg-string-filter [clrDgStringFilter]="idFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="nameComparator">Name
+          <clr-dg-string-filter [clrDgStringFilter]="nameFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="scopeComparator">Scope
+          <clr-dg-string-filter [clrDgStringFilter]="scopeFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
         <clr-dg-column>Hash</clr-dg-column>
         <clr-dg-column>Actions</clr-dg-column>
 
@@ -46,13 +55,13 @@
               </select>
             </div>
           </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} templates 
           <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
           </clr-dg-pagination>
         </clr-dg-footer>
       </clr-datagrid>
       <clr-modal [(clrModalOpen)]="isShowRawData" [clrModalSize]="'xl'">
-      <h3 class="modal-title">Raw data of {{selectedProfile}}</h3>
+      <h3 class="modal-title">Raw data of {{selectedTemplate}}</h3>
         <div class="modal-body">
           <pre>{{profileRawData}}</pre>
         </div>

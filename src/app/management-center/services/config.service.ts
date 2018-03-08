@@ -5,27 +5,21 @@ import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 import 'rxjs/add/operator/delay';
-import { Node, NODE_TYPES, NODE_URL } from '../../models';
+import {CONFIG_URL } from '../../models';
 
 import { environment } from 'environments/environment';
+import { RackhdHttpService } from './rackhd-http';
 
 @Injectable()
-export class NodeService {
-  private baseUrl = environment.RACKHD_API;
+export class ConfigService extends RackhdHttpService {
 
-  constructor(private http: HttpClient) { }
-
-  public getAllNodes(): Observable<Node[]>  {
-    let url = this.baseUrl + NODE_URL.nodes;
-    return this.http.get<Node[]>(url);
+  constructor(public http: HttpClient) {
+    super(http, CONFIG_URL);
   }
 
-  public getNodeById(id: string): Observable<Node> {
-    let url = this.baseUrl + NODE_URL.nodesById + id;
-    return this.http.get<Node>(url);
-  }
-
-  public getNodeTypes(): Observable<string[]> {
-    return Observable.of(NODE_TYPES).delay(500);
+  public patch(body: object, responseType='json'): Observable<any> {
+    let options = {responseType: responseType as 'json'};
+    let url = this.baseUrl + this.urlConfig.patchUrl;
+    return this.http.patch<any>(url, body, options);
   }
 }
