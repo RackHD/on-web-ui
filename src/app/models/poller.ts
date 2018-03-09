@@ -11,9 +11,11 @@ export class Poller {
     lastFinished: string;
     paused: boolean;
     failureCount: number;
+    latestData: string;
 }
 
 export const POLLER_URL = {
     pollers: '/pollers',
     pollersById: '/pollers/',
+    data: '/data/current'
 }

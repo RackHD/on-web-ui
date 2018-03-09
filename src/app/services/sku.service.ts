@@ -1,0 +1,43 @@
+import { Injectable } from '@angular/core';
+import { HttpErrorResponse, HttpResponse, HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs/Observable';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { catchError, retry } from 'rxjs/operators';
+import { SKU, SKU_URL } from 'app/models/sku';
+
+import { environment } from 'environments/environment';
+
+@Injectable()
+export class SkusService {
+  private baseUrl = environment.RACKHD_API;
+
+  constructor(private http: HttpClient) { }
+
+  public getAllSkus(): Observable<SKU[]> {
+    let url = this.baseUrl + SKU_URL.skus;
+    return this.http.get<SKU[]>(url);
+  }
+
+  public getSkuById(id: string): Observable<SKU> {
+    let url = this.baseUrl + SKU_URL.skusById + id;
+    return this.http.get<SKU>(url);
+  }
+
+  public creatOneSku(jsonData: string): Observable<SKU> {
+    let url = this.baseUrl + SKU_URL.skus;
+    return this.http.post<SKU>(url, jsonData,
+      { headers: { 'Content-Type': 'application/json' } });
+  }
+
+  public deleteSkus(skus: SKU[]): Array<Observable<Object>> {
+    let obsList: Array<Observable<Object>> = [];
+    for (let entry of skus) {
+      let url = this.baseUrl + SKU_URL.skusById + entry.id;
+      let response = this.http.delete<Object>(url,
+        { headers: { 'Content-Type': 'application/json' } });
+      obsList.push(response);
+    }
+    return obsList;
+  }
+}

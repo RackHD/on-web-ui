@@ -1,3 +1,184 @@
-<p>
-  pollers works!
-</p>
+<div class="app-pollers">
+  <div>
+    <h6>
+      <strong>Pollers Grid</strong>
+    </h6>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
+        <div class="search">
+          <label for="search_box">
+            <clr-icon shape="search"></clr-icon>
+          </label>
+          <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
+        </div>
+        <button class="btn btn-icon btn-success refresh" (click)="refreshDatagrid()">
+          <clr-icon shape="refresh"></clr-icon>
+        </button>
+        <button class="btn btn-icon btn-warning delete" (click)="willDelete()">
+          <clr-icon shape='trash'></clr-icon>
+        </button>
+        <button class="btn btn-icon create" (click)="willCreatePoller()">
+          <clr-icon shape="add"></clr-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
+      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedPollers">
+        <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="typeComparator">Type
+          <clr-dg-string-filter [(clrFilterValue)]="typeFilterValue" [clrDgStringFilter]="typeFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="configComparator">Command
+          <clr-dg-string-filter [(clrFilterValue)]="configFilterValue" [clrDgStringFilter]="configFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="pollIntervalComparator">PollInterval</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="failureCountComparator">FailureCount</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="pausedComparator">Paused</clr-dg-column>
+        <clr-dg-column>Latest data</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="nodeComparator">Node
+          <clr-dg-string-filter [(clrFilterValue)]="nodeFilterValue" [clrDgStringFilter]="nodeFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="lastStartedComparator">LastStarted</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="lastFinishedComparator">LastFinished</clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let poller of allPollers" [clrDgItem]="poller">
+          <clr-dg-cell>{{poller.id}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.type}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.config['command']}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.pollInterval}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.failureCount}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.paused}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.latestData}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.node.split('/')[4]}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.lastStarted}}</clr-dg-cell>
+          <clr-dg-cell>{{poller.lastFinished}}</clr-dg-cell>
+          <clr-dg-action-overflow>
+            <button class="action-item" (click)="goToDetail(poller)">Raw Data</button>
+            <button class="action-item" (click)="willUpdate(poller)">Edit</button>
+            <button class="action-item" (click)="willDelete(poller)">Delete</button>
+          </clr-dg-action-overflow>
+        </clr-dg-row>
+        <clr-dg-footer>
+          <div class="row">
+            <label for="select_page_size">Select page size:</label>
+            <div class="select">
+              <select id="select_page_size" [(ngModel)]="selectedPageSize">
+                <option>15</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+              </select>
+            </div>
+          </div>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} allPollers
+          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+
+      <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Details of the poller info</h3>
+        <div class="modal-body">
+          <pre>{{selectedPoller | json}}</pre>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isCreatePoller" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Create poller</h3>
+        <div class="modal-body">
+          <form [formGroup]="pollerForm" novalidate>
+            <section class="form-block">
+              <div class="form-group">
+                <label for="selects_1">Poller Type</label>
+                <div class="select">
+                  <select id="selects_1" formControlName="type">
+                    <option>ipmi</option>
+                    <option>snmp</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="selects_2">Node</label>
+                <div class="select">
+                  <select id="selects_2" formControlName="node">
+                    <option></option>
+                    <option *ngFor="let node of allNodes;">{{ node.id }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="selects_3">Poll Interval</label>
+                <div class="select">
+                  <select id="selects_3" formControlName="pollInterval">
+                    <option></option>
+                    <option *ngFor="let interval of INTERVAL_MAP.keys();">{{ interval }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="formFields">Config</label>
+                <textarea id="formFields" rows="4" placeholder='{"command": "driveHealth"}' formControlName="config"></textarea>
+              </div>
+            </section>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="isCreatePoller = false">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="isCreatePoller = false; createPoller();">Ok</button>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Delete Poller</h3>
+        <div class="modal-body">
+          <h4>Are you sure to delete ?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
+          <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Update Poller</h3>
+        <div class="modal-body">
+          <form [formGroup]="updateForm" novalidate>
+            <section class="form-block">
+              <div class="form-group">
+                <label for="update_1">Poller Interval</label>
+                <div class="select">
+                  <select id="update_1" formControlName="pollInterval">
+                    <option>{{defaultInterval}}</option>
+                    <option *ngFor="let interval of INTERVAL_MAP.keys();">{{ interval }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="update_2">Poller Paused</label>
+                <div class="select">
+                  <select id="update_2" formControlName="paused">
+                    <option>{{defaultPaused}}</option>
+                    <option>true</option>
+                    <option>false</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outlet" (click)="isUpdate = false">Cancel</button>
+          <button type="button" class="btn btn-primary btn-danger" (click)="isUpdate = false; update();">OK</button>
+        </div>
+      </clr-modal>
+
+    </div>
+  </div>
+</div>
