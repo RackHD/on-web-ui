@@ -5,9 +5,10 @@ import { ClarityModule } from '@clr/angular';
 
 import { NodeExtensionService } from '../canvas-graph/node-extension.service';
 import { WorkflowService } from '../services/workflow.service';
-
 import { CanvasGraphComponent } from '../canvas-graph/canvas-graph.component';
+
 import { WorkflowViewerComponent } from '../workflow-viewer/workflow-viewer.component';
+import { EditWorkflowComponent } from './edit-workflow/edit-workflow.component';
 import { WorkflowEditorComponent } from './workflow-editor.component';
 import { WorkflowEditorRoutingModule } from './workflow-editor-routing.module';
 
@@ -22,7 +23,8 @@ import { WorkflowEditorRoutingModule } from './workflow-editor-routing.module';
   declarations: [
     CanvasGraphComponent,
     WorkflowEditorComponent,
-    WorkflowViewerComponent
+    WorkflowViewerComponent,
+    EditWorkflowComponent
   ],
   providers: [
     NodeExtensionService,

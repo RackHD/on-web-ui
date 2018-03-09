@@ -401,8 +401,8 @@ export class CanvasGraphComponent implements OnInit {
       if (!_.isUndefined(task.waitOn) && !_.isEmpty(task.waitOn)) {
         let originNode = _.find(allNodes, (node) => node.title === _.keys(task.waitOn)[0]);
 
-        let originSlot = _.findIndex(originNode.outputs, (o) => o.name === _.values(task.waitOn)[0]);
-        // let originSlot = _.findIndex(originNode.outputs, (o) => o.name === _.values(task.waitOn)[0]);
+        let originSlot = _.findIndex(originNode.outputs, (o) => (o as any).name === _.values(task.waitOn)[0]);
+        // let originSlot = _.findIndex(originNode.outputs, (o) => (o as any).name === _.values(task.waitOn)[0]);
         originNode.connect(originSlot, taskNode, 0);
       }
 
@@ -411,7 +411,7 @@ export class CanvasGraphComponent implements OnInit {
         let originNode = _.find(allNodes, (node) => node.properties.task.instanceId === _.keys(task.waitingOn)[0]);
         let originSlot = _.findIndex(originNode.outputs, (o) => {
           if (typeof _.values(task.waitingOn)[0] === 'object') {
-            return o.name === _.values(task.waitingOn)[0][0];
+            return (o as any).name === _.values(task.waitingOn)[0][0];
           } else {
             return _.values(task.waitingOn)[0];
           }
