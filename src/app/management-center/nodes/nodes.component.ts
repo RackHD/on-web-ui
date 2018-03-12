@@ -11,6 +11,13 @@ import { NODE_TYPE_MAP } from '../../../config/rackhd.config';
 import { NodeService } from '../../services/node.service';
 import { Node, NodeType, NodeStatus } from '../../models/node';
 
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ObmService } from 'app/services/obm.service';
+import { OBM } from 'app/models';
+import { SKU_URL } from 'app/models/sku';
+import { AlphabeticalComparator, DateComparator, ObjectFilterByKey }
+  from 'app/utils/inventory-operator';
+
 @Component({
   selector: 'app-nodes',
   templateUrl: './nodes.component.html',
@@ -19,7 +26,7 @@ import { Node, NodeType, NodeStatus } from '../../models/node';
 })
 export class NodesComponent implements OnInit {
   allNodes: Node[] = [];
-  nodesStore: Node[] = [];
+  dataStore: Node[] = [];
 
   nodeTypes: NodeType[];
   nodesDataMatrix = {};
@@ -32,7 +39,16 @@ export class NodesComponent implements OnInit {
   selectedNode: Node;
   selectedNodes: Node[];
   isShowDetail: boolean;
+
   isShowObmDetail: boolean;
+  selectedObm: OBM[];
+
+  isShowSkuDetail: boolean;
+  skuDetail: any;
+
+  isCreateNode: boolean;
+  isDelete: boolean;
+  nodeForm: FormGroup;
 
   // data grid helper
   searchTerms = new Subject<string>();
@@ -65,7 +81,9 @@ export class NodesComponent implements OnInit {
   constructor(public activatedRoute: ActivatedRoute,
     public router: Router,
     public changeDetectorRef: ChangeDetectorRef,
-    public nodeService: NodeService) {
+    public nodeService: NodeService,
+    public obmService: ObmService,
+    private fb: FormBuilder) {
   }
 
   ngOnInit() {
@@ -98,17 +116,13 @@ export class NodesComponent implements OnInit {
 
     // get all nodes directly or concat all nodes of different types
     this.getAllNodes();
+    this.createForm();
 
     let searchTrigger = this.searchTerms.pipe(
-      // wait 300ms after each keystroke before considering the term
       debounceTime(300),
-
-      // ignore new term if same as previous term
       distinctUntilChanged(),
-
-      // switch to new search observable each time the term changes
       switchMap((term: string) => {
-        this.searchNodes(term);
+        this.searchIterm(term);
         return 'whatever';
       })
     );
@@ -139,14 +153,59 @@ export class NodesComponent implements OnInit {
     this.nodeService.getAllNodes()
       .subscribe(data => {
         this.allNodes = data;
-        this.nodesStore = data;
+        this.dataStore = data;
         this.dgDataLoading = false;
         this.afterGetNodes();
       });
   }
 
-  searchNodes(term: string): void {
-    const nodes = _.cloneDeep(this.nodesStore);
+  willCreateNode(): void {
+    this.isCreateNode = true;
+  }
+
+  willDelete(node?: Node): void {
+    if (node) {
+      this.selectedNodes = [node];
+    }
+    this.isDelete = true;
+  }
+
+  createForm() {
+    this.nodeForm = this.fb.group({
+      name: '',
+      type: '',
+      autoDiscover: '',
+      otherConfig: '',
+    });
+  }
+
+  createNode(): void {
+    let value = this.nodeForm.value;
+    let jsonData = value['otherConfig'] ? JSON.parse(value['otherConfig']) : {};
+
+    // data transform
+    jsonData['name'] = value['name'];
+    jsonData['type'] = value['type'];
+    jsonData['autoDiscover'] = value['autoDiscover'] === 'true' ? true : false;
+
+    let postData = JSON.stringify(jsonData);
+    this.nodeService.creatOneNode(postData)
+      .subscribe(data => {
+        this.refreshDatagrid();
+      });
+  }
+
+  delete(): void {
+    let res = this.nodeService.deleteNodes(this.selectedNodes);
+    for (let entry of res) {
+      entry.subscribe(() => {
+        this.refreshDatagrid();
+      });
+    }
+  }
+
+  searchIterm(term: string): void {
+    const datas = _.cloneDeep(this.dataStore);
     function contains(src: string): boolean {
       if (!src) {
         return false;
@@ -157,9 +216,9 @@ export class NodesComponent implements OnInit {
       return src.toLowerCase().includes(term.toLowerCase());
     }
     this.dgDataLoading = true;
-    this.allNodes = _.filter(nodes, (node) => {
-      return contains(node.name) ||
-        contains(NODE_TYPE_MAP[node.type]);
+    this.allNodes = _.filter(datas, (data) => {
+      return contains(data.name) ||
+        contains(NODE_TYPE_MAP[data.type]);
     });
     this.dgDataLoading = false;
     this.afterGetNodes();
@@ -186,56 +245,34 @@ export class NodesComponent implements OnInit {
 
   goToShowObmDetail(node: Node) {
     this.selectedNode = node;
+    this.selectedObm = [];
+    for (let entry of node.obms) {
+      let obmId = entry['ref'].split('/').pop();
+      this.getObmById(obmId);
+    }
     this.isShowObmDetail = true;
   }
-}
 
-class AlphabeticalComparator implements Comparator<Node> {
-  sortBy: string;
-
-  constructor(sortBy: string) {
-    this.sortBy = sortBy;
-  }
-
-  compare(a: Node, b: Node) {
-    let sortedArray = _.sortBy([a, b], [o => o[this.sortBy]]);
-    return _.findIndex(sortedArray, a) - _.findIndex(sortedArray, b);
-  }
-}
-
-class DateComparator implements Comparator<Node> {
-  sortBy: string;
-
-  constructor(sortBy: string) {
-    this.sortBy = sortBy;
-  }
-
-  compare(a: Node, b: Node) {
-    return Number(a[this.sortBy]) - Number(b[this.sortBy]);
-  }
-}
-
-///////////////////////////////////////////////////////////////////
-//
-// Filter for specific field of a Obj
-//
-// Usage:  if you want to filter Event by ID, then new ObjectFilterByKey<Event>('ID').
-///////////////////////////////////////////////////////////////////
-export class ObjectFilterByKey<T> implements StringFilter<T> {
-  private _field: string;
-
-  constructor(field: string) {
-    this._field = field;
-  }
-
-  accepts(obj: T, searchKey: string): boolean {
-    if (!obj || !obj[this._field]) {
-      return false;
+  goToShowSkuDetail(node: Node) {
+    this.selectedNode = node;
+    let skuId = node.sku ? node.sku.split('/')[4] : '';
+    if (skuId) {
+      let suffix = SKU_URL.skusById + '?query=' + skuId;
+      this.nodeService.get(suffix)
+        .subscribe(data => {
+          this.skuDetail = data;
+          this.isShowSkuDetail = true;
+        });
+    } else {
+      this.skuDetail = [];
+      this.isShowSkuDetail = true;
     }
-    if (typeof (obj[this._field]) !== 'string') {
-      console.error(`Error,Only accept string in ObjectFilterByKey for: ${obj.constructor.name}[${this._field}].`);
-      return false;
-    }
-    return obj[this._field].toLowerCase().indexOf(searchKey) >= 0;
+  }
+
+  getObmById(identifier: string): void {
+    this.obmService.getObmById(identifier)
+      .subscribe(data => {
+        this.selectedObm.push(data);
+      });
   }
 }

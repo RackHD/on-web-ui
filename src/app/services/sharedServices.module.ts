@@ -10,14 +10,21 @@ import { AppCoreModule } from './core/core.module';
 import { ActivityService } from './activity.service';
 
 import { NodeService } from './node.service';
-
+import { CatalogsService } from './catalogs.service';
+import { PollersService } from './pollers.service';
+import { ObmService } from './obm.service';
+import { SkusService } from './sku.service';
 
 @NgModule({
   exports: [
-      AppCoreModule,
+    AppCoreModule,
   ],
   providers: [
     NodeService,
+    CatalogsService,
+    PollersService,
+    ObmService,
+    SkusService,
   ]
 })
-export class SharedServicesModule {}
+export class SharedServicesModule { }

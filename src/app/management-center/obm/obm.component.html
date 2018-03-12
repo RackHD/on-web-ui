@@ -1,3 +1,158 @@
-<p>
-  obm works!
-</p>
+<div class="app-obm">
+  <div>
+    <h6>
+      <strong>OBMs Grid</strong>
+    </h6>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
+      <div class="search">
+        <label for="search_box">
+          <clr-icon shape="search"></clr-icon>
+        </label>
+        <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
+      </div>
+      <button class="btn btn-icon btn-success refresh" (click)="refreshDatagrid()">
+        <clr-icon shape="refresh"></clr-icon>
+      </button>
+      <button class="btn btn-icon btn-warning delete" (click)="willDelete()">
+        <clr-icon shape="trash"></clr-icon>
+      </button>
+      <button class="btn btn-icon create" (click)="willCreateObm()">
+        <clr-icon shape="add"></clr-icon>
+      </button>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
+      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedObms">
+        <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="nodeComparator">Node
+          <clr-dg-string-filter [(clrFilterValue)]="nodeFilterValue" [clrDgStringFilter]="nodeFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="serviceComparator">Service
+          <clr-dg-string-filter [(clrFilterValue)]="serviceFilterValue" [clrDgStringFilter]="serviceFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="configComparator">Config</clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let obm of allObms" [clrDgItem]="obm">
+          <clr-dg-cell>{{obm.id}}</clr-dg-cell>
+          <clr-dg-cell>{{obm.node.split('/')[4]}}</clr-dg-cell>
+          <clr-dg-cell>{{obm.service}}</clr-dg-cell>
+          <clr-dg-cell>{{obm.config | json}}</clr-dg-cell>
+          <clr-dg-action-overflow>
+            <button class="action-item" (click)="goToDetail(obm)">Raw Data</button>
+            <button class="action-item" (click)="willUpdate(obm)">Edit</button>
+            <button class="action-item" (click)="willDelete(obm)">Delete</button>
+          </clr-dg-action-overflow>
+
+        </clr-dg-row>
+        <clr-dg-footer>
+          <div class="row">
+            <label for="select_page_size">Select page size:</label>
+            <div class="select">
+              <select id="select_page_size" [(ngModel)]="selectedPageSize">
+                <option>15</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+              </select>
+            </div>
+          </div>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} allObms
+          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+      <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Details of the obm info</h3>
+        <div class="modal-body">
+          <pre>{{selectedObm | json}}</pre>
+        </div>
+      </clr-modal>
+
+
+      <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Create OBM</h3>
+        <div class="modal-body">
+          <form [formGroup]="obmForm" novalidate>
+            <section class="form-block">
+              <div class="form-group">
+                <label for="selects_2">NodeId</label>
+                <div class="select">
+                  <select id="selects_2" formControlName="nodeId">
+                    <option></option>
+                    <option *ngFor="let node of allNodes;">{{ node.id }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="formFileds_1">user</label>
+                <input type="text" id="formFileds_1" formControlName="user">
+              </div>
+
+              <div class="form-group">
+                <label for="formFileds_2">password</label>
+                <input type="text" id="formFileds_2" formControlName="password">
+              </div>
+
+              <div class="form-group">
+                <label for="formFileds_3">host</label>
+                <input type="text" id="formFileds_3" formControlName="host">
+              </div>
+            </section>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="isCreateObm = false">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="isCreateObm = false; createObm();">OK</button>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Update OBM</h3>
+        <div class="modal-body">
+
+          <form [formGroup]="updateForm" novalidate>
+            <section class="form-block">
+              <div class="form-group">
+                <label for="formFileds_1">user</label>
+                <input type="text" id="formFileds_1" formControlName="user">
+              </div>
+
+              <div class="form-group">
+                <label for="formFileds_2" class="required">password</label>
+                <input type="text" id="formFileds_2" formControlName="password">
+              </div>
+
+              <div class="form-group">
+                <label for="formFileds_3">host</label>
+                <input type="text" id="formFileds_3" formControlName="host">
+              </div>
+            </section>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="isUpdate = false">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="isUpdate = false; update();">OK</button>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Delete OBM</h3>
+        <div class="modal-body">
+          <h4>Are you sure to delete ?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
+          <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
+        </div>
+      </clr-modal>
+
+    </div>
+  </div>
+</div>

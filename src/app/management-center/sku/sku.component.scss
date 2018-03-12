@@ -1,4 +1,4 @@
-.app-nodes{
+.app-sku{
 
     .grid-header {
       margin-bottom: -24px;
@@ -6,52 +6,23 @@
         padding-top: 18px;
         .create {
             float: right;
-            padding: 2px;
+            padding: 1px;
         }
         .delete {
             float: right;
-            padding: 2px;
+            padding: 1px;
         }
         .refresh {
             float: right;
-            padding: 2px;
+            padding: 1px;
           }
         .search{
           float: right;
-          padding: 2px;
+          padding: 1px;
           margin-top: 12px;
         }
       }
     }
-
-    .header-button {
-      .create {
-          float: left;
-          // padding: 1px;
-      }
-      .delete {
-          float: left;
-          // padding: 1px;
-      }
-      .refresh {
-          float: left;
-          // padding: 1px;
-        }
-      .search{
-        float: right;
-        padding: 1px;
-        margin-top: 12px;
-      }
-    }
-
-    .grid-item:hover {
-      color: blue
-    }
-
-    .more-action {
-      float: right;
-    }
-
 
     clr-dg-footer {
       .select {
@@ -59,4 +30,20 @@
       }
     }
 
+    .header-button {
+      .create {
+          float: left;
+      }
+      .delete {
+          float: left;
+      }
+      .refresh {
+          float: left;
+        }
+      .search{
+        float: right;
+        padding: 1px;
+        margin-top: 12px;
+      }
+    }
   }
