@@ -12,15 +12,19 @@ import { Profile, PAGE_SIZE_OPTIONS } from '../../models';
 @Component({
   selector: 'app-profiles',
   templateUrl: './profiles.component.html',
-  styleUrls: ['./profiles.component.css'],
+  styleUrls: ['./profiles.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class ProfilesComponent implements OnInit {
   profilesStore: Profile[] = [];
   allProfiles: Profile[] = [];
-  isShowRawData: boolean;
-  profileRawData: string;
-  selectedProfile: string;
+  selectedProfile: Profile;
+
+  files: FileList;
+
+  action: string;
+  isShowModal: boolean;
+  rawData: string;
 
   // data grid helper
   searchTerms = new Subject<string>();
@@ -42,7 +46,7 @@ export class ProfilesComponent implements OnInit {
   constructor(private profileService: ProfileService) { }
 
   ngOnInit() {
-    this.getAllProfiles();
+    this.getAll();
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -54,7 +58,8 @@ export class ProfilesComponent implements OnInit {
     searchTrigger.subscribe();
   }
 
-  getAllProfiles(): void {
+
+  getAll(): void {
     this.profileService.getAll()
       .subscribe(data => {
         this.profilesStore = data;
@@ -63,12 +68,19 @@ export class ProfilesComponent implements OnInit {
       });
   }
 
-  goToDetail(identifier: string) {
-    this.selectedProfile = identifier;
+  getMetaData(identifier: string) {
+    this.profileService.getMetaByIdentifier(identifier)
+    .subscribe(data => {
+      this.rawData = data;
+      this.isShowModal = true;
+    })
+  }
+
+  getRawData(identifier: string) {
     this.profileService.getByIdentifier(identifier, 'text')
     .subscribe(data => {
-      this.profileRawData = data;
-      this.isShowRawData = true;
+      this.rawData = data;
+      this.isShowModal = true;
     })
   }
 
@@ -78,13 +90,52 @@ export class ProfilesComponent implements OnInit {
     this.dgDataLoading = false;
   }
 
-  search(term: string): void {
+  onSearch(term: string): void {
     this.searchTerms.next(term);
   }
 
-  refresh() {
+  onRefresh() {
     this.dgDataLoading = true;
-    this.getAllProfiles();
+    this.getAll();
+  }
+
+  onCreate(){
+    this.action = "Upload";
+    this.isShowModal = true;
+  }
+
+  onUpdate(profile: Profile){
+    this.selectedProfile = profile;
+    this.action = "Update";
+    this.isShowModal = true;
+  }
+
+  onGetDetails(profile: Profile) {
+    this.selectedProfile = profile;
+    this.action = "Meta";
+    this.getMetaData(profile.name);
+  };
+
+  onGetRawData(profile: Profile) {
+    this.selectedProfile = profile;
+    this.action = "Raw"
+    this.getRawData(profile.name);
+  };
+
+  onChange(event){
+    this.files =  event.target.files;
+  }
+
+  onCreateSubmit(){
+    //existingFilename is used to store filename when updating file
+    let existingFilename = this.selectedProfile && this.selectedProfile.name;
+    let file = this.files[0];
+    //TODO: Add more details on progress
+    //TODO: And use sync mode instead of async mode
+    //TODO: Add support on multiple files upload support
+    this.profileService.upload(existingFilename || file.name, file)
+    this.selectedProfile = null;
+    this.onRefresh();
   }
 
 }

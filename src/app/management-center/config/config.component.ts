@@ -8,22 +8,23 @@ import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angu
 import * as _ from 'lodash';
 
 import { ConfigService } from '../services/config.service';
-import { Config, PAGE_SIZE_OPTIONS } from '../../models';
+import { Config, PAGE_SIZE_OPTIONS} from '../../models';
 
 @Component({
   selector: 'app-config',
   templateUrl: './config.component.html',
-  styleUrls: ['./config.component.css'],
+  styleUrls: ['./config.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class ConfigComponent implements OnInit {
   configStore: Config[] = [];
   allConfig: Config[] = [];
-  isShowUpdateModal: boolean;
-  configRawData: string;
   selectedConfig: Config;
-  updateFormGroup: FormGroup;
-  isShowUpdateStatus: boolean = true;
+
+  modalAction: string;
+  isShowModal: boolean;
+  modalFormGroup: FormGroup;
+  isShowUpdateStatus: boolean;
   configureType: string;
 
   // data grid helper
@@ -45,7 +46,10 @@ export class ConfigComponent implements OnInit {
 
   ngOnInit() {
     this.getAllConfig();
-    this.updateFormGroup = new FormGroup({value: new FormControl('')});
+    this.modalFormGroup = new FormGroup({
+      key: new FormControl(''),
+      value: new FormControl('')
+    });
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -89,17 +93,25 @@ export class ConfigComponent implements OnInit {
   }
 
   onUpdate(item: Config) {
+    this.isShowUpdateStatus = true;
     this.selectedConfig = item;
     this.configureType = typeof item.value;
     //Configure values can be string, number or object;
     let value = (this.configureType === "object")
       ? JSON.stringify(this.selectedConfig.value)
       : this.selectedConfig.value;
-    this.updateFormGroup.setValue({value: value});
-    this.isShowUpdateModal = true
+    this.modalFormGroup.setValue({key: item.key, value: value});
+    this.modalAction = "Update";
+    this.isShowModal = true;
   };
 
-  onCreate() {};
+  onCreate() {
+    this.isShowUpdateStatus = true;
+    this.selectedConfig = {key: null, value: null};
+    this.modalFormGroup.setValue({key: null, value: null});
+    this.modalAction = "Create";
+    this.isShowModal = true;
+  };
 
   onDelete() {};
 
@@ -109,19 +121,28 @@ export class ConfigComponent implements OnInit {
 
   onGetRawData() {};
 
+  getHttpMethod(){
+    if (this.modalAction === "Create") { return "put";}
+    if (this.modalAction === "Update") { return "patch";}
+  };
+
   onSubmit(){
-    let value: any = this.updateFormGroup.get("value").value;
+    let key: any = this.modalFormGroup.get("key").value;
+    let value: any = this.modalFormGroup.get("value").value;
+    let method: string = this.getHttpMethod();
     if (this.configureType === "number") {
       value = parseInt(value);
     } else if(this.configureType === "object"){
       value = JSON.parse(value);
     }
     let payload = {};
-    payload[this.selectedConfig.key] = value;
-    this.configService.patch(payload)
+    payload[key] = value;
+    this.configService[method](payload)
     .subscribe( data => {
+      this.selectedConfig.key = key;
       this.selectedConfig.value = data[this.selectedConfig.key];
       this.isShowUpdateStatus = false;
+      this.onRefresh();
     });
   }
 }

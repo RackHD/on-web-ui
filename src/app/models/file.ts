@@ -13,4 +13,5 @@ export class File {
 export const FILE_URL = {
     getAllUrl: '/files',
     getByIdentifierUrl: '/files/',
+    getMetadataUrl: '/files/',
 }

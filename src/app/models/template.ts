@@ -11,4 +11,5 @@ export class Template {
 export const TEMPLATE_URL = {
     getAllUrl: '/templates/metadata',
     getByIdentifierUrl: '/templates/library/',
+    getMetadataUrl: '/templates/metadata/',
 }

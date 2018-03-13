@@ -25,12 +25,6 @@ export class DateComparator implements Comparator<Node> {
     }
 }
 
-///////////////////////////////////////////////////////////////////
-//
-// Filter for specific field of a Obj
-//
-// Usage:  if you want to filter Event by ID, then new ObjectFilterByKey<Event>('ID').
-///////////////////////////////////////////////////////////////////
 export class ObjectFilterByKey<T> implements StringFilter<T> {
   private _field: string;
 

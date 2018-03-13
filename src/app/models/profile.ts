@@ -11,4 +11,5 @@ export class Profile {
 export const PROFILE_URL = {
     getAllUrl: '/profiles/metadata',
     getByIdentifierUrl: '/profiles/library/',
+    getMetadataUrl: '/profiles/metadata/'
 }
