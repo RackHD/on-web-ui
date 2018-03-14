@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Poller, Node } from 'app/models';
+import { Poller, Node , POLLER_INTERVAL} from 'app/models';
 import { PollersService } from 'app/services/pollers.service';
 import { NodeService } from 'app/services/node.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -16,7 +16,7 @@ import * as _ from 'lodash';
   styleUrls: ['./pollers.component.scss']
 })
 export class PollersComponent implements OnInit {
-  INTERVAL_MAP = new Map<string, number>();
+  pollerInterval: number[] = POLLER_INTERVAL;
 
   allPollers: Array<Poller>;
   dataStore: Poller[] = [];
@@ -45,10 +45,6 @@ export class PollersComponent implements OnInit {
 
   constructor(public pollersService: PollersService, public nodeService: NodeService,
     private fb: FormBuilder) {
-    this.INTERVAL_MAP.set('1 hour', 3600000);
-    this.INTERVAL_MAP.set('3 hours', 10800000);
-    this.INTERVAL_MAP.set('6 hours', 21600000);
-    this.INTERVAL_MAP.set('24 hours', 86400000);
   }
 
   public idComparator = new AlphabeticalComparator('id');
@@ -70,6 +66,7 @@ export class PollersComponent implements OnInit {
     this.getAllNodes();
     this.createForm();
     this.selectedPollers = [];
+    this.defaultInterval = 60000; 
 
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
@@ -148,7 +145,7 @@ export class PollersComponent implements OnInit {
     let value = this.updateForm.value;
 
     if (value['pollInterval'] !== this.defaultInterval) {
-      jsonData['pollInterval'] = this.INTERVAL_MAP.get(value['pollInterval']);
+      jsonData['pollInterval'] = value['pollInterval'];
     }
     if (value['paused'] !== this.defaultPaused) {
       jsonData['paused'] = !this.defaultPaused;
@@ -206,7 +203,7 @@ export class PollersComponent implements OnInit {
     // data transform
     jsonData['type'] = value['type'];
     jsonData['node'] = value['node'];
-    jsonData['pollInterval'] = this.INTERVAL_MAP.get(value.pollInterval);
+    jsonData['pollInterval'] = value.pollInterval;
     jsonData['config'] = value.config ? JSON.parse(value.config) : {};
 
     let postData = JSON.stringify(jsonData);

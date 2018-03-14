@@ -29,8 +29,10 @@ export class SkuComponent implements OnInit {
   isCreateSku: boolean;
   isDelete: boolean;
   selectedSkus: SKU[];
+  isSkuOnly: boolean;
 
   skuForm: FormGroup;
+  skuPackFiles: FileList;
 
   defaultRules: string = ' ' ;
 
@@ -47,6 +49,7 @@ export class SkuComponent implements OnInit {
     this.getAllSkus();
     this.createForm();
     this.selectedSkus = [];
+    this.isSkuOnly = false;
 
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
@@ -85,6 +88,10 @@ export class SkuComponent implements OnInit {
       rules: '',
       discoveryGraphOptions: ''
     });
+  }
+  
+  onRadioChange(){
+    this.isSkuOnly = !this.isSkuOnly;
   }
 
   getAllSkus(): void {
@@ -128,7 +135,11 @@ export class SkuComponent implements OnInit {
     this.dgDataLoading = true;
     this.getAllSkus();
   }
-  
+
+  onChange(event){
+    this.skuPackFiles = event.target.files;
+  }
+
   createSku(): void {
     let jsonData = {};
     let value = this.skuForm.value;
@@ -145,6 +156,13 @@ export class SkuComponent implements OnInit {
       .subscribe(data => {
         this.refreshDatagrid();
       });
+  }
+
+  createSkupack(): void {
+    let file = this.skuPackFiles[0];
+    let identifier = this.selectedSkus.length && this.selectedSku[0]['id'];
+    this.skusService.upload(file, identifier);
+    this.getAllSkus();
   }
 
   delete(): void {

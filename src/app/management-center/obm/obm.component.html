@@ -1,9 +1,9 @@
 <div class="app-obm">
-  <div>
-    <h6>
-      <strong>OBMs Grid</strong>
-    </h6>
-  </div>
+
+  <h5 class="header-text">
+    <strong>OBM Grid</strong>
+  </h5>
+
   <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
       <div class="search">
@@ -12,20 +12,17 @@
         </label>
         <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
       </div>
-      <button class="btn btn-icon btn-success refresh" (click)="refreshDatagrid()">
+      <button class="btn btn-icon refresh" (click)="refreshDatagrid()">
         <clr-icon shape="refresh"></clr-icon>
       </button>
-      <button class="btn btn-icon btn-warning delete" (click)="willDelete()">
+      <button class="btn btn-icon delete" (click)="willDelete()">
         <clr-icon shape="trash"></clr-icon>
       </button>
       <button class="btn btn-icon create" (click)="willCreateObm()">
         <clr-icon shape="add"></clr-icon>
       </button>
     </div>
-  </div>
 
-
-  <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedObms">
         <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
@@ -45,9 +42,9 @@
           <clr-dg-cell>{{obm.service}}</clr-dg-cell>
           <clr-dg-cell>{{obm.config | json}}</clr-dg-cell>
           <clr-dg-action-overflow>
-            <button class="action-item" (click)="goToDetail(obm)">Raw Data</button>
-            <button class="action-item" (click)="willUpdate(obm)">Edit</button>
+            <button class="action-item" (click)="willUpdate(obm)">Update</button>
             <button class="action-item" (click)="willDelete(obm)">Delete</button>
+            <button class="action-item" (click)="goToDetail(obm)">Details</button>
           </clr-dg-action-overflow>
 
         </clr-dg-row>
@@ -74,7 +71,6 @@
           <pre>{{selectedObm | json}}</pre>
         </div>
       </clr-modal>
-
 
       <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'lg'">
         <h3 class="modal-title">Create OBM</h3>

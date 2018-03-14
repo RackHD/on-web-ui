@@ -9,166 +9,161 @@
     </div>
   </div>
 
-  <div>
-    <h6>
-      <strong>Node Grid</strong>
-    </h6>
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
-        <div class="search">
-          <label for="search_box">
-            <clr-icon shape="search"></clr-icon>
-          </label>
-          <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
-        </div>
-        <button class="btn btn-icon btn-success refresh" (click)="refreshDatagrid()">
-          <clr-icon shape="refresh"></clr-icon>
-        </button>
-        <button class="btn btn-icon btn-warning delete" (click)="willDelete()">
-          <clr-icon shape="trash"></clr-icon>
-        </button>
-        <button class="btn btn-icon create" (click)="willCreateNode()">
-          <clr-icon shape="add"></clr-icon>
-        </button>
-      </div>
-    </div>
-  </div>
+  <h5>
+    <strong>Node Grid</strong>
+  </h5>
 
   <div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
-      <div class="row grid-header">
-        <div>
-          <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedNodes">
-            <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
-            <clr-dg-column [clrDgSortBy]="typeComparator">Type
-              <clr-dg-string-filter [(clrFilterValue)]="typeFilterValue" [clrDgStringFilter]="typeFilter">
-              </clr-dg-string-filter>
-            </clr-dg-column>
-            <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-            <clr-dg-column [clrDgSortBy]="nameComparator">Name</clr-dg-column>
-            <clr-dg-column [clrDgSortBy]="identifiersComparator">Identifiers</clr-dg-column>
-            <clr-dg-column>OBM</clr-dg-column>
-            <clr-dg-column>IBM</clr-dg-column>
-            <clr-dg-column [clrDgSortBy]="skuComparator">SKU
-              <clr-dg-string-filter [(clrFilterValue)]="skuFilterValue" [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
-            </clr-dg-column>
-            <clr-dg-column [clrDgSortBy]="discoveredTimeComparator">DiscoveredTime</clr-dg-column>
 
-            <clr-dg-row *clrDgItems="let node of allNodes" [clrDgItem]="node">
-              <clr-dg-cell>{{node.id}}</clr-dg-cell>
-              <clr-dg-cell>{{node.type}}</clr-dg-cell>
-              <clr-dg-cell>{{node.name}}</clr-dg-cell>
-              <clr-dg-cell>{{node.identifiers}}</clr-dg-cell>
-              <div>
-                <clr-dg-cell class="grid-item" (click)="goToShowObmDetail(node)">
-                  {{node.obms ? node.obms.length : 0}} service
-                </clr-dg-cell>
-              </div>
-              <clr-dg-cell>{{node.ibms}}</clr-dg-cell>
-              <clr-dg-cell class="grid-item" (click)="goToShowSkuDetail(node)">{{node.sku ? node.sku.split('/')[4] : ''}}</clr-dg-cell>
-              <clr-dg-cell>{{node.discoveredTime}}</clr-dg-cell>
-              <clr-dg-action-overflow class="more-action">
-                <button class="action-item" (click)="goToDetail(node)">Raw Data</button>
-                <button class="action-item" (click)="willDelete(node)">Delete</button>
-              </clr-dg-action-overflow>
-            </clr-dg-row>
-            <clr-dg-footer>
-              <div class="row">
-                <label for="select_page_size">Select page size:</label>
+    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
+      <div class="search">
+        <label for="search_box">
+          <clr-icon shape="search"></clr-icon>
+        </label>
+        <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
+      </div>
+      <button class="btn btn-icon refresh" (click)="refreshDatagrid()">
+        <clr-icon shape="refresh"></clr-icon>
+      </button>
+      <button class="btn btn-icon delete" (click)="willDelete()">
+        <clr-icon shape="trash"></clr-icon>
+      </button>
+      <button class="btn btn-icon create" (click)="willCreateNode()">
+        <clr-icon shape="add"></clr-icon>
+      </button>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
+      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedNodes">
+        <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="typeComparator">Type
+          <clr-dg-string-filter [(clrFilterValue)]="typeFilterValue" [clrDgStringFilter]="typeFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
+        <clr-dg-column [clrDgSortBy]="nameComparator">Name</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="identifiersComparator">Identifiers</clr-dg-column>
+        <clr-dg-column>OBM</clr-dg-column>
+        <clr-dg-column>IBM</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="skuComparator">SKU
+          <clr-dg-string-filter [(clrFilterValue)]="skuFilterValue" [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="discoveredTimeComparator">DiscoveredTime</clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let node of allNodes" [clrDgItem]="node">
+          <clr-dg-cell>{{node.id}}</clr-dg-cell>
+          <clr-dg-cell>{{node.type}}</clr-dg-cell>
+          <clr-dg-cell>{{node.name}}</clr-dg-cell>
+          <clr-dg-cell>{{node.identifiers}}</clr-dg-cell>
+          <clr-dg-cell class="grid-item" (click)="goToShowObmDetail(node)">
+            {{node.obms ? node.obms.length : 0}} service
+          </clr-dg-cell>
+          <clr-dg-cell>{{node.ibms}}</clr-dg-cell>
+          <clr-dg-cell class="grid-item" (click)="goToShowSkuDetail(node)">{{node.sku ? node.sku.split('/')[4] : ''}}</clr-dg-cell>
+          <clr-dg-cell>{{node.discoveredTime}}</clr-dg-cell>
+          <clr-dg-action-overflow class="more-action">
+            <button class="action-item" (click)="willDelete(node)">Delete</button>
+            <button class="action-item" (click)="goToDetail(node)">Details</button>
+          </clr-dg-action-overflow>
+        </clr-dg-row>
+        <clr-dg-footer>
+          <div class="row">
+            <label for="select_page_size">Select page size:</label>
+            <div class="select">
+              <select id="select_page_size" [(ngModel)]="selectedPageSize">
+                <option>15</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+              </select>
+            </div>
+          </div>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
+          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+
+      </div>
+      <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'xl'">
+        <h3 class="modal-title">Details of this node</h3>
+        <div class="modal-body">
+          <pre>{{selectedNode | json}}</pre>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isShowObmDetail" [clrModalSize]="'xm'">
+        <h3 class="modal-title">Details of the obm</h3>
+        <div class="modal-body">
+          <pre>{{selectedObm | json}}</pre>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isShowSkuDetail" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Details of the sku</h3>
+        <div class="modal-body">
+          <pre>{{skuDetail | json}}</pre>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isCreateNode" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Create Node</h3>
+        <div class="modal-body">
+          <form [formGroup]="nodeForm" novalidate>
+            <section class="form-block">
+              <div class="form-group">
+                <label for="selects_1">Node Type</label>
                 <div class="select">
-                  <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                    <option>15</option>
-                    <option>20</option>
-                    <option>50</option>
-                    <option>100</option>
+                  <select id="selects_1" formControlName="type">
+                    <option>compute</option>
+                    <option>enclosure</option>
+                    <option>switch</option>
+                    <option>pdu</option>
+                    <option>mgmt</option>
+                    <option>others</option>
                   </select>
                 </div>
               </div>
-              {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
-              <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-              </clr-dg-pagination>
-            </clr-dg-footer>
-          </clr-datagrid>
+              <div class="form-group">
+                <label for="formFileds_1">Node Name</label>
+                <input type="text" id="formFileds_1" formControlName="name">
+              </div>
 
+              <div class="form-group">
+                <label for="selects_3">Auto Discover</label>
+                <div class="select">
+                  <select id="selects_3" formControlName="autoDiscover">
+                    <option>true</option>
+                    <option>false</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="formFields">Other Configures</label>
+                <textarea id="formFields" rows="4"
+                  placeholder='{"autoDiscover": true, "bootSettings": {}}'
+                  formControlName="otherConfig">
+                </textarea>
+              </div>
+            </section>
+          </form>
         </div>
-        <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'xl'">
-          <h3 class="modal-title">Details of this node</h3>
-          <div class="modal-body">
-            <pre>{{selectedNode | json}}</pre>
-          </div>
-        </clr-modal>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="isCreateNode = false">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="isCreateNode = false; createNode();">OK</button>
+        </div>
+      </clr-modal>
 
-        <clr-modal [(clrModalOpen)]="isShowObmDetail" [clrModalSize]="'xm'">
-          <h3 class="modal-title">Details of the obm</h3>
-          <div class="modal-body">
-            <pre>{{selectedObm | json}}</pre>
-          </div>
-        </clr-modal>
-
-        <clr-modal [(clrModalOpen)]="isShowSkuDetail" [clrModalSize]="'lg'">
-          <h3 class="modal-title">Details of the sku</h3>
-          <div class="modal-body">
-            <pre>{{skuDetail | json}}</pre>
-          </div>
-        </clr-modal>
-
-        <clr-modal [(clrModalOpen)]="isCreateNode" [clrModalSize]="'lg'">
-          <h3 class="modal-title">Create Node</h3>
-          <div class="modal-body">
-            <form [formGroup]="nodeForm" novalidate>
-              <section class="form-block">
-                <div class="form-group">
-                  <label for="selects_1">Node Type</label>
-                  <div class="select">
-                    <select id="selects_1" formControlName="type">
-                      <option>compute</option>
-                      <option>enclosure</option>
-                      <option>switch</option>
-                      <option>pdu</option>
-                      <option>mgmt</option>
-                      <option>others</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="formFileds_1">Node Name</label>
-                  <input type="text" id="formFileds_1" formControlName="name">
-                </div>
-
-                <div class="form-group">
-                  <label for="selects_3">Auto Discover</label>
-                  <div class="select">
-                    <select id="selects_3" formControlName="autoDiscover">
-                      <option>true</option>
-                      <option>false</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="formFields">Other Config</label>
-                  <textarea id="formFields" rows="4" placeholder='{"autoDiscover": true,
-"bootSettings": {}}' formControlName="otherConfig"></textarea>
-                </div>
-              </section>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline" (click)="isCreateNode = false">Cancel</button>
-            <button type="button" class="btn btn-primary" (click)="isCreateNode = false; createNode();">OK</button>
-          </div>
-        </clr-modal>
-
-        <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-          <h3 class="modal-title">Delete Node</h3>
-          <div class="modal-body">
-            <h4>Are you sure to delete ?</h4>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
-            <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
-          </div>
-        </clr-modal>
-      </div>
-    </div>
+      <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Are you sure to delete below nodes?</h3>
+        <div class="modal-body">
+          <span *ngFor='let node of selectedNodes'>{{node.id}}, </span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="isDelete = false; delete();">Confirm</button>
+        </div>
+      </clr-modal>
   </div>
+</div>
