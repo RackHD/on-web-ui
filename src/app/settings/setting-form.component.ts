@@ -1,6 +1,12 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormsModule, ReactiveFormsModule ,
-  FormBuilder, FormGroup,FormControl, Validators }   from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule ,
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators
+} from '@angular/forms';
 
 import { API_PATTERN, ADDR_PATTERN } from '../models/index';
 
