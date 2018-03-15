@@ -203,11 +203,10 @@ export class PollersComponent implements OnInit {
     // data transform
     jsonData['type'] = value['type'];
     jsonData['node'] = value['node'];
-    jsonData['pollInterval'] = value.pollInterval;
-    jsonData['config'] = value.config ? JSON.parse(value.config) : {};
+    jsonData['pollInterval'] = _.isEmpty(value.pollInterval) ? 60000 : parseInt(value.pollInterval);
+    jsonData['config'] = _.isEmpty(value.config) ? {} : JSON.parse(value.config);
 
-    let postData = JSON.stringify(jsonData);
-    this.pollersService.creatOnePoller(postData)
+    this.pollersService.creatOnePoller(jsonData)
       .subscribe(data => {
         this.refreshDatagrid();
       });

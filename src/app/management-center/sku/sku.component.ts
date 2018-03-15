@@ -20,6 +20,9 @@ export class SkuComponent implements OnInit {
 
   selectedSku: SKU[];
   isShowDetail: boolean;
+  isShowModal: boolean;
+  rawData: any;
+  action: any;
 
   searchTerms = new Subject<string>();
   dgDataLoading = false;
@@ -112,6 +115,13 @@ export class SkuComponent implements OnInit {
     return +this.selectedPageSize;
   }
 
+  getChild(objKey: string, sku: SKU){
+    this.selectedSku = [sku];
+    this.action = _.capitalize(objKey);
+    this.rawData = sku && sku[objKey];
+    this.isShowModal = true;
+  }
+
   willCreateSku(): void {
     this.isCreateSku = true;
   }
@@ -145,9 +155,9 @@ export class SkuComponent implements OnInit {
     let value = this.skuForm.value;
 
     // data transform
-    jsonData['name'] = value['name'];
+    jsonData['name'] = value['name']; //TODO: name is required;
     jsonData['discoveryGraphName'] = value['discoveryGraphName'];
-    jsonData['rules'] = value['rules'] ? JSON.parse(value['rules']) : [];
+    jsonData['rules'] = value['rules'] ? JSON.parse(value['rules']) : []; //TODO: rule is required.
     jsonData['discoveryGraphOptions'] = value['discoveryGraphOptions'] ?
     JSON.parse(value['discoveryGraphOptions']) : {};
 

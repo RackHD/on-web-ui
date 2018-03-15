@@ -12,13 +12,13 @@
         </label>
         <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
       </div>
-      <button class="btn btn-icon refresh" (click)="refreshDatagrid()">
+      <button class="btn btn-icon refresh" (click)="refreshDatagrid()" title="Refresh">
         <clr-icon shape="refresh"></clr-icon>
       </button>
-      <button class="btn btn-icon delete" (click)="willDelete()">
+      <button class="btn btn-icon delete" (click)="willDelete()" title="Batch delete">
         <clr-icon shape="trash"></clr-icon>
       </button>
-      <button class="btn btn-icon create" (click)="willCreateObm()">
+      <button class="btn btn-icon create" (click)="willCreateObm()" title="Add">
         <clr-icon shape="add"></clr-icon>
       </button>
     </div>
@@ -72,7 +72,7 @@
         </div>
       </clr-modal>
 
-      <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'lg'">
+      <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'md'">
         <h3 class="modal-title">Create OBM</h3>
         <div class="modal-body">
           <form [formGroup]="obmForm" novalidate>
@@ -93,7 +93,7 @@
 
               <div class="form-group">
                 <label for="formFileds_2">password</label>
-                <input type="text" id="formFileds_2" formControlName="password">
+                <input type="password" id="formFileds_2" formControlName="password">
               </div>
 
               <div class="form-group">
@@ -109,10 +109,9 @@
         </div>
       </clr-modal>
 
-      <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'lg'">
+      <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'md'">
         <h3 class="modal-title">Update OBM</h3>
         <div class="modal-body">
-
           <form [formGroup]="updateForm" novalidate>
             <section class="form-block">
               <div class="form-group">
@@ -122,7 +121,7 @@
 
               <div class="form-group">
                 <label for="formFileds_2" class="required">password</label>
-                <input type="text" id="formFileds_2" formControlName="password">
+                <input type="password" id="formFileds_2" formControlName="password">
               </div>
 
               <div class="form-group">

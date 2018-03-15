@@ -22,13 +22,13 @@
         </label>
         <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
       </div>
-      <button class="btn btn-icon refresh" (click)="refreshDatagrid()">
+      <button class="btn btn-icon refresh" (click)="refreshDatagrid()" title="Refresh">
         <clr-icon shape="refresh"></clr-icon>
       </button>
-      <button class="btn btn-icon delete" (click)="willDelete()">
+      <button class="btn btn-icon delete" (click)="willDelete()" title="Batch delete">
         <clr-icon shape="trash"></clr-icon>
       </button>
-      <button class="btn btn-icon create" (click)="willCreateNode()">
+      <button class="btn btn-icon create" (click)="willCreateNode()" title="Add">
         <clr-icon shape="add"></clr-icon>
       </button>
     </div>
@@ -55,11 +55,15 @@
           <clr-dg-cell>{{node.type}}</clr-dg-cell>
           <clr-dg-cell>{{node.name}}</clr-dg-cell>
           <clr-dg-cell>{{node.identifiers}}</clr-dg-cell>
-          <clr-dg-cell class="grid-item" (click)="goToShowObmDetail(node)">
-            {{node.obms ? node.obms.length : 0}} service
+          <clr-dg-cell (click)="goToShowObmDetail(node)">
+            <u class="grid-item">{{node.obms ? node.obms.length : 0}}</u> OBMs
           </clr-dg-cell>
-          <clr-dg-cell>{{node.ibms}}</clr-dg-cell>
-          <clr-dg-cell class="grid-item" (click)="goToShowSkuDetail(node)">{{node.sku ? node.sku.split('/')[4] : ''}}</clr-dg-cell>
+          <clr-dg-cell (click)="goToShowIbmDetail(node)">
+            <u class="grid-item">{{node.ibms ? node.ibms.length : 0}}</u> IBMs
+          </clr-dg-cell>
+          <clr-dg-cell (click)="goToShowSkuDetail(node)">
+            <u class="grid-item">{{node.sku ? node.sku.split('/')[4] : ''}}</u>
+          </clr-dg-cell>
           <clr-dg-cell>{{node.discoveredTime}}</clr-dg-cell>
           <clr-dg-action-overflow class="more-action">
             <button class="action-item" (click)="willDelete(node)">Delete</button>
@@ -96,6 +100,13 @@
         <h3 class="modal-title">Details of the obm</h3>
         <div class="modal-body">
           <pre>{{selectedObm | json}}</pre>
+        </div>
+      </clr-modal>
+
+      <clr-modal [(clrModalOpen)]="isShowIbmDetail" [clrModalSize]="'xm'">
+        <h3 class="modal-title">Details of the ibm</h3>
+        <div class="modal-body">
+          <pre>{{selectedIbm | json}}</pre>
         </div>
       </clr-modal>
 

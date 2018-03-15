@@ -13,13 +13,13 @@
         </label>
         <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
       </div>
-      <button class="btn btn-icon refresh" (click)="refreshDatagrid()">
+      <button class="btn btn-icon refresh" (click)="refreshDatagrid()" title="Refresh">
         <clr-icon shape="refresh"></clr-icon>
       </button>
-      <button class="btn btn-icon delete" (click)="willDelete()">
+      <button class="btn btn-icon delete" (click)="willDelete()" title="Batch delete">
         <clr-icon shape='trash'></clr-icon>
       </button>
-      <button class="btn btn-icon create" (click)="willCreateSku()">
+      <button class="btn btn-icon create" (click)="willCreateSku()" title="Add">
         <clr-icon shape='add'></clr-icon>
       </button>
     </div>
@@ -44,8 +44,12 @@
           <clr-dg-cell>{{sku.name}}</clr-dg-cell>
           <clr-dg-cell>{{sku.discoveryGraphName}}</clr-dg-cell>
           <clr-dg-cell>{{sku.discoveryGraphOptions}}</clr-dg-cell>
-          <clr-dg-cell>{{sku.rules}}</clr-dg-cell>
-          <clr-dg-cell>{{sku.skuConfig}}</clr-dg-cell>
+          <clr-dg-cell (click)="getChild('rules', sku)">
+            <u class="grid-item">Rules</u>
+          </clr-dg-cell>
+          <clr-dg-cell (click)="getChild('skuConfig', sku)">
+            <u class="grid-item">Configures</u>
+          </clr-dg-cell>
           <clr-dg-action-overflow>
             <button class="action-item" (click)="willUpdate(sku)">Update</button>
             <button class="action-item" (click)="willDelete(sku)">Delete</button>
@@ -137,6 +141,17 @@
           <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
         </div>
       </clr-modal>
+
+      <clr-modal
+        *ngIf="action ==='Rules' || action === 'Skuconfig'"
+        [(clrModalOpen)]="isShowModal"
+        [clrModalSize]="'xl'">
+        <h3 class="modal-title">{{action}} for {{selectedSku[0].name}}</h3>
+        <div class="modal-body">
+          <pre>{{rawData | json}}</pre>
+        </div>
+      </clr-modal>
+
     </div>
 
   </div>

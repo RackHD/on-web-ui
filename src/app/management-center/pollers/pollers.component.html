@@ -13,13 +13,13 @@
         </label>
         <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
       </div>
-      <button class="btn btn-icon refresh" (click)="refreshDatagrid()">
+      <button class="btn btn-icon refresh" (click)="refreshDatagrid()" title="Refresh">
         <clr-icon shape="refresh"></clr-icon>
       </button>
-      <button class="btn btn-icon delete" (click)="willDelete()">
+      <button class="btn btn-icon delete" (click)="willDelete()" title="Batch delete">
         <clr-icon shape='trash'></clr-icon>
       </button>
-      <button class="btn btn-icon create" (click)="willCreatePoller()">
+      <button class="btn btn-icon create" (click)="willCreatePoller()" title="Add">
         <clr-icon shape="add"></clr-icon>
       </button>
     </div>
@@ -38,7 +38,6 @@
         <clr-dg-column [clrDgSortBy]="pollIntervalComparator">PollInterval</clr-dg-column>
         <clr-dg-column [clrDgSortBy]="failureCountComparator">FailureCount</clr-dg-column>
         <clr-dg-column [clrDgSortBy]="pausedComparator">Paused</clr-dg-column>
-        <clr-dg-column>Latest data</clr-dg-column>
         <clr-dg-column [clrDgSortBy]="nodeComparator">Node
           <clr-dg-string-filter [(clrFilterValue)]="nodeFilterValue" [clrDgStringFilter]="nodeFilter">
           </clr-dg-string-filter>
@@ -53,7 +52,6 @@
           <clr-dg-cell>{{poller.pollInterval}}</clr-dg-cell>
           <clr-dg-cell>{{poller.failureCount}}</clr-dg-cell>
           <clr-dg-cell>{{poller.paused}}</clr-dg-cell>
-          <clr-dg-cell>{{poller.latestData}}</clr-dg-cell>
           <clr-dg-cell>{{poller.node.split('/')[4]}}</clr-dg-cell>
           <clr-dg-cell>{{poller.lastStarted}}</clr-dg-cell>
           <clr-dg-cell>{{poller.lastFinished}}</clr-dg-cell>

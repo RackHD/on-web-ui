@@ -43,6 +43,11 @@ export class RackhdHttpService {
     return this.http.put<any>(url, body, options);
   }
 
+  public putByIdentifier(identifier:string, body: object): Observable<any> {
+    let url = this.baseUrl + this.urlConfig.getByIdentifierUrl + identifier;
+    return this.http.put<any>(url, body);
+  }
+
   public remove(identifier: string, responseType='json'): Observable<any> {
     let options = {responseType: responseType as 'json'};
     let url = this.baseUrl + this.urlConfig.getByIdentifierUrl + identifier;
@@ -56,7 +61,7 @@ export class RackhdHttpService {
     let url = this.baseUrl + this.urlConfig.getByIdentifierUrl + identifier;
     let xhr = new XMLHttpRequest();
     xhr.open('PUT', url, true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.send(file);
   }

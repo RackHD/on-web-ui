@@ -113,13 +113,13 @@ export class ConfigComponent implements OnInit {
     this.isShowModal = true;
   };
 
-  onDelete() {};
+  // onDelete() {};
 
-  onBatchDelete() {};
+  // onBatchDelete() {};
 
-  onGetDetails() {};
+  // onGetDetails() {};
 
-  onGetRawData() {};
+  // onGetRawData() {};
 
   getHttpMethod(){
     if (this.modalAction === "Create") { return "put";}
