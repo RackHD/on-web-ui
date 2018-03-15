@@ -132,9 +132,9 @@
       </clr-modal>
 
       <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-        <h3 class="modal-title">Delete Poller</h3>
+        <h3 class="modal-title">Are you sure to delete below pollers?</h3>
         <div class="modal-body">
-          <h4>Are you sure to delete ?</h4>
+          <span *ngFor="let poller of selectedPollers; let isLast = last">{{poller? poller.id : null}}{{isLast ? '' : ', '}}</span>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
@@ -175,6 +175,12 @@
           <button type="button" class="btn btn-primary btn-danger" (click)="isUpdate = false; update();">OK</button>
         </div>
       </clr-modal>
+      <div class="selected">
+        Selected pollers:
+        <span *ngFor="let poller of selectedPollers; let isLast = last">
+          {{poller? poller.id : null}}{{isLast ? '' : ', '}}
+        </span>
+      </div>
     </div>
 
   </div>

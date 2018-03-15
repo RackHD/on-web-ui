@@ -40,7 +40,10 @@
           <clr-dg-cell>{{obm.id}}</clr-dg-cell>
           <clr-dg-cell>{{obm.node.split('/')[4]}}</clr-dg-cell>
           <clr-dg-cell>{{obm.service}}</clr-dg-cell>
-          <clr-dg-cell>{{obm.config | json}}</clr-dg-cell>
+          <!-- <clr-dg-cell>{{obm.config | json}}</clr-dg-cell> -->
+          <clr-dg-cell (click)="getChild('config', obm)">
+            <u class="grid-item">Config</u>
+          </clr-dg-cell>
           <clr-dg-action-overflow>
             <button class="action-item" (click)="willUpdate(obm)">Update</button>
             <button class="action-item" (click)="willDelete(obm)">Delete</button>
@@ -138,15 +141,34 @@
       </clr-modal>
 
       <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-        <h3 class="modal-title">Delete OBM</h3>
+        <h3 class="modal-title">Are you sure to delete below OBMs</h3>
         <div class="modal-body">
-          <h4>Are you sure to delete ?</h4>
+          <span *ngFor="let obm of selectedObms; let isLast = last">
+            {{obm? obm.id : null}}{{isLast ? '' : ', '}}
+          </span>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
           <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
         </div>
       </clr-modal>
+
+      <clr-modal
+        *ngIf="action ==='Config'"
+        [(clrModalOpen)]="isShowModal"
+        [clrModalSize]="'xl'">
+        <h3 class="modal-title">{{action}} for {{selectedObm[0].id}}</h3>
+        <div class="modal-body">
+          <pre>{{rawData | json}}</pre>
+        </div>
+      </clr-modal>
+
+      <div class="modal-body">
+        Selected OBMs:
+        <span *ngFor="let obm of selectedObms; let isLast = last">
+          {{obm? obm.id : null}}{{isLast ? '' : ', '}}
+        </span>
+      </div>
 
     </div>
   </div>

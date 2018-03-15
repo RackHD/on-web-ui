@@ -52,7 +52,7 @@
             <u class="grid-item">Options</u>
           </clr-dg-cell>
           <clr-dg-cell (click)="getChild('tasks', workflow)">
-            <u class="grid-item">{{workflow.tasks.length}}</u> tasks
+            <u class="grid-item">{{workflow.tasks.length}} tasks</u>
           </clr-dg-cell>
         </clr-dg-row>
 
@@ -84,7 +84,9 @@
       <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
         <h3 class="modal-title">Are you sure you want to delete below workflows</h3>
         <div class="modal-body">
-          <span *ngFor="let workflow of selectedWorkflows">{{workflow? workflow.injectableName : null}}, </span>
+          <span *ngFor="let workflow of selectedWorkflows; let isLast = last">
+            {{workflow? workflow.injectableName : null}}{{isLast ? '' : ', '}}
+          </span>
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary" type="button" (click)="onDeleteSubmit()">Confirm</button>
@@ -129,7 +131,7 @@
 
       <div class="selected">
         Selected Workflows:
-        <span *ngFor="let workflow of selectedWorkflows">{{workflow? workflow.injectableName : null}}, </span>
+        <span *ngFor="let workflow of selectedWorkflows; let isLast = last">{{workflow? workflow.injectableName : null}}{{isLast ? '' : ', '}}</span>
       </div>
     </div>
   </div>

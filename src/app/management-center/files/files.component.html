@@ -90,7 +90,9 @@
       <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
         <h3 class="modal-title">Are you sure you want to delete below files</h3>
         <div class="modal-body">
-          <span *ngFor="let file of selectedFiles">{{file? file.filename : null}}, </span>
+          <span *ngFor="let file of selectedFiles; let isLast = last">
+            {{file? file.filename : null}}{{isLast ? '' : ', '}}
+          </span>
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary" type="button" (click)="onDeleteSubmit()">Confirm</button>
@@ -113,7 +115,9 @@
 
       <div class="selected">
         Selected Files:
-        <span *ngFor="let file of selectedFiles">{{file? file.filename : null}}, </span>
+        <span *ngFor="let file of selectedFiles; let isLast = last">
+          {{file? file.filename : null}}{{isLast ? '' : ', '}}
+        </span>
       </div>
     </div>
   </div>

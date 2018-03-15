@@ -22,6 +22,9 @@ export class ObmComponent implements OnInit {
 
   selectedObm: OBM[];
   isShowDetail: boolean;
+  action: string;
+  rawData: string;
+  isShowModal: boolean;
 
   searchTerms = new Subject<string>();
   dgDataLoading = false;
@@ -120,6 +123,13 @@ export class ObmComponent implements OnInit {
   goToDetail(obm: OBM) {
     this.selectedObm = [obm];
     this.isShowDetail = true;
+  }
+
+  getChild(objKey: string, obm: OBM){
+    this.selectedObm = [obm];
+    this.action = _.capitalize(objKey);
+    this.rawData = obm && obm[objKey];
+    this.isShowModal = true;
   }
 
   get dgPageSize() {

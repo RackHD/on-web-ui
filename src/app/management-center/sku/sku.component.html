@@ -134,7 +134,9 @@
       <clr-modal *ngIf="isDelete" [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
         <h3 class="modal-title">Are you sure to delete below SKUs</h3>
         <div class="modal-body">
-          <span *ngFor="let selected of selectedSkus">{{selected.id}}, </span>
+          <span *ngFor="let sku of selectedSkus; let isLast = last">
+            {{sku? sku.id : null}}{{isLast ? '' : ', '}}
+          </span>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
@@ -151,7 +153,11 @@
           <pre>{{rawData | json}}</pre>
         </div>
       </clr-modal>
-
+      <div class="selected">
+        Selected SKUs:
+        <span *ngFor="let sku of selectedSkus; let isLast = last">
+          {{sku? sku.id : null}}{{isLast ? '' : ', '}}
+        </span>
     </div>
 
   </div>
