@@ -1,3 +1,21 @@
-<p>
-  operations-center works!
-</p>
+<div class="content-container offset-header">
+  <!--Secondary nav bar-->
+  <clr-vertical-nav style="background: #ddd;" [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsed">
+    <a clrVerticalNavLink routerLink="./activeWorkflow" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="nvme"></clr-icon>
+      Active Workflow
+    </a>
+    <a clrVerticalNavLink routerLink="./historyWorkflow" routerLinkActive="active">
+      <clr-icon clrVerticalNavIcon shape="history"></clr-icon>
+      History Workflow
+    </a>
+    <!--<a clrVerticalNavLink routerLink="./workflows" routerLinkActive="active">-->
+      <!--<clr-icon clrVerticalNavIcon shape="organization"></clr-icon>-->
+      <!--Workflows-->
+    <!--</a>-->
+
+  </clr-vertical-nav>
+  <div class="content-area">
+    <router-outlet></router-outlet>
+  </div>
+</div>

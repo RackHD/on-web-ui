@@ -1,0 +1,12 @@
+<div id="workflow-json-multiple" class="workflow-json-multiple">
+  <div class="workflow-editor-graph">
+    <app-canvas-graph
+      [onWorkflowInput]='onWorkflowInput'
+      (onWorkflowChanged)="onWorkflowChanged($event)">
+    </app-canvas-graph>
+  </div>
+  <div class="json-editor">
+    <button type="button" name="button" (click)="applyWorkflowJson()">Apply</button>
+    <div #jsoneditor id="jsoneditor" style="width: 400px; height: 720px;"></div>
+  </div>
+</div>
