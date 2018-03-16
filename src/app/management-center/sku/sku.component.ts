@@ -20,6 +20,9 @@ export class SkuComponent implements OnInit {
 
   selectedSku: SKU[];
   isShowDetail: boolean;
+  isShowModal: boolean;
+  rawData: any;
+  action: any;
 
   searchTerms = new Subject<string>();
   dgDataLoading = false;
@@ -29,8 +32,10 @@ export class SkuComponent implements OnInit {
   isCreateSku: boolean;
   isDelete: boolean;
   selectedSkus: SKU[];
+  isSkuOnly: boolean;
 
   skuForm: FormGroup;
+  skuPackFiles: FileList;
 
   defaultRules: string = ' ' ;
 
@@ -47,6 +52,7 @@ export class SkuComponent implements OnInit {
     this.getAllSkus();
     this.createForm();
     this.selectedSkus = [];
+    this.isSkuOnly = false;
 
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
@@ -86,6 +92,10 @@ export class SkuComponent implements OnInit {
       discoveryGraphOptions: ''
     });
   }
+  
+  onRadioChange(){
+    this.isSkuOnly = !this.isSkuOnly;
+  }
 
   getAllSkus(): void {
     this.skusService.getAllSkus()
@@ -103,6 +113,13 @@ export class SkuComponent implements OnInit {
 
   get dgPageSize() {
     return +this.selectedPageSize;
+  }
+
+  getChild(objKey: string, sku: SKU){
+    this.selectedSku = [sku];
+    this.action = _.capitalize(objKey);
+    this.rawData = sku && sku[objKey];
+    this.isShowModal = true;
   }
 
   willCreateSku(): void {
@@ -128,15 +145,19 @@ export class SkuComponent implements OnInit {
     this.dgDataLoading = true;
     this.getAllSkus();
   }
-  
+
+  onChange(event){
+    this.skuPackFiles = event.target.files;
+  }
+
   createSku(): void {
     let jsonData = {};
     let value = this.skuForm.value;
 
     // data transform
-    jsonData['name'] = value['name'];
+    jsonData['name'] = value['name']; //TODO: name is required;
     jsonData['discoveryGraphName'] = value['discoveryGraphName'];
-    jsonData['rules'] = value['rules'] ? JSON.parse(value['rules']) : [];
+    jsonData['rules'] = value['rules'] ? JSON.parse(value['rules']) : []; //TODO: rule is required.
     jsonData['discoveryGraphOptions'] = value['discoveryGraphOptions'] ?
     JSON.parse(value['discoveryGraphOptions']) : {};
 
@@ -145,6 +166,13 @@ export class SkuComponent implements OnInit {
       .subscribe(data => {
         this.refreshDatagrid();
       });
+  }
+
+  createSkupack(): void {
+    let file = this.skuPackFiles[0];
+    let identifier = this.selectedSkus.length && this.selectedSku[0]['id'];
+    this.skusService.upload(file, identifier);
+    this.getAllSkus();
   }
 
   delete(): void {

@@ -40,4 +40,22 @@ export class SkusService {
     }
     return obsList;
   }
+
+  public upload(file: File, identifier?: string): any {
+    //Angular doesn't support upload formData with 'application/x-www-form-urlencoded'
+    //RackHD files API only supports 'application/x-www-form-urlencoded' till now
+    //Thus XMLHttpRequest() is used instead of HttpClient POST/PUT methods.
+    let url: string;
+    let xhr = new XMLHttpRequest();
+    if (identifier) {
+      url = this.baseUrl + SKU_URL.skusById + identifier + "/pack";
+    } else {
+      url = this.baseUrl + SKU_URL.skusPack;
+    }
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.send(file);
+  }
+
 }

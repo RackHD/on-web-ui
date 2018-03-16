@@ -13,4 +13,5 @@ export class SKU {
 export const SKU_URL = {
     skus: '/skus',
     skusById: '/skus/',
+    skusPack: '/skus/pack',
 }

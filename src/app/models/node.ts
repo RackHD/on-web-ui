@@ -48,3 +48,12 @@ export const NODE_URL = {
     nodes: '/nodes',
     nodesById: '/nodes/',
 }
+
+export const NODE_TYPE_MAP = {
+  compute: 'Compute',
+  enclosure: 'Enclosure',
+  switch: 'Switch',
+  pdu: 'PDU',
+  mgmt: 'MGMT',
+  others: 'Others',
+}

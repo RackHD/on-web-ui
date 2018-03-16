@@ -1,3 +1,138 @@
-<p>
-  workflows works!
-</p>
+<div class="app-graph">
+
+  <h5 class="header-text">
+    <strong>Workflow Grid</strong>
+  </h5>
+
+  <div class="row">
+
+    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
+      <div class="search">
+        <label for="search_box">
+          <clr-icon shape="search"></clr-icon>
+        </label>
+        <input #searchBox type="text" id="search_box" placeholder="" (keyup)="onSearch(searchBox.value)">
+      </div>
+      <button type="button" class="btn btn-icon refresh" (click)="onRefresh()" title="Refresh">
+        <clr-icon shape="refresh"></clr-icon>
+      </button>
+      <button class="btn btn-icon delete" (click)="onBatchDelete()" title="Batch delete">
+        <clr-icon shape="trash"></clr-icon>
+      </button>
+      <button class="btn btn-icon create" (click)="onCreate()" title="Add">
+        <clr-icon shape="add"></clr-icon>
+      </button>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
+      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows"> <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder> <clr-dg-column [clrDgSortBy]="friendlyNameComparator">FriendlyName <clr-dg-string-filter [clrDgStringFilter]="friendlyNameFilter"> </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="injectableNameComparator">InjectableName
+          <clr-dg-string-filter [clrDgStringFilter]="injectableNameFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column>Options
+          <clr-dg-string-filter [clrDgStringFilter]="optionsFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column >Tasks
+          <clr-dg-string-filter [clrDgStringFilter]="tasksFilter">
+          </clr-dg-string-filter>
+        </clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let workflow of workflowsStore" [clrDgItem]="workflow">
+          <clr-dg-action-overflow>
+            <button class="action-item" (click)="onUpdate(workflow)">Update</button>
+            <button class="action-item" (click)="onDelete(workflow)">Delete</button>
+            <button class="action-item" (click)="onGetDetails(workflow)">Detail</button>
+          </clr-dg-action-overflow>
+          <clr-dg-cell>{{workflow.friendlyName}}</clr-dg-cell>
+          <clr-dg-cell >{{workflow.injectableName}}</clr-dg-cell>
+          <clr-dg-cell (click)="getChild('options', workflow)">
+            <u class="grid-item">Options</u>
+          </clr-dg-cell>
+          <clr-dg-cell (click)="getChild('tasks', workflow)">
+            <u class="grid-item">{{workflow.tasks.length}} tasks</u>
+          </clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          <div class="row">
+            <label for="select_page_size">Select page size:</label>
+            <div class="select">
+              <select id="select_page_size" [(ngModel)]="selectedPageSize">
+                <option *ngFor="let size of pageSizes">{{size}}</option>
+              </select>
+            </div>
+          </div>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
+          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+
+      <clr-modal
+        *ngIf="action ==='Detail' || action === 'Tasks' || action === 'Options'"
+        [(clrModalOpen)]="isShowModal"
+        [clrModalSize]="'xl'">
+        <h3 class="modal-title">{{action}} for {{selectedWorkflow.injectableName}}</h3>
+        <div class="modal-body">
+          <pre>{{rawData | json}}</pre>
+        </div>
+      </clr-modal>
+
+      <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
+        <h3 class="modal-title">Are you sure you want to delete below workflows</h3>
+        <div class="modal-body">
+          <span *ngFor="let workflow of selectedWorkflows; let isLast = last">
+            {{workflow? workflow.injectableName : null}}{{isLast ? '' : ', '}}
+          </span>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" type="button" (click)="onDeleteSubmit()">Confirm</button>
+        </div>
+      </clr-modal>
+
+      <clr-modal
+        *ngIf="action === 'Update' || action === 'Create'"
+        [(clrModalOpen)]="isShowModal"
+        [clrModalSize]="'lg'">
+        <h3 class="modal-title">{{action}} workflow</h3>
+        <div class="modal-body">
+          <form [formGroup]="modalFormGroup" novalidate>
+            <section class="form-block compact">
+              <div class="form-group">
+                <label for="injectableName">injectableName: </label>
+                <input type="text" id="injectableName" class="input-size" formControlName="injectableName">
+              </div>
+              <div class="form-group">
+                <label for="friendlyName">friendlyName: </label>
+                <input type="text" id="friendlyName" class="input-size"
+                  formControlName="friendlyName">
+              </div>
+              <div class="form-group">
+                <label for="options">options: </label>
+                <textarea id="options" rows='3' formControlName="options">
+                </textarea>
+              </div>
+              <div class="form-group">
+                <label for="tasks">tasks: </label>
+                <textarea id="tasks" rows='8' formControlName="tasks">
+                </textarea>
+              </div>
+            </section>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
+          <button class="btn btn-primary" type="button" (click)="onSubmit()">Confirm</button>
+        </div>
+      </clr-modal>
+
+      <div class="selected">
+        Selected Workflows:
+        <span *ngFor="let workflow of selectedWorkflows; let isLast = last">{{workflow? workflow.injectableName : null}}{{isLast ? '' : ', '}}</span>
+      </div>
+    </div>
+  </div>
+</div>

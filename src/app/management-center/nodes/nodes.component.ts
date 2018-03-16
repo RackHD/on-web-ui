@@ -7,12 +7,12 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 
-import { NODE_TYPE_MAP } from '../../../config/rackhd.config';
 import { NodeService } from '../../services/node.service';
-import { Node, NodeType, NodeStatus } from '../../models/node';
+import { Node, NodeType, NodeStatus, NODE_TYPE_MAP } from '../../models/node';
 
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ObmService } from 'app/services/obm.service';
+import { IbmService } from '../services/ibm.service';
 import { OBM } from 'app/models';
 import { SKU_URL } from 'app/models/sku';
 import { AlphabeticalComparator, DateComparator, ObjectFilterByKey }
@@ -42,6 +42,9 @@ export class NodesComponent implements OnInit {
 
   isShowObmDetail: boolean;
   selectedObm: OBM[];
+
+  isShowIbmDetail: boolean;
+  selectedIbm: OBM[];
 
   isShowSkuDetail: boolean;
   skuDetail: any;
@@ -83,6 +86,7 @@ export class NodesComponent implements OnInit {
     public changeDetectorRef: ChangeDetectorRef,
     public nodeService: NodeService,
     public obmService: ObmService,
+    public ibmService: IbmService,
     private fb: FormBuilder) {
   }
 
@@ -253,6 +257,16 @@ export class NodesComponent implements OnInit {
     this.isShowObmDetail = true;
   }
 
+  goToShowIbmDetail(node: Node) {
+    this.selectedNode = node;
+    this.selectedObm = [];
+    for (let entry of node.ibms) {
+      let ibmId = entry['ref'].split('/').pop();
+      this.getIbmById(ibmId);
+    }
+    this.isShowIbmDetail = true;
+  }
+
   goToShowSkuDetail(node: Node) {
     this.selectedNode = node;
     let skuId = node.sku ? node.sku.split('/')[4] : '';
@@ -273,6 +287,13 @@ export class NodesComponent implements OnInit {
     this.obmService.getObmById(identifier)
       .subscribe(data => {
         this.selectedObm.push(data);
+      });
+  }
+
+  getIbmById(identifier: string): void {
+    this.ibmService.getIbmById(identifier)
+      .subscribe(data => {
+        this.selectedIbm.push(data);
       });
   }
 }

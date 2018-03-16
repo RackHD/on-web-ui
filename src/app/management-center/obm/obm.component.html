@@ -1,9 +1,9 @@
 <div class="app-obm">
-  <div>
-    <h6>
-      <strong>OBMs Grid</strong>
-    </h6>
-  </div>
+
+  <h5 class="header-text">
+    <strong>OBM Grid</strong>
+  </h5>
+
   <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
       <div class="search">
@@ -12,20 +12,17 @@
         </label>
         <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
       </div>
-      <button class="btn btn-icon btn-success refresh" (click)="refreshDatagrid()">
+      <button class="btn btn-icon refresh" (click)="refreshDatagrid()" title="Refresh">
         <clr-icon shape="refresh"></clr-icon>
       </button>
-      <button class="btn btn-icon btn-warning delete" (click)="willDelete()">
+      <button class="btn btn-icon delete" (click)="willDelete()" title="Batch delete">
         <clr-icon shape="trash"></clr-icon>
       </button>
-      <button class="btn btn-icon create" (click)="willCreateObm()">
+      <button class="btn btn-icon create" (click)="willCreateObm()" title="Add">
         <clr-icon shape="add"></clr-icon>
       </button>
     </div>
-  </div>
 
-
-  <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedObms">
         <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
@@ -43,11 +40,14 @@
           <clr-dg-cell>{{obm.id}}</clr-dg-cell>
           <clr-dg-cell>{{obm.node.split('/')[4]}}</clr-dg-cell>
           <clr-dg-cell>{{obm.service}}</clr-dg-cell>
-          <clr-dg-cell>{{obm.config | json}}</clr-dg-cell>
+          <!-- <clr-dg-cell>{{obm.config | json}}</clr-dg-cell> -->
+          <clr-dg-cell (click)="getChild('config', obm)">
+            <u class="grid-item">Config</u>
+          </clr-dg-cell>
           <clr-dg-action-overflow>
-            <button class="action-item" (click)="goToDetail(obm)">Raw Data</button>
-            <button class="action-item" (click)="willUpdate(obm)">Edit</button>
+            <button class="action-item" (click)="willUpdate(obm)">Update</button>
             <button class="action-item" (click)="willDelete(obm)">Delete</button>
+            <button class="action-item" (click)="goToDetail(obm)">Details</button>
           </clr-dg-action-overflow>
 
         </clr-dg-row>
@@ -75,8 +75,7 @@
         </div>
       </clr-modal>
 
-
-      <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'lg'">
+      <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'md'">
         <h3 class="modal-title">Create OBM</h3>
         <div class="modal-body">
           <form [formGroup]="obmForm" novalidate>
@@ -97,7 +96,7 @@
 
               <div class="form-group">
                 <label for="formFileds_2">password</label>
-                <input type="text" id="formFileds_2" formControlName="password">
+                <input type="password" id="formFileds_2" formControlName="password">
               </div>
 
               <div class="form-group">
@@ -113,10 +112,9 @@
         </div>
       </clr-modal>
 
-      <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'lg'">
+      <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'md'">
         <h3 class="modal-title">Update OBM</h3>
         <div class="modal-body">
-
           <form [formGroup]="updateForm" novalidate>
             <section class="form-block">
               <div class="form-group">
@@ -126,7 +124,7 @@
 
               <div class="form-group">
                 <label for="formFileds_2" class="required">password</label>
-                <input type="text" id="formFileds_2" formControlName="password">
+                <input type="password" id="formFileds_2" formControlName="password">
               </div>
 
               <div class="form-group">
@@ -143,15 +141,34 @@
       </clr-modal>
 
       <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-        <h3 class="modal-title">Delete OBM</h3>
+        <h3 class="modal-title">Are you sure to delete below OBMs</h3>
         <div class="modal-body">
-          <h4>Are you sure to delete ?</h4>
+          <span *ngFor="let obm of selectedObms; let isLast = last">
+            {{obm? obm.id : null}}{{isLast ? '' : ', '}}
+          </span>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
           <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
         </div>
       </clr-modal>
+
+      <clr-modal
+        *ngIf="action ==='Config'"
+        [(clrModalOpen)]="isShowModal"
+        [clrModalSize]="'xl'">
+        <h3 class="modal-title">{{action}} for {{selectedObm[0].id}}</h3>
+        <div class="modal-body">
+          <pre>{{rawData | json}}</pre>
+        </div>
+      </clr-modal>
+
+      <div class="modal-body">
+        Selected OBMs:
+        <span *ngFor="let obm of selectedObms; let isLast = last">
+          {{obm? obm.id : null}}{{isLast ? '' : ', '}}
+        </span>
+      </div>
 
     </div>
   </div>

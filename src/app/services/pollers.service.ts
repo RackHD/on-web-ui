@@ -19,7 +19,7 @@ export class PollersService {
     return this.http.get<Poller[]>(url);
   }
 
-  public creatOnePoller(jsonData: string): Observable<Poller> {
+  public creatOnePoller(jsonData: object): Observable<Poller> {
     let url = this.baseUrl + POLLER_URL.pollers;
     return this.http.post<Poller>(url, jsonData,
       { headers: { 'Content-Type': 'application/json' } });
