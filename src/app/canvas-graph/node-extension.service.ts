@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WorkflowService } from '../services/workflow.service';
-import { CONSTS } from '../consts';
+import { CONSTS } from '../../config/consts';
 // import once to inject this script to window.
 let win = (window as any);
 

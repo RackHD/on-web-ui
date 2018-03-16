@@ -13,7 +13,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { NodeExtensionService } from './node-extension.service';
 import { WorkflowService } from '../services/workflow.service';
-import { CONSTS } from '../consts';
+import { CONSTS } from '../../config/consts';
 
 const global = (window as any);
 

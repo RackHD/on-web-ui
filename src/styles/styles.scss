@@ -2,13 +2,20 @@
 /* This file is for setting global styles  */
 @import 'variables';
 /**
- * node_modules global css
+ * third party styles from node_modules global css
  */
 @import '../../node_modules/@clr/icons/clr-icons.min.css';
-// @import '../../node_modules/clarity-ui/clarity-ui.min.css';
+@import '../../node_modules/litegraph.js/css/litegraph.css';
+@import '../../node_modules/jsoneditor/src/css/jsoneditor.css';
 @import '../../node_modules/@clr/ui/clr-ui.min.css';
-
+.content-container{
+  overflow: auto;
+}
 .offset-header {
   height: 100vh;
   margin-top: 60px;
+}
+
+.jsoneditor-menu{
+  display: none;
 }

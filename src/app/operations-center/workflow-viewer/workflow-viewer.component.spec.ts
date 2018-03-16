@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditWorkflowComponent } from './edit-workflow.component';
+import { WorkflowViewerComponent } from './workflow-viewer.component';
 
-describe('EditWorkflowComponent', () => {
-  let component: EditWorkflowComponent;
-  let fixture: ComponentFixture<EditWorkflowComponent>;
+describe('WorkflowViewerComponent', () => {
+  let component: WorkflowViewerComponent;
+  let fixture: ComponentFixture<WorkflowViewerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditWorkflowComponent ]
+      declarations: [ WorkflowViewerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditWorkflowComponent);
+    fixture = TestBed.createComponent(WorkflowViewerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

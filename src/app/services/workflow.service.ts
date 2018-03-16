@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Event } from "typescript.events";
-import { CONSTS } from '../consts';
+import { CONSTS } from '../../config/consts';
 
 import * as uuid from 'uuid/v4';
 import * as _ from 'lodash';

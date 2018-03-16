@@ -1,0 +1,16 @@
+.workflow-json-multiple {
+  margin: 20px;
+  width: 98vw;
+  display: inline-flex;
+  padding-bottom: 10px;
+  .workflow-editor-graph {
+    //width:50vw;
+    flex: 2;
+  }
+
+  .json-editor {
+    margin-left: 10px;
+    //width:50vw;
+    flex: 1;
+  }
+}

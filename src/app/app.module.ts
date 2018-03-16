@@ -5,27 +5,17 @@ import { FormsModule } from '@angular/forms';
  * Otherwise the interceptor and mock api calling may not work properly.
  */
 import { HttpClientModule } from '@angular/common/http';
-import {
-  NgModule,
-  ApplicationRef
-} from '@angular/core';
-import {
-  PreloadAllModules
-} from '@angular/router';
+import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 /**
  * Third Party Modules
  */
 import { ClarityModule } from '@clr/angular';
 import { CookieModule } from 'ngx-cookie';
-
-
 /**
  * Customized Service modules, they are used to inject/provide services.
  */
 import { AppRoutingModule } from './app-routing.module';
-
 /**
  * Customized Component/directives/pipe modules, they are used to provide view unit
  */
@@ -35,13 +25,10 @@ import { HeaderComponent } from './header/index';
  * Platform and Environment providers
  */
 import { environment } from 'environments/environment';
-
 // App is our top level component
 import { AppComponent } from './app.component';
-
 // Services Modules
 import { SharedServicesModule } from './services/sharedServices.module'
-
 /*
  * node_modules js here
  */
@@ -51,19 +38,19 @@ import '../../node_modules/prismjs/components/prism-typescript.min.js';
 
 import 'imports-loader?this=>window!../../node_modules/litegraph.js/build/litegraph.js';
 import './json';
+
 /*
- * global css here, scss will be processed by webpack
+ * Global css here, scss will be processed by webpack.
+ * Third party css should be imported into 'style.scss'file under the 'styles' doc.
+ * Newly created css file should be created under the 'styles' doc.
  */
 import '../styles/styles.scss';
 import '../styles/headings.css';
 
 import '../../node_modules/litegraph.js/css/litegraph.css';
 import '../../node_modules/jsoneditor/src/css/jsoneditor.css';
-
 // import serives, objs use only in this module.
-import {
-  IconService,
-} from './services/core/index';
+import { IconService, } from './services/core/index';
 
 import { SettingModule } from './settings/setting.module';
 
@@ -71,7 +58,7 @@ import { SettingModule } from './settings/setting.module';
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
 @NgModule({
-  bootstrap: [ AppComponent ],
+  bootstrap: [AppComponent],
   declarations: [
     AppComponent,
     HeaderComponent,
@@ -107,9 +94,7 @@ import { SettingModule } from './settings/setting.module';
 })
 
 export class AppModule {
-  constructor(
-    public iconService: IconService,
-  ) {
+  constructor(public iconService: IconService,) {
     // must be called once to init IconService
     iconService.load();
   }
