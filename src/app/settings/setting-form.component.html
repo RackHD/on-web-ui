@@ -8,7 +8,7 @@
           role="tooltip"
           class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdNorthboundApi')">
-          <input type="text" id="rackhdApi"
+          <input type="text" id="rackhdApi" class="input-width"
             [placeholder]="settings.northboundApi"
             formControlName="rackhdNorthboundApi" >
           <span class="tooltip-content">
@@ -23,7 +23,7 @@
           role="tooltip"
           class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdWebsocketUrl')">
-          <input type="text" id="rackhdWs"
+          <input type="text" id="rackhdWs" class="input-width"
             [placeholder]="settings.websocketUrl"
             formControlName="rackhdWebsocketUrl">
           <span class="tooltip-content">
@@ -38,7 +38,7 @@
           role="tooltip"
           class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdElasticApi')">
-          <input type="text" id="rackhdElasticApi"
+          <input type="text" id="rackhdElasticApi" class="input-width"
             [placeholder]="settings.elasticSearchUrl"
             formControlName="rackhdElasticApi">
           <span class="tooltip-content">
