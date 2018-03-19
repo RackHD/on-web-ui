@@ -90,7 +90,7 @@ export class FilesComponent implements OnInit {
 
   searchFile(term: string){
     this.dgDataLoading = true;
-    this.filesStore = StringOperator.search(term, this.allFiles, ["filename", "basename"]);
+    this.filesStore = StringOperator.search(term, this.allFiles);
     this.dgDataLoading = false;
   }
 

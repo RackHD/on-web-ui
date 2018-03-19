@@ -43,7 +43,9 @@
           <clr-dg-cell>{{sku.id}}</clr-dg-cell>
           <clr-dg-cell>{{sku.name}}</clr-dg-cell>
           <clr-dg-cell>{{sku.discoveryGraphName}}</clr-dg-cell>
-          <clr-dg-cell>{{sku.discoveryGraphOptions}}</clr-dg-cell>
+          <clr-dg-cell (click)="getChild('discoveryGraphOptions', sku)">
+            <u class="grid-item">DiscoveryGraphOptions</u>
+          </clr-dg-cell>
           <clr-dg-cell (click)="getChild('rules', sku)">
             <u class="grid-item">Rules</u>
           </clr-dg-cell>
@@ -145,7 +147,7 @@
       </clr-modal>
 
       <clr-modal
-        *ngIf="action ==='Rules' || action === 'Skuconfig'"
+        *ngIf="action ==='Rules' || action === 'Sku Config' || action === 'Discovery Graph Options'"
         [(clrModalOpen)]="isShowModal"
         [clrModalSize]="'xl'">
         <h3 class="modal-title">{{action}} for {{selectedSku[0].name}}</h3>

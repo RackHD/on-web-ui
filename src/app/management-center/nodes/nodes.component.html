@@ -48,7 +48,6 @@
         <clr-dg-column [clrDgSortBy]="skuComparator">SKU
           <clr-dg-string-filter [(clrFilterValue)]="skuFilterValue" [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="discoveredTimeComparator">DiscoveredTime</clr-dg-column>
 
         <clr-dg-row *clrDgItems="let node of allNodes" [clrDgItem]="node">
           <clr-dg-cell>{{node.id}}</clr-dg-cell>
@@ -64,7 +63,6 @@
           <clr-dg-cell (click)="goToShowSkuDetail(node)">
             <u class="grid-item">{{node.sku ? node.sku.split('/')[4] : ''}}</u>
           </clr-dg-cell>
-          <clr-dg-cell>{{node.discoveredTime}}</clr-dg-cell>
           <clr-dg-action-overflow class="more-action">
             <button class="action-item" (click)="willDelete(node)">Delete</button>
             <button class="action-item" (click)="goToDetail(node)">Details</button>

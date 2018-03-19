@@ -3,7 +3,7 @@ import { Poller, Node , POLLER_INTERVAL} from 'app/models';
 import { PollersService } from 'app/services/pollers.service';
 import { NodeService } from 'app/services/node.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlphabeticalComparator, DateComparator, ObjectFilterByKey }
+import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator }
   from 'app/utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -66,7 +66,7 @@ export class PollersComponent implements OnInit {
     this.getAllNodes();
     this.createForm();
     this.selectedPollers = [];
-    this.defaultInterval = 60000; 
+    this.defaultInterval = 60000;
 
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
@@ -81,20 +81,8 @@ export class PollersComponent implements OnInit {
 
   searchIterm(term: string): void {
     const datas = _.cloneDeep(this.dataStore);
-    function contains(src: string): boolean {
-      if (!src) {
-        return false;
-      }
-      if (!term) {
-        return true;
-      }
-      return src.toLowerCase().includes(term.toLowerCase());
-    }
     this.dgDataLoading = true;
-    this.allPollers = _.filter(datas, (data) => {
-      return contains(data.id) || contains(data.node) ||
-        contains(data.type) || contains(JSON.stringify(data.config));
-    });
+    this.allPollers = StringOperator.search(term, this.dataStore); 
     this.dgDataLoading = false;
   }
 

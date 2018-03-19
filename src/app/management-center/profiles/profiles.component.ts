@@ -86,7 +86,7 @@ export class ProfilesComponent implements OnInit {
 
   searchProfile(term: string){
     this.dgDataLoading = true;
-    this.profilesStore = StringOperator.search(term, this.allProfiles, ["name", "scope"]);
+    this.profilesStore = StringOperator.search(term, this.allProfiles);
     this.dgDataLoading = false;
   }
 
