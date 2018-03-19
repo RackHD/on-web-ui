@@ -40,6 +40,7 @@ export class SettingComponent implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.settingService.loadInitialConfig();
+    this.settingService.loadInitialConfig();
     this.createForm();
     this.submitted = false;
   }
