@@ -27,10 +27,6 @@ export const environment: Environment = {
     (<any>window).ng.coreTokens = _ng.coreTokens;
     return modRef;
   },
-  ENV_PROVIDERS: [
-
-  ],
-  CONN_SECURED: localStorage.getItem('rackhd.connSecured') == 'true' ? true : false,
-  RACKHD_API: (this.CONN_SECURED ? 'https://' : 'http://') + localStorage.getItem('rackhd.northboundApi'),
+  ENV_PROVIDERS: [],
 };
 

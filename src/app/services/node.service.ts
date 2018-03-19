@@ -7,22 +7,21 @@ import { catchError, retry } from 'rxjs/operators';
 import 'rxjs/add/operator/delay';
 import { Node, NODE_TYPES, NODE_URL } from '../models';
 
-import { environment } from 'environments/environment';
+import { RackhdLocalStorage as RackHD } from '../utils/globals-util';
 import { SKU_URL } from 'app/models/sku';
 
 @Injectable()
 export class NodeService {
-  private baseUrl = environment.RACKHD_API;
 
   constructor(private http: HttpClient) { }
 
   public getAllNodes(): Observable<Node[]> {
-    let url = this.baseUrl + NODE_URL.nodes;
+    let url = RackHD.getBaseUrl() + NODE_URL.nodes;
     return this.http.get<Node[]>(url);
   }
 
   public getNodeById(id: string): Observable<Node> {
-    let url = this.baseUrl + NODE_URL.nodesById + id;
+    let url = RackHD.getBaseUrl() + NODE_URL.nodesById + id;
     return this.http.get<Node>(url);
   }
 
@@ -31,7 +30,7 @@ export class NodeService {
   }
 
   public creatOneNode(jsonData: string): Observable<Node> {
-    let url = this.baseUrl + NODE_URL.nodes;
+    let url = RackHD.getBaseUrl() + NODE_URL.nodes;
     return this.http.post<Node>(url, jsonData,
       { headers: { 'Content-Type': 'application/json' } });
   }
@@ -39,7 +38,7 @@ export class NodeService {
   public deleteNodes(nodes: Node[]): Array<Observable<Object>> {
     let obsList: Array<Observable<Object>> = [];
     for (let entry of nodes) {
-      let url = this.baseUrl + NODE_URL.nodesById + entry.id;
+      let url = RackHD.getBaseUrl() + NODE_URL.nodesById + entry.id;
       let response = this.http.delete<Object>(url,
         { headers: { 'Content-Type': 'application/json' } });
       obsList.push(response);
@@ -48,7 +47,7 @@ export class NodeService {
   }
 
   public get(suffix: string): Observable<any> {
-    let url = this.baseUrl + suffix;
+    let url = RackHD.getBaseUrl() + suffix;
     return this.http.get<any>(url);
   }
 }

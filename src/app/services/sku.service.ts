@@ -6,26 +6,25 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 import { SKU, SKU_URL } from 'app/models/sku';
 
-import { environment } from 'environments/environment';
+import { RackhdLocalStorage as RackHD } from '../utils/globals-util';
 
 @Injectable()
 export class SkusService {
-  private baseUrl = environment.RACKHD_API;
 
   constructor(private http: HttpClient) { }
 
   public getAllSkus(): Observable<SKU[]> {
-    let url = this.baseUrl + SKU_URL.skus;
+    let url = RackHD.getBaseUrl() + SKU_URL.skus;
     return this.http.get<SKU[]>(url);
   }
 
   public getSkuById(id: string): Observable<SKU> {
-    let url = this.baseUrl + SKU_URL.skusById + id;
+    let url = RackHD.getBaseUrl() + SKU_URL.skusById + id;
     return this.http.get<SKU>(url);
   }
 
   public creatOneSku(jsonData: string): Observable<SKU> {
-    let url = this.baseUrl + SKU_URL.skus;
+    let url = RackHD.getBaseUrl() + SKU_URL.skus;
     return this.http.post<SKU>(url, jsonData,
       { headers: { 'Content-Type': 'application/json' } });
   }
@@ -33,7 +32,7 @@ export class SkusService {
   public deleteSkus(skus: SKU[]): Array<Observable<Object>> {
     let obsList: Array<Observable<Object>> = [];
     for (let entry of skus) {
-      let url = this.baseUrl + SKU_URL.skusById + entry.id;
+      let url = RackHD.getBaseUrl() + SKU_URL.skusById + entry.id;
       let response = this.http.delete<Object>(url,
         { headers: { 'Content-Type': 'application/json' } });
       obsList.push(response);
@@ -48,9 +47,9 @@ export class SkusService {
     let url: string;
     let xhr = new XMLHttpRequest();
     if (identifier) {
-      url = this.baseUrl + SKU_URL.skusById + identifier + "/pack";
+      url = RackHD.getBaseUrl() + SKU_URL.skusById + identifier + "/pack";
     } else {
-      url = this.baseUrl + SKU_URL.skusPack;
+      url = RackHD.getBaseUrl() + SKU_URL.skusPack;
     }
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

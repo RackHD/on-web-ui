@@ -24,4 +24,8 @@ export class HeaderComponent implements OnInit {
   popSettings(){
     this.openSetting = true;
   }
+
+  onSettingSave(){
+    this.openSetting = false;
+  }
 }

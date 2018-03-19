@@ -45,7 +45,16 @@ export class SettingService {
   }
 
   loadDefaultConfig(){
-    _.assign(this, RACKHD_CONFIG);
+    return RACKHD_CONFIG;
+  }
+
+  loadInitialConfig(){
+    _.forEach(_.keys(RACKHD_CONFIG), key => {
+      let _key = 'rackhd.' + key;
+      if (!window.localStorage.getItem(_key)){
+        this[key] = RACKHD_CONFIG[key];
+      }
+    })
   }
 
   clearAllConfig(){
