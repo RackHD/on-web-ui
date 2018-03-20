@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
 import { WorkflowService } from '../../services/workflow.service';
+import { JSONEditor } from '../../utils/json-editor'
 
 import * as _ from 'lodash';
 
@@ -31,7 +32,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     console.log(canvas);
 
     let options = {mode: 'code'};
-    this.editor = new global.JSONEditor(container, options);
+    this.editor = new JSONEditor(container, options);
     this.updateEditor(this.workflow);
   }
 

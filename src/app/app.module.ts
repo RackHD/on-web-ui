@@ -37,7 +37,7 @@ import '../../node_modules/prismjs/prism.js';
 import '../../node_modules/prismjs/components/prism-typescript.min.js';
 
 import 'imports-loader?this=>window!../../node_modules/litegraph.js/build/litegraph.js';
-import './json';
+// import './json';
 
 /*
  * Global css here, scss will be processed by webpack.
