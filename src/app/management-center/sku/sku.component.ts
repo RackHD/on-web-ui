@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SKU } from 'app/models/sku';
 import { SkusService } from 'app/services/sku.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlphabeticalComparator, ObjectFilterByKey } from 'app/utils/inventory-operator';
+import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -66,21 +66,9 @@ export class SkuComponent implements OnInit {
   }
 
   searchIterm(term: string): void {
-    const datas = _.cloneDeep(this.dataStore);
-    function contains(src: string): boolean {
-      if (!src) {
-        return false;
-      }
-      if (!term) {
-        return true;
-      }
-      return src.toLowerCase().includes(term.toLowerCase());
-    }
+    const skuData = _.cloneDeep(this.dataStore);
     this.dgDataLoading = true;
-    this.allSkus = _.filter(datas, (data) => {
-      return contains(data.id) || contains(data.name) ||
-        contains(data.discoveryGraphName);
-    });
+    this.allSkus = StringOperator.search(term, skuData);
     this.dgDataLoading = false;
   }
 
@@ -117,7 +105,8 @@ export class SkuComponent implements OnInit {
 
   getChild(objKey: string, sku: SKU){
     this.selectedSku = [sku];
-    this.action = _.capitalize(objKey);
+    this.action = _.startCase(objKey);
+    console.log(this.action);
     this.rawData = sku && sku[objKey];
     this.isShowModal = true;
   }

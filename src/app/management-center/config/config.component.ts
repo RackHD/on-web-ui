@@ -79,7 +79,7 @@ export class ConfigComponent implements OnInit {
 
   searchConfig(term: string){
     this.dgDataLoading = true;
-    this.configStore = StringOperator.search(term, this.allConfig, ["key", "value"]);
+    this.configStore = StringOperator.search(term, this.allConfig);
     this.dgDataLoading = false;
   }
 

@@ -15,7 +15,7 @@ import { ObmService } from 'app/services/obm.service';
 import { IbmService } from '../services/ibm.service';
 import { OBM } from 'app/models';
 import { SKU_URL } from 'app/models/sku';
-import { AlphabeticalComparator, DateComparator, ObjectFilterByKey }
+import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator,}
   from 'app/utils/inventory-operator';
 
 @Component({
@@ -209,21 +209,8 @@ export class NodesComponent implements OnInit {
   }
 
   searchIterm(term: string): void {
-    const datas = _.cloneDeep(this.dataStore);
-    function contains(src: string): boolean {
-      if (!src) {
-        return false;
-      }
-      if (!term) {
-        return true;
-      }
-      return src.toLowerCase().includes(term.toLowerCase());
-    }
     this.dgDataLoading = true;
-    this.allNodes = _.filter(datas, (data) => {
-      return contains(data.name) ||
-        contains(NODE_TYPE_MAP[data.type]);
-    });
+    this.allNodes = StringOperator.search(term, this.dataStore);
     this.dgDataLoading = false;
     this.afterGetNodes();
   }

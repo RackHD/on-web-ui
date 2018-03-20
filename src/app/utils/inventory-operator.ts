@@ -17,11 +17,18 @@ export class DateComparator implements Comparator<Node> {
     sortBy: string;
 
     constructor(sortBy: string) {
-        this.sortBy = sortBy;
+      this.sortBy = sortBy;
+    }
+
+    parseTime(time){
+      if(typeof time === "number") {
+        return time;
+      }
+      return Date.parse(time);
     }
 
     compare(a: Node, b: Node) {
-        return Number(a[this.sortBy]) - Number(b[this.sortBy]);
+      return this.parseTime(a[this.sortBy]) - this.parseTime(b[this.sortBy]);
     }
 }
 
@@ -34,8 +41,8 @@ export class ObjectFilterByKey<T> implements StringFilter<T> {
 
   accepts(obj: T, searchKey: string): boolean {
     let stringValue : string;
-    let originValue: any = obj && obj[this._field];
-    if (!originValue) {
+    let originValue: any = obj && _.get(obj, this._field);
+    if (typeof originValue === 'undefined') {
       return false;
     }
     stringValue = (typeof originValue === "object") ? JSON.stringify(originValue) : originValue.toString();
@@ -54,11 +61,17 @@ export class StringOperator {
     return src.toLowerCase().includes(term.toLowerCase());
   }
 
-  static search<T>(term: string, tableData: Array<T>, searchDomain: string[]): Array<T> {
+  static search<T>(term: string, tableData: Array<T>, skipDomain: string[] = []): Array<T> {
+    let searchDomain: string[] = _.without(_.keys(tableData[0]), ...skipDomain);
     return _.filter(tableData, data => {
       let flag = false;
       _.forEach(searchDomain, item => {
-        if(this.contain(_.toString(data[item]), term)){
+        let originValue: any = data && _.get(data, item);
+        if (typeof originValue === 'undefined') {
+          return true;
+        }
+        let stringValue = (typeof data[item] === "object") ? JSON.stringify(originValue) : originValue.toString();
+        if(this.contain(stringValue, term)){
           flag = true;
           return false;
         }

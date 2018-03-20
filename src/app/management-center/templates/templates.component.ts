@@ -86,7 +86,7 @@ export class TemplatesComponent implements OnInit {
 
   searchtemplate(term: string){
     this.dgDataLoading = true;
-    this.templatesStore = StringOperator.search(term, this.allTemplates, ["name", "scope"]);
+    this.templatesStore = StringOperator.search(term, this.allTemplates);
     this.dgDataLoading = false;
   }
 

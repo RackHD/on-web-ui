@@ -4,7 +4,7 @@ import { ObmService } from 'app/services/obm.service';
 
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NodeService } from 'app/services/node.service';
-import { AlphabeticalComparator, ObjectFilterByKey } from 'app/utils/inventory-operator';
+import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/utils/inventory-operator';
 
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -70,21 +70,9 @@ export class ObmComponent implements OnInit {
   }
 
   searchIterm(term: string): void {
-    const datas = _.cloneDeep(this.dataStore);
-    function contains(src: string): boolean {
-      if (!src) {
-        return false;
-      }
-      if (!term) {
-        return true;
-      }
-      return src.toLowerCase().includes(term.toLowerCase());
-    }
+    const obmStore = _.cloneDeep(this.dataStore);
     this.dgDataLoading = true;
-    this.allObms = _.filter(datas, (data) => {
-      return contains(data.id) || contains(data.node) ||
-        contains(data.service) || contains(JSON.stringify(data.config));
-    });
+    this.allObms = StringOperator.search(term, obmStore);
     this.dgDataLoading = false;
   }
 

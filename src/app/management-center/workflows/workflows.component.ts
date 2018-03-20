@@ -90,7 +90,7 @@ export class WorkflowsComponent implements OnInit {
 
   searchWorkflow(term: string){
     this.dgDataLoading = true;
-    this.workflowsStore = StringOperator.search(term, this.allWorkflows, ["workflowname", "basename"]);
+    this.workflowsStore = StringOperator.search(term,this.allWorkflows);
     this.dgDataLoading = false;
   }
 
