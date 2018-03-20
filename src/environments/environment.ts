@@ -27,6 +27,6 @@ export const environment: Environment = {
     (<any>window).ng.coreTokens = _ng.coreTokens;
     return modRef;
   },
-  ENV_PROVIDERS: [],
+  ENV_PROVIDERS: []
 };
 
