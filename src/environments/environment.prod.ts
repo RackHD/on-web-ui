@@ -18,9 +18,5 @@ export const environment: Environment = {
     disableDebugTools();
     return modRef;
   },
-  ENV_PROVIDERS: [
-
-  ],
-  CONN_SECURED: localStorage.getItem('rackhd.connSecured') == 'true' ? true : false,
-  RACKHD_API: (this.CONN_SECURED ? 'https://' : 'http://') + localStorage.getItem('rackhd.northboundApi'),
+  ENV_PROVIDERS: []
 };
