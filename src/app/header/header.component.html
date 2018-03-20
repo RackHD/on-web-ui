@@ -20,6 +20,6 @@
 <clr-modal [(clrModalOpen)]="openSetting">
   <h3 class="modal-title">RackHD Configurations</h3>
   <div class="modal-body">
-    <app-setting-form></app-setting-form>
+    <app-setting-form (onSave)='onSettingSave()'></app-setting-form>
   </div>
 </clr-modal>
