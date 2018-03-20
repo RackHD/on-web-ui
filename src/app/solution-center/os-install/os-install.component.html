@@ -1,0 +1,191 @@
+<div class="content-container row form-padding ">
+  <div class="col-sm-6 col-md-5 col-lg-6">
+    <form [formGroup]="payloadForm" novalidate>
+      <section class="form-block my-form-block">
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="selects_1">OS Type</label>
+              <div class="select">
+                <select id="selects_1" formControlName="osType" (change)="onChangeOsType($event.target.value)">
+                  <option></option>
+                  <option *ngFor="let type of allOsTypes;">{{ type }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="selects_2">Version</label>
+              <div class="select">
+                <select id="selects_2" formControlName="version">
+                  <option></option>
+                  <option *ngFor="let version of OS_TYPE_VERSION[payloadForm.value['osType']];">{{ version }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="selects_3.1">Node Model</label>
+              <div class="select">
+                <select id="selects_3.1" formControlName="nodeModel" (change)="onNodeChange($event.target.value)">
+                  <option></option>
+                  <option *ngFor="let node of allNodes;">
+                    {{node.model}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="selects_3.2">Manufacturer</label>
+              <div class="select">
+                <select id="selects_3.2" formControlName="manufacturer" (change)="onNodeChange($event.target.value)">
+                  <option></option>
+                  <option *ngFor="let node of allNodes;">
+                    {{node.manufacturer}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="selects_3.4">Node ID</label>
+              <div class="select">
+                <select id="selects_3.4" formControlName="nodeId" (change)="onNodeIdChange($event.target.value)">
+                  <option></option>
+                  <option *ngFor="let node of allNodes;">
+                    {{node.id}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="selects_3.3">Mac Name</label>
+              <div class="select">
+                <select id="selects_3.3" formControlName="macName" (change)="onNodeChange($event.target.value)">
+                  <option></option>
+                  <option *ngFor="let node of allNodes;">
+                    {{node.name}}</option>
+                </select>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="selects_4">Install Disk</label>
+              <div class="select">
+                <select id="selects_4" formControlName="installDisk">
+                  <option></option>
+                  <option *ngFor="let diskName of diskOptions;">
+                    {{ diskName }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="selects_5">Network</label>
+              <div class="select">
+                <select id="selects_5" formControlName="networkDevice" (change)="onChangeNetworkDevice($event.target.value)">
+                  <option></option>
+                  <option *ngFor="let network of networkDeviceOptions;">
+                    {{ network }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="formFileds_6">Repo URL</label>
+              <input type="text" id="formFileds_1" formControlName="repoUrl">
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="form-group">
+              <label for="formFileds_1">Root Password</label>
+              <input type="text" id="formFileds_1" formControlName="rootPassword">
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <div class="check-box" style="margin-bottom: 1em;">
+        <clr-checkbox name="checkAuthEnable" id="authEnable" (change)="handleEnabled($event.target.checked)" [(clrChecked)]="modifyDefaultSetting">
+          Enable Network Options
+        </clr-checkbox>
+      </div>
+
+      <fieldset class="fieldset" [disabled]='!modifyDefaultSetting'>
+        <legend [ngClass]="{'legend': true, 'disabled-label': !modifyDefaultSetting}">
+          Network Options
+        </legend>
+        <section class="form-block my-form-block">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+              <div class="form-group">
+                <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_3">IP Address</label>
+                <input type="text" id="formFileds_1" formControlName="ipAddress">
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+              <div class="form-group">
+                <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_2">DNS Servers</label>
+                <input type="text" id="formFileds_1" formControlName="dnsServers">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+              <div class="form-group">
+                <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_5">Netmask</label>
+                <input type="text" id="formFileds_1" formControlName="netmask">
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+              <div class="form-group">
+                <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_4">Gateway</label>
+                <input type="text" id="formFileds_1" formControlName="gateway">
+              </div>
+            </div>
+          </div>
+        </section>
+      </fieldset>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="createPayload();">Save</button>
+        <button type="button" [ngClass]="{'disabled': !enableOsinstall}" class="btn btn-danger" (click)="onSubmit()">Submit</button>
+      </div>
+    </form>
+  </div>
+  <div class="col-sm-6 col-md-5 col-md-offset-2 col-lg-6 col-lg-offset-0">
+    <h3>JSON Editor</h3>
+    <div class="json-editor" #jsoneditor id="jsoneditor"></div>
+  </div>
+
+  <clr-modal [(clrModalOpen)]="submitSuccess" [clrModalSize]="'xm'">
+    <h3 class="modal-title">Success</h3>
+    <div class="modal-body">
+      <pre>You have submitted an OS install workflow successfully.</pre>
+    </div>
+  </clr-modal>
+
+</div>
