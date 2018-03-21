@@ -23,12 +23,12 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     this.workflow = this.workflowService.getInitWorkflow();
     let container = document.getElementById('jsoneditor');
 
-    let height = document.getElementsByClassName('workflow-editor-graph')[0].offsetHeight + 'px';
-    let width = document.getElementsByClassName('workflow-editor-graph')[0].offsetWidth + 'px';
+    // let height = document.getElementsByClassName('workflow-editor-graph')[0].offsetHeight + 'px';
+    // let width = document.getElementsByClassName('workflow-editor-graph')[0].offsetWidth + 'px';
     let canvas = document.getElementById('mycanvas');
 
-    canvas.setAttribute('height',height);
-    canvas.setAttribute('width',width);
+    canvas.setAttribute('height', "1024px");
+    canvas.setAttribute('width', "800px");
     console.log(canvas);
 
     let options = {mode: 'code'};
