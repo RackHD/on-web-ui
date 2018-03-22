@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { OperationsCenterComponent } from './operations-center.component';
-import { ConfigComponent } from '../management-center/config/config.component';
 import { ActiveWorkflowComponent } from './active-workflow/active-workflow.component';
 import { HistoryWorkflowComponent } from  './history-workflow/history-workflow.component';
 

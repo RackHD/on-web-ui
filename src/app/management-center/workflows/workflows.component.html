@@ -25,7 +25,10 @@
     </div>
 
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
-      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows"> <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder> <clr-dg-column [clrDgSortBy]="friendlyNameComparator">FriendlyName <clr-dg-string-filter [clrDgStringFilter]="friendlyNameFilter"> </clr-dg-string-filter>
+      <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows">
+        <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
+        <clr-dg-column [clrDgSortBy]="friendlyNameComparator">FriendlyName
+          <clr-dg-string-filter [clrDgStringFilter]="friendlyNameFilter"> </clr-dg-string-filter>
         </clr-dg-column>
         <clr-dg-column [clrDgSortBy]="injectableNameComparator">InjectableName
           <clr-dg-string-filter [clrDgStringFilter]="injectableNameFilter">

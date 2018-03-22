@@ -4,3 +4,21 @@
 import * as _ from 'lodash';
 
 export const PAGE_SIZE_OPTIONS = [15, 20, 50, 100];
+
+export class ModalTypes {
+  detailActions: string [];
+  alertActions: string [];
+  formActions: string [];
+  otherActions: string [];
+  constructor(
+    detailList = ["Detail"],
+    otherList = [],
+    alertList = ["Delete", "Cancel"],
+    formList = ["Update", "Create"]
+  ) {
+    this.detailActions = detailList;
+    this.alertActions = alertList;
+    this.formActions = formList;
+    this.otherActions = otherList;
+  };
+}

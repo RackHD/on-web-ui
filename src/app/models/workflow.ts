@@ -17,3 +17,10 @@ export class Workflow {
     serviceGraph: string;
     tasks: Array<Task>;
 }
+
+export const WORKFLOW_URL = {
+  getAllUrl: "/workflows",
+  getByIdentifierUrl: "/workflows/",
+}
+
+export const HISTORY_WORKFLOW_STATUS = ["succeeded", "failed", "cancelled"];
