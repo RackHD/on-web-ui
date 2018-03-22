@@ -26,3 +26,4 @@ export const RACKHD_CONFIG = new RackhdSetting({
 
 export const API_PATTERN = '^(\\d{1,3}\\.){3}\\d{1,3}\\:\\d{1,5}\\/api\\/(2\\.0|current)$';
 export const ADDR_PATTERN = '^(\\d{1,3}\\.){3}\\d{1,3}\\:\\d{1,5}$';
+export const REPO_PATTERN = '^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?(\\d{1,3}\\.){3}\\d{1,3}\\:\\d{1,5}?(\/.*)?';

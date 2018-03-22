@@ -53,7 +53,6 @@ export class NodeService {
 
   public postWorkflow(nodeId: string, workflowName: string, payload: string): Observable<any>{
     let url = RackHD.getBaseUrl() + NODE_URL.nodesById + nodeId + '/workflows?name=' + workflowName;
-    console.log('[DEBUG] post workflow url:', url);
     return this.http.post(url, payload, { headers: { 'Content-Type': 'application/json' } });
   }
 }

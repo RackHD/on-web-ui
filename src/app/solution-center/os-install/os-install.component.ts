@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Poller, Node } from 'app/models';
+import { Poller, Node, API_PATTERN, ADDR_PATTERN, REPO_PATTERN } from 'app/models';
 import { PollersService } from 'app/services/pollers.service';
 import { NodeService } from 'app/services/node.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -11,7 +11,6 @@ import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import { debounce } from 'rxjs/operator/debounce';
 import { CatalogsService } from 'app/services/catalogs.service';
-import { environment } from 'environments/environment';
 import { JSONEditor } from 'app/utils/json-editor';
 
 @Component({
@@ -23,7 +22,7 @@ import { JSONEditor } from 'app/utils/json-editor';
 export class OsInstallComponent implements OnInit {
   OS_TYPE_VERSION = {};
   OS_TYPE_NAME = {};
-  typeArray: string[];
+  REPO_PLACE_HOLDER = {};
 
   allNodes: Node[];
   dataStore: Node[];
@@ -36,13 +35,14 @@ export class OsInstallComponent implements OnInit {
 
   payloadForm: FormGroup;
   payloadJson: {};
-  payloadFull: {};
 
   selectedNodeId: string;
   selectedNetworkDevice: string;
   editor: any;
+  selectedRepoPlaceHolder: string;
 
   enableOsinstall = false;
+  enableSavePayload = false;
   submitSuccess = false;
   enableNetworkSetting = false;
 
@@ -54,15 +54,27 @@ export class OsInstallComponent implements OnInit {
 
   ngOnInit() {
     this.OS_TYPE_VERSION = {
-      'esxi': ['6.5', '6'],
-      'centos': ['7'],
-      'ubuntu': ['trusty'],
+      'esxi': ['6.5', '6', '5.5'],
+      'centos': ['7', '6.5'],
+      'rhel': ['7.0', '7.1', '7.2'],
+      'ubuntu': ['trusty', 'xenial', 'artful'],
     };
     this.OS_TYPE_NAME = {
       'esxi': 'Graph.InstallESXi',
       'centos': 'Graph.InstallCentOS',
-      'ubuntu': 'Graph.InstallUbuntu'
+      'ubuntu': 'Graph.InstallUbuntu',
+      'rhel': 'Graph.InstallRHEL',
     };
+
+    this.REPO_PLACE_HOLDER = {
+      '' : 'Select OS TYPE first.',
+      'esxi': 'http://172.31.128.2:9090/common/esxi/6.5',
+      'centos': 'http://172.31.128.2:9090/common/centos/7/os/x86_64',
+      'ubuntu': 'http://172.31.128.2:9090/common/ubuntu/16.04',
+      'rhel': 'http://172.31.128.2:9090/common/rhel/7.1/os/x86_64',
+    };
+
+    this.selectedRepoPlaceHolder = 'Select OS TYPE first.';
 
     let container = document.getElementById('jsoneditor');
     let options = { mode: 'code' };
@@ -100,10 +112,6 @@ export class OsInstallComponent implements OnInit {
     }
   }
 
-  updateEditor() {
-    this.editor.set(this.payloadJson);
-  }
-
   getAllNodes(): void {
     this.nodeService.getAllNodes()
       .subscribe(data => {
@@ -114,8 +122,7 @@ export class OsInstallComponent implements OnInit {
             item => {
               let systemInfo = item['data']['System Information'];
               if (systemInfo) {
-                let model =
-                  node.manufacturer = systemInfo['Manufacturer'];
+                node.manufacturer = systemInfo['Manufacturer'];
                 node.model = systemInfo['Product Name'];
               }
             }
@@ -127,7 +134,7 @@ export class OsInstallComponent implements OnInit {
   createForm() {
     this.payloadForm = this.fb.group({
       osType: '',
-      nodeId: '',
+      nodeId: new FormControl('', { validators: [Validators.required] }),
       workflowName: '',
       version: '',
       rootPassword: 'RackHDRocks!',
@@ -137,7 +144,7 @@ export class OsInstallComponent implements OnInit {
       ipAddress: '',
       gateway: '',
       netmask: '',
-      repoUrl: 'http://172.31.128.2:9090/common',
+      repoUrl: new FormControl('', { validators: [Validators.pattern(REPO_PATTERN), Validators.required] }),
       nodeModel: '',
       manufacturer: '',
       macName: ''
@@ -157,13 +164,22 @@ export class OsInstallComponent implements OnInit {
   onNodeIdChange(item) {
     this.onNodeChange(item);
     this.onChange(item);
+    this.validSave();
   }
 
   onChangeOsType(item) {
     this.payloadForm.value['workflowName'] = this.OS_TYPE_NAME[item];
+    this.selectedRepoPlaceHolder = this.REPO_PLACE_HOLDER[item];
   }
 
   onChangeNetworkDevice(item: string) {
+    if (item) {
+      this.enableNetworkSetting = true;
+      this.modifyDefaultSetting = true;
+    } else {
+      this.enableNetworkSetting = false;
+      this.modifyDefaultSetting = false;
+    }
     let device = _.split(item, ',');
     this.selectedNetworkDevice = device[0];
   }
@@ -197,31 +213,10 @@ export class OsInstallComponent implements OnInit {
         }
       }
     );
-
   }
 
   createPayload() {
-    let payloadTmp = 'Please choose supported OS\'s type.';
-    switch (this.payloadForm.value['osType']) {
-      case 'centos': {
-        payloadTmp = this.createCentosPayload();
-        break;
-      }
-
-      case 'esxi': {
-        payloadTmp = this.createEsxiPayload();
-        break;
-      }
-
-      case 'ubuntu': {
-        payloadTmp = this.createUbuntuPayload();
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-    this.payloadJson = JSON.parse(payloadTmp);
+    this.payloadJson = this.createPayloadOptions();
     this.editor.set(this.payloadJson);
     this.enableOsinstall = true;
   }
@@ -233,7 +228,6 @@ export class OsInstallComponent implements OnInit {
   onSubmit() {
     let workflow = this.editor.get();
     this.payloadJson = workflow;
-
     this.nodeService.postWorkflow(this.selectedNodeId,
       this.OS_TYPE_NAME[this.payloadForm.value['osType']], JSON.stringify(this.payloadJson))
       .subscribe(data => {
@@ -241,143 +235,72 @@ export class OsInstallComponent implements OnInit {
       });
   }
 
-  createCentosPayload(): string {
-    let centosPayload = `
-    {
-      "options": {
-          "defaults": {
-              "version": "${this.payloadForm.value['version']}",
-              "repo": "${this.payloadForm.value['repoUrl'] + '/' +
-      this.payloadForm.value['osType'] + '/' +
-      this.payloadForm.value['version'] + '/os/x86_64'}",
-              "rootPassword": "${this.payloadForm.value['rootPassword']}",
-              "installDisk": "${'/dev/' + this.payloadForm.value['installDisk']}",
-              "dnsServers": [
-                "${this.payloadForm.value['dnsServers']}"
-              ],
-              "networkDevices": [
-                {
-                  "device": "${this.selectedNetworkDevice}",
-                  "ipv4": {
-                    "ipAddr": "${this.payloadForm.value['ipAddress']}",
-                    "gateway": "${this.payloadForm.value['gateway']}",
-                    "netmask": "${this.payloadForm.value['netmask']}"
-                  }
-                }
-              ]
-          }
-      }
-  }`;
-
-    let centosPayloadMini = `
-    {
-      "options": {
-          "defaults": {
-              "version": "${this.payloadForm.value['version']}",
-              "repo": "${this.payloadForm.value['repoUrl'] + '/' +
-      this.payloadForm.value['osType'] + '/' +
-      this.payloadForm.value['version'] + '/os/x86_64'}",
-              "rootPassword": "${this.payloadForm.value['rootPassword']}",
-              "installDisk": "${'/dev/' + this.payloadForm.value['installDisk']}"
-          }
-      }
-  }`;
-    return this.enableNetworkSetting ? centosPayload : centosPayloadMini;
-  }
-
-  createUbuntuPayload(): string {
-    let ubuntuPayload = `
-   {
-    "options": {
-        "defaults": {
-            "version": "${this.payloadForm.value['version']}",
-            "repo": "${this.payloadForm.value['repoUrl'] + '/ubuntu/16.04'}",
-            "rootPassword": "${this.payloadForm.value['rootPassword']}",
-            "baseUrl": "install/netboot/ubuntu-installer/amd64",
-            "kargs": {
-                "live-installer/net-image": 
-                "${this.payloadForm.value['repoUrl'] + '/ubuntu/install/filesystem.squashfs'}"
-            },
-            "dnsServers": [
-              "${this.payloadForm.value['dnsServers']}"
-            ],
-            "networkDevices": [
-              {
-                "device": "${this.selectedNetworkDevice}",
-                "ipv4": {
-                  "ipAddr": "${this.payloadForm.value['ipAddress']}",
-                  "gateway": "${this.payloadForm.value['gateway']}",
-                  "netmask": "${this.payloadForm.value['netmask']}"
-                }
-              }
-            ],
-            "installDisk": "${'/dev/' + this.payloadForm.value['installDisk']}"
+  createPayloadOptions(): object {
+    let tmpJson = {};
+    let generalJson = {};
+    let version = { 'version': this.payloadForm.value['version'] };
+    let repo = { 'repo': this.payloadForm.value['repoUrl'] };
+    let rootPassword = { 'rootPassword': this.payloadForm.value['rootPassword'] };
+    let installDisk = {};
+    if (this.payloadForm.value['osType'] === 'ubuntu') {
+      let ubuntuOnly = {
+        'baseUrl': 'install/netboot/ubuntu-installer/amd64',
+        'kargs': {
+          'live-installer/net-image': this.payloadForm.value['repoUrl'] + '/ubuntu/install/filesystem.squashfs'
         }
+      };
+      _.assign(generalJson, ubuntuOnly);
     }
-}`;
-
-    let ubuntuPayloadMini = `
-   {
-    "options": {
-        "defaults": {
-            "version": "${this.payloadForm.value['version']}",
-            "repo": "${this.payloadForm.value['repoUrl'] + '/ubuntu/16.04'}",
-            "rootPassword": "${this.payloadForm.value['rootPassword']}",
-            "baseUrl": "install/netboot/ubuntu-installer/amd64",
-            "kargs": {
-                "live-installer/net-image": 
-                "${this.payloadForm.value['repoUrl'] + '/ubuntu/install/filesystem.squashfs'}"
-            },
-            "installDisk": "${'/dev/' + this.payloadForm.value['installDisk']}"
-        }
+    if (this.payloadForm.value['osType'] === 'esxi') {
+      installDisk = { 'installDisk': this.payloadForm.value['installDisk'] };
+    } else {
+      installDisk = { 'installDisk': "/dev/" + this.payloadForm.value['installDisk'] };
     }
-}`;
-    return this.enableNetworkSetting ? ubuntuPayload : ubuntuPayloadMini;
-  }
+    _.assign(generalJson, version, repo, rootPassword, installDisk);
 
-  createEsxiPayload(): string {
-    let vmnic = 'vmnic' + this.selectedNetworkDevice.substring(3);
-    let esxiPayload = `{
-      "options": {
-        "defaults": {
-          "version": "${this.payloadForm.value['version']}",
-          "repo": "${this.payloadForm.value['repoUrl'] + '/' + this.payloadForm.value['osType'] +
-      '/' + this.payloadForm.value['version']}",
-          "rootPassword": "${this.payloadForm.value['rootPassword']}",
-          "dnsServers": [
-            "${this.payloadForm.value['dnsServers']}"
-          ],
-          "networkDevices": [
-            {
-              "device": "${vmnic}",
-              "ipv4": {
-                "ipAddr": "${this.payloadForm.value['ipAddress']}",
-                "gateway": "${this.payloadForm.value['gateway']}",
-                "netmask": "${this.payloadForm.value['netmask']}"
-              }
-            }
-          ],
-          "installDisk": "${this.payloadForm.value['installDisk']}"
-        }
-      }
-    }`;
+    if (this.enableNetworkSetting) {
+      let dnsServers = { 'dnsServers': this.payloadForm.value['dnsServers'] };
+      _.assign(generalJson, dnsServers);
 
-    let esxiPayloadMini = `{
-      "options": {
-        "defaults": {
-          "version": "${this.payloadForm.value['version']}",
-          "repo": "${this.payloadForm.value['repoUrl'] + '/' + this.payloadForm.value['osType']
-      + '/' + this.payloadForm.value['version']}",
-          "rootPassword": "${this.payloadForm.value['rootPassword']}",
-          "installDisk": "${this.payloadForm.value['installDisk']}"
-        }
+      let ipv4 = {
+        "ipAddr": this.payloadForm.value['ipAddress'],
+        "gateway": this.payloadForm.value['gateway'],
+        "netmask": this.payloadForm.value['netmask']
+      };
+
+      if (this.payloadForm.value['osType'] === 'esxi') {
+        let vmnic = 'vmnic' + this.selectedNetworkDevice.substring(3);
+        let networkDevices = {
+          'networkDevices': [{
+            "device": vmnic,
+            "ipv4": ipv4
+          }]
+        };
+        _.assign(generalJson, networkDevices);
+      } else {
+        let networkDevices = {
+          'networkDevices': [{
+            "device": this.selectedNetworkDevice,
+            "ipv4": ipv4
+          }]
+        };
+        _.assign(generalJson, networkDevices);
       }
-    }`;
-    return this.enableNetworkSetting ? esxiPayload : esxiPayloadMini;
+    }
+    tmpJson = _.assign(tmpJson, {options: {'defaults': generalJson}});
+    return tmpJson;
   }
 
   search(term: string): void {
     this.searchTerms.next(term);
   }
 
+  formClassInvalid(value: string): boolean {
+    return this.payloadForm.get(value).invalid;
+  }
+
+  validSave() {
+    this.enableSavePayload = (!this.formClassInvalid('nodeId')) &&
+      (!this.formClassInvalid('repoUrl'));
+  }
 }
