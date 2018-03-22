@@ -80,3 +80,18 @@ export class StringOperator {
     });
   }
 }
+
+export function createFilters<T> (obj: any, filterKeys: string[], model: T): void {
+  _.map(filterKeys, key => {
+    let _key = key + "Filter";
+    obj[_key] = new ObjectFilterByKey<T>(key);
+  })
+}
+
+export function createComparator<T> (obj: any, comparatorKeys: string[], model: T): void {
+  _.map(comparatorKeys, key => {
+    let _key = key + "Comparator";
+    obj[_key] = new AlphabeticalComparator<T>(key);
+  })
+}
+

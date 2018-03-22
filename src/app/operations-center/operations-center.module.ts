@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 
+import { OperationCenterServiceModule } from './services/operation-center-service.module';
+import { ManagementCenterServicesModule } from '../management-center/services/management-center-service.module';
+
 import { OperationsCenterComponent } from './operations-center.component';
 import { OperationsCenterRoutingModule } from './operations-center-routing.module';
 
@@ -15,9 +18,15 @@ import { HistoryWorkflowComponent } from './history-workflow/history-workflow.co
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    OperationsCenterRoutingModule
+    OperationsCenterRoutingModule,
+    OperationCenterServiceModule,
+    ManagementCenterServicesModule,
   ],
-  declarations: [OperationsCenterComponent, ActiveWorkflowComponent, HistoryWorkflowComponent]
+  declarations: [
+    OperationsCenterComponent,
+    ActiveWorkflowComponent,
+    HistoryWorkflowComponent,
+  ]
 })
 
 export class OperationsCenterModule {
