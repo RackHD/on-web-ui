@@ -26,7 +26,7 @@ export class NodeService {
   }
 
   public getNodeTypes(): Observable<string[]> {
-    return Observable.of(NODE_TYPES).delay(500);
+    return Observable.of(NODE_TYPES).delay(5);
   }
 
   public creatOneNode(jsonData: string): Observable<Node> {

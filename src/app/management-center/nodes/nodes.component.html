@@ -1,9 +1,12 @@
 <div class="app-nodes">
-  <div class="row toolbar">
+
+  <div class="row toolbar status-header">
     <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 count-summary" *ngFor="let type of nodeTypes" (click)="selectType(type)"
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 status-button"
+        *ngFor="let type of nodeTypes"
+        (click)="selectType(type)"
         [class.selected]="selectedType==type.displayName">
-        <h2 class="">{{ nodesTypeCountMatrix[type.identifier] || 0 }}</h2>
+        <h2 class="status-button">{{ nodesTypeCountMatrix[type.identifier] || 0 }}</h2>
         <span class="count-text">{{ type.displayName }}</span>
       </div>
     </div>

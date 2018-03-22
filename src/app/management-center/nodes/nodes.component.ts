@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 
 import { NodeService } from '../../services/node.service';
-import { Node, NodeType, NodeStatus, NODE_TYPE_MAP } from '../../models/node';
+import { Node, NodeType, NODE_TYPE_MAP } from '../../models/node';
 
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ObmService } from 'app/services/obm.service';
@@ -29,10 +29,7 @@ export class NodesComponent implements OnInit {
   dataStore: Node[] = [];
 
   nodeTypes: NodeType[];
-  nodesDataMatrix = {};
   nodesTypeCountMatrix = {};
-  nodesStatusDataMatrix = {};
-  nodesStatusCountMatrix = {};
 
   selectedType: string;
   selectedSku: string;
@@ -83,7 +80,6 @@ export class NodesComponent implements OnInit {
 
   constructor(public activatedRoute: ActivatedRoute,
     public router: Router,
-    public changeDetectorRef: ChangeDetectorRef,
     public nodeService: NodeService,
     public obmService: ObmService,
     public ibmService: IbmService,
@@ -104,15 +100,15 @@ export class NodesComponent implements OnInit {
               result.push(dt);
             }
           }, []);
-        this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
-          let type = params.get('type');
-          if (type) {
-            let dt = new NodeType();
-            dt.identifier = type;
-            dt.displayName = NODE_TYPE_MAP[type];
-            this.selectType(dt);
-          }
-        });
+        // this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
+          // let type = params.get('type');
+          // if (type) {
+            // let dt = new NodeType();
+            // dt.identifier = type;
+            // dt.displayName = NODE_TYPE_MAP[type];
+            // this.selectType(dt);
+          // }
+        // });
       }
     );
 
@@ -219,14 +215,9 @@ export class NodesComponent implements OnInit {
     if (this.selectedType === type.displayName) {
       this.selectedType = '';
     } else {
-      //two types of filter.
-      // type 1
       this.selectedType = type.displayName;
-      // type 2
-      // this.nodes = this.nodesDataMatrix[type.identifier];
     }
     this.typeFilterValue = this.selectedType;
-    this.changeDetectorRef.detectChanges();
   }
 
   goToDetail(node: Node) {
