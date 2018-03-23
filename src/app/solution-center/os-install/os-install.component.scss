@@ -1,0 +1,45 @@
+.offset-header {
+    height: 100vh;
+    margin-top: 60px;
+  }
+
+.form-padding {
+  padding-left: 1rem;
+}  
+
+.fieldset {
+  border: 1px solid silver;
+  margin: 0 2px;
+  padding: .35em .625em .75em;
+}
+
+.legend {
+  display: block;
+  padding: 0;
+  line-height: inherit;
+  width: auto;
+}
+
+.disabled-label {
+  color: #565656;
+  opacity: .4;
+}
+
+.float-right-local {
+  float: right;
+}
+
+.my-form-block {
+  .form-group {
+    padding-left: 128px;
+  }
+}
+
+.json-editor {
+  margin-left: 5px;
+  height: 75%;
+  width: auto;
+  margin-top: 15px;
+}
+
+  
