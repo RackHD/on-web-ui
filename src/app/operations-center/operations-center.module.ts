@@ -3,14 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 
-import { OperationCenterServiceModule } from './services/operation-center-service.module';
 import { ManagementCenterServicesModule } from '../management-center/services/management-center-service.module';
+
+import { ActiveWorkflowComponent } from './active-workflow/active-workflow.component';
+import { HistoryWorkflowComponent } from './history-workflow/history-workflow.component';
+import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.component';
+
+import { OperationCenterServiceModule } from './services/operation-center-service.module';
 
 import { OperationsCenterComponent } from './operations-center.component';
 import { OperationsCenterRoutingModule } from './operations-center-routing.module';
 
-import { ActiveWorkflowComponent } from './active-workflow/active-workflow.component';
-import { HistoryWorkflowComponent } from './history-workflow/history-workflow.component';
+import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
+// import { SharedServicesModule } from '../services/sharedServices.module';
 
 @NgModule({
   imports: [
@@ -21,13 +26,18 @@ import { HistoryWorkflowComponent } from './history-workflow/history-workflow.co
     OperationsCenterRoutingModule,
     OperationCenterServiceModule,
     ManagementCenterServicesModule,
+    CanvasGraphModule,
   ],
   declarations: [
     OperationsCenterComponent,
     ActiveWorkflowComponent,
     HistoryWorkflowComponent,
+    WorkflowViewerComponent,
+  ],
+  providers: [
+    OperationCenterServiceModule,
+    // SharedServicesModule
   ]
 })
 
-export class OperationsCenterModule {
-}
+export class OperationsCenterModule {}
