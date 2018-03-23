@@ -8,8 +8,16 @@
       padding-top: 0;
       margin-top: -25px;
       margin-bottom: 8px;
-    }
-    .header-button {
-      margin-bottom: -20px;
+      .header-button {
+        margin-bottom: -20px;
+        cursor: pinter;
+        z-index: 9;
+        &:hover {
+          border-bottom: solid 1px lightblue;
+        }
+        &.selected{
+          box-shadow: 5px 5px 20px 0px rgb(107, 193, 227); 
+        }
+      }
     }
 }
