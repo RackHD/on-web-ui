@@ -14,6 +14,7 @@ import * as _ from 'lodash';
 import { NodeExtensionService } from './node-extension.service';
 import { WorkflowService } from '../services/workflow.service';
 import { CONSTS } from '../../config/consts';
+import { Task } from '../models';
 
 const global = (window as any);
 
@@ -33,6 +34,7 @@ export class CanvasGraphComponent implements OnInit {
   workflow: any;
   canvas: any;
   graph: any;
+  initSize: any;
 
   constructor(public element: ElementRef,
               public nodeExtensionService: NodeExtensionService,
@@ -57,7 +59,6 @@ export class CanvasGraphComponent implements OnInit {
     this.graph = new global.LGraph();
     this.canvas = new global.LGraphCanvas(this.element.nativeElement.querySelector('canvas'), this.graph);
 
-    // overwrite canvas prototype method to inject customized logic
     this.canvas.getNodeMenuOptions = this.getNodeMenuOptions();
     this.canvas.getCanvasMenuOptions = this.getCanvasMenuOptions();
 
@@ -65,9 +66,15 @@ export class CanvasGraphComponent implements OnInit {
 
     // set json
     this.drawNodes();
+    this.setSize();
   }
 
-
+  setSize() {
+    this.initSize = {
+      height: this.element.nativeElement.parentNode.offsetHeight,
+      width: this.element.nativeElement.parentNode.offsetWidth
+    }
+  }
   // refresh graph
   afterWorkflowUpdate(reRender = false) {
     this.onWorkflowChanged.emit(_.cloneDeep(this.workflow));
@@ -219,7 +226,6 @@ export class CanvasGraphComponent implements OnInit {
         let taskFilter = new Subject();
 
         function inputTerm(term: string) {
-          console.log('asd');
           taskFilter.next(term);
         }
 
@@ -353,12 +359,16 @@ export class CanvasGraphComponent implements OnInit {
     // add nodes
     _.forEach(this.workflow.tasks, (task, index) => {
       let taskNode = global.LiteGraph.createNode('rackhd/task');
+      let position = coordinateArray[task.instanceId];
       taskNode.title = task.label;
       taskNode.properties.task = task;
       taskNode.state = task.state;
+
       taskNode.pos = [
-        coordinateArray[index][0] - taskNode.size[0],
-        coordinateArray[index][1] - taskNode.size[1]
+        position[0],
+        position[1]
+        // coordinateArray[index][0] - taskNode.size[0],
+        // coordinateArray[index][1] - taskNode.size[1]
       ];
 
       // set color
@@ -448,27 +458,139 @@ export class CanvasGraphComponent implements OnInit {
       }
       return [helperMap, leftTasks];
     }
-
   }
 
   // helper of node positions
   distributePosition() {
-    let coordinateArray = [];
-    let canvasWidth = this.editorCanvas.nativeElement.offsetWidth;
-    let canvasHeight = this.editorCanvas.nativeElement.offsetHeight;
-    let tasksNum = this.workflow.tasks.length;
+    let self = this;
+    let xOffset = 30;
+    let yOffset = 60;
+    let xGridSizeMin = 200; // Avoid overlap between adjacent task blocks
+    let yGridSizeMin = 80;
+    let positionMatrix = {};
 
-    let index = 0;
-    for (; index * index < tasksNum; index++) {
+    let canvasWidth = parseInt(this.editorCanvas.nativeElement.offsetWidth);
+    let canvasHeight = parseInt(this.editorCanvas.nativeElement.offsetHeight);
+
+    let waitOnsList = getWaitOnsList();
+    let colPosMatrix = generateColPos(waitOnsList);
+    let rowPosMatrix = generateRowPos(colPosMatrix, waitOnsList);
+
+    let colCount = _.max(_.values(colPosMatrix)) + 1;
+    let rowCount = _.max(_.values(rowPosMatrix)) + 1;
+    let xGridSize = _.max([canvasWidth / colCount, xGridSizeMin]);
+    let yGridSize = _.max([canvasHeight / rowCount, yGridSizeMin]);
+
+    _.forEach(this.workflow.tasks, task => {
+      let taskId = task.instanceId;
+      let x = colPosMatrix[taskId];
+      let y = rowPosMatrix[taskId];
+      x = xGridSize * x + xOffset;
+      y = yGridSize * y + yOffset;
+      positionMatrix[task.instanceId] = [parseInt(x), parseInt(y)];
+    })
+
+    function getWaitOnsList(): any {
+      return _.transform(self.workflow.tasks, (result, value, key)=> {
+        let _value: Task = value as Task;
+        result[_value.instanceId] = _value.waitingOn;
+      }, {});
     }
 
-    for (let i = 0; i < index * index; i++) {
-      let x = i % index;
-      let y = parseInt('' + i / index);
-      x = canvasWidth / (index) * (x + 0.5);
-      y = canvasHeight / (index) * (y + 0.5);
-      coordinateArray.push([x, y]);
+    function generateColPos(waitOnsList: any): any {
+      let colPosMatrix = {};
+      _.forEach(waitOnsList, (waitOns, taskId) => {
+        generateColPosForTask(taskId, colPosMatrix, waitOnsList);
+      });
+      return colPosMatrix;
     }
-    return coordinateArray;
+
+    function generateColPosForTask(taskId: string, colPosMatrix: any, waitOnsList: any): number {
+      let waitOns = waitOnsList[taskId];
+      let colPos: number;
+      let waitOnsColIndex: any[];
+      if(_.isUndefined(waitOns) || _.isEmpty(waitOns)){
+        //Task column position is assigned once identified to save for loop.
+        colPosMatrix[taskId] = 0;
+        return 0;
+      }
+      waitOnsColIndex = getWaitOnsColIndex(waitOns)
+      //Each task will be placed after all tasks it waits on.
+      //Thus a task will be placed 1 grid after the wait-on task that has maximum column index;
+      colPos = _.max(waitOnsColIndex) +1;
+      //Task column position is assigned once identified to save iterations/recursions
+      colPosMatrix[taskId] = colPos;
+
+      function getWaitOnsColIndex(waitOns: any): any[]{
+        let colIndexes = [];
+        _.forEach(waitOns, (waitOn, waitOnTask) =>{
+          if(!_.isUndefined(colPosMatrix[waitOnTask])){
+            colIndexes.push(colPosMatrix[waitOnTask]);
+          } else {
+            let waitOnTaskCol = generateColPosForTask(waitOnTask, colPosMatrix, waitOnsList);
+            colIndexes.push(waitOnTaskCol);
+          }
+        });
+        return colIndexes;
+      }
+
+      return colPos;
+    }
+
+    function generateRowPos(colPosMatrix: any, waitOnsList: any): any {
+      let rowPosMatrix = {};
+      let sortedTasks = sortTaskByCol(colPosMatrix);
+
+      //First column task's row position is arranged by its appearing sequence 
+      let rowIndex = 0;
+      _.forEach(sortedTasks[0], task => {
+        rowPosMatrix[task] = rowIndex;
+        rowIndex += 1;
+      });
+
+      //Non-first column task's row position follow its waitOn tasks
+      for(let colIndex=1; colIndex<sortedTasks.length; colIndex+=1) {
+        let preColTasks = sortedTasks[colIndex-1];
+        let curColTasks = sortedTasks[colIndex];
+        generateRowPosForCol(curColTasks, preColTasks, rowPosMatrix);
+      }
+
+      return rowPosMatrix;
+    }
+
+    //Get row index for tasks in a column
+    function generateRowPosForCol(curColTasks: string[], preColTasks: string[], rowPosMatrix: any) {
+      let rowIndex = 0;
+      _.forEach(preColTasks, preTask => {
+        _.forEach(curColTasks, task=> {
+          let waitOnTasks = _.keys(waitOnsList[task]);
+          let taskRowPos : number;
+          if (_.includes(waitOnTasks, preTask)){
+            taskRowPos = rowIndex;
+            //Keep row position below its waitOnTasks.
+            if (taskRowPos < rowPosMatrix[preTask]) {
+              taskRowPos = rowPosMatrix[preTask];
+            }
+            rowIndex = taskRowPos + 1;
+            rowPosMatrix[task] = taskRowPos;
+          }
+        })
+      });
+    }
+
+    //Sort tasks by column index
+    function sortTaskByCol(colPosMatrix){
+      let taskMatrix = [];
+      _.forEach(colPosMatrix, (colIndex, taskId) => {
+        if (taskMatrix[colIndex]) {
+          taskMatrix[colIndex].push(taskId);
+        } else {
+          taskMatrix[colIndex] = [taskId];
+        }
+      });
+      return taskMatrix;
+    };
+
+    return positionMatrix;
   }
 }

@@ -1,8 +1,29 @@
-<div class="row">
-  <app-canvas-graph
-    [onWorkflowInput]='onWorkflowInput'
-    [editable]='false'
-    ></app-canvas-graph>
-  <div class="workflow-list">
+<div class="workflow-viewer">
+  <h5 class="header-text">
+    <strong>Workflow Canvas</strong>
+  </h5>
+  
+  <form class="form search-form" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+    <section class="form-block">
+      <span class="col-md-4">
+        <label for="graphId"><b>GraphId</b></label>
+        <input id="graphId" type="text" formControlName="graphId" size="37">
+      </span>
+      <span class="col-md-3">
+        <label for="graphId"><b>Node</b></label>
+        <input id="graphId" type="text" formControlName="node" size="30">
+      </span>
+      <span class="col-md-4">
+        <label for="graphId"><b>Name</b></label>
+        <input id="graphId" type="text" formControlName="graphName" size="37">
+      </span>
+    </section>
+  </form>
+
+  <div class="row canvas">
+    <app-canvas-graph
+      [onWorkflowInput]='onWorkflowInput'
+      [editable]=false>
+    </app-canvas-graph>
   </div>
 </div>
