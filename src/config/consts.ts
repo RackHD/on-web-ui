@@ -2,7 +2,10 @@ export const CONSTS = {
   taskResult: {
     "finished": "finished",
     "succeeded": "succeeded",
-    "failed": "failed"
+    "failed": "failed",
+    "cancelled": "cancelled",
+    "running": "running",
+    "timeout": "timeout"
   },
   waitOn: {
     "finished": "finished",
