@@ -44,7 +44,7 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.route.queryParams
     .subscribe(params => {
-      this.graphId = params && params.graphId;
+      this.graphId = params && (params.graphId || params.graphName);
     });
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
@@ -83,15 +83,14 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   }
 
   updateGraphStatus(){
-    this.workflowService.getByIdentifier(this.graphId)
+    let identifier = this.graphId;
+    if (_.startsWith(identifier, "Graph.")){
+      identifier = "graphs/" + identifier;
+    }
+    this.workflowService.getByIdentifier(identifier)
     .subscribe(workflowData => {
-      this.selectedWorkflow = _.cloneDeep(workflowData);
-      // workflowData.waitOn = _.transform(workflowData.tasks, (result, value, key) => {
-        // result[value.instanceId] = {
-          // waitingOn: value.waitingOn
-        // }
-      // }, {});
-      this.onWorkflowInput.emit(_.cloneDeep(workflowData));
+      this.selectedWorkflow = (workflowData instanceof Array) ? workflowData[0] : workflowData;
+      this.onWorkflowInput.emit(this.selectedWorkflow);
     });
   }
 

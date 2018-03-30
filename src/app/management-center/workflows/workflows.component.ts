@@ -5,6 +5,8 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../../utils/inventory-operator';
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
+import { Router } from '@angular/router';
+
 import * as _ from 'lodash';
 
 import { GraphService } from '../services/graph.service';
@@ -46,7 +48,10 @@ export class WorkflowsComponent implements OnInit {
     return parseInt(this.selectedPageSize);
   }
 
-  constructor(private workflowService: GraphService) { }
+  constructor(
+    private workflowService: GraphService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.isShowModal = false;
@@ -164,7 +169,7 @@ export class WorkflowsComponent implements OnInit {
   // onGetRawData() {};
 
   // onChange(){}
-  
+
   onCancel(){
     this.action = '';
     this.selectedWorkflow = null;
@@ -185,6 +190,12 @@ export class WorkflowsComponent implements OnInit {
     })
   }
   // onCreateSubmit(){}
+  
+  gotoCanvas(workflow){
+    let graphName = workflow.injectableName;
+    let url = "/operationsCenter/workflowViewer?graphName=" + graphName;
+    this.router.navigateByUrl(url);
+  }
 
   onSubmit(){
     let payload = this.modalFormGroup.value;

@@ -343,28 +343,27 @@ export class CanvasGraphComponent implements OnInit {
 
   drawNodes() {
     if (!this.workflow) return;
-    this.graph.clear();
-    let positionMatrix = this.distributePosition();
-
-    let linkProperty = 'waitingOn';
-    let linkKey = 'instanceId';
-    let chainResult = chainNodes.bind(this)(linkProperty, linkKey);
+    this.graph.clear(); //Krein: (TODO) restore background
+    let taskWaitOnKey = 'waitingOn';
+    let taskIdentifierKey = 'instanceId';
 
     // this is for workflow defination
-    if (_.isEmpty(chainResult[0])) {
-      linkProperty = 'waitOn';
-      linkKey = 'label';
-      chainResult = chainNodes.bind(this)(linkProperty, linkKey);
+    if (!this.workflow.instanceId) {
+      taskWaitOnKey = 'waitOn';
+      taskIdentifierKey = 'label';
     }
 
+    let positionMatrix = this.distributePosition(taskWaitOnKey, taskIdentifierKey);
+    let chainResult = chainNodes.bind(this)(taskWaitOnKey, taskIdentifierKey);
+    console.log(chainResult);
     let helperMap = chainResult[0];
     let isolatedTasks = chainResult[1];
 
-    // Insert the first task (task of key), and put all isolated in the tail
+    // Flatten task array
     let helperMapOnlyKey = _.keys(helperMap)[0];
     if (helperMapOnlyKey) {
       _.forEach(isolatedTasks, (task) => {
-        if (task[linkKey] === helperMapOnlyKey) {
+        if (task[taskIdentifierKey] === helperMapOnlyKey) {
           helperMap[helperMapOnlyKey] = [task].concat(helperMap[helperMapOnlyKey]);
         } else {
           helperMap[helperMapOnlyKey].push(task);
@@ -376,10 +375,10 @@ export class CanvasGraphComponent implements OnInit {
 
     // add nodes
     _.forEach(this.workflow.tasks, (task, index) => {
-      let waitOnLength = _.keys(task[linkProperty]).length;
+      let waitOnLength = _.keys(task[taskWaitOnKey]).length;
       let taskNodeName = 'rackhd/task_' + waitOnLength;
       let taskNode = global.LiteGraph.createNode(taskNodeName);
-      let position = positionMatrix[task.instanceId];
+      let position = positionMatrix[task[taskIdentifierKey]];
       taskNode.title = task.label;
       taskNode.properties.task = task;
       taskNode.state = task.state;
@@ -431,7 +430,7 @@ export class CanvasGraphComponent implements OnInit {
         let slot = 0;
         _.forEach(_.keys(task.waitingOn), waitOnTask => {
           let originNode = _.find(allNodes, (node) => {
-            return node.properties.task.instanceId === waitOnTask;
+            return node.properties.task[taskIdentifierKey] === waitOnTask;
           });
           let originSlot = _.findIndex(originNode.outputs, (o) => {
             let waitOnStatus = task.waitingOn[waitOnTask];
@@ -448,28 +447,27 @@ export class CanvasGraphComponent implements OnInit {
     });
     // end draw
 
-    function chainNodes(linkPropertyName, linkKeyName) {
+    function chainNodes(waitOnKey, identifierKeyName) {
       let helperMap = {};
       let isolatedTasks = [];
-      _.forEach(this.workflow.tasks, (task) => {
-        if (!_.isUndefined(task[linkPropertyName]) && !_.isEmpty(task[linkPropertyName])) {
-          let linkKeys = _.keys(task[linkPropertyName]);
-          _.forEach(linkKeys, key => { //There can be multiple waitOns
+      _.forEach(this.workflow.tasks, (task) =>{
+        if (task[waitOnKey] && !_.isEmpty(task[waitOnKey])) {
+          let waitOnTaskKeys = _.keys(task[waitOnKey]);
+          _.forEach(waitOnTaskKeys, key => { //There can be multiple waitOns
             (helperMap[key] || (helperMap[key] = [])).push(task);
           });
         } else {
           isolatedTasks.push(task);
         }
       });
-
       while (_.keys(helperMap).length > 1) {
         _.forEach(helperMap, (taskArray, waitingOnTask) => {
           _.forEach(taskArray, (task) => {
-            if (task.instanceId in helperMap) {
+            if (task[identifierKeyName] in helperMap) {
               helperMap[waitingOnTask] = _.uniq(
-                helperMap[waitingOnTask].concat(helperMap[task.instanceId])
+                helperMap[waitingOnTask].concat(helperMap[task[identifierKeyName]])
               );
-              delete helperMap[task.instanceId];
+              delete helperMap[task[identifierKeyName]];
             }
           });
         });
@@ -478,8 +476,13 @@ export class CanvasGraphComponent implements OnInit {
     }
   }
 
-  // helper of node positions
-  distributePosition() {
+  /* helper of node positions
+   *
+   * @param {String}: taskWaitOnKey: key used for link, should be "waitingOn" or "waitOn"
+   * @param {String}: taskIdKeyName: key used to identify tasks, should be "instacneId" or "label"
+   *
+   */
+  distributePosition(taskWaitOnKey, taskIdKeyName) {
     let self = this;
     let xOffset = 30;
     let yOffset = 60;
@@ -500,18 +503,18 @@ export class CanvasGraphComponent implements OnInit {
     let yGridSize = _.max([canvasHeight / rowCount, yGridSizeMin]);
 
     _.forEach(this.workflow.tasks, task => {
-      let taskId = task.instanceId;
+      let taskId = task[taskIdKeyName];
       let x = colPosMatrix[taskId];
       let y = rowPosMatrix[taskId];
       x = xGridSize * x + xOffset;
       y = yGridSize * y + yOffset;
-      positionMatrix[task.instanceId] = [parseInt(x), parseInt(y)];
+      positionMatrix[taskId] = [parseInt(x), parseInt(y)];
     })
 
     function getWaitOnsList(): any {
       return _.transform(self.workflow.tasks, (result, value, key)=> {
         let _value: Task = value as Task;
-        result[_value.instanceId] = _value.waitingOn;
+        result[_value[taskIdKeyName]] = _value[taskWaitOnKey];
       }, {});
     }
 
