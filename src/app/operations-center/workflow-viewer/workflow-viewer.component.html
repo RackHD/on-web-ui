@@ -6,15 +6,15 @@
   <form class="form search-form" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
     <section class="form-block">
       <span class="col-md-4">
-        <label for="graphId"><b>GraphId</b></label>
-        <input id="graphId" type="text" formControlName="graphId" size="37">
+        <label for="graphId"><b>{{isDefinition? "InjectableName": "GraphId"}}</b></label>
+        <input id="graphId" type="text" formControlName="graphId" [size]="isDefinition ? 42 : 37">
       </span>
-      <span class="col-md-3">
+      <span *ngIf="!isDefinition" class="col-md-3">
         <label for="graphId"><b>Node</b></label>
         <input id="graphId" type="text" formControlName="node" size="30">
       </span>
       <span class="col-md-4">
-        <label for="graphId"><b>Name</b></label>
+        <label for="graphId"><b>{{isDefinition? "Name": "InjectableName"}}</b></label>
         <input id="graphId" type="text" formControlName="graphName" size="37">
       </span>
     </section>

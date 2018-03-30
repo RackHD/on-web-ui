@@ -15,8 +15,10 @@ import { Workflow } from '../../models';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import 'rxjs/add/operator/mergeMap'
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+
+import 'rxjs/add/operator/mergeMap'
+import 'rxjs/add/operator/map'
 
 import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../../utils/inventory-operator';
 
@@ -38,12 +40,18 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   allWorkflows: Workflow[];
 
   filterForm: FormGroup;
-  constructor(private route: ActivatedRoute, private workflowService: WorkflowService) {
-  }
+
+  isDefinition: boolean; // true: graph definition; false: graph object
+
+  constructor(
+    private route: ActivatedRoute,
+    private workflowService: WorkflowService
+  ){}
 
   ngOnInit() {
     this.route.queryParams
     .subscribe(params => {
+      this.isDefinition = !!params.graphName;
       this.graphId = params && (params.graphId || params.graphName);
     });
     let searchTrigger = this.searchTerms.pipe(
@@ -61,7 +69,6 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     if (!this.graphId) {return;}
     this.updateGraphStatus();
-    this.updateFormValue();
   }
 
   createFormGroup(){
@@ -73,13 +80,13 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   }
 
   updateFormValue(){
-    if (this.selectedWorkflow){
-      this.filterForm.patchValue({
-        graphId: this.selectedWorkflow.instanceId,
-        node: this.selectedWorkflow.node,
-        graphName: this.selectedWorkflow.name
-      });
-    }
+  if (this.selectedWorkflow){
+    this.filterForm.patchValue({
+      graphId: this.graphId,
+      node: this.selectedWorkflow.node,
+      graphName: this.selectedWorkflow.name || this.selectedWorkflow.friendlyName
+    });
+  }
   }
 
   updateGraphStatus(){
@@ -88,10 +95,13 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
       identifier = "graphs/" + identifier;
     }
     this.workflowService.getByIdentifier(identifier)
-    .subscribe(workflowData => {
+    .map(workflowData => {
       this.selectedWorkflow = (workflowData instanceof Array) ? workflowData[0] : workflowData;
-      this.onWorkflowInput.emit(this.selectedWorkflow);
-    });
+      this.onWorkflowInput.emit(_.cloneDeep(this.selectedWorkflow));
+    })
+    .subscribe(() => {
+      this.updateFormValue();
+    })
   }
 
   searchWorkflow(term: string): void{
