@@ -68,28 +68,28 @@ export class CanvasGraphComponent implements OnInit {
       }
     );
     this.graph = new global.LGraph();
+    this.setCanvasSize();
     this.canvas = new global.LGraphCanvas(
       this.element.nativeElement.querySelector('canvas'),
       this.graph
       // {autoresize: true}
     );
+    this.setupCanvas();
     this.canvas.clear();
     this.canvas.getNodeMenuOptions = this.getNodeMenuOptions();
     this.canvas.getCanvasMenuOptions = this.getCanvasMenuOptions();
-    this.setupCanvas();
     this.graph.start();
     // set json
     this.drawNodes();
-    this.setCanvasSize();
   }
 
   setupCanvas(){
     // this.canvas.default_link_color =  "#AAC"; //Connection color
     // this.canvas.highquality_render = true; //Render color, curve and arrow
-    // this.canvas.render_curved_connections = true;
-    // this.canvas.render_connection_arrows = true;
-    this.canvas.always_render_background = true;
-    this.canvas.background_image = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAALCAGAAqgBAREA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAA/AKpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//9k='
+    // this.canvas.render_curved_connections = false; //Use straight line
+    // this.canvas.render_connection_arrows = false; //No arrows for line
+    this.canvas.always_render_background = false;
+    this.canvas.background_image = ''; //Don't use background
     this.canvas.title_text_font = "bold 12px Arial";
     this.canvas.inner_text_font = "normal 10px Arial";
     this.canvas.render_shadows = false; //Node shadow
@@ -282,8 +282,6 @@ export class CanvasGraphComponent implements OnInit {
           (input as HTMLInputElement).value = initValue;
         input.addEventListener('input', () => inputTerm((input as HTMLInputElement).value));
       }
-
-      // ==== end for search ====
 
       // click actions of task list menu
       function innerCreate(v, e) {
