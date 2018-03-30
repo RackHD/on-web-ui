@@ -5,11 +5,11 @@ import { ClarityModule } from '@clr/angular';
 
 import { NodeExtensionService } from '../canvas-graph/node-extension.service';
 import { WorkflowService } from '../services/workflow.service';
-import { CanvasGraphComponent } from '../canvas-graph/canvas-graph.component';
 
 import { WorkflowCanvasComponent } from './workflow-canvas/workflow-canvas.component';
 import { WorkflowEditorComponent } from './workflow-editor.component';
 import { WorkflowEditorRoutingModule } from './workflow-editor-routing.module';
+import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
 
 @NgModule({
   imports: [
@@ -17,10 +17,10 @@ import { WorkflowEditorRoutingModule } from './workflow-editor-routing.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    WorkflowEditorRoutingModule
+    WorkflowEditorRoutingModule,
+    CanvasGraphModule,
   ],
   declarations: [
-    CanvasGraphComponent,
     WorkflowEditorComponent,
     WorkflowCanvasComponent
   ],

@@ -36,11 +36,9 @@ export class CanvasGraphComponent implements OnInit {
   graph: any;
   initSize: any;
 
-  constructor(
-    public element: ElementRef,
-    public nodeExtensionService: NodeExtensionService,
-    public workflowService: WorkflowService
-  ){
+  constructor(public element: ElementRef,
+              public nodeExtensionService: NodeExtensionService,
+              public workflowService: WorkflowService) {
     this.nodeExtensionService.init(
       // use bind to keep context
       this.afterInputConnect.bind(this),
@@ -73,7 +71,7 @@ export class CanvasGraphComponent implements OnInit {
     // this.canvas.render_connection_arrows = true;
     this.canvas.background_image = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAALCAGAAqgBAREA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAA/AKpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//9k='
     this.canvas.title_text_font = "bold 12px Arial";
-    this.canvas.inner_text_font =  "normal 10px Arial";
+    this.canvas.inner_text_font = "normal 10px Arial";
     this.canvas.render_shadows = false; //Node shadow
     this.canvas.render_connections_border = false;
     this.canvas.show_info = false; //Hide info on left-top corner
@@ -213,86 +211,71 @@ export class CanvasGraphComponent implements OnInit {
       let preE = e;
       let canvas = global.LGraphCanvas.active_canvas;
       let ref_window = canvas.getCanvasWindow();
-
-      let entries = [];
-      entries.push({content: 'rackhd', has_submenu: true});
-
-      // show rackhd menu
-      let menu = new global.LiteGraph.ContextMenu(entries, {
-        event: e,
-        callback: innerClick,
-        parentMenu: preMenu
-      }, ref_window);
-
-      // show task list menu
       let filterInputHtml = '<input id=\'graphNodeTypeFilter\' placeholder=\'filter\'>';
 
-      function innerClick(v, option, e) {
-        // just mock here, should be gotten from backend service
-        let node_types = ['Task.poller', 'Task.smi'];
-        let values = [];
-        values.push({content: filterInputHtml});
-        for (let i in node_types)
-          values.push({content: node_types[i]});
-        let taskMenu = new global.LiteGraph.ContextMenu(values, {
-          event: e,
-          callback: innerCreate,
-          parentMenu: menu,
-          allow_html: true
-        }, ref_window);
+      // just mock here, should be gotten from backend service
+      let node_types = ['Task.poller', 'Task.smi'];
+      let values = [];
+      values.push({content: filterInputHtml});
+      for (let i in node_types)
+        values.push({content: node_types[i]});
+      let taskMenu = new global.LiteGraph.ContextMenu(values, {
+        event: e,
+        callback: innerCreate,
+        parentMenu: preMenu,
+        allow_html: true
+      }, ref_window);
 
-        // ==== begin for search ====
-        // functions  to implements search
-        let taskFilter = new Subject();
+      // ==== begin for search ====
+      // functions  to implements search
+      let taskFilter = new Subject();
 
-        function inputTerm(term: string) {
-          taskFilter.next(term);
-        }
-
-        bindInput();
-        let filterTrigger = taskFilter.pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          switchMap((term: string) => {
-            reGenerateMenu(term);
-            return 'whatever';
-          })
-        );
-        filterTrigger.subscribe();
-
-        //helpers
-        function reGenerateMenu(term: string) {
-          // close old task list menu and add a new one;
-          taskMenu.close(undefined, true);
-          // just mock here
-          let values = [];
-          values.push({content: filterInputHtml});
-          let filteredTypes = _.filter(node_types, (type) => type.includes(term));
-          for (let i in filteredTypes)
-            values.push({content: filteredTypes[i]});
-          taskMenu = new global.LiteGraph.ContextMenu(values, {
-            event: e,
-            callback: innerCreate,
-            parentMenu: menu,
-            allow_html: true
-          }, ref_window);
-          // remember to bind new input again, because the old one is destroyed when menu close.
-          // remember to add fill the new input with current term, make it more proper.
-          bindInput(term);
-        }
-
-        function bindInput(initValue = '') {
-          let input = document.getElementById('graphNodeTypeFilter');
-          if (initValue)
-            (input as HTMLInputElement).value = initValue;
-          input.addEventListener('input', () => inputTerm((input as HTMLInputElement).value));
-        }
-
-        // ==== end for search ====
-
-        return false;
+      function inputTerm(term: string) {
+        taskFilter.next(term);
       }
 
+      bindInput();
+      let filterTrigger = taskFilter.pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term: string) => {
+          reGenerateMenu(term);
+          return 'whatever';
+        })
+      );
+      filterTrigger.subscribe();
+
+      //helpers
+      function reGenerateMenu(term: string) {
+        // close old task list menu and add a new one;
+        taskMenu.close(undefined, true);
+        // just mock here
+        let values = [];
+        values.push({content: filterInputHtml});
+        let filteredTypes = _.filter(node_types, (type) => type.includes(term));
+        for (let i in filteredTypes)
+          values.push({content: filteredTypes[i]});
+        taskMenu = new global.LiteGraph.ContextMenu(values, {
+          event: e,
+          callback: innerCreate,
+          parentMenu: preMenu,
+          allow_html: true
+        }, ref_window);
+        // remember to bind new input again, because the old one is destroyed when menu close.
+        // remember to add fill the new input with current term, make it more proper.
+        bindInput(term);
+      }
+
+      function bindInput(initValue = '') {
+        let input = document.getElementById('graphNodeTypeFilter');
+        if (initValue)
+          (input as HTMLInputElement).value = initValue;
+        input.addEventListener('input', () => inputTerm((input as HTMLInputElement).value));
+      }
+
+      // ==== end for search ====
+
+      return false;
 
       // click actions of task list menu
       function innerCreate(v, e) {
@@ -445,12 +428,13 @@ export class CanvasGraphComponent implements OnInit {
         });
       }
     });
+
     // end draw
 
     function chainNodes(waitOnKey, identifierKeyName) {
       let helperMap = {};
       let isolatedTasks = [];
-      _.forEach(this.workflow.tasks, (task) =>{
+      _.forEach(this.workflow.tasks, (task) => {
         if (task[waitOnKey] && !_.isEmpty(task[waitOnKey])) {
           let waitOnTaskKeys = _.keys(task[waitOnKey]);
           _.forEach(waitOnTaskKeys, key => { //There can be multiple waitOns
@@ -512,7 +496,7 @@ export class CanvasGraphComponent implements OnInit {
     })
 
     function getWaitOnsList(): any {
-      return _.transform(self.workflow.tasks, (result, value, key)=> {
+      return _.transform(self.workflow.tasks, (result, value, key) => {
         let _value: Task = value as Task;
         result[_value[taskIdKeyName]] = _value[taskWaitOnKey];
       }, {});
@@ -530,7 +514,7 @@ export class CanvasGraphComponent implements OnInit {
       let waitOns = waitOnsList[taskId];
       let colPos: number;
       let waitOnsColIndex: any[];
-      if(_.isUndefined(waitOns) || _.isEmpty(waitOns)){
+      if (_.isUndefined(waitOns) || _.isEmpty(waitOns)) {
         //Task column position is assigned once identified to save for loop.
         colPosMatrix[taskId] = 0;
         return 0;
@@ -538,14 +522,14 @@ export class CanvasGraphComponent implements OnInit {
       waitOnsColIndex = getWaitOnsColIndex(waitOns)
       //Each task will be placed after all tasks it waits on.
       //Thus a task will be placed 1 grid after the wait-on task that has maximum column index;
-      colPos = _.max(waitOnsColIndex) +1;
+      colPos = _.max(waitOnsColIndex) + 1;
       //Task column position is assigned once identified to save iterations/recursions
       colPosMatrix[taskId] = colPos;
 
-      function getWaitOnsColIndex(waitOns: any): any[]{
+      function getWaitOnsColIndex(waitOns: any): any[] {
         let colIndexes = [];
-        _.forEach(waitOns, (waitOn, waitOnTask) =>{
-          if(!_.isUndefined(colPosMatrix[waitOnTask])){
+        _.forEach(waitOns, (waitOn, waitOnTask) => {
+          if (!_.isUndefined(colPosMatrix[waitOnTask])) {
             colIndexes.push(colPosMatrix[waitOnTask]);
           } else {
             let waitOnTaskCol = generateColPosForTask(waitOnTask, colPosMatrix, waitOnsList);
@@ -570,8 +554,8 @@ export class CanvasGraphComponent implements OnInit {
       });
 
       //Non-first column task's row position follow its waitOn tasks
-      for(let colIndex=1; colIndex<sortedTasks.length; colIndex+=1) {
-        let preColTasks = sortedTasks[colIndex-1];
+      for (let colIndex = 1; colIndex < sortedTasks.length; colIndex += 1) {
+        let preColTasks = sortedTasks[colIndex - 1];
         let curColTasks = sortedTasks[colIndex];
         generateRowPosForCol(curColTasks, preColTasks, rowPosMatrix);
       }
@@ -583,10 +567,10 @@ export class CanvasGraphComponent implements OnInit {
     function generateRowPosForCol(curColTasks: string[], preColTasks: string[], rowPosMatrix: any) {
       let rowIndex = 0;
       _.forEach(preColTasks, preTask => {
-        _.forEach(curColTasks, task=> {
+        _.forEach(curColTasks, task => {
           let waitOnTasks = _.keys(waitOnsList[task]);
-          let taskRowPos : number;
-          if (_.includes(waitOnTasks, preTask)){
+          let taskRowPos: number;
+          if (_.includes(waitOnTasks, preTask)) {
             taskRowPos = rowIndex;
             //Keep row position below its waitOnTasks.
             if (taskRowPos < rowPosMatrix[preTask]) {
@@ -600,7 +584,7 @@ export class CanvasGraphComponent implements OnInit {
     }
 
     //Sort tasks by column index
-    function sortTaskByCol(colPosMatrix){
+    function sortTaskByCol(colPosMatrix) {
       let taskMatrix = [];
       _.forEach(colPosMatrix, (colIndex, taskId) => {
         if (taskMatrix[colIndex]) {
