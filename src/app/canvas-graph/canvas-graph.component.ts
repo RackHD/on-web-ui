@@ -11,10 +11,12 @@ import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import * as _ from 'lodash';
+import * as uuid from 'uuid/v4';
+
 import { NodeExtensionService } from './node-extension.service';
-import { WorkflowService } from '../services/workflow.service';
 import { CONSTS } from '../../config/consts';
 import { Task } from '../models';
+import { WorkflowService } from 'app/operations-center/services/workflow.service';
 
 const global = (window as any);
 
@@ -35,10 +37,11 @@ export class CanvasGraphComponent implements OnInit {
   canvas: any;
   graph: any;
   initSize: any;
+  taskInjectableNames: any;
 
   constructor(public element: ElementRef,
-              public nodeExtensionService: NodeExtensionService,
-              public workflowService: WorkflowService) {
+    public nodeExtensionService: NodeExtensionService,
+    public workflowService: WorkflowService) {
     this.nodeExtensionService.init(
       // use bind to keep context
       this.afterInputConnect.bind(this),
@@ -48,6 +51,14 @@ export class CanvasGraphComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.editable) {
+      this.workflowService.getTask().subscribe(allTasks => {
+        this.taskInjectableNames = allTasks.map(function (item) {
+          return item.injectableName;
+        });
+      });
+    }
+
     this.onWorkflowInput.subscribe(
       workflow => {
         if (!_.isEqual(this.workflow, workflow)) {
@@ -196,7 +207,7 @@ export class CanvasGraphComponent implements OnInit {
     return function () {
       if (!self.editable) return [];
       let options = [
-        {content: 'Add Node', has_submenu: true, callback: self.addNode()}
+        { content: 'Add Task', has_submenu: true, callback: self.addNode() }
       ];
       return options;
     };
@@ -213,12 +224,11 @@ export class CanvasGraphComponent implements OnInit {
       let ref_window = canvas.getCanvasWindow();
       let filterInputHtml = '<input id=\'graphNodeTypeFilter\' placeholder=\'filter\'>';
 
-      // just mock here, should be gotten from backend service
-      let node_types = ['Task.poller', 'Task.smi'];
+      let taskNames = self.taskInjectableNames.slice(0, 9);
       let values = [];
-      values.push({content: filterInputHtml});
-      for (let i in node_types)
-        values.push({content: node_types[i]});
+      values.push({ content: filterInputHtml });
+      _.forEach(taskNames, name => { values.push({ content: name }); })
+
       let taskMenu = new global.LiteGraph.ContextMenu(values, {
         event: e,
         callback: innerCreate,
@@ -249,12 +259,12 @@ export class CanvasGraphComponent implements OnInit {
       function reGenerateMenu(term: string) {
         // close old task list menu and add a new one;
         taskMenu.close(undefined, true);
-        // just mock here
         let values = [];
-        values.push({content: filterInputHtml});
-        let filteredTypes = _.filter(node_types, (type) => type.includes(term));
-        for (let i in filteredTypes)
-          values.push({content: filteredTypes[i]});
+        values.push({ content: filterInputHtml });
+        let filteredTaskNames = _.filter(self.taskInjectableNames, (type) => type.includes(term));
+        for (let injectableName of filteredTaskNames.slice(0, 9)) {
+          values.push({ content: injectableName });
+        }
         taskMenu = new global.LiteGraph.ContextMenu(values, {
           event: e,
           callback: innerCreate,
@@ -275,8 +285,6 @@ export class CanvasGraphComponent implements OnInit {
 
       // ==== end for search ====
 
-      return false;
-
       // click actions of task list menu
       function innerCreate(v, e) {
         // keep menu after click input bar
@@ -290,15 +298,19 @@ export class CanvasGraphComponent implements OnInit {
           // update node position
           node.pos = canvas.convertEventToCanvas(firstEvent);
           // update node data
-          node.properties.task = self.workflowService.getTaskTemplateByType(v.content);
-          node.title = node.properties.task.label;
-          // add node to canvas
-          canvas.graph.add(node);
-          // update let workflow
-          self.addTaskForWorkflow(node.properties.task);
+          let injectName = v.content;
+          self.workflowService.getTask(injectName).subscribe(task => {
+            let data = {};
+            let label = "new-task-" + uuid().substr(0, 10);
+            _.assign(data, { 'label': label });
+            _.assign(data, { 'taskDefinition': task });
+            node.properties.task = data;
+            node.title = node.properties.task.label;
+            canvas.graph.add(node);
+            self.addTaskForWorkflow(node.properties.task);
+          });
         }
       }
-
       return false;
     };
   }
@@ -309,7 +321,7 @@ export class CanvasGraphComponent implements OnInit {
       let options = [];
       if (!self.editable) return options;
       if (node.removable !== false)
-        options.push(null, {content: 'Remove', callback: self.removeNode.bind(self)});
+        options.push(null, { content: 'Remove', callback: self.removeNode.bind(self) });
       if (node.graph && node.graph.onGetNodeMenuOptions)
         node.graph.onGetNodeMenuOptions(options, node);
       return options;
@@ -338,7 +350,6 @@ export class CanvasGraphComponent implements OnInit {
 
     let positionMatrix = this.distributePosition(taskWaitOnKey, taskIdentifierKey);
     let chainResult = chainNodes.bind(this)(taskWaitOnKey, taskIdentifierKey);
-    console.log(chainResult);
     let helperMap = chainResult[0];
     let isolatedTasks = chainResult[1];
 
@@ -354,7 +365,6 @@ export class CanvasGraphComponent implements OnInit {
       });
       this.workflow.tasks = _.values(helperMap)[0];
     }
-
 
     // add nodes
     _.forEach(this.workflow.tasks, (task, index) => {

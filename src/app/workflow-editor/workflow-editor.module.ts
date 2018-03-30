@@ -4,12 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 
 import { NodeExtensionService } from '../canvas-graph/node-extension.service';
-import { WorkflowService } from '../services/workflow.service';
 
 import { WorkflowCanvasComponent } from './workflow-canvas/workflow-canvas.component';
 import { WorkflowEditorComponent } from './workflow-editor.component';
 import { WorkflowEditorRoutingModule } from './workflow-editor-routing.module';
 import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
+import { WorkflowService } from 'app/operations-center/services/workflow.service';
 
 @NgModule({
   imports: [
