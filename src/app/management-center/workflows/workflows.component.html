@@ -42,6 +42,7 @@
           <clr-dg-string-filter [clrDgStringFilter]="tasksFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
+        <clr-dg-column>Viewer</clr-dg-column>
 
         <clr-dg-row *clrDgItems="let workflow of workflowsStore" [clrDgItem]="workflow">
           <clr-dg-action-overflow>
@@ -56,6 +57,9 @@
           </clr-dg-cell>
           <clr-dg-cell (click)="getChild('tasks', workflow)">
             <u class="grid-item">{{workflow.tasks.length}} tasks</u>
+          </clr-dg-cell>
+          <clr-dg-cell (click)="gotoCanvas(workflow)">
+            <u class="grid-item">GraphViewer</u>
           </clr-dg-cell>
         </clr-dg-row>
 
