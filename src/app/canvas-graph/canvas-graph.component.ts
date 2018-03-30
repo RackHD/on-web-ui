@@ -36,9 +36,11 @@ export class CanvasGraphComponent implements OnInit {
   graph: any;
   initSize: any;
 
-  constructor(public element: ElementRef,
-              public nodeExtensionService: NodeExtensionService,
-              public workflowService: WorkflowService) {
+  constructor(
+    public element: ElementRef,
+    public nodeExtensionService: NodeExtensionService,
+    public workflowService: WorkflowService
+  ){
     this.nodeExtensionService.init(
       // use bind to keep context
       this.afterInputConnect.bind(this),
@@ -57,24 +59,42 @@ export class CanvasGraphComponent implements OnInit {
       }
     );
     this.graph = new global.LGraph();
-    this.canvas = new global.LGraphCanvas(this.element.nativeElement.querySelector('canvas'), this.graph);
-
+    this.canvas = new global.LGraphCanvas(
+      this.element.nativeElement.querySelector('canvas'),
+      this.graph
+      // {autoresize: true}
+    );
+    this.canvas.clear();
     this.canvas.getNodeMenuOptions = this.getNodeMenuOptions();
     this.canvas.getCanvasMenuOptions = this.getCanvasMenuOptions();
+    // this.canvas.default_link_color =  "#AAC"; //Connection color
+    // this.canvas.highquality_render = true; //Render color, curve and arrow
+    // this.canvas.render_curved_connections = true;
+    // this.canvas.render_connection_arrows = true;
+    this.canvas.background_image = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAALCAGAAqgBAREA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAA/AKpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//9k='
+    this.canvas.title_text_font = "bold 12px Arial";
+    this.canvas.inner_text_font =  "normal 10px Arial";
+    this.canvas.render_shadows = false; //Node shadow
+    this.canvas.render_connections_border = false;
+    this.canvas.show_info = false; //Hide info on left-top corner
+
+    // Set to false will lead to default background rendered after refreshing.
+    this.canvas.always_render_background = true;
 
     this.graph.start();
 
     // set json
     this.drawNodes();
-    this.setSize();
+    this.setCanvasSize();
   }
 
-  setSize() {
+  setCanvasSize() {
     this.initSize = {
       height: this.element.nativeElement.parentNode.offsetHeight,
       width: this.element.nativeElement.parentNode.offsetWidth
-    }
+    };
   }
+
   // refresh graph
   afterWorkflowUpdate(reRender = false) {
     this.onWorkflowChanged.emit(_.cloneDeep(this.workflow));
@@ -282,7 +302,7 @@ export class CanvasGraphComponent implements OnInit {
         }
 
         let firstEvent = preMenu.getFirstEvent();
-        let node = global.LiteGraph.createNode('rackhd/task');
+        let node = global.LiteGraph.createNode('rackhd/task_1');
         if (node) {
           // update node position
           node.pos = canvas.convertEventToCanvas(firstEvent);
@@ -324,28 +344,26 @@ export class CanvasGraphComponent implements OnInit {
   drawNodes() {
     if (!this.workflow) return;
     this.graph.clear();
-    let coordinateArray = this.distributePosition();
+    let positionMatrix = this.distributePosition();
 
-    // sort based on wait on
-    // chain running workflow
-    let linkPropertyName = 'waitingOn',
-      linkKey = 'instanceId';
-    let chainResult = chainNodes.bind(this)(linkPropertyName, linkKey);
+    let linkProperty = 'waitingOn';
+    let linkKey = 'instanceId';
+    let chainResult = chainNodes.bind(this)(linkProperty, linkKey);
 
     // this is for workflow defination
     if (_.isEmpty(chainResult[0])) {
-      linkPropertyName = 'wainOn';
+      linkProperty = 'waitOn';
       linkKey = 'label';
-      chainResult = chainNodes.bind(this)('waitOn', 'label');
+      chainResult = chainNodes.bind(this)(linkProperty, linkKey);
     }
 
     let helperMap = chainResult[0];
-    let leftTasks = chainResult[1];
+    let isolatedTasks = chainResult[1];
 
-    // chain the first task, and put all isolated in the tail
+    // Insert the first task (task of key), and put all isolated in the tail
     let helperMapOnlyKey = _.keys(helperMap)[0];
     if (helperMapOnlyKey) {
-      _.forEach(leftTasks, (task) => {
+      _.forEach(isolatedTasks, (task) => {
         if (task[linkKey] === helperMapOnlyKey) {
           helperMap[helperMapOnlyKey] = [task].concat(helperMap[helperMapOnlyKey]);
         } else {
@@ -358,8 +376,10 @@ export class CanvasGraphComponent implements OnInit {
 
     // add nodes
     _.forEach(this.workflow.tasks, (task, index) => {
-      let taskNode = global.LiteGraph.createNode('rackhd/task');
-      let position = coordinateArray[task.instanceId];
+      let waitOnLength = _.keys(task[linkProperty]).length;
+      let taskNodeName = 'rackhd/task_' + waitOnLength;
+      let taskNode = global.LiteGraph.createNode(taskNodeName);
+      let position = positionMatrix[task.instanceId];
       taskNode.title = task.label;
       taskNode.properties.task = task;
       taskNode.state = task.state;
@@ -367,8 +387,6 @@ export class CanvasGraphComponent implements OnInit {
       taskNode.pos = [
         position[0],
         position[1]
-        // coordinateArray[index][0] - taskNode.size[0],
-        // coordinateArray[index][1] - taskNode.size[1]
       ];
 
       // set color
@@ -382,81 +400,81 @@ export class CanvasGraphComponent implements OnInit {
       }
 
       // get error log of invalid tasks
-      if (task.state === 'failed' || task.state === 'error') {
-        // this is just mock, may be gotten by workflow services:
-        //   getLogOfTask(instanceId : string){...}
-        //   and then  replace(/\n/g, "<br>"); !important
-        taskNode.properties.log =
-          'Error: Encountered a failure running remote commands <br>\
-            at /RackHD/on-tasks/lib/utils/job-utils/command-util.js:89:23 <br>\
-            at tryCatcher (/RackHD/on-core/node_modules/bluebird/js/main/util.js:26:23) <br>\
-            at MappingPromiseArray._promiseFulfilled (/RackHD/on-core/node_modules/bluebird/js/main/map.js:56:38) <br>\
-            at MappingPromiseArray.init (/RackHD/on-core/node_modules/bluebird/js/main/promise_array.js:92:18) <br>\
-            at MappingPromiseArray.init (/RackHD/on-core/node_modules/bluebird/js/main/map.js:29:23) <br>\
-            at Async._drainQueue (/RackHD/on-core/node_modules/bluebird/js/main/async.js:128:12)<br> \
-            at Async._drainQueues (/RackHD/on-core/node_modules/bluebird/js/main/async.js:133:10)<br> \
-            at Immediate.Async.drainQueues [as _onImmediate] (/RackHD/on-core/node_modules/bluebird/js/main/async.js:15:14)<br>\
-            at processImmediate [as _immediateCallback] (timers.js:383:17)';
+      if (task.state === 'failed' || task.state === 'error' || task.state === "cancelled") {
+        taskNode.properties.log = task.error;
       }
 
       this.graph.add(taskNode);
     });
 
     // draw links
-    let allNodes = this.graph.findNodesByType('rackhd/task');
+    let allNodes = _.flatten([
+      this.graph.findNodesByType('rackhd/task_0'),
+      this.graph.findNodesByType('rackhd/task_1'),
+      this.graph.findNodesByType('rackhd/task_2'),
+      this.graph.findNodesByType('rackhd/task_3')
+    ]);
     _.forEach(allNodes, (taskNode, index) => {
       let task = taskNode.properties.task;
 
       // for editor: workflow define
-      if (!_.isUndefined(task.waitOn) && !_.isEmpty(task.waitOn)) {
+      if (task.waitOn && !_.isEmpty(task.waitOn)) {
         let originNode = _.find(allNodes, (node) => node.title === _.keys(task.waitOn)[0]);
-
-        let originSlot = _.findIndex(originNode.outputs, (o) => (o as any).name === _.values(task.waitOn)[0]);
-        // let originSlot = _.findIndex(originNode.outputs, (o) => (o as any).name === _.values(task.waitOn)[0]);
+        let originSlot = _.findIndex(originNode.outputs, (o) => {
+          return (o as any).name === _.values(task.waitOn)[0];
+        });
         originNode.connect(originSlot, taskNode, 0);
       }
 
       // for viewer: running workflow
-      if (!_.isUndefined(task.waitingOn) && !_.isEmpty(task.waitingOn)) {
-        let originNode = _.find(allNodes, (node) => node.properties.task.instanceId === _.keys(task.waitingOn)[0]);
-        let originSlot = _.findIndex(originNode.outputs, (o) => {
-          if (typeof _.values(task.waitingOn)[0] === 'object') {
-            return (o as any).name === _.values(task.waitingOn)[0][0];
-          } else {
-            return _.values(task.waitingOn)[0];
-          }
+      if (task.waitingOn && !_.isEmpty(task.waitingOn)) {
+        let slot = 0;
+        _.forEach(_.keys(task.waitingOn), waitOnTask => {
+          let originNode = _.find(allNodes, (node) => {
+            return node.properties.task.instanceId === waitOnTask;
+          });
+          let originSlot = _.findIndex(originNode.outputs, (o) => {
+            let waitOnStatus = task.waitingOn[waitOnTask];
+            if (typeof waitOnStatus === 'object') {
+              return (o as any).name === waitOnStatus[0];
+            } else {
+              return task.waitingOn[waitOnTask];
+            }
+          });
+          originNode.connect(originSlot, taskNode, slot);
+          slot += 1;
         });
-        originNode.connect(originSlot, taskNode, 0);
       }
     });
     // end draw
 
-    // ============================= helpers ==================================
     function chainNodes(linkPropertyName, linkKeyName) {
       let helperMap = {};
-      let leftTasks = [];
-      // 1 init helperMap
-      // waitingOn is running workflow
+      let isolatedTasks = [];
       _.forEach(this.workflow.tasks, (task) => {
         if (!_.isUndefined(task[linkPropertyName]) && !_.isEmpty(task[linkPropertyName])) {
-          let linkKey = _.keys(task[linkPropertyName])[0];
-          (helperMap[linkKey] || (helperMap[linkKey] = [])).push(task);
+          let linkKeys = _.keys(task[linkPropertyName]);
+          _.forEach(linkKeys, key => { //There can be multiple waitOns
+            (helperMap[key] || (helperMap[key] = [])).push(task);
+          });
         } else {
-          leftTasks.push(task);
+          isolatedTasks.push(task);
         }
       });
-      // 2 intergrate into one chain
+
       while (_.keys(helperMap).length > 1) {
-        _.forEach(helperMap, (taskArray, waitingOnInstanceId) => {
+        _.forEach(helperMap, (taskArray, waitingOnTask) => {
           _.forEach(taskArray, (task) => {
             if (task.instanceId in helperMap) {
-              helperMap[waitingOnInstanceId] = helperMap[waitingOnInstanceId].concat(helperMap[task.instanceId]);
+              helperMap[waitingOnTask] = _.uniq(
+                helperMap[waitingOnTask].concat(helperMap[task.instanceId])
+              );
               delete helperMap[task.instanceId];
             }
           });
         });
       }
-      return [helperMap, leftTasks];
+      return [helperMap, isolatedTasks];
     }
   }
 
@@ -466,7 +484,7 @@ export class CanvasGraphComponent implements OnInit {
     let xOffset = 30;
     let yOffset = 60;
     let xGridSizeMin = 200; // Avoid overlap between adjacent task blocks
-    let yGridSizeMin = 80;
+    let yGridSizeMin = 100;
     let positionMatrix = {};
 
     let canvasWidth = parseInt(this.editorCanvas.nativeElement.offsetWidth);
@@ -541,7 +559,7 @@ export class CanvasGraphComponent implements OnInit {
       let rowPosMatrix = {};
       let sortedTasks = sortTaskByCol(colPosMatrix);
 
-      //First column task's row position is arranged by its appearing sequence 
+      //First column task's row position is arranged by its appearing sequence
       let rowIndex = 0;
       _.forEach(sortedTasks[0], task => {
         rowPosMatrix[task] = rowIndex;
