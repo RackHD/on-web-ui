@@ -84,7 +84,7 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
 
   prepareForSearch() {
     let searchTrigger = this.searchTerms.pipe(
-      debounceTime(500),
+      debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
         this.searchWorkflow(term);

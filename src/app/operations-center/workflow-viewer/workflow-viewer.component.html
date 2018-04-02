@@ -5,8 +5,8 @@
 
   <form class="form search-form" [formGroup]="filterForm">
     <section class="form-block row">
-      <span class="col-md-4">
-        <label for="graphId"><b>{{isDefinition? "InjectableName": "GraphId"}}</b></label>
+      <div class="col-md-4">
+        <label for="graphIdInput"><b>{{isDefinition? "InjectableName": "GraphId"}}</b></label>
         <datalist id="workflow_id_list">
           <select name="id_select" size="6">
             <option [ngValue]="id" *ngFor="let id of dropDownList">
@@ -14,33 +14,16 @@
             </option>
           </select>
         </datalist>
-        <!-- keyup will be triggered when change is triggered -->
-        <input #idSearcher id="graphId" type="text"
+        <input #idSearcher id="graphIdInput" type="text"
           formControlName="graphId"
           [size]="isDefinition ? 42 : 37"
           list="workflow_id_list"
-          (keyup)="onSearch(idSearcher.value, isDefinition ? 'injectableName' : 'instanceId')"
           (focus)="onFocus(isDefinition ? 'injectableName' : 'instanceId')"
+          (keyup)="onSearch(idSearcher.value, isDefinition ? 'injectableName' : 'instanceId')"
           (change)="onChange(idSearcher.value, isDefinition ? 'injectableName' : 'instanceId')">
-      </span>
-      <span *ngIf="!isDefinition" class="col-md-3">
-        <label for="graphId"><b>Node</b></label>
-        <datalist id="workflow_node_list">
-          <select name="node_select" size="6">
-            <option [ngValue]="node" *ngFor="let node of dropDownList">
-              {{node}}
-            </option>
-          </select>
-        </datalist>
-        <input #nodeSearcher
-          id="graphNode" type="text" formControlName="node" size="30"
-          list="workflow_node_list"
-          (keyup)="onSearch(nodeSearcher.value, 'node')"
-          (focus)="onFocus('node')"
-          (change)="onChange(idSearcher.value, 'node')">
-      </span>
-      <span class="col-md-4">
-        <label for="graphName"><b>{{isDefinition? "FriendlyName": "Name"}}</b></label>
+      </div>
+      <div class="col-md-4">
+        <label for="graphNameInput"><b>{{isDefinition? "FriendlyName": "Name"}}</b></label>
         <datalist id="workflow_id_list">
           <select name="id_select" size="6">
             <option [ngValue]="name" *ngFor="let name of dropDownList">
@@ -48,19 +31,36 @@
             </option>
           </select>
         </datalist>
-        <input #nameSearcher id="graphName" type="text"
+        <input #nameSearcher id="graphNameInput" type="text"
           formControlName="graphName"
-          [size]="37"
+          size="37"
           list="workflow_id_list"
-          (keyup)="onSearch(nameSearcher.value, isDefinition ? 'friendlyName': 'name')"
           (focus)="onFocus(isDefinition ? 'friendlyName': 'name')"
+          (keyup)="onSearch(nameSearcher.value, isDefinition ? 'friendlyName': 'name')"
           (change)="onChange(nameSearcher.value, isDefinition ? 'friendlyName': 'name')">
-      </span>
-      <span class="col-md-1">
+      </div>
+      <div *ngIf="!isDefinition" class="col-md-3">
+        <label for="graphNodeInput"><b>Node</b></label>
+        <datalist id="workflow_node_list">
+          <select name="node_select" size="6">
+            <option [ngValue]="node" *ngFor="let node of dropDownList">
+              {{node}}
+            </option>
+          </select>
+        </datalist>
+        <input #nodeSearcher id="graphNodeInput" type="text"
+          formControlName="node"
+          size="30"
+          list="workflow_node_list"
+          (focus)="onFocus('node')"
+          (keyup)="onSearch(nodeSearcher.value, 'node')"
+          (change)="onChange(nodeSearcher.value, 'node')">
+      </div>
+      <div [class]="isDefinition ? 'col-md-1 col-md-offset-3' : 'col-md-1'">
         <button type="button" class="btn btn-icon clear" (click)="onClear()" title="Clear">
           <clr-icon shape="times"></clr-icon>
         </button>
-      </span>
+      </div>
     </section>
   </form>
 
