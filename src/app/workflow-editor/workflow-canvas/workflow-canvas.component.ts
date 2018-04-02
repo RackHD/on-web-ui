@@ -1,8 +1,12 @@
 import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
-import { WorkflowService } from '../../services/workflow.service';
-import { JSONEditor } from '../../utils/json-editor'
+import { JSONEditor } from '../../utils/json-editor';
 
 import * as _ from 'lodash';
+import { WorkflowService } from 'app/operations-center/services/workflow.service';
+import { Subject } from 'rxjs';
+
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { StringOperator } from 'app/utils/inventory-operator';
 
 const global = (window as any);
 
@@ -13,27 +17,72 @@ const global = (window as any);
 })
 export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   onWorkflowInput = new EventEmitter();
-  workflow: any;
+  selectWorkflow: any;
   editor: any;
+  newTasks: any;
+  workflowName: any;
+
+  private searchTerms = new Subject<string>();
+  workflowStore: any;
+  workflows: any;
 
   constructor(public workflowService: WorkflowService) {
   }
 
-  ngOnInit() {
-    this.workflow = this.workflowService.getInitWorkflow();
-    let container = document.getElementById('jsoneditor');
+  search(term: string): void {
+    this.searchTerms.next(term);
+  }
 
-    // let height = document.getElementsByClassName('workflow-editor-graph')[0].offsetHeight + 'px';
-    // let width = document.getElementsByClassName('workflow-editor-graph')[0].offsetWidth + 'px';
+  searchIterm(term: string): void {
+    if (!this.workflowStore) {
+      this.workflowService.getWorkflow().subscribe(graphs => {
+        this.workflowStore = graphs;
+        this.workflows = StringOperator.search(term, this.workflowStore);
+      });
+    } else {
+      this.workflows = StringOperator.search(term, this.workflowStore);
+    }
+  }
+
+  putWorkflowIntoCanvas(friendlyName: any) {
+    let workflow = {};
+    for (let item of this.workflowStore) {
+      if (item['friendlyName'] === friendlyName) {
+        workflow = item;
+        break;
+      }
+    }
+    if (workflow) {
+      this.updateEditor(workflow);
+      this.applyWorkflowJson();
+    }
+  }
+
+  ngOnInit() {
+    this.selectWorkflow = this.workflowService.getInitWorkflow();
+    let container = document.getElementById('jsoneditor');
     let canvas = document.getElementById('mycanvas');
 
-    canvas.setAttribute('height', "1024px");
+    canvas.setAttribute('height', "1000px");
     canvas.setAttribute('width', "800px");
-    console.log(canvas);
 
-    let options = {mode: 'code'};
+    let options = { mode: 'code' };
     this.editor = new JSONEditor(container, options);
-    this.updateEditor(this.workflow);
+    this.updateEditor(this.selectWorkflow);
+
+    this.workflowService.getWorkflow().subscribe(graphs => {
+      this.workflowStore = graphs;
+    });
+
+    let searchTrigger = this.searchTerms.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((term: string) => {
+        this.searchIterm(term);
+        return 'whatever';
+      })
+    );
+    searchTrigger.subscribe();
   }
 
   ngAfterViewInit() {
@@ -41,8 +90,19 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   applyWorkflowJson() {
-    this.workflow = this.editor.get();
+    this.selectWorkflow = this.editor.get();
     this.pushDataToCanvas();
+  }
+
+  refreshWorkflow() {
+    this.updateEditor(this.selectWorkflow);
+    this.applyWorkflowJson();
+  }
+
+  saveWorkflow() {
+    this.selectWorkflow = this.editor.get();
+    this.workflowService.putGraph(JSON.stringify(this.selectWorkflow))
+      .subscribe();
   }
 
   updateEditor(workflow: any) {
@@ -50,14 +110,11 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   pushDataToCanvas() {
-    this.onWorkflowInput.emit(_.cloneDeep(this.workflow));
+    this.onWorkflowInput.emit(_.cloneDeep(this.selectWorkflow));
   }
 
   onWorkflowChanged(workflow: any) {
-    if (!_.isEqual(workflow, this.workflow)) {
-      this.workflow = workflow;
-      this.updateEditor(workflow);
-    }
+    this.selectWorkflow = workflow;
+    this.updateEditor(workflow);
   }
-
 }
