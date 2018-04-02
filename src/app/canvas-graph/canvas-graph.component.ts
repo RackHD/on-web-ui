@@ -84,7 +84,7 @@ export class CanvasGraphComponent implements OnInit {
   }
 
   setupCanvas(){
-    // this.canvas.default_link_color =  "#AAC"; //Connection color
+    // this.canvas.default_link_color =  "#FFF"; //Connection color
     // this.canvas.highquality_render = true; //Render color, curve and arrow
     // this.canvas.render_curved_connections = false; //Use straight line
     // this.canvas.render_connection_arrows = false; //No arrows for line
@@ -184,13 +184,14 @@ export class CanvasGraphComponent implements OnInit {
   //helpers
   changeTaskWaitOn(taskToBeChanged, preTask?, waitOnText?) {
     if (!preTask && !waitOnText) {
-      _.forEach(this.workflow.tasks, (task) => {
+      _.forEach(this.workflow && this.workflow.tasks, (task) => {
         if (_.isEqual(task, taskToBeChanged)) {
           delete task['waitOn'];
         }
       });
     } else {
-      _.forEach(this.workflow.tasks, (task) => {
+      //this.workflow may be undefined.
+      _.forEach(this.workflow && this.workflow.tasks, (task) => {
         if (_.isEqual(task, taskToBeChanged)) {
           task['waitOn'] = _.set({}, preTask.label, waitOnText);
         }
