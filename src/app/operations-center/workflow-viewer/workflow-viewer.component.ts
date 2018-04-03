@@ -188,7 +188,6 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
     this.workflowsStore = [];
 
     this.isDropdownSelected = false;
-    this.isFocused = false;
 
     // this.isDefinition=false;
     this.searchField = null;
