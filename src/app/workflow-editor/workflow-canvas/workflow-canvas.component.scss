@@ -1,8 +1,43 @@
-.workflow-json-multiple {
-  .json-editor {
-    margin-left: 2rem;
+.app-workflow-canvas {
+  margin: 15px;
+  .float-right{
+    float: right;
   }
-  .clr-vertical-nav{
-    width: 20rem;
+
+  .button-operation {
+    height: 50px;
+    line-height: 50px;
+    .search-datalist {
+      float: right;
+      margin-right: 20px;
+    }
+  }
+  .workflow-json-operation {
+    display: inline-flex;
+    width: 100%;
+    .workflow-editor {
+      flex: 3;
+    }
+    .jsoneditor {
+      p {
+        padding: 5px;
+        text-align: left;
+        margin: 0;
+        //background: #ebebeb;
+        //clr-icon {
+        //  width: 30px;
+        //  height: 30px;
+        //}
+      }
+      margin-left: 15px;
+      flex: 1;
+      text-align: right;
+      height: 100vh;
+      border: none;
+      #jsoneditor {
+        height: 100vh !important;
+      }
+    }
   }
 }
+

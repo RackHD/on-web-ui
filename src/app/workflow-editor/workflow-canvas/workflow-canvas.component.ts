@@ -19,29 +19,36 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   onWorkflowInput = new EventEmitter();
   selectWorkflow: any;
   editor: any;
-  newTasks: any;
-  workflowName: any;
 
   private searchTerms = new Subject<string>();
   workflowStore: any;
   workflows: any;
+  inputValue: any;
 
   constructor(public workflowService: WorkflowService) {
   }
 
+  clearInput() {
+    this.inputValue = null;
+  }
+
+  getInitTasks() {
+    if (!this.workflowStore) {
+      this.getworkflowStore();
+    }
+    this.workflows = this.workflowStore.slice(0, 10);
+  }
+
   search(term: string): void {
+    console.log(this.inputValue);
     this.searchTerms.next(term);
   }
 
   searchIterm(term: string): void {
     if (!this.workflowStore) {
-      this.workflowService.getWorkflow().subscribe(graphs => {
-        this.workflowStore = graphs;
-        this.workflows = StringOperator.search(term, this.workflowStore);
-      });
-    } else {
-      this.workflows = StringOperator.search(term, this.workflowStore);
+      this.getworkflowStore();
     }
+    this.workflows = StringOperator.search(term, this.workflowStore).slice(0, 10);
   }
 
   putWorkflowIntoCanvas(friendlyName: any) {
@@ -66,14 +73,10 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     canvas.setAttribute('height', "1000px");
     canvas.setAttribute('width', "800px");
 
-    let options = { mode: 'code' };
+    let options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.updateEditor(this.selectWorkflow);
-
-    this.workflowService.getWorkflow().subscribe(graphs => {
-      this.workflowStore = graphs;
-    });
-
+    this.getworkflowStore();
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -87,6 +90,12 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.pushDataToCanvas();
+  }
+
+  getworkflowStore() {
+    this.workflowService.getWorkflow().subscribe(graphs => {
+      this.workflowStore = graphs;
+    });
   }
 
   applyWorkflowJson() {
