@@ -149,7 +149,7 @@ export class FilesComponent implements OnInit {
 
   onDeleteSubmit(){
     _.map(this.selectedFiles, file => {
-      this.fileService.remove(file.uuid).subscribe(
+      this.fileService.delete(file.uuid).subscribe(
         data =>{
           this.onRefresh();
         },
@@ -167,7 +167,7 @@ export class FilesComponent implements OnInit {
     //TODO: Add more details on progress
     //TODO: And use sync mode instead of async mode
     //TODO: Add support on multiple files upload support
-    this.fileService.upload(existingFilename || file.name, file)
+    this.fileService.upload(file, existingFilename || file.name)
     this.selectedFile = null;
     this.onRefresh();
   }

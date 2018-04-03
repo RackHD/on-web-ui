@@ -21,5 +21,27 @@
 }
 
 .input-width {
-  width: 250px;
+  display: table-cell;
+  width: 125%
+}
+
+.text-indicator {
+  margin-left: 2em;
+  // text-color: #000000;
+  font-size: 0.8em;
+}
+
+.token-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  position: relative;
+  padding-left: 9.5rem;
+  margin-bottom: .5rem;
+  font-size: .54167rem;
+  letter-spacing: normal;
+  line-height: 1rem;
+  float: right;
 }

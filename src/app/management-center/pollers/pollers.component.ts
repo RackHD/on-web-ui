@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Poller, Node , POLLER_INTERVAL} from 'app/models';
-import { PollersService } from 'app/services/pollers.service';
-import { NodeService } from 'app/services/node.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator }
   from 'app/utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin'
+import { PollersService } from 'app/services/rackhd/pollers.service';
+import { NodeService } from 'app/services/rackhd/node.service';
 import * as _ from 'lodash';
 
 @Component({
@@ -36,6 +37,7 @@ export class PollersComponent implements OnInit {
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
   selectedPageSize = '15';
+
 
   allNodes: Node[];
   pollerForm: FormGroup;
@@ -88,7 +90,7 @@ export class PollersComponent implements OnInit {
 
   getAllPollers(): void {
     this.allPollers = new Array();
-    this.pollersService.getAllPollers()
+    this.pollersService.getAll()
       .subscribe(data => {
         this.dataStore = data;
         for (let poller of data) {
@@ -139,16 +141,11 @@ export class PollersComponent implements OnInit {
       jsonData['paused'] = !this.defaultPaused;
     }
     let postData = JSON.stringify(jsonData);
-    this.pollersService.patchData(this.updatePoller.id, postData).subscribe(data => {
+    this.pollersService.patchByIdentifier(this.updatePoller.id, postData)
+    .subscribe(data => {
+      console.log(data);
       this.refreshDatagrid();
     });
-  }
-
-  getAllNodes(): void {
-    this.nodeService.getAllNodes()
-      .subscribe(data => {
-        this.allNodes = data;
-      });
   }
 
   getLatestData(poller: Poller): void {
@@ -168,6 +165,13 @@ export class PollersComponent implements OnInit {
   refreshDatagrid() {
     this.dgDataLoading = true;
     this.getAllPollers();
+  }
+
+  getAllNodes(): void {
+    this.nodeService.getAll()
+      .subscribe(data => {
+        this.allNodes = data;
+      });
   }
 
   createForm() {
@@ -194,18 +198,21 @@ export class PollersComponent implements OnInit {
     jsonData['pollInterval'] = _.isEmpty(value.pollInterval) ? 60000 : parseInt(value.pollInterval);
     jsonData['config'] = _.isEmpty(value.config) ? {} : JSON.parse(value.config);
 
-    this.pollersService.creatOnePoller(jsonData)
+    this.pollersService.createPoller(jsonData)
       .subscribe(data => {
         this.refreshDatagrid();
       });
   }
 
   delete(): void {
-    let res = this.pollersService.deletePollers(this.selectedPollers);
-    for (let entry of res) {
-      entry.subscribe(() => {
-        this.refreshDatagrid();
-      });
-    }
+    let list = [];
+    _.forEach(this.selectedPollers, poller => {
+      list.push(this.pollersService.delete(poller.id));
+    });
+
+    Observable.forkJoin(list)
+    .subscribe(results =>{
+      this.refreshDatagrid();
+    });
   }
 }

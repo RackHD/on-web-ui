@@ -16,7 +16,8 @@ import * as uuid from 'uuid/v4';
 import { NodeExtensionService } from './node-extension.service';
 import { CONSTS } from '../../config/consts';
 import { Task } from '../models';
-import { WorkflowService } from 'app/operations-center/services/workflow.service';
+import { WorkflowService } from 'app/services/rackhd/workflow.service';
+import { GraphTaskService } from 'app/services/rackhd/task.service';
 
 const global = (window as any);
 
@@ -41,8 +42,8 @@ export class CanvasGraphComponent implements OnInit {
   constructor(
     public element: ElementRef,
     public nodeExtensionService: NodeExtensionService,
-    public workflowService: WorkflowService
-  ){
+    public graphTaskService: GraphTaskService,
+    public workflowService: WorkflowService) {
     this.nodeExtensionService.init(
       // use bind to keep context
       this.afterInputConnect.bind(this),
@@ -53,7 +54,8 @@ export class CanvasGraphComponent implements OnInit {
 
   ngOnInit() {
     if (this.editable) {
-      this.workflowService.getTask().subscribe(allTasks => {
+      this.graphTaskService.getAll()
+      .subscribe(allTasks => {
         this.taskInjectableNames = allTasks.map(function (item) {
           return item.injectableName;
         });
@@ -346,8 +348,6 @@ export class CanvasGraphComponent implements OnInit {
         allow_html: true
       }, ref_window);
 
-      // ==== begin for search ====
-      // functions  to implements search
       let taskFilter = new Subject();
 
       function inputTerm(term: string) {
@@ -407,7 +407,8 @@ export class CanvasGraphComponent implements OnInit {
           node.pos = canvas.convertEventToCanvas(firstEvent);
           // update node data
           let injectName = v.content;
-          self.workflowService.getTask(injectName).subscribe(task => {
+          self.graphTaskService.getByIdentifier(injectName)
+          .subscribe(task => {
             let data = {};
             let label = "new-task-" + uuid().substr(0, 10);
             _.assign(data, {'label': label});

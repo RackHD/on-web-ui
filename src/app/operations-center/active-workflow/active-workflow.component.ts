@@ -4,6 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
 
 import {
   AlphabeticalComparator,
@@ -15,9 +16,9 @@ import {
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
 
-import { WorkflowService } from '../services/workflow.service';
-import { GraphService } from '../../management-center/services/graph.service';
-import { Workflow, PAGE_SIZE_OPTIONS, ModalTypes } from '../../models';
+import { WorkflowService } from 'app/services/rackhd/workflow.service';
+import { GraphService } from 'app/services/rackhd/graph.service';
+import { Workflow, PAGE_SIZE_OPTIONS, ModalTypes } from 'app/models';
 
 @Component({
   selector: 'app-active-workflow',
@@ -107,18 +108,18 @@ export class ActiveWorkflowComponent implements OnInit {
   }
 
   cancelActiveWorkflow(){
-    let promises = [];
+    let list = [];
     _.forEach(this.selectedWorkflows, workflow => {
       if(!workflow.serviceGraph || workflow.serviceGraph === "false"){
-        promises.push(this.workflowService.cancelWorkflow(workflow.node).toPromise());
+        list.push(this.workflowService.cancelActiveWorkflow(workflow.node));
       }
     });
-    if (_.isEmpty(promises)) {
+    if (_.isEmpty(list)) {
       this.isShowModal = false;
-      return; 
+      return;
     }
-    return Promise.all(promises)
-    .then(() => {
+    Observable.forkJoin(list)
+    .subscribe((result) => {
       this.onRefresh();
       this.isShowModal = false;
     });

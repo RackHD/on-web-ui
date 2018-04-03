@@ -4,24 +4,22 @@
 //////////////////////////////////////////////////////////////////////
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
-import { NodeService } from './node.service';
+// import { NodeService } from './node.service';
 import { ProfileService } from './profile.service';
 import { TemplateService } from './template.service';
 import { FileService } from './file.service';
 import { ConfigService } from './config.service';
-import { GraphService } from './graph.service';
 import { IbmService } from './ibm.service';
 
 
 @NgModule({
   exports: [],
   providers: [
-    NodeService,
+    // NodeService,
     ProfileService,
     TemplateService,
     FileService,
     ConfigService,
-    GraphService,
     IbmService,
   ]
 })

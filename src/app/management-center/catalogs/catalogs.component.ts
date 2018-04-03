@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Catalog } from 'app/models';
-import { CatalogsService } from 'app/services/catalogs.service';
+import { CatalogsService } from 'app/services/rackhd/catalogs.service';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
@@ -54,7 +54,7 @@ export class CatalogsComponent implements OnInit {
   }
 
   getAllCatalogs(): void {
-    this.catalogsService.getAllCatalogs()
+    this.catalogsService.getAll()
       .subscribe( data => {
         this.allCatalogs = data;
         this.catalogsStore = data;

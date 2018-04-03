@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SKU } from 'app/models/sku';
-import { SkusService } from 'app/services/sku.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin'
 import * as _ from 'lodash';
+import { SkusService } from 'app/services/rackhd/sku.service';
 
 @Component({
   selector: 'app-sku',
@@ -86,7 +87,7 @@ export class SkuComponent implements OnInit {
   }
 
   getAllSkus(): void {
-    this.skusService.getAllSkus()
+    this.skusService.getAll()
       .subscribe( data => {
         this.allSkus = data;
         this.dataStore = data;
@@ -106,7 +107,6 @@ export class SkuComponent implements OnInit {
   getChild(objKey: string, sku: SKU){
     this.selectedSku = [sku];
     this.action = _.startCase(objKey);
-    console.log(this.action);
     this.rawData = sku && sku[objKey];
     this.isShowModal = true;
   }
@@ -150,8 +150,7 @@ export class SkuComponent implements OnInit {
     jsonData['discoveryGraphOptions'] = value['discoveryGraphOptions'] ?
     JSON.parse(value['discoveryGraphOptions']) : {};
 
-    let postData = JSON.stringify(jsonData);
-    this.skusService.creatOneSku(postData)
+    this.skusService.createSku(jsonData)
       .subscribe(data => {
         this.refreshDatagrid();
       });
@@ -160,16 +159,19 @@ export class SkuComponent implements OnInit {
   createSkupack(): void {
     let file = this.skuPackFiles[0];
     let identifier = this.selectedSkus.length && this.selectedSku[0]['id'];
-    this.skusService.upload(file, identifier);
+    this.skusService.uploadByPost(file, identifier);
     this.getAllSkus();
   }
 
   delete(): void {
-    let res = this.skusService.deleteSkus(this.selectedSkus);
-    for (let entry of res) {
-      entry.subscribe(() => {
-        this.refreshDatagrid();
-      });
-    }
+    let list = [];
+    _.forEach(this.selectedSkus, sku => {
+      list.push(this.skusService.delete(sku.id));
+    });
+
+    Observable.forkJoin(list)
+    .subscribe(results =>{
+      this.refreshDatagrid();
+    });
   }
 }

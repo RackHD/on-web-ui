@@ -9,8 +9,8 @@ import {
 } from '@angular/core';
 
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { WorkflowService } from '../services/workflow.service';
-import { Workflow, Graph } from '../../models';
+import { WorkflowService } from 'app/services/rackhd/workflow.service';
+import { Workflow, Graph } from 'app/models';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
@@ -22,7 +22,7 @@ import {
   StringOperator,
   ObjectFilterByKey
 } from '../../utils/inventory-operator';
-import { GraphService } from '../../management-center/services/graph.service';
+import { GraphService } from 'app/services/rackhd/graph.service';
 
 import 'rxjs/add/operator/mergeMap'
 import 'rxjs/add/operator/map'

@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { OBM, Node } from 'app/models';
-import { ObmService } from 'app/services/obm.service';
 
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NodeService } from 'app/services/node.service';
 import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/utils/inventory-operator';
 
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin'
+import { ObmService } from 'app/services/rackhd/obm.service';
+import { NodeService } from 'app/services/rackhd/node.service';
 import * as _ from 'lodash';
 
 @Component({
@@ -30,7 +31,7 @@ export class ObmComponent implements OnInit {
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
   selectedPageSize = '15';
-
+  
   allNodes: Node[];
   obmForm: FormGroup;
   updateForm: FormGroup;
@@ -77,7 +78,7 @@ export class ObmComponent implements OnInit {
   }
 
   getAllObms(): void {
-    this.obmsService.getAllObms()
+    this.obmsService.getAll()
       .subscribe(data => {
         this.allObms = data;
         this.dataStore = data;
@@ -86,7 +87,7 @@ export class ObmComponent implements OnInit {
   }
 
   getAllNodes(): void {
-    this.nodeService.getAllNodes()
+    this.nodeService.getAll()
       .subscribe(data => {
         this.allNodes = data;
       });
@@ -167,8 +168,7 @@ export class ObmComponent implements OnInit {
     jsonData['config']['password'] = value['password'];
     jsonData['config']['host'] = value['host'];
 
-    let postData = JSON.stringify(jsonData);
-    this.obmsService.creatOneObm(postData)
+    this.obmsService.creatObm(jsonData)
       .subscribe(data => {
         this.refreshDatagrid();
       });
@@ -179,13 +179,16 @@ export class ObmComponent implements OnInit {
     let nodeId = nodeSplit[nodeSplit.length - 1];
     this.create(this.updateForm, nodeId);
   }
-  delete(): void {
-    let res = this.obmsService.deleteObms(this.selectedObms);
 
-    for (let entry of res) {
-      entry.subscribe(() => {
-        this.refreshDatagrid();
-      });
-    }
+  delete(): void {
+    let list = [];
+    _.forEach(this.selectedObms, obm => {
+      list.push(this.obmsService.delete(obm.id));
+    });
+
+    Observable.forkJoin(list)
+    .subscribe(results =>{
+      this.refreshDatagrid();
+    });
   }
 }

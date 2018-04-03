@@ -1,16 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Poller, Node, API_PATTERN, ADDR_PATTERN, REPO_PATTERN } from 'app/models';
-import { PollersService } from 'app/services/pollers.service';
-import { NodeService } from 'app/services/node.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator }
-  from 'app/utils/inventory-operator';
+import {
+  AlphabeticalComparator,
+  DateComparator,
+  ObjectFilterByKey,
+  StringOperator
+} from 'app/utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import { debounce } from 'rxjs/operator/debounce';
-import { CatalogsService } from 'app/services/catalogs.service';
+import { CatalogsService } from 'app/services/rackhd/catalogs.service';
+import { NodeService } from 'app/services/rackhd/node.service';
+import { PollersService } from 'app/services/pollers.service';
+import { WorkflowService } from 'app/services/rackhd/workflow.service';
 import { JSONEditor } from 'app/utils/json-editor';
 
 @Component({
@@ -48,8 +53,12 @@ export class OsInstallComponent implements OnInit {
 
   searchTerms = new Subject<string>();
 
-  constructor(public nodeService: NodeService, public catalogsService: CatalogsService,
-    private fb: FormBuilder) {
+  constructor(
+    public nodeService: NodeService,
+    public catalogsService: CatalogsService,
+    public workflowService: WorkflowService,
+    private fb: FormBuilder,
+  ) {
   };
 
   ngOnInit() {
@@ -113,7 +122,7 @@ export class OsInstallComponent implements OnInit {
   }
 
   getAllNodes(): void {
-    this.nodeService.getAllNodes()
+    this.nodeService.getAll()
       .subscribe(data => {
         this.allNodes = data;
         this.dataStore = data;
@@ -230,11 +239,13 @@ export class OsInstallComponent implements OnInit {
   onSubmit() {
     let workflow = this.editor.get();
     this.payloadJson = workflow;
-    this.nodeService.postWorkflow(this.selectedNodeId,
-      this.OS_TYPE_NAME[this.payloadForm.value['osType']], JSON.stringify(this.payloadJson))
-      .subscribe(data => {
+    this.workflowService.runWorkflow(
+      this.selectedNodeId,
+      this.OS_TYPE_NAME[this.payloadForm.value['osType']],
+      this.payloadJson
+    ).subscribe(data => {
         this.submitSuccess = true;
-      });
+    });
   }
 
   createPayloadOptions(): object {

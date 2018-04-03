@@ -11,7 +11,8 @@ export class SKU {
 }
 
 export const SKU_URL = {
-    skus: '/skus',
-    skusById: '/skus/',
-    skusPack: '/skus/pack',
+    getAllUrl: '/skus',
+    getByIdentifierUrl: '/skus/',
+    uploadUrl: '/skus/pack',
+    uploadSuffix: '/pack',
 }

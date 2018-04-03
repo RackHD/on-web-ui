@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 
 import * as _ from 'lodash';
 
-import { GraphService } from '../services/graph.service';
-import { Graph, PAGE_SIZE_OPTIONS } from '../../models';
+import { GraphService } from 'app/services/rackhd/graph.service';
+import { Graph, PAGE_SIZE_OPTIONS } from 'app/models';
 
 @Component({
   selector: 'app-workflows',
@@ -179,7 +179,7 @@ export class WorkflowsComponent implements OnInit {
 
   onDeleteSubmit(){
     _.map(this.selectedWorkflows, workflow => {
-      this.workflowService.remove(workflow.injectableName).subscribe(
+      this.workflowService.delete(workflow.injectableName).subscribe(
         data =>{
           this.onRefresh();
         },
