@@ -2,21 +2,62 @@
   <h5 class="header-text">
     <strong>Workflow Canvas</strong>
   </h5>
-  
-  <form class="form search-form" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
-    <section class="form-block">
-      <span class="col-md-4">
-        <label for="graphId"><b>GraphId</b></label>
-        <input id="graphId" type="text" formControlName="graphId" size="37">
-      </span>
-      <span class="col-md-3">
-        <label for="graphId"><b>Node</b></label>
-        <input id="graphId" type="text" formControlName="node" size="30">
-      </span>
-      <span class="col-md-4">
-        <label for="graphId"><b>Name</b></label>
-        <input id="graphId" type="text" formControlName="graphName" size="37">
-      </span>
+
+  <form class="form search-form" [formGroup]="filterForm">
+    <section class="form-block row">
+      <div class="col-md-4">
+        <label for="graphIdInput"><b>{{isDefinition? "InjectableName": "GraphId"}}</b></label>
+        <datalist id="workflow_id_list">
+          <select name="id_select">
+            <option [ngValue]="id" *ngFor="let id of idDropdownList">
+              {{id}}
+            </option>
+          </select>
+        </datalist>
+        <input #idSearcher id="graphIdInput" type="text"
+          formControlName="graphId"
+          [size]="isDefinition ? 42 : 37"
+          list="workflow_id_list"
+          (keyup)="onSearch(idSearcher.value, isDefinition ? 'injectableName' : 'instanceId')"
+          (change)="onChange(idSearcher.value, isDefinition ? 'injectableName' : 'instanceId')">
+      </div>
+      <div class="col-md-4">
+        <label for="graphNameInput"><b>{{isDefinition? "FriendlyName": "Name"}}</b></label>
+        <datalist id="workflow_name_list">
+          <select name="id_select">
+            <option [ngValue]="name" *ngFor="let name of nameDropdownList">
+              {{name}}
+            </option>
+          </select>
+        </datalist>
+        <input #nameSearcher id="graphNameInput" type="text"
+          formControlName="graphName"
+          size="37"
+          list="workflow_name_list"
+          (keyup)="onSearch(nameSearcher.value, isDefinition ? 'friendlyName': 'name')"
+          (change)="onChange(nameSearcher.value, isDefinition ? 'friendlyName': 'name')">
+      </div>
+      <div *ngIf="!isDefinition" class="col-md-3">
+        <label for="graphNodeInput"><b>Node</b></label>
+        <datalist id="workflow_node_list">
+          <select name="node_select">
+            <option [ngValue]="node" *ngFor="let node of nodeDropdownList">
+              {{node}}
+            </option>
+          </select>
+        </datalist>
+        <input #nodeSearcher id="graphNodeInput" type="text"
+          formControlName="node"
+          size="30"
+          list="workflow_node_list"
+          (keyup)="onSearch(nodeSearcher.value, 'node')"
+          (change)="onChange(nodeSearcher.value, 'node')">
+      </div>
+      <div [class]="isDefinition ? 'col-md-1 col-md-offset-3' : 'col-md-1'">
+        <button type="button" class="btn btn-icon clear" (click)="onClear()" title="Clear">
+          <clr-icon shape="times"></clr-icon>
+        </button>
+      </div>
     </section>
   </form>
 

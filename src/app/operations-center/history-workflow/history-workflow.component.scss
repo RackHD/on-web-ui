@@ -4,6 +4,7 @@
       color: blue;
       cursor: pointer;
     }
+
     .status-header {
       padding-top: 0;
       margin-top: -25px;
@@ -16,8 +17,11 @@
           border-bottom: solid 1px lightblue;
         }
         &.selected{
-          box-shadow: 5px 5px 20px 0px rgb(107, 193, 227); 
+          box-shadow: 5px 5px 20px 0px rgb(107, 193, 227);
         }
       }
     }
+  .header-button {
+    margin-bottom: -24px;
+  }
 }
