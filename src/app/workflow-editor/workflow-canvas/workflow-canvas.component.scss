@@ -1,5 +1,8 @@
 .app-workflow-canvas {
   margin: 15px;
+  .float-right{
+    float: right;
+  }
 
   .button-operation {
     height: 50px;
@@ -21,15 +24,10 @@
         text-align: left;
         margin: 0;
         //background: #ebebeb;
-        clr-icon {
-          width: 30px;
-          height: 30px;
-        }
-        .apply {
-          float: right;
-          height: 42px;
-          line-height: 42px;
-        }
+        //clr-icon {
+        //  width: 30px;
+        //  height: 30px;
+        //}
       }
       margin-left: 15px;
       flex: 1;

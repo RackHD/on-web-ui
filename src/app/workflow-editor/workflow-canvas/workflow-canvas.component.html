@@ -4,9 +4,12 @@
       <clr-icon shape="floppy"></clr-icon>
     </button>
     <button class="btn btn-icon refresh" (click)="refreshWorkflow()" title="Restore">
-      <clr-icon shape="refresh"></clr-icon>
+      <clr-icon shape="sync"></clr-icon>
     </button>
 
+    <span class="btn btn-icon float-right" title="Showjson">
+      <clr-icon shape="view-list"></clr-icon>
+    </span>
     <span class="search-datalist">
         <clr-icon shape="search"></clr-icon>
       <datalist id="workflow_list">
@@ -16,12 +19,15 @@
           </option>
         </select>
       </datalist>
-      <input #searchBox type="text" name="workflow" id="workflow" list="workflow_list"
-              (keyup)="search(searchBox.value)" placeholder="search task"
+      <input #searchBox type="text" name="workflow" id="workflow" list="workflow_list" style="width: 200px"
+              (keyup)="search(searchBox.value)" placeholder="search workflow"
              (click)="getInitTasks()" [(ngModel)]="inputValue"
-             (change)="putWorkflowIntoCanvas($event.target.value)" >
-      <clr-icon shape="times-circle" *ngIf="inputValue" (click)="clearInput()"></clr-icon>
+             (change)="putWorkflowIntoCanvas($event.target.value)">
+      <clr-icon shape="times" *ngIf="inputValue" (click)="clearInput()"></clr-icon>
     </span>
+    <button class="btn btn-icon float-right" (click)="applyWorkflowJson()" title="Apply">
+      <clr-icon shape="two-way-arrows"></clr-icon>
+    </button>
   </div>
 
   <div class="workflow-json-operation clear">
@@ -31,14 +37,6 @@
     </div>
 
     <div class="jsoneditor">
-      <p class="clear">
-        <button class="btn btn-icon" (click)="applyWorkflowJson()" title="Apply">
-          <clr-icon shape="two-way-arrows"></clr-icon>
-        </button>
-        <span class="apply">
-          <clr-icon shape="view-list"></clr-icon>
-        </span>
-      </p>
       <div #jsoneditor id="jsoneditor"></div>
     </div>
   </div>
