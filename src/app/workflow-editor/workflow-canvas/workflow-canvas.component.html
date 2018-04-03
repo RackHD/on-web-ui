@@ -1,45 +1,45 @@
-<div class="content-container workflow-json-multiple">
-  <!--collapsed json bar-->
-  <clr-vertical-nav style="background: #ddd;" [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsed">
-    <div class="json-editor">
-      <div #jsoneditor id="jsoneditor" style="width: 400px; height: 720px;"></div>
-    </div>
-  </clr-vertical-nav>
+<div class="app-workflow-canvas">
+  <div class="button-operation">
+    <button class="btn btn-icon" (click)="saveWorkflow()" title="Save">
+      <clr-icon shape="floppy"></clr-icon>
+    </button>
+    <button class="btn btn-icon refresh" (click)="refreshWorkflow()" title="Restore">
+      <clr-icon shape="refresh"></clr-icon>
+    </button>
 
+    <span class="search-datalist">
+        <clr-icon shape="search"></clr-icon>
+      <datalist id="workflow_list">
+        <select name="workflow">
+          <option [ngValue]="wf" *ngFor="let wf of workflows">
+            {{wf.friendlyName}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox type="text" name="workflow" id="workflow" list="workflow_list"
+              (keyup)="search(searchBox.value)" placeholder="search task"
+             (click)="getInitTasks()" [(ngModel)]="inputValue"
+             (change)="putWorkflowIntoCanvas($event.target.value)" >
+      <clr-icon shape="times-circle" *ngIf="inputValue" (click)="clearInput()"></clr-icon>
+    </span>
+  </div>
 
-  <div class="content-area">
-    <div class="row" style="display: inline-block">
-      <button class="btn btn-icon" (click)="applyWorkflowJson()" title="Draw">
-        <clr-icon shape="picture"></clr-icon>
-      </button>
-
-      <button class="btn btn-icon" (click)="saveWorkflow()" title="Save">
-        <clr-icon shape="sync"></clr-icon>
-      </button>
-      <button class="btn btn-icon refresh" (click)="refreshWorkflow()" title="Refresh">
-        <clr-icon shape="refresh"></clr-icon>
-      </button>
-
-      <span>
-        <label>
-          <clr-icon shape="search"></clr-icon>
-        </label>
-        <datalist id="workflow_list">
-          <select name="workflow">
-            <option [ngValue]="wf" *ngFor="let wf of workflows">
-              {{wf.friendlyName}}
-            </option>
-          </select>
-        </datalist>
-        <input #searchBox type="text" name="workflow" id="workflow" list="workflow_list"  (keyup)="search(searchBox.value)" (change)="putWorkflowIntoCanvas($event.target.value)">
-      </span>
+  <div class="workflow-json-operation clear">
+    <div class="workflow-editor">
+      <app-canvas-graph [onWorkflowInput]='onWorkflowInput' (onWorkflowChanged)="onWorkflowChanged($event)">
+      </app-canvas-graph>
     </div>
 
-    <div id="workflow-json-multiple" class="workflow-json-multiple">
-      <div class="workflow-editor-graph">
-        <app-canvas-graph [onWorkflowInput]='onWorkflowInput' (onWorkflowChanged)="onWorkflowChanged($event)">
-        </app-canvas-graph>
-      </div>
+    <div class="jsoneditor">
+      <p class="clear">
+        <button class="btn btn-icon" (click)="applyWorkflowJson()" title="Apply">
+          <clr-icon shape="two-way-arrows"></clr-icon>
+        </button>
+        <span class="apply">
+          <clr-icon shape="view-list"></clr-icon>
+        </span>
+      </p>
+      <div #jsoneditor id="jsoneditor"></div>
     </div>
   </div>
 </div>
