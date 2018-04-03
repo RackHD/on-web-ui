@@ -10,7 +10,7 @@ import {
 
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { WorkflowService } from '../services/workflow.service';
-import { Workflow } from '../../models';
+import { Workflow, Graph } from '../../models';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
@@ -39,20 +39,19 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   @ViewChild("viewCanvas") viewCanvas: any;
   onWorkflowInput = new EventEmitter();
   graphId: string;
+  isDefinition: boolean = false; // true: graph definition; false: graph object
 
   selectedWorkflow: any;
-  workflowsStore: Workflow[];
-  allWorkflows: Workflow[];
+  workflowsStore: any[];
+  allWorkflows: any [];
 
   filterForm: FormGroup;
   isDropdownSelected: boolean;
-  isFocused: boolean;
-  dropDownList: string[];
-
-  isDefinition: boolean = false; // true: graph definition; false: graph object
+  idDropdownList: string[];
+  nameDropdownList: string[];
+  nodeDropdownList: string[];
   searchField: string;
   searchTerms = new Subject<string>();
-
   searchSubscribe: any;
 
   service: any;
@@ -95,7 +94,27 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
     this.service.getAll()
     .subscribe(workflows=> {
       this.allWorkflows = workflows;
+      this.getDropdownOptions(this.allWorkflows)
     });
+  }
+
+  getDropdownOptions(workflows){
+    let i = 0;
+    let idKey = this.isDefinition ? "injectableName" : "instanceId";
+    let nameKey = this.isDefinition ? "friendlyName" : "name";
+    let idList = [];
+    let nameList = [];
+    let nodeList = [];
+    _.forEach(workflows, workflow => {
+      idList.push(workflow[idKey]);
+      nameList.push(workflow[nameKey]);
+      nodeList.push(workflow.node);
+      i += 1;
+      return (i<10);
+    });
+    this.idDropdownList = _.uniq(idList);
+    this.nameDropdownList = _.uniq(nameList);
+    this.nodeDropdownList = _.uniq(nodeList);
   }
 
   createFormGroup(){
@@ -133,26 +152,16 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   }
 
   searchWorkflow(term: string): void{
+    let excludeFields = _.without(_.keys(this.allWorkflows[0]), this.searchField);
+    this.workflowsStore = StringOperator.search(term, this.allWorkflows, excludeFields);
     if (this.isDropdownSelected) {
-      // For dropdown selection, skip popup of dropDownList;
-      return this.onSelectSearch(term);
+      this.onSelectSearch(term);
     }
-    if (this.isFocused){
-      this.workflowsStore = _.cloneDeep(this.allWorkflows);
-      this.isFocused = false;
-    } else {
-      let excludeFields = _.without(_.keys(this.allWorkflows[0]), this.searchField);
-      this.workflowsStore = StringOperator.search(term, this.allWorkflows, excludeFields);
-    }
-
-    this.dropDownList = this.getFilteredList();
+    this.getDropdownOptions(this.workflowsStore);
   }
 
   onSelectSearch(term: string){
     this.isDropdownSelected = false;
-    let excludeFields = _.without(_.keys(this.allWorkflows[0]), this.searchField);
-    this.workflowsStore = StringOperator.search(term, this.allWorkflows, excludeFields);
-    this.dropDownList = [];
     if (this.workflowsStore && this.workflowsStore.length === 1) {
       let url: string;
       this.selectedWorkflow = this.workflowsStore[0];
@@ -166,27 +175,9 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getFilteredList(){
-    let filteredValues = [];
-    _.forEach(this.workflowsStore, (workflow) => {
-      let value = workflow[this.searchField];
-      if (!_.includes(filteredValues, value)){
-        filteredValues.push(value);
-      }
-    });
-    return filteredValues;
-  }
-
   onSearch(term: string, searchKey: string): void {
     this.searchField = searchKey;
     this.searchTerms.next(term);
-  }
-
-  onFocus(inputKey: string): void {
-    //onFocused is to prefetch all valid workflows
-    this.isFocused = true;
-    this.searchField = inputKey;
-    this.searchTerms.next(inputKey);
   }
 
   onClear(){
@@ -198,13 +189,13 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
 
     this.isDropdownSelected = false;
     this.isFocused = false;
-    this.dropDownList =[];
 
     // this.isDefinition=false;
     this.searchField = null;
     if (this.searchSubscribe){
       this.searchSubscribe.unsubscribe();
     }
+
     this.clearCanvas();
     this.gotoCanvas("/operationsCenter/workflowViewer");
   }
