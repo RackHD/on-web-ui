@@ -118,15 +118,17 @@ export class OsInstallComponent implements OnInit {
         this.allNodes = data;
         this.dataStore = data;
         for (let node of this.allNodes) {
-          this.catalogsService.getSource(node.id, 'dmi').subscribe(
-            item => {
-              let systemInfo = item['data']['System Information'];
-              if (systemInfo) {
-                node.manufacturer = systemInfo['Manufacturer'];
-                node.model = systemInfo['Product Name'];
+          if (node.type === 'compute') {
+            this.catalogsService.getSource(node.id, 'dmi').subscribe(
+              item => {
+                let systemInfo = item['data']['System Information'];
+                if (systemInfo) {
+                  node.manufacturer = systemInfo['Manufacturer'];
+                  node.model = systemInfo['Product Name'];
+                }
               }
-            }
-          );
+            );
+          }
         }
       });
   }
