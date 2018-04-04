@@ -28,7 +28,6 @@ const global = (window as any);
 
 export class CanvasGraphComponent implements OnInit {
   @ViewChild('mycanvas') editorCanvas: any;
-  // @ViewChild('jsoneditor') jsonEditor: any;
   @Input() onWorkflowInput: any;
   @Input() editable = true;
   @Output() onWorkflowChanged = new EventEmitter();
@@ -39,9 +38,11 @@ export class CanvasGraphComponent implements OnInit {
   initSize: any;
   taskInjectableNames: any;
 
-  constructor(public element: ElementRef,
-              public nodeExtensionService: NodeExtensionService,
-              public workflowService: WorkflowService) {
+  constructor(
+    public element: ElementRef,
+    public nodeExtensionService: NodeExtensionService,
+    public workflowService: WorkflowService
+  ){
     this.nodeExtensionService.init(
       // use bind to keep context
       this.afterInputConnect.bind(this),
