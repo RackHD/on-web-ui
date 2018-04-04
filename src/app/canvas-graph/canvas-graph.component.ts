@@ -28,7 +28,7 @@ const global = (window as any);
 
 export class CanvasGraphComponent implements OnInit {
   @ViewChild('mycanvas') editorCanvas: any;
-  @ViewChild('jsoneditor') jsonEditor: any;
+  // @ViewChild('jsoneditor') jsonEditor: any;
   @Input() onWorkflowInput: any;
   @Input() editable = true;
   @Output() onWorkflowChanged = new EventEmitter();
@@ -40,8 +40,8 @@ export class CanvasGraphComponent implements OnInit {
   taskInjectableNames: any;
 
   constructor(public element: ElementRef,
-    public nodeExtensionService: NodeExtensionService,
-    public workflowService: WorkflowService) {
+              public nodeExtensionService: NodeExtensionService,
+              public workflowService: WorkflowService) {
     this.nodeExtensionService.init(
       // use bind to keep context
       this.afterInputConnect.bind(this),
@@ -77,13 +77,119 @@ export class CanvasGraphComponent implements OnInit {
     this.setupCanvas();
     this.canvas.clear();
     this.canvas.getNodeMenuOptions = this.getNodeMenuOptions();
+
+    /*delete border of back canvas */
+    this.canvas.drawBackCanvas = this.drawBackCanvas.bind(this.canvas);
+
     this.canvas.getCanvasMenuOptions = this.getCanvasMenuOptions();
     this.graph.start();
-    // set json
     this.drawNodes();
   }
 
-  setupCanvas(){
+  /* drawBackCanvas is just to delete the border of canvas */
+  drawBackCanvas() {
+    var canvas = this.bgcanvas;
+    if (canvas.width != this.canvas.width ||
+      canvas.height != this.canvas.height) {
+      canvas.width = this.canvas.width;
+      canvas.height = this.canvas.height;
+    }
+    if (!this.bgctx)
+      this.bgctx = this.bgcanvas.getContext("2d");
+    var ctx = this.bgctx;
+    if (ctx.start)
+      ctx.start();
+
+    //clear
+    if (this.clear_background)
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    //reset in case of error
+    ctx.restore();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    if (this.graph) {
+      //apply transformations
+      ctx.save();
+      ctx.scale(this.scale, this.scale);
+      ctx.translate(this.offset[0], this.offset[1]);
+
+      //render BG
+      if (this.background_image && this.scale > 0.5) {
+        ctx.globalAlpha = (1.0 - 0.5 / this.scale) * this.editor_alpha;
+        ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = false;
+        if (!this._bg_img || this._bg_img.name != this.background_image) {
+          this._bg_img = new Image();
+          this._bg_img.name = this.background_image;
+          this._bg_img.src = this.background_image;
+          var that = this;
+          this._bg_img.onload = function () {
+            that.draw(true, true);
+          }
+        }
+
+        var pattern = null;
+        if (this._pattern == null && this._bg_img.width > 0) {
+          pattern = ctx.createPattern(this._bg_img, 'repeat');
+          this._pattern_img = this._bg_img;
+          this._pattern = pattern;
+        }
+        else
+          pattern = this._pattern;
+        if (pattern) {
+          ctx.fillStyle = pattern;
+          ctx.fillRect(this.visible_area[0], this.visible_area[1], this.visible_area[2] - this.visible_area[0], this.visible_area[3] - this.visible_area[1]);
+          ctx.fillStyle = "transparent";
+        }
+
+        ctx.globalAlpha = 1.0;
+        ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = true;
+      }
+
+      if (this.onBackgroundRender)
+        this.onBackgroundRender(canvas, ctx);
+
+      //DEBUG: show clipping area
+      //ctx.fillStyle = "red";
+      //ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - this.visible_area[0] - 20, this.visible_area[3] - this.visible_area[1] - 20);
+
+      //bg
+      ctx.strokeStyle = "transparent"; //change border to white
+      ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+      if (this.render_connections_shadows) {
+        ctx.shadowColor = "#000";
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowBlur = 6;
+      }
+      else
+        ctx.shadowColor = "rgba(0,0,0,0)";
+
+      //draw connections
+      if (!this.live_mode)
+        this.drawConnections(ctx);
+
+      ctx.shadowColor = "rgba(0,0,0,0)";
+
+      //restore state
+      ctx.restore();
+    }
+
+    if (ctx.finish)
+      ctx.finish();
+
+    this.dirty_bgcanvas = false;
+    this.dirty_canvas = true; //to force to repaint the front canvas with the bgcanvas
+  }
+
+  /* setLiteGraph can change some default color */
+  // setLiteGraph(){
+  //   global.LiteGraph.NODE_DEFAULT_COLOR = "red";
+  //   global.LiteGraph.NODE_DEFAULT_BGCOLOR = "red";
+  //   global.LiteGraph.NODE_DEFAULT_BOXCOLOR = "red";
+  // }
+  setupCanvas() {
     // this.canvas.default_link_color =  "#FFF"; //Connection color
     // this.canvas.highquality_render = true; //Render color, curve and arrow
     // this.canvas.render_curved_connections = false; //Use straight line
@@ -208,7 +314,7 @@ export class CanvasGraphComponent implements OnInit {
     return function () {
       if (!self.editable) return [];
       let options = [
-        { content: 'Add Task', has_submenu: true, callback: self.addNode() }
+        {content: 'Add Task', has_submenu: true, callback: self.addNode()}
       ];
       return options;
     };
@@ -227,8 +333,10 @@ export class CanvasGraphComponent implements OnInit {
 
       let taskNames = self.taskInjectableNames.slice(0, 9);
       let values = [];
-      values.push({ content: filterInputHtml });
-      _.forEach(taskNames, name => { values.push({ content: name }); })
+      values.push({content: filterInputHtml});
+      _.forEach(taskNames, name => {
+        values.push({content: name});
+      })
 
       let taskMenu = new global.LiteGraph.ContextMenu(values, {
         event: e,
@@ -261,10 +369,10 @@ export class CanvasGraphComponent implements OnInit {
         // close old task list menu and add a new one;
         taskMenu.close(undefined, true);
         let values = [];
-        values.push({ content: filterInputHtml });
+        values.push({content: filterInputHtml});
         let filteredTaskNames = _.filter(self.taskInjectableNames, (type) => type.includes(term));
         for (let injectableName of filteredTaskNames.slice(0, 9)) {
-          values.push({ content: injectableName });
+          values.push({content: injectableName});
         }
         taskMenu = new global.LiteGraph.ContextMenu(values, {
           event: e,
@@ -301,8 +409,8 @@ export class CanvasGraphComponent implements OnInit {
           self.workflowService.getTask(injectName).subscribe(task => {
             let data = {};
             let label = "new-task-" + uuid().substr(0, 10);
-            _.assign(data, { 'label': label });
-            _.assign(data, { 'taskDefinition': task });
+            _.assign(data, {'label': label});
+            _.assign(data, {'taskDefinition': task});
             node.properties.task = data;
             node.title = node.properties.task.label;
             canvas.graph.add(node);
@@ -310,6 +418,7 @@ export class CanvasGraphComponent implements OnInit {
           });
         }
       }
+
       return false;
     };
   }
@@ -320,7 +429,7 @@ export class CanvasGraphComponent implements OnInit {
       let options = [];
       if (!self.editable) return options;
       if (node.removable !== false)
-        options.push(null, { content: 'Remove', callback: self.removeNode.bind(self) });
+        options.push(null, {content: 'Remove', callback: self.removeNode.bind(self)});
       if (node.graph && node.graph.onGetNodeMenuOptions)
         node.graph.onGetNodeMenuOptions(options, node);
       return options;

@@ -4,6 +4,7 @@
     float: right;
   }
   .workflow-json-operation {
+    padding-bottom: 45px;
     display: inline-flex;
     width: 100%;
     .workflow-editor {
@@ -21,7 +22,7 @@
       height: 100vh;
       border: none;
       #jsoneditor {
-        height: 100% !important;
+        height: 100vh !important;
       }
     }
   }
