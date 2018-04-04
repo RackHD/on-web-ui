@@ -40,7 +40,6 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   search(term: string): void {
-    console.log(this.inputValue);
     this.searchTerms.next(term);
   }
 
