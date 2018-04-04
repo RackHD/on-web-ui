@@ -28,9 +28,9 @@
           </select>
         </datalist>
         <input #searchBox type="text" name="workflow" id="workflow" list="workflow_list" style="width: 200px"
-                (keyup)="search(searchBox.value)" placeholder="search workflow"
-               (click)="getInitTasks()" [(ngModel)]="inputValue"
-               (change)="putWorkflowIntoCanvas($event.target.value)">
+           (keyup)="search(searchBox.value)" placeholder="search workflow"
+           (click)="getInitTasks()" [(ngModel)]="inputValue"
+           (change)="putWorkflowIntoCanvas($event.target.value)">
         <clr-icon shape="times" *ngIf="inputValue" (click)="clearInput()"></clr-icon>
       </span>
       <div #jsoneditor id="jsoneditor"></div>
