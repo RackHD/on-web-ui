@@ -79,7 +79,7 @@ export class CanvasGraphComponent implements OnInit {
     this.canvas.clear();
     this.canvas.getNodeMenuOptions = this.getNodeMenuOptions();
 
-    /*delete border of back canvas */
+    /*overwrite default drawBackCanvas to delete border of back canvas */
     this.canvas.drawBackCanvas = this.drawBackCanvas.bind(this.canvas);
 
     this.canvas.getCanvasMenuOptions = this.getCanvasMenuOptions();
