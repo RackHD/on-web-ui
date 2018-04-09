@@ -36,7 +36,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     if (!this.workflowStore) {
       this.getworkflowStore();
     }
-    this.workflows = this.workflowStore.slice(0, 10);
+    this.workflows = this.workflowStore && this.workflowStore.slice(0, 10);
   }
 
   search(term: string): void {
