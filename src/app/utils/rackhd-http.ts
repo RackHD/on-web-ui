@@ -24,8 +24,8 @@ export class RackhdHttpService {
     let token: string = RackHD.getToken();
     let options: any = {};
     if(token){
-      query = query || {};
-      query.auth_token = token;
+      header = header || {};
+      header.authorization = "JWT " + token;
     }
     if(!_.isEmpty(query)){
       options.params = query;
