@@ -13,3 +13,4 @@ export * from './file';
 export * from './template';
 export * from './inventory';
 export * from './graph';
+export * from './graphtask';

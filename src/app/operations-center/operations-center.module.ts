@@ -9,8 +9,6 @@ import { ActiveWorkflowComponent } from './active-workflow/active-workflow.compo
 import { HistoryWorkflowComponent } from './history-workflow/history-workflow.component';
 import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.component';
 
-import { OperationCenterServiceModule } from './services/operation-center-service.module';
-
 import { OperationsCenterComponent } from './operations-center.component';
 import { OperationsCenterRoutingModule } from './operations-center-routing.module';
 
@@ -24,7 +22,6 @@ import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
     FormsModule,
     ReactiveFormsModule,
     OperationsCenterRoutingModule,
-    OperationCenterServiceModule,
     ManagementCenterServicesModule,
     CanvasGraphModule,
   ],
@@ -34,10 +31,7 @@ import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
     HistoryWorkflowComponent,
     WorkflowViewerComponent,
   ],
-  providers: [
-    OperationCenterServiceModule,
-    // SharedServicesModule
-  ]
+  providers: []
 })
 
 export class OperationsCenterModule {}

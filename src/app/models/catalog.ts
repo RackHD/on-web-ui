@@ -9,6 +9,6 @@ export class Catalog {
 }
 
 export const CATALOG_URL = {
-    catalogs: '/catalogs',
-    catalogsById: '/catalogs/',
+    getAllUrl: '/catalogs',
+    getByIdentifierUrl: '/catalogs/',
 }

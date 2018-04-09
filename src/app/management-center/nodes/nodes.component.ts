@@ -7,11 +7,12 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 
-import { NodeService } from '../../services/node.service';
-import { Node, NodeType, NODE_TYPE_MAP } from '../../models/node';
+import { NodeService } from 'app/services/rackhd/node.service';
+import { Node, NodeType, NODE_TYPE_MAP } from 'app/models';
 
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ObmService } from 'app/services/obm.service';
+import { ObmService } from 'app/services/rackhd/obm.service';
+import { SkusService } from 'app/services/rackhd/sku.service';
 import { IbmService } from '../services/ibm.service';
 import { OBM } from 'app/models';
 import { SKU_URL } from 'app/models/sku';
@@ -83,6 +84,7 @@ export class NodesComponent implements OnInit {
     public nodeService: NodeService,
     public obmService: ObmService,
     public ibmService: IbmService,
+    public skuService: SkusService, 
     private fb: FormBuilder) {
   }
 
@@ -148,9 +150,8 @@ export class NodesComponent implements OnInit {
     }, []);
   }
 
-  // main data resourse
   getAllNodes(): void {
-    this.nodeService.getAllNodes()
+    this.nodeService.getAll()
       .subscribe(data => {
         this.allNodes = data;
         this.dataStore = data;
@@ -188,20 +189,23 @@ export class NodesComponent implements OnInit {
     jsonData['type'] = value['type'];
     jsonData['autoDiscover'] = value['autoDiscover'] === 'true' ? true : false;
 
-    let postData = JSON.stringify(jsonData);
-    this.nodeService.creatOneNode(postData)
+    // let postData = JSON.stringify(jsonData);
+    this.nodeService.post(jsonData)
       .subscribe(data => {
         this.refreshDatagrid();
       });
   }
 
   delete(): void {
-    let res = this.nodeService.deleteNodes(this.selectedNodes);
-    for (let entry of res) {
-      entry.subscribe(() => {
-        this.refreshDatagrid();
-      });
-    }
+    let list = [];
+    _.forEach(this.selectedNodes, node => {
+      list.push(node.id);
+    });
+
+    this.nodeService.deleteByIdentifiers(list)
+    .subscribe(results =>{
+      this.refreshDatagrid();
+    });
   }
 
   searchIterm(term: string): void {
@@ -249,8 +253,7 @@ export class NodesComponent implements OnInit {
     this.selectedNode = node;
     let skuId = node.sku ? node.sku.split('/')[4] : '';
     if (skuId) {
-      let suffix = SKU_URL.skusById + '?query=' + skuId;
-      this.nodeService.get(suffix)
+      this.skuService.getByIdentifier(skuId)
         .subscribe(data => {
           this.skuDetail = data;
           this.isShowSkuDetail = true;
@@ -262,14 +265,14 @@ export class NodesComponent implements OnInit {
   }
 
   getObmById(identifier: string): void {
-    this.obmService.getObmById(identifier)
+    this.obmService.getByIdentifier(identifier)
       .subscribe(data => {
         this.selectedObm.push(data);
       });
   }
 
   getIbmById(identifier: string): void {
-    this.ibmService.getIbmById(identifier)
+    this.ibmService.getByIdentifier(identifier)
       .subscribe(data => {
         this.selectedIbm.push(data);
       });

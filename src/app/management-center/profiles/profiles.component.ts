@@ -133,7 +133,7 @@ export class ProfilesComponent implements OnInit {
     //TODO: Add more details on progress
     //TODO: And use sync mode instead of async mode
     //TODO: Add support on multiple files upload support
-    this.profileService.upload(existingFilename || file.name, file)
+    this.profileService.upload(file, existingFilename || file.name)
     this.selectedProfile = null;
     this.onRefresh();
   }

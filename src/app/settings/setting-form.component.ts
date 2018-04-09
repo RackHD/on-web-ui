@@ -115,7 +115,7 @@ export class SettingComponent implements OnInit, OnDestroy {
   }
 
   generateToken(){
-    this.onSubmit();
+    this.submitFormValues();
     this.settingService.generateToken(
       this.settingFormGroup.get('rackhdAuth.rackhdUsername').value,
       this.settingFormGroup.get('rackhdAuth.rackhdPassword').value
@@ -131,12 +131,16 @@ export class SettingComponent implements OnInit, OnDestroy {
       }
     );
   }
-
-  onSubmit() {
+  
+  submitFormValues(){
     this.settingService.websocketUrl = this.settingFormGroup.get('rackhdWebsocketUrl').value;
     this.settingService.northboundApi = this.settingFormGroup.get('rackhdNorthboundApi').value;
     this.settingService.elasticSearchUrl = this.settingFormGroup.get('rackhdElasticApi').value;
     this.settingService.authToken = this.settingFormGroup.get('rackhdAuth.rackhdAuthToken').value;
+  }
+
+  onSubmit() {
+    this.submitFormValues();
     this.submitted = false;
     this.onSave.emit(true);
   }

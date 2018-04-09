@@ -16,7 +16,8 @@ import * as uuid from 'uuid/v4';
 import { NodeExtensionService } from './node-extension.service';
 import { CONSTS } from '../../config/consts';
 import { Task } from '../models';
-import { WorkflowService } from 'app/operations-center/services/workflow.service';
+import { WorkflowService } from 'app/services/rackhd/workflow.service';
+import { GraphTaskService } from 'app/services/rackhd/task.service';
 
 const global = (window as any);
 
@@ -41,8 +42,8 @@ export class CanvasGraphComponent implements OnInit {
   constructor(
     public element: ElementRef,
     public nodeExtensionService: NodeExtensionService,
-    public workflowService: WorkflowService
-  ){
+    public graphTaskService: GraphTaskService,
+    public workflowService: WorkflowService) {
     this.nodeExtensionService.init(
       // use bind to keep context
       this.afterInputConnect.bind(this),
@@ -53,7 +54,8 @@ export class CanvasGraphComponent implements OnInit {
 
   ngOnInit() {
     if (this.editable) {
-      this.workflowService.getTask().subscribe(allTasks => {
+      this.graphTaskService.getAll()
+      .subscribe(allTasks => {
         this.taskInjectableNames = allTasks.map(function (item) {
           return item.injectableName;
         });
@@ -80,7 +82,7 @@ export class CanvasGraphComponent implements OnInit {
     this.canvas.getNodeMenuOptions = this.getNodeMenuOptions();
 
     /*overwrite default drawBackCanvas to delete border of back canvas */
-    this.canvas.drawBackCanvas = this.drawBackCanvas.bind(this.canvas);
+    this.canvas.drawBackCanvas = this.drawBackCanvas.bind(this, this.canvas);
 
     this.canvas.getCanvasMenuOptions = this.getCanvasMenuOptions();
     this.graph.start();
@@ -88,58 +90,58 @@ export class CanvasGraphComponent implements OnInit {
   }
 
   /* drawBackCanvas is just to delete the border of canvas */
-  drawBackCanvas() {
-    var canvas = this.bgcanvas;
-    if (canvas.width != this.canvas.width ||
-      canvas.height != this.canvas.height) {
-      canvas.width = this.canvas.width;
-      canvas.height = this.canvas.height;
+  drawBackCanvas(self: any) {
+    var canvas = self.bgcanvas;
+    if (canvas.width != self.canvas.width ||
+      canvas.height != self.canvas.height) {
+      canvas.width = self.canvas.width;
+      canvas.height = self.canvas.height;
     }
-    if (!this.bgctx)
-      this.bgctx = this.bgcanvas.getContext("2d");
-    var ctx = this.bgctx;
+    if (!self.bgctx)
+      self.bgctx = self.bgcanvas.getContext("2d");
+    var ctx = self.bgctx;
     if (ctx.start)
       ctx.start();
 
     //clear
-    if (this.clear_background)
+    if (self.clear_background)
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     //reset in case of error
     ctx.restore();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    if (this.graph) {
+    if (self.graph) {
       //apply transformations
       ctx.save();
-      ctx.scale(this.scale, this.scale);
-      ctx.translate(this.offset[0], this.offset[1]);
+      ctx.scale(self.scale, self.scale);
+      ctx.translate(self.offset[0], self.offset[1]);
 
       //render BG
-      if (this.background_image && this.scale > 0.5) {
-        ctx.globalAlpha = (1.0 - 0.5 / this.scale) * this.editor_alpha;
+      if (self.background_image && self.scale > 0.5) {
+        ctx.globalAlpha = (1.0 - 0.5 / self.scale) * self.editor_alpha;
         ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = false;
-        if (!this._bg_img || this._bg_img.name != this.background_image) {
-          this._bg_img = new Image();
-          this._bg_img.name = this.background_image;
-          this._bg_img.src = this.background_image;
-          var that = this;
-          this._bg_img.onload = function () {
+        if (!self._bg_img || self._bg_img.name != self.background_image) {
+          self._bg_img = new Image();
+          self._bg_img.name = self.background_image;
+          self._bg_img.src = self.background_image;
+          var that = self;
+          self._bg_img.onload = function () {
             that.draw(true, true);
           }
         }
 
         var pattern = null;
-        if (this._pattern == null && this._bg_img.width > 0) {
-          pattern = ctx.createPattern(this._bg_img, 'repeat');
-          this._pattern_img = this._bg_img;
-          this._pattern = pattern;
+        if (self._pattern == null && self._bg_img.width > 0) {
+          pattern = ctx.createPattern(self._bg_img, 'repeat');
+          self._pattern_img = self._bg_img;
+          self._pattern = pattern;
         }
         else
-          pattern = this._pattern;
+          pattern = self._pattern;
         if (pattern) {
           ctx.fillStyle = pattern;
-          ctx.fillRect(this.visible_area[0], this.visible_area[1], this.visible_area[2] - this.visible_area[0], this.visible_area[3] - this.visible_area[1]);
+          ctx.fillRect(self.visible_area[0], self.visible_area[1], self.visible_area[2] - self.visible_area[0], self.visible_area[3] - self.visible_area[1]);
           ctx.fillStyle = "transparent";
         }
 
@@ -147,18 +149,18 @@ export class CanvasGraphComponent implements OnInit {
         ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = true;
       }
 
-      if (this.onBackgroundRender)
-        this.onBackgroundRender(canvas, ctx);
+      if (self.onBackgroundRender)
+        self.onBackgroundRender(canvas, ctx);
 
       //DEBUG: show clipping area
       //ctx.fillStyle = "red";
-      //ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - this.visible_area[0] - 20, this.visible_area[3] - this.visible_area[1] - 20);
+      //ctx.fillRect( self.visible_area[0] + 10, self.visible_area[1] + 10, self.visible_area[2] - self.visible_area[0] - 20, self.visible_area[3] - self.visible_area[1] - 20);
 
       //bg
       ctx.strokeStyle = "transparent"; //change border to white
       ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-      if (this.render_connections_shadows) {
+      if (self.render_connections_shadows) {
         ctx.shadowColor = "#000";
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
@@ -168,8 +170,8 @@ export class CanvasGraphComponent implements OnInit {
         ctx.shadowColor = "rgba(0,0,0,0)";
 
       //draw connections
-      if (!this.live_mode)
-        this.drawConnections(ctx);
+      if (!self.live_mode)
+        self.drawConnections(ctx);
 
       ctx.shadowColor = "rgba(0,0,0,0)";
 
@@ -180,8 +182,8 @@ export class CanvasGraphComponent implements OnInit {
     if (ctx.finish)
       ctx.finish();
 
-    this.dirty_bgcanvas = false;
-    this.dirty_canvas = true; //to force to repaint the front canvas with the bgcanvas
+    self.dirty_bgcanvas = false;
+    self.dirty_canvas = true; //to force to repaint the front canvas with the bgcanvas
   }
 
   /* setLiteGraph can change some default color */
@@ -346,8 +348,6 @@ export class CanvasGraphComponent implements OnInit {
         allow_html: true
       }, ref_window);
 
-      // ==== begin for search ====
-      // functions  to implements search
       let taskFilter = new Subject();
 
       function inputTerm(term: string) {
@@ -407,7 +407,8 @@ export class CanvasGraphComponent implements OnInit {
           node.pos = canvas.convertEventToCanvas(firstEvent);
           // update node data
           let injectName = v.content;
-          self.workflowService.getTask(injectName).subscribe(task => {
+          self.graphTaskService.getByIdentifier(injectName)
+          .subscribe(task => {
             let data = {};
             let label = "new-task-" + uuid().substr(0, 10);
             _.assign(data, {'label': label});

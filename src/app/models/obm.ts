@@ -9,6 +9,6 @@ export class OBM {
 }
 
 export const OBM_URL = {
-    obms: '/obms',
-    obmsById: '/obms/',
+    getAllUrl: '/obms',
+    getByIdentifierUrl: '/obms/',
 }

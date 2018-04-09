@@ -8,7 +8,7 @@
           role="tooltip"
           class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
           [class.invalid]="formClassInvalid('rackhdNorthboundApi')">
-          <input type="text" id="rackhdApi" class="input-width"
+          <input type="text" id="rackhdApi" class="input-width" 
             [placeholder]="settingService.northboundApi"
             formControlName="rackhdNorthboundApi" >
           <span class="tooltip-content">
@@ -53,6 +53,9 @@
           id="secureConnEnable"
           [(clrChecked)]="settingService.connSecured">
           Enable Secure Connections
+          <i *ngIf='settingService.connSecured' class="text-indicator">
+            Note: certificate required for secure connection
+          </i>
         </clr-checkbox>
       </div>
 
@@ -78,7 +81,7 @@
             role="tooltip"
             class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
             [class.invalid]="formClassInvalid('rackhdAuth.rackhdUsername')">
-            <input type="text" id="rackhdUser"
+            <input type="text" id="rackhdUser" class="input-width"
               formControlName="rackhdUsername">
             <span class="tooltip-content">
               Username required!
@@ -93,23 +96,23 @@
             role="tooltip"
             class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
             [class.invalid]="formClassInvalid('rackhdAuth.rackhdPassword')">
-            <input type="password" id="rackhdPwd"
+            <input type="password" id="rackhdPwd" class="input-width"
               formControlName="rackhdPassword">
             <span class="tooltip-content">
               Password required!
             </span>
           </label>
         </div>
-        <div>
+        <div class="token-button">
           <button type="button"
-            class="btn btn-warning-outline"
+            class="btn btn-primary"
             (click)="generateToken()"
-            [disabled]="generateTokenDisabled()">Generate Token</button>
+            [disabled]="generateTokenDisabled()">Get Token</button>
         </div>
         <div class="form-group">
           <label for="rackhdToken"
             [ngClass]="{'disabled-label': !settingService.authEnabled}">RackHD API Auth Token</label>
-          <input type="text" id="rackhdToken"
+          <input type="text" id="rackhdToken" class="input-width"
             formControlName="rackhdAuthToken">
         </div>
       </fieldset>

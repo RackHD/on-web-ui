@@ -14,10 +14,9 @@ import {
 } from '../../utils/inventory-operator';
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
-
-import { WorkflowService } from '../services/workflow.service';
-import { GraphService } from '../../management-center/services/graph.service';
-import { Workflow, PAGE_SIZE_OPTIONS, ModalTypes, HISTORY_WORKFLOW_STATUS } from '../../models';
+import { WorkflowService } from 'app/services/rackhd/workflow.service';
+import { GraphService } from 'app/services/rackhd/graph.service';
+import { Workflow, PAGE_SIZE_OPTIONS, ModalTypes, HISTORY_WORKFLOW_STATUS } from 'app/models';
 
 @Component({
   selector: 'app-history-workflow',

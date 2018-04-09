@@ -9,7 +9,6 @@ import { WorkflowCanvasComponent } from './workflow-canvas/workflow-canvas.compo
 import { WorkflowEditorComponent } from './workflow-editor.component';
 import { WorkflowEditorRoutingModule } from './workflow-editor-routing.module';
 import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
-import { WorkflowService } from 'app/operations-center/services/workflow.service';
 
 @NgModule({
   imports: [
@@ -26,7 +25,6 @@ import { WorkflowService } from 'app/operations-center/services/workflow.service
   ],
   providers: [
     NodeExtensionService,
-    WorkflowService
   ],
 })
 export class WorkflowEditorModule {

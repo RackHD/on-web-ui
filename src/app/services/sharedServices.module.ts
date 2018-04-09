@@ -9,23 +9,14 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { AppCoreModule } from './core/core.module';
 import { ActivityService } from './activity.service';
 
-import { NodeService } from './node.service';
-import { CatalogsService } from './catalogs.service';
-import { PollersService } from './pollers.service';
-import { ObmService } from './obm.service';
-import { SkusService } from './sku.service';
+import { RackhdCommonServicesModule } from './rackhd/rackhd.module';
 
 
 @NgModule({
   exports: [
     AppCoreModule,
+    RackhdCommonServicesModule
   ],
-  providers: [
-    NodeService,
-    CatalogsService,
-    PollersService,
-    ObmService,
-    SkusService,
-  ]
+  providers: []
 })
 export class SharedServicesModule { }

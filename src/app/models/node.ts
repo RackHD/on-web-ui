@@ -45,8 +45,8 @@ export const NODE_TYPES = [
 ];
 
 export const NODE_URL = {
-    nodes: '/nodes',
-    nodesById: '/nodes/',
+    getAllUrl: '/nodes',
+    getByIdentifierUrl: '/nodes/',
 }
 
 export const NODE_TYPE_MAP = {

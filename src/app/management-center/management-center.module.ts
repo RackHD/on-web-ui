@@ -16,7 +16,9 @@ import { SkuComponent } from './sku/sku.component';
 import { FilesComponent } from './files/files.component';
 import { TemplatesComponent } from './templates/templates.component';
 import { ConfigComponent } from './config/config.component';
-import { ManagementCenterServicesModule } from './services/management-center-service.module'
+import { ManagementCenterServicesModule } from './services/management-center-service.module';
+import { RackhdCommonServicesModule } from 'app/services/rackhd-common/rackhd-common.module';
+
 // the dependent services of ManagementCenter
 
 @NgModule({

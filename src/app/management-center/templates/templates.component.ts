@@ -133,7 +133,7 @@ export class TemplatesComponent implements OnInit {
     //TODO: Add more details on progress
     //TODO: And use sync mode instead of async mode
     //TODO: Add support on multiple files upload support
-    this.templateService.upload(existingFilename || file.name, file)
+    this.templateService.upload(file, existingFilename || file.name)
     this.selectedTemplate = null;
     this.onRefresh();
   }

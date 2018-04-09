@@ -15,8 +15,8 @@ export class Poller {
 }
 
 export const POLLER_URL = {
-    pollers: '/pollers',
-    pollersById: '/pollers/',
+    getAllUrl: '/pollers',
+    getByIdentifierUrl: '/pollers/',
     data: '/data/current'
 }
 

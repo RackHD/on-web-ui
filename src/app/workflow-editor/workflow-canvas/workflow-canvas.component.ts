@@ -2,7 +2,8 @@ import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
 import { JSONEditor } from '../../utils/json-editor';
 
 import * as _ from 'lodash';
-import { WorkflowService } from 'app/operations-center/services/workflow.service';
+import { WorkflowService } from 'app/services/rackhd/workflow.service';
+import { GraphService } from 'app/services/rackhd/graph.service';
 import { Subject } from 'rxjs';
 
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -25,8 +26,10 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   workflows: any;
   inputValue: any;
 
-  constructor(public workflowService: WorkflowService) {
-  }
+  constructor(
+    public workflowService: WorkflowService,
+    public graphService: GraphService
+  ) {}
 
   clearInput() {
     this.inputValue = null;
@@ -65,7 +68,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.selectWorkflow = this.workflowService.getInitWorkflow();
+    this.selectWorkflow = this.graphService.getInitGraph();
     let container = document.getElementById('jsoneditor');
     let canvas = document.getElementById('mycanvas');
 
@@ -92,7 +95,8 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   getworkflowStore() {
-    this.workflowService.getWorkflow().subscribe(graphs => {
+    this.graphService.getAll()
+    .subscribe(graphs => {
       this.workflowStore = graphs;
     });
   }
@@ -109,7 +113,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   saveWorkflow() {
     this.selectWorkflow = this.editor.get();
-    this.workflowService.putGraph(JSON.stringify(this.selectWorkflow))
+    this.graphService.createGraph(JSON.stringify(this.selectWorkflow))
       .subscribe();
   }
 
