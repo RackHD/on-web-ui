@@ -11,6 +11,7 @@ import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 import 'rxjs/add/operator/delay';
+import 'rxjs/add/observable/forkJoin';
 import { RackhdLocalStorage as RackHD } from './globals-util';
 import * as _ from 'lodash';
 
@@ -94,6 +95,14 @@ export class RackhdHttpService {
     let options = RackhdHttpService.createOptions(responseType);
     let url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier;
     return this.http.delete<any>(url, options);
+  }
+
+  public deleteByIdentifiers(idList: string [], responseType?: string): Observable<any>{
+    let list = [];
+    _.forEach(idList, id => {
+      list.push(this.delete(id, responseType));
+    });
+    return Observable.forkJoin(list);
   }
 
   public upload(file: File, identifier?: string, method?: string): any {

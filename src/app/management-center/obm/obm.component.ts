@@ -7,7 +7,6 @@ import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/u
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin'
 import { ObmService } from 'app/services/rackhd/obm.service';
 import { NodeService } from 'app/services/rackhd/node.service';
 import * as _ from 'lodash';
@@ -183,10 +182,10 @@ export class ObmComponent implements OnInit {
   delete(): void {
     let list = [];
     _.forEach(this.selectedObms, obm => {
-      list.push(this.obmsService.delete(obm.id));
+      list.push(obm.id);
     });
 
-    Observable.forkJoin(list)
+    this.obmsService.deleteByIdentifiers(list)
     .subscribe(results =>{
       this.refreshDatagrid();
     });

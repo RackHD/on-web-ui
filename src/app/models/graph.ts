@@ -10,6 +10,5 @@ export class Graph {
 
 export const GRAPH_URL = {
     getAllUrl: '/workflows/graphs',
-    patchUrl: '/workflows/graphs',
     getByIdentifierUrl: '/workflows/graphs/',
 }

@@ -5,7 +5,6 @@ import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/u
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin'
 import * as _ from 'lodash';
 import { SkusService } from 'app/services/rackhd/sku.service';
 
@@ -166,10 +165,10 @@ export class SkuComponent implements OnInit {
   delete(): void {
     let list = [];
     _.forEach(this.selectedSkus, sku => {
-      list.push(this.skusService.delete(sku.id));
+      list.push(sku.id);
     });
 
-    Observable.forkJoin(list)
+    this.skusService.deleteByIdentifiers(list)
     .subscribe(results =>{
       this.refreshDatagrid();
     });

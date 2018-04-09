@@ -5,7 +5,6 @@ import { Comparator, StringFilter } from "@clr/angular";
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
 import * as _ from 'lodash';
 
 import { NodeService } from 'app/services/rackhd/node.service';
@@ -200,10 +199,10 @@ export class NodesComponent implements OnInit {
   delete(): void {
     let list = [];
     _.forEach(this.selectedNodes, node => {
-      list.push(this.nodeService.delete(node.id));
+      list.push(node.id);
     });
 
-    Observable.forkJoin(list)
+    this.nodeService.deleteByIdentifiers(list)
     .subscribe(results =>{
       this.refreshDatagrid();
     });

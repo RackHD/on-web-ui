@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse, HttpResponse, HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/timeout';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 import { Poller, POLLER_URL } from 'app/models';
@@ -22,16 +23,5 @@ export class PollersService extends RackhdHttpService {
 
   public getLatestData(id: string): Observable<any> {
     return this.getByIdentifier(id, 'json', POLLER_URL.data);
-  }
-
-  public deletePollers(pollers: Poller[]): Array<Observable<Object>> {
-    let obsList: Array<Observable<Object>> = [];
-    for (let entry of pollers) {
-      let url = RackHD.getBaseUrl() + POLLER_URL.getByIdentifierUrl + entry.id;
-      let response = this.http.delete<Object>(url,
-        { headers: { 'Content-Type': 'application/json' } });
-      obsList.push(response);
-    }
-    return obsList;
   }
 }

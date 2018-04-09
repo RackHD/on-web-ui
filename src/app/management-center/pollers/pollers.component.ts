@@ -6,7 +6,6 @@ import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperat
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin'
 import { PollersService } from 'app/services/rackhd/pollers.service';
 import { NodeService } from 'app/services/rackhd/node.service';
 import * as _ from 'lodash';
@@ -84,19 +83,23 @@ export class PollersComponent implements OnInit {
   searchIterm(term: string): void {
     const datas = _.cloneDeep(this.dataStore);
     this.dgDataLoading = true;
-    this.allPollers = StringOperator.search(term, this.dataStore); 
+    this.allPollers = StringOperator.search(term, this.dataStore);
     this.dgDataLoading = false;
   }
 
   getAllPollers(): void {
     this.allPollers = new Array();
     this.pollersService.getAll()
-      .subscribe(data => {
-        this.dataStore = data;
-        for (let poller of data) {
-          this.getLatestData(poller);
-        }
-      });
+    .subscribe(data => {
+      if(_.isEmpty(data)) {
+        this.dgDataLoading = false;
+        return null;
+      }
+      this.dataStore = data;
+      for (let poller of data) {
+        this.getLatestData(poller);
+      }
+    });
   }
 
   goToDetail(poller: Poller) {
@@ -143,7 +146,6 @@ export class PollersComponent implements OnInit {
     let postData = JSON.stringify(jsonData);
     this.pollersService.patchByIdentifier(this.updatePoller.id, postData)
     .subscribe(data => {
-      console.log(data);
       this.refreshDatagrid();
     });
   }
@@ -207,10 +209,10 @@ export class PollersComponent implements OnInit {
   delete(): void {
     let list = [];
     _.forEach(this.selectedPollers, poller => {
-      list.push(this.pollersService.delete(poller.id));
+      list.push(poller.id);
     });
 
-    Observable.forkJoin(list)
+    this.pollersService.deleteByIdentifiers(list)
     .subscribe(results =>{
       this.refreshDatagrid();
     });
