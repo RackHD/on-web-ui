@@ -31,12 +31,12 @@
         </clr-dg-column>
         <clr-dg-column [clrDgSortBy]="nameComparator">
           <ng-container *clrDgHideableColumn="{hidden: false}">Name</ng-container>
-          <clr-dg-string-filter [(clrFilterValue)]="nameFilterValue" [clrDgStringFilter]="nameFilter">
+          <clr-dg-string-filter [clrDgStringFilter]="nameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
         <clr-dg-column [clrDgSortBy]="discoveryGraphNameComparator">
           <ng-container *clrDgHideableColumn="{hidden: false}">DiscoveryGraphName</ng-container>
-          <clr-dg-string-filter [(clrFilterValue)]="discoveryGraphNameFilterValue" [clrDgStringFilter]="discoveryGraphNameFilter">
+          <clr-dg-string-filter [clrDgStringFilter]="discoveryGraphNameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
         <clr-dg-column>

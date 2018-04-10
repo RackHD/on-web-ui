@@ -43,9 +43,26 @@ export class HistoryWorkflowComponent implements OnInit {
 
   // data grid helper
   dgDataLoading = false;
-  dgPlaceholder = 'No history workflow found!'
+  dgPlaceholder = 'No history workflow found!';
   
   modalTypes: ModalTypes;
+
+  idFilter: any;
+  instanceIdFilter: any;
+  nodeFilter: any;
+  nameFilter: any; 
+  injectableNameFilter: any; 
+  domainFilter: any; 
+  defintionFilter: any; 
+  contextFilter: any; 
+  tasksFilter: any; 
+  statusFilter: any;
+
+  nodeComparator: any; 
+  nameComparator: any;
+  injectableNameComparator: any;
+  domainComparator: any;
+  statusComparator: any;
 
   constructor(
     private workflowService: WorkflowService,

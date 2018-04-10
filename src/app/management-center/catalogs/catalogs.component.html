@@ -23,17 +23,17 @@
       <clr-datagrid [clrDgLoading]="dgDataLoading">
         <clr-dg-column [clrDgSortBy]="idComparator">
           <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
-          <clr-dg-string-filter [(clrFilterValue)]="idFilterValue" [clrDgStringFilter]="idFilter">
+          <clr-dg-string-filter [clrDgStringFilter]="idFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
         <clr-dg-column [clrDgSortBy]="nodeComparator">
           <ng-container *clrDgHideableColumn="{hidden: false}">Node</ng-container>
-          <clr-dg-string-filter [(clrFilterValue)]="nodeFilterValue" [clrDgStringFilter]="nodeFilter">
+          <clr-dg-string-filter [clrDgStringFilter]="nodeFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
         <clr-dg-column [clrDgSortBy]="sourceComparator">
           <ng-container *clrDgHideableColumn="{hidden: false}">Source</ng-container>
-          <clr-dg-string-filter [(clrFilterValue)]="sourceFilterValue" [clrDgStringFilter]="sourceFilter">
+          <clr-dg-string-filter [clrDgStringFilter]="sourceFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
         <clr-dg-column [clrDgSortBy]="createTimeComparator">
