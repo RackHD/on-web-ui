@@ -8,12 +8,14 @@ import { ManagementCenterServicesModule } from '../management-center/services/ma
 import { ActiveWorkflowComponent } from './active-workflow/active-workflow.component';
 import { HistoryWorkflowComponent } from './history-workflow/history-workflow.component';
 import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.component';
+import { RunWorkflowComponent } from './run-workflow/run-workflow.component';
 
 import { OperationsCenterComponent } from './operations-center.component';
 import { OperationsCenterRoutingModule } from './operations-center-routing.module';
 
 import { CanvasGraphModule } from 'app/canvas-graph/canvas-graph.module';
 import { InventoryModule } from 'app/inventory/inventory.module';
+// import { SharedServicesModule } from '../services/sharedServices.module';
 
 @NgModule({
   imports: [
@@ -31,6 +33,7 @@ import { InventoryModule } from 'app/inventory/inventory.module';
     ActiveWorkflowComponent,
     HistoryWorkflowComponent,
     WorkflowViewerComponent,
+    RunWorkflowComponent,
   ],
   providers: []
 })
