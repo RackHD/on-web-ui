@@ -1,14 +1,15 @@
-
+import { ClarityModule } from '@clr/angular';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ClarityModule } from '@clr/angular';
 import { CommonModule } from '@angular/common';
 
 import { InventoryFooterComponent } from './footer/footer.component';
+import { InventoryHeaderComponent } from './header/header.component';
 
 
 @NgModule({
   imports: [
+    ClarityModule.forChild(),
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
@@ -16,9 +17,11 @@ import { InventoryFooterComponent } from './footer/footer.component';
   ],
   exports: [
     InventoryFooterComponent,
+    InventoryHeaderComponent,
   ],
   declarations: [
     InventoryFooterComponent,
+    InventoryHeaderComponent,
   ]
 })
 export class InventoryModule {}

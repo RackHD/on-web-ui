@@ -3,11 +3,11 @@ import { Comparator, StringFilter } from "@clr/angular";
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../../utils/inventory-operator';
+import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from 'app/utils/inventory-operator';
 import * as _ from 'lodash';
 
-import { ProfileService } from '../services/profile.service';
-import { Profile } from '../../models';
+import { ProfileService } from 'app/management-center/services/profile.service';
+import { Profile } from 'app/models';
 
 @Component({
   selector: 'app-profiles',
@@ -27,7 +27,6 @@ export class ProfilesComponent implements OnInit {
   rawData: string;
 
   // data grid helper
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No profile found!'
 
@@ -41,17 +40,7 @@ export class ProfilesComponent implements OnInit {
 
   ngOnInit() {
     this.getAll();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchProfile(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
-
 
   getAll(): void {
     this.profileService.getAll()
@@ -78,24 +67,29 @@ export class ProfilesComponent implements OnInit {
     })
   }
 
-  searchProfile(term: string){
-    this.dgDataLoading = true;
-    this.profilesStore = StringOperator.search(term, this.allProfiles);
-    this.dgDataLoading = false;
+  onFilter(filtered){
+    this.profilesStore = filtered;
   }
 
-  onSearch(term: string): void {
-    this.searchTerms.next(term);
-  }
-
-  onRefresh() {
+  refresh() {
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  onCreate(){
+  create(){
     this.action = "Upload";
     this.isShowModal = true;
+  }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.create();
+        break;
+    };
   }
 
   onUpdate(profile: Profile){
@@ -129,7 +123,7 @@ export class ProfilesComponent implements OnInit {
     //TODO: Add support on multiple files upload support
     this.profileService.upload(file, existingFilename || file.name)
     this.selectedProfile = null;
-    this.onRefresh();
+    this.refresh();
   }
 
 }

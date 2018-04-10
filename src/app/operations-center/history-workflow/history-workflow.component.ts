@@ -35,8 +35,6 @@ export class HistoryWorkflowComponent implements OnInit {
   isShowModal: boolean;
   rawData: string;
 
-  searchTerms = new Subject<string>();
-
   selectedStatus: string;
   statusCountMatrix: {};
   statusFilterValue: string;
@@ -87,15 +85,6 @@ export class HistoryWorkflowComponent implements OnInit {
     );
     this.isShowModal = false;
     this.getAll();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchWorkflow(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
   getAll(): void {
@@ -140,18 +129,12 @@ export class HistoryWorkflowComponent implements OnInit {
     });
     return Promise.all(promises)
     .then(() => {
-      this.onRefresh();
+      this.refresh();
       this.isShowModal = false;
     });
   }
 
   //getRawData(identifier: string): void {}
-
-  searchWorkflow(term: string){
-    this.dgDataLoading = true;
-    this.workflowsStore = StringOperator.search(term,this.allWorkflows);
-    this.dgDataLoading = false;
-  }
 
   getHttpMethod(){
   }
@@ -175,18 +158,33 @@ export class HistoryWorkflowComponent implements OnInit {
     )
   }
 
-  onRefresh() {
+  refresh() {
     this.isShowModal = false;
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  onBatchDelete() {
+  batchDelete() {
     if (!_.isEmpty(this.selectedWorkflows)){
       this.action = "Delete";
       this.isShowModal = true;
     }
   };
+
+  onFilter(filtered: Workflow[]){
+    this.workflowsStore = filtered;
+  }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Delete':
+        this.batchDelete();
+        break;
+    };
+  }
 
   onDelete(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
@@ -208,10 +206,6 @@ export class HistoryWorkflowComponent implements OnInit {
   };
 
   // onCreate(){}
-
-  onSearch(term: string): void {
-    this.searchTerms.next(term);
-  }
 
   // onUpdate(workflow: Workflow){}
 

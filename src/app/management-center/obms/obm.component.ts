@@ -17,8 +17,8 @@ import * as _ from 'lodash';
   styleUrls: ['./obm.component.scss']
 })
 export class ObmComponent implements OnInit {
-  allObms: OBM[];
-  dataStore: OBM[] = [];
+  obmStore: OBM[];
+  allObms: OBM[] = [];
 
   selectedObm: OBM[];
   isShowDetail: boolean;
@@ -26,7 +26,6 @@ export class ObmComponent implements OnInit {
   rawData: string;
   isShowModal: boolean;
 
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
 
@@ -56,30 +55,31 @@ export class ObmComponent implements OnInit {
     this.getAllNodes();
     this.createForm();
     this.selectedObms = [];
-
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchIterm(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
-  searchIterm(term: string): void {
-    const obmStore = _.cloneDeep(this.dataStore);
-    this.dgDataLoading = true;
-    this.allObms = StringOperator.search(term, obmStore);
-    this.dgDataLoading = false;
+  onFilter(filtered): void {
+    this.obmStore = filtered;
+  }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.isCreateObm = true;
+        break;
+      case 'Delete':
+        this.batchDelete();
+        break;
+    };
   }
 
   getAllObms(): void {
     this.obmsService.getAll()
       .subscribe(data => {
+        this.obmStore = data;
         this.allObms = data;
-        this.dataStore = data;
         this.dgDataLoading = false;
       });
   }
@@ -126,24 +126,17 @@ export class ObmComponent implements OnInit {
     this.isUpdate = true;
   }
 
-  willDelete(obm?: OBM): void {
+  batchDelete(obm?: OBM): void {
     if (obm) {
       this.selectedObms = [obm];
     }
     this.isDelete = true;
   }
 
-  willCreateObm(): void {
-    this.isCreateObm = true;
-  }
 
-  refreshDatagrid() {
+  refresh() {
     this.dgDataLoading = true;
     this.getAllObms();
-  }
-
-  search(term: string): void {
-    this.searchTerms.next(term);
   }
 
   createObm(): void {
@@ -164,7 +157,7 @@ export class ObmComponent implements OnInit {
 
     this.obmsService.creatObm(jsonData)
       .subscribe(data => {
-        this.refreshDatagrid();
+        this.refresh();
       });
   }
 
@@ -182,7 +175,7 @@ export class ObmComponent implements OnInit {
 
     this.obmsService.deleteByIdentifiers(list)
     .subscribe(results =>{
-      this.refreshDatagrid();
+      this.refresh();
     });
   }
 }

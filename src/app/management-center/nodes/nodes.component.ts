@@ -26,8 +26,8 @@ import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperat
   encapsulation: ViewEncapsulation.None
 })
 export class NodesComponent implements OnInit {
+  nodeStore: Node[] = [];
   allNodes: Node[] = [];
-  dataStore: Node[] = [];
 
   nodeTypes: NodeType[];
   nodesTypeCountMatrix = {};
@@ -51,8 +51,6 @@ export class NodesComponent implements OnInit {
   isDelete: boolean;
   nodeForm: FormGroup;
 
-  // data grid helper
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!'
 
@@ -79,7 +77,7 @@ export class NodesComponent implements OnInit {
     public nodeService: NodeService,
     public obmService: ObmService,
     public ibmService: IbmService,
-    public skuService: SkusService, 
+    public skuService: SkusService,
     private fb: FormBuilder) {
   }
 
@@ -97,46 +95,15 @@ export class NodesComponent implements OnInit {
               result.push(dt);
             }
           }, []);
-        // this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
-          // let type = params.get('type');
-          // if (type) {
-            // let dt = new NodeType();
-            // dt.identifier = type;
-            // dt.displayName = NODE_TYPE_MAP[type];
-            // this.selectType(dt);
-          // }
-        // });
       }
     );
-
     this.selectedNodes = [];
-
-    // get all nodes directly or concat all nodes of different types
     this.getAllNodes();
     this.createForm();
-
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchIterm(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
-  }
-
-  search(term: string): void {
-    this.searchTerms.next(term);
-  }
-
-  refreshDatagrid() {
-    this.dgDataLoading = true;
-    this.getAllNodes();
   }
 
   afterGetNodes() {
-    this.nodesTypeCountMatrix = _.transform(this.allNodes, (result, item) => {
+    this.nodesTypeCountMatrix = _.transform(this.nodeStore, (result, item) => {
       let type = item.type;
       if (!_.has(NODE_TYPE_MAP, type)) {
         type = 'other';
@@ -148,22 +115,31 @@ export class NodesComponent implements OnInit {
   getAllNodes(): void {
     this.nodeService.getAll()
       .subscribe(data => {
+        this.nodeStore = data;
         this.allNodes = data;
-        this.dataStore = data;
         this.dgDataLoading = false;
         this.afterGetNodes();
       });
   }
 
-  willCreateNode(): void {
+  create(): void {
     this.isCreateNode = true;
   }
 
-  willDelete(node?: Node): void {
-    if (node) {
-      this.selectedNodes = [node];
+  batchDelete(node?: Node): void {
+    if (!_.isEmpty(this.selectedNodes)) {
+      this.isDelete = true;
     }
+  }
+
+  willDelete(node: Node): void {
+    this.selectedNodes = [node];
     this.isDelete = true;
+  }
+
+  refresh() {
+    this.dgDataLoading = true;
+    this.getAllNodes();
   }
 
   createForm() {
@@ -187,7 +163,7 @@ export class NodesComponent implements OnInit {
     // let postData = JSON.stringify(jsonData);
     this.nodeService.post(jsonData)
       .subscribe(data => {
-        this.refreshDatagrid();
+        this.refresh();
       });
   }
 
@@ -199,14 +175,26 @@ export class NodesComponent implements OnInit {
 
     this.nodeService.deleteByIdentifiers(list)
     .subscribe(results =>{
-      this.refreshDatagrid();
+      this.refresh();
     });
   }
 
-  searchIterm(term: string): void {
-    this.dgDataLoading = true;
-    this.allNodes = StringOperator.search(term, this.dataStore);
-    this.dgDataLoading = false;
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.create();
+        break;
+      case 'Delete':
+        this.batchDelete();
+        break;
+    };
+  }
+
+  onFilter(filtered) {
+    this.nodeStore = filtered;
     this.afterGetNodes();
   }
 

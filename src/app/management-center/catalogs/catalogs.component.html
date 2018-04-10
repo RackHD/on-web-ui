@@ -1,75 +1,62 @@
 <div class="app-catalogs">
 
-  <h5 class='header-text'>
-    <strong>Catalogue Grid</strong>
-  </h5>
+  <inventory-header [allItems]="allCatalogs"
+    [isDeleteRequired]="false" [isCreateRequired]="false" [name]="'Catalog'"
+    (action)="onAction($event)" (filter)="onFilter($event)">
+  </inventory-header>
 
-  <div class="row">
+  <div class="inventory">
+    <clr-datagrid [clrDgLoading]="dgDataLoading">
+      <clr-dg-column [clrDgSortBy]="idComparator">
+        <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
+        <clr-dg-string-filter [clrDgStringFilter]="idFilter">
+        </clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="nodeComparator">
+        <ng-container *clrDgHideableColumn="{hidden: false}">Node</ng-container>
+        <clr-dg-string-filter [clrDgStringFilter]="nodeFilter">
+        </clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="sourceComparator">
+        <ng-container *clrDgHideableColumn="{hidden: false}">Source</ng-container>
+        <clr-dg-string-filter [clrDgStringFilter]="sourceFilter">
+        </clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="createTimeComparator">
+        <ng-container *clrDgHideableColumn="{hidden: false}">CreatedAt</ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="updateTimeComparator">
+        <ng-container *clrDgHideableColumn="{hidden: false}">UpdatedAt</ng-container>
+      </clr-dg-column>
 
-    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
-      <div class="search">
-        <label for="search_box">
-          <clr-icon shape="search"></clr-icon>
-        </label>
-        <input #searchBox type="text" id="search_box" placeholder="" (keyup)="search(searchBox.value)">
+      <clr-dg-row *clrDgItems="let catalog of catalogsStore" [clrDgItem]="catalog">
+        <clr-dg-cell >{{catalog.id}}</clr-dg-cell>
+        <clr-dg-cell >{{catalog.node.split('/')[4]}}</clr-dg-cell>
+        <clr-dg-cell >{{catalog.source}}</clr-dg-cell>
+        <clr-dg-cell >{{catalog.createdAt}}</clr-dg-cell>
+        <clr-dg-cell >{{catalog.updatedAt}}</clr-dg-cell>
+        <clr-dg-action-overflow>
+            <button class="action-item" (click)="goToDetail(catalog)">Details</button>
+          </clr-dg-action-overflow>
+      </clr-dg-row>
+      <clr-dg-footer>
+        <inventory-footer></inventory-footer>
+      </clr-dg-footer>
+    </clr-datagrid>
+
+    <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
+      <h3 class="modal-title">Details of the source info</h3>
+      <div class="modal-body">
+        <pre>{{selectedCatalog | json}}</pre>
       </div>
+    </clr-modal>
 
-      <button class="btn btn-icon refresh" (click)="refreshDatagrid()" title='Refresh'>
-        <clr-icon shape="refresh"></clr-icon>
-      </button>
-    </div>
-
-    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
-      <clr-datagrid [clrDgLoading]="dgDataLoading">
-        <clr-dg-column [clrDgSortBy]="idComparator">
-          <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
-          <clr-dg-string-filter [clrDgStringFilter]="idFilter">
-          </clr-dg-string-filter>
-        </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nodeComparator">
-          <ng-container *clrDgHideableColumn="{hidden: false}">Node</ng-container>
-          <clr-dg-string-filter [clrDgStringFilter]="nodeFilter">
-          </clr-dg-string-filter>
-        </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="sourceComparator">
-          <ng-container *clrDgHideableColumn="{hidden: false}">Source</ng-container>
-          <clr-dg-string-filter [clrDgStringFilter]="sourceFilter">
-          </clr-dg-string-filter>
-        </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="createTimeComparator">
-          <ng-container *clrDgHideableColumn="{hidden: false}">CreatedAt</ng-container>
-        </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="updateTimeComparator">
-          <ng-container *clrDgHideableColumn="{hidden: false}">UpdatedAt</ng-container>
-        </clr-dg-column>
-
-        <clr-dg-row *clrDgItems="let catalog of allCatalogs" [clrDgItem]="catalog">
-          <clr-dg-cell >{{catalog.id}}</clr-dg-cell>
-          <clr-dg-cell >{{catalog.node.split('/')[4]}}</clr-dg-cell>
-          <clr-dg-cell >{{catalog.source}}</clr-dg-cell>
-          <clr-dg-cell >{{catalog.createdAt}}</clr-dg-cell>
-          <clr-dg-cell >{{catalog.updatedAt}}</clr-dg-cell>
-          <clr-dg-action-overflow>
-              <button class="action-item" (click)="goToDetail(catalog)">Details</button>
-            </clr-dg-action-overflow>
-        </clr-dg-row>
-        <clr-dg-footer>
-          <inventory-footer></inventory-footer>
-        </clr-dg-footer>
-      </clr-datagrid>
-      <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
-        <h3 class="modal-title">Details of the source info</h3>
+    <clr-modal [(clrModalOpen)]="isShowData" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Data of the source {{specCatalog['source']}} </h3>
         <div class="modal-body">
-          <pre>{{selectedCatalog | json}}</pre>
+          <pre>{{specCatalog['data'] | json}}</pre>
         </div>
-      </clr-modal>
-
-      <clr-modal [(clrModalOpen)]="isShowData" [clrModalSize]="'lg'">
-          <h3 class="modal-title">Data of the source {{specCatalog['source']}} </h3>
-          <div class="modal-body">
-            <pre>{{specCatalog['data'] | json}}</pre>
-          </div>
-      </clr-modal>
-    </div>
+    </clr-modal>
   </div>
+
 </div>

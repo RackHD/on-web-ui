@@ -1,85 +1,68 @@
 <div class="profile-app">
 
-  <h5 class="header-text">
-    <strong>Profile Grid</strong>
-  </h5>
+  <inventory-header [allItems]="allProfiles" [name]="'Profile'"
+    [isDeleteRequired]="false"
+    (action)="onAction($event)" (filter)="onFilter($event)">
+  </inventory-header>
 
-  <div class="row">
+  <div class="inventory">
+    <clr-datagrid [clrDgLoading]="dgDataLoading">
+      <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
+      <clr-dg-column>ID
+        <clr-dg-string-filter [clrDgStringFilter]="idFilter">
+        </clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="nameComparator">Name
+        <clr-dg-string-filter [clrDgStringFilter]="nameFilter">
+        </clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="scopeComparator">Scope
+        <clr-dg-string-filter [clrDgStringFilter]="scopeFilter">
+        </clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column>Hash</clr-dg-column>
 
-    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 header-button">
-      <div class="search">
-        <label for="search_box">
-          <clr-icon shape="search"></clr-icon>
-        </label>
-        <input #searchBox type="text" id="search_box" placeholder="" (keyup)="onSearch(searchBox.value)">
+      <clr-dg-row *clrDgItems="let profile of profilesStore" [clrDgItem]="profile">
+        <clr-dg-action-overflow>
+          <button class="action-item" (click)="onUpdate(profile)">Update</button>
+          <button class="action-item" (click)="onGetDetails(profile)">Metadata</button>
+          <button class="action-item" (click)="onGetRawData(profile)">Rawdata</button>
+        </clr-dg-action-overflow>
+        <clr-dg-cell >{{profile.id}}</clr-dg-cell>
+        <clr-dg-cell>{{profile.name}}</clr-dg-cell>
+        <clr-dg-cell>{{profile.scope}}</clr-dg-cell>
+        <clr-dg-cell>{{profile.hash}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>
+      <inventory-footer></inventory-footer>
+      </clr-dg-footer>
+    </clr-datagrid>
+
+    <clr-modal
+      *ngIf="action === 'Meta' || action === 'Raw'"
+      [(clrModalOpen)]="isShowModal"
+      [clrModalSize]="'xl'">
+      <h3 class="modal-title">{{action}} data of {{selectedProfile.name}}</h3>
+      <div class="modal-body">
+        <pre *ngIf="action === 'Meta'">{{rawData | json}}</pre>
+        <pre *ngIf="action === 'Raw'">{{rawData}}</pre>
       </div>
-      <button type="button" class="btn btn-icon refresh" (click)="onRefresh()" title="Refresh">
-        <clr-icon shape="refresh"></clr-icon>
-      </button>
-      <button class="btn btn-icon create" (click)="onCreate()" title="Add">
-        <clr-icon shape="add"></clr-icon>
-      </button>
-    </div>
+    </clr-modal>
 
-    <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
-      <clr-datagrid [clrDgLoading]="dgDataLoading">
-        <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-        <clr-dg-column>ID
-          <clr-dg-string-filter [clrDgStringFilter]="idFilter">
-          </clr-dg-string-filter>
-        </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nameComparator">Name
-          <clr-dg-string-filter [clrDgStringFilter]="nameFilter">
-          </clr-dg-string-filter>
-        </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="scopeComparator">Scope
-          <clr-dg-string-filter [clrDgStringFilter]="scopeFilter">
-          </clr-dg-string-filter>
-        </clr-dg-column>
-        <clr-dg-column>Hash</clr-dg-column>
-
-        <clr-dg-row *clrDgItems="let profile of profilesStore" [clrDgItem]="profile">
-          <clr-dg-action-overflow>
-            <button class="action-item" (click)="onUpdate(profile)">Update</button>
-            <button class="action-item" (click)="onGetDetails(profile)">Metadata</button>
-            <button class="action-item" (click)="onGetRawData(profile)">Rawdata</button>
-          </clr-dg-action-overflow>
-          <clr-dg-cell >{{profile.id}}</clr-dg-cell>
-          <clr-dg-cell>{{profile.name}}</clr-dg-cell>
-          <clr-dg-cell>{{profile.scope}}</clr-dg-cell>
-          <clr-dg-cell>{{profile.hash}}</clr-dg-cell>
-        </clr-dg-row>
-
-        <clr-dg-footer>
-        <inventory-footer></inventory-footer>
-        </clr-dg-footer>
-      </clr-datagrid>
-
-      <clr-modal
-        *ngIf="action === 'Meta' || action === 'Raw'"
-        [(clrModalOpen)]="isShowModal"
-        [clrModalSize]="'xl'">
-        <h3 class="modal-title">{{action}} data of {{selectedProfile.name}}</h3>
-        <div class="modal-body">
-          <pre *ngIf="action === 'Meta'">{{rawData | json}}</pre>
-          <pre *ngIf="action === 'Raw'">{{rawData}}</pre>
-        </div>
-      </clr-modal>
-
-      <clr-modal
-        *ngIf="action === 'Upload' || action === 'Update'"
-        [(clrModalOpen)]="isShowModal"
-        [clrModalSize]="'xl'">
-        <h3 class="modal-title">{{action}} profile to RackHD</h3>
-        <div class="modal-body">
-          <label for="fileInput">Choose File</label>
-          <input type="file" (change)="onChange($event)" id="fileInput">
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" type="button" (click)="onCreateSubmit()">Upload</button>
-        </div>
-      </clr-modal>
-    </div>
-
+    <clr-modal
+      *ngIf="action === 'Upload' || action === 'Update'"
+      [(clrModalOpen)]="isShowModal"
+      [clrModalSize]="'xl'">
+      <h3 class="modal-title">{{action}} profile to RackHD</h3>
+      <div class="modal-body">
+        <label for="fileInput">Choose File</label>
+        <input type="file" (change)="onChange($event)" id="fileInput">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" (click)="onCreateSubmit()">Upload</button>
+      </div>
+    </clr-modal>
   </div>
+
 </div>
