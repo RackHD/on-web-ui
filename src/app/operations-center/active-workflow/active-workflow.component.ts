@@ -41,17 +41,31 @@ export class ActiveWorkflowComponent implements OnInit {
   // data grid helper
   searchTerms = new Subject<string>();
   dgDataLoading = false;
-  dgPlaceholder = 'No active workflow found!'
+  dgPlaceholder = 'No active workflow found!';
 
   modalTypes: ModalTypes;
+
+  idFilter: any;
+  instanceIdFilter: any;
+  nodeFilter: any;
+  nameFilter: any; 
+  injectableNameFilter: any; 
+  domainFilter: any; 
+  defintionFilter: any; 
+  contextFilter: any; 
+  tasksFilter: any; 
+  statusFilter: any;
+
+  nodeComparator: any; 
+  nameComparator: any;
+  injectableNameComparator: any;
+  domainComparator: any;
 
   constructor(
     private workflowService: WorkflowService,
     private graphService: GraphService,
     private router: Router
-  ){}
-
-  ngOnInit() {
+  ){
     createFilters(
       this,
       [
@@ -61,6 +75,9 @@ export class ActiveWorkflowComponent implements OnInit {
       new Workflow()
     );
     createComparator(this, ["node", "name", "injectableName", "domain"], new Workflow());
+  }
+
+  ngOnInit() {
     this.modalTypes = new ModalTypes(
       ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
     );
