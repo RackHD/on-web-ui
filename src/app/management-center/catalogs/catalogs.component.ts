@@ -24,7 +24,6 @@ export class CatalogsComponent implements OnInit {
   // data grid helper
   searchTerms = new Subject<string>();
   dgDataLoading = false;
-  selectedPageSize = '15';
 
   constructor(public catalogsService: CatalogsService) {
     this.specCatalog = new Catalog();
@@ -75,10 +74,6 @@ export class CatalogsComponent implements OnInit {
   goToShowData(catalog: Catalog) {
     this.specCatalog = catalog;
     this.isShowData = true;
-  }
-
-  get dgPageSize() {
-    return +this.selectedPageSize;
   }
 
   search(term: string): void {

@@ -41,7 +41,7 @@ export class RackhdHttpService {
 
   public getAll(query?: any, responseType?: string): Observable<any>  {
     let url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
-    let options = RackhdHttpService.createOptions(responseType);
+    let options = RackhdHttpService.createOptions(responseType, query);
     return this.http.get<any>(url, options);
   }
 

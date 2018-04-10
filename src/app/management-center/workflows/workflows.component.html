@@ -27,18 +27,22 @@
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows">
         <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-        <clr-dg-column [clrDgSortBy]="friendlyNameComparator">FriendlyName
+        <clr-dg-column [clrDgSortBy]="friendlyNameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">FriendlyName</ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="friendlyNameFilter"> </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="injectableNameComparator">InjectableName
+        <clr-dg-column [clrDgSortBy]="injectableNameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">InjectableName</ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="injectableNameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column>Options
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">Options</ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="optionsFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column >Tasks
+        <clr-dg-column >
+          <ng-container *clrDgHideableColumn="{hidden: false}">Tasks</ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="tasksFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
@@ -64,17 +68,7 @@
         </clr-dg-row>
 
         <clr-dg-footer>
-          <div class="row">
-            <label for="select_page_size">Select page size:</label>
-            <div class="select">
-              <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                <option *ngFor="let size of pageSizes">{{size}}</option>
-              </select>
-            </div>
-          </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
-          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-          </clr-dg-pagination>
+          <inventory-footer></inventory-footer>
         </clr-dg-footer>
       </clr-datagrid>
 

@@ -24,44 +24,78 @@
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows">
         <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-        <clr-dg-column>ID
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            ID
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="idFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column>InstanceID
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            InstanceID
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="instanceIdFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nodeComparator">Node
+        <clr-dg-column [clrDgSortBy]="nodeComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            Node
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="nodeFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nameComparator">Name
+        <clr-dg-column [clrDgSortBy]="nameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            Name
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="nameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="injectableNameComparator">InjectableName
+        <clr-dg-column [clrDgSortBy]="injectableNameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            InjectableName
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="injectableNameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="domainComparator">Domain
+        <clr-dg-column [clrDgSortBy]="domainComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            Domain
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="domainFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column>Definition
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            Definition
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="defintionFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column>Context
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            Context
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="contextFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column >Tasks
+        <clr-dg-column >
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            Tasks
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="tasksFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column>Service</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="statusComparator">Status
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            Service
+          </ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="statusComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">
+            Status
+          </ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="statusFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
@@ -75,10 +109,7 @@
           <clr-dg-cell>{{workflow.id}}</clr-dg-cell>
           <clr-dg-cell>
             <span>
-              {{workflow.instanceId.split('-')[0]}}
-              <clr-icon class="grid-item" shape="ellipsis-horizontal"
-                (click)="getChild('instanceId', workflow)">
-              </clr-icon>
+              {{workflow.instanceId}}
             </span>
           </clr-dg-cell>
           <clr-dg-cell>{{workflow.node}}</clr-dg-cell>
@@ -101,17 +132,7 @@
         </clr-dg-row>
 
         <clr-dg-footer>
-          <div class="row">
-            <label for="select_page_size">Select page size:</label>
-            <div class="select">
-              <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                <option *ngFor="let size of pageSizes">{{size}}</option>
-              </select>
-            </div>
-          </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
-          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-          </clr-dg-pagination>
+          <inventory-footer></inventory-footer>
         </clr-dg-footer>
 
       </clr-datagrid>
@@ -125,7 +146,7 @@
           <pre>{{rawData | json}}</pre>
         </div>
       </clr-modal>
-      
+
       <clr-modal
         *ngIf="modalTypes.alertActions.indexOf(action) != -1"
         [(clrModalOpen)]="isShowModal"
@@ -138,7 +159,6 @@
           <button class="btn btn-primary" type="button" (click)="onSubmit()">Confirm</button>
         </div>
       </clr-modal>
-
 
       <div class="selected">
         Selected Workflows:

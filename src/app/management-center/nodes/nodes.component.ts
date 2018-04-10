@@ -55,11 +55,6 @@ export class NodesComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!'
-  selectedPageSize = '15';
-
-  get dgPageSize() {
-    return +this.selectedPageSize;
-  }
 
   public nameComparator = new AlphabeticalComparator('name');
   public idComparator = new AlphabeticalComparator('id');

@@ -38,17 +38,29 @@
 
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedNodes">
-        <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="typeComparator">Type
+        <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
+        <clr-dg-column [clrDgSortBy]="idComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="typeComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Type</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="typeFilterValue" [clrDgStringFilter]="typeFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-        <clr-dg-column [clrDgSortBy]="nameComparator">Name</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="identifiersComparator">Identifiers</clr-dg-column>
-        <clr-dg-column>OBM</clr-dg-column>
-        <clr-dg-column>IBM</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="skuComparator">SKU
+        <clr-dg-column [clrDgSortBy]="nameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Name</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="identifiersComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Identifiers</ng-container>
+        </clr-dg-column>
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">OBM</ng-container>
+        </clr-dg-column>
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">IBM</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="skuComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">SKU</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="skuFilterValue" [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
         </clr-dg-column>
 
@@ -72,20 +84,7 @@
           </clr-dg-action-overflow>
         </clr-dg-row>
         <clr-dg-footer>
-          <div class="row">
-            <label for="select_page_size">Select page size:</label>
-            <div class="select">
-              <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                <option>15</option>
-                <option>20</option>
-                <option>50</option>
-                <option>100</option>
-              </select>
-            </div>
-          </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
-          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-          </clr-dg-pagination>
+          <inventory-footer></inventory-footer>
         </clr-dg-footer>
       </clr-datagrid>
 

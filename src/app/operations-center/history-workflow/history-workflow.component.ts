@@ -16,7 +16,7 @@ import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angu
 import * as _ from 'lodash';
 import { WorkflowService } from 'app/services/rackhd/workflow.service';
 import { GraphService } from 'app/services/rackhd/graph.service';
-import { Workflow, PAGE_SIZE_OPTIONS, ModalTypes, HISTORY_WORKFLOW_STATUS } from 'app/models';
+import { Workflow, ModalTypes, HISTORY_WORKFLOW_STATUS } from 'app/models';
 
 @Component({
   selector: 'app-history-workflow',
@@ -44,14 +44,8 @@ export class HistoryWorkflowComponent implements OnInit {
   // data grid helper
   dgDataLoading = false;
   dgPlaceholder = 'No history workflow found!'
-  selectedPageSize = "15";
-  pageSizes = PAGE_SIZE_OPTIONS;
-
+  
   modalTypes: ModalTypes;
-
-  get dgPageSize() {
-    return parseInt(this.selectedPageSize);
-  }
 
   constructor(
     private workflowService: WorkflowService,

@@ -26,18 +26,28 @@
 
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedSkus">
-        <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nameComparator">Name
+        <clr-dg-column [clrDgSortBy]="idComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="nameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Name</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="nameFilterValue" [clrDgStringFilter]="nameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="discoveryGraphNameComparator">DiscoveryGraphName
+        <clr-dg-column [clrDgSortBy]="discoveryGraphNameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">DiscoveryGraphName</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="discoveryGraphNameFilterValue" [clrDgStringFilter]="discoveryGraphNameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column>DiscoveryGraphOptions</clr-dg-column>
-        <clr-dg-column>Rules</clr-dg-column>
-        <clr-dg-column>SkuConfig</clr-dg-column>
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">DiscoveryGraphOptions</ng-container>
+        </clr-dg-column>
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">Rules</ng-container>
+        </clr-dg-column>
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">SkuConfig</ng-container>
+        </clr-dg-column>
 
         <clr-dg-row *clrDgItems="let sku of allSkus" [clrDgItem]="sku">
           <clr-dg-cell>{{sku.id}}</clr-dg-cell>
@@ -59,20 +69,7 @@
           </clr-dg-action-overflow>
         </clr-dg-row>
         <clr-dg-footer>
-          <div class="row">
-            <label for="select_page_size">Select page size:</label>
-            <div class="select">
-              <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                <option>15</option>
-                <option>20</option>
-                <option>50</option>
-                <option>100</option>
-              </select>
-            </div>
-          </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} allPollers
-          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-          </clr-dg-pagination>
+          <inventory-footer></inventory-footer>
         </clr-dg-footer>
       </clr-datagrid>
       <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">

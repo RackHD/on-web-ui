@@ -52,20 +52,7 @@
 
         </clr-dg-row>
         <clr-dg-footer>
-          <div class="row">
-            <label for="select_page_size">Select page size:</label>
-            <div class="select">
-              <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                <option>15</option>
-                <option>20</option>
-                <option>50</option>
-                <option>100</option>
-              </select>
-            </div>
-          </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} allObms
-          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-          </clr-dg-pagination>
+          <inventory-footer></inventory-footer>
         </clr-dg-footer>
       </clr-datagrid>
       <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">

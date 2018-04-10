@@ -27,24 +27,32 @@
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedFiles">
         <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
-        <clr-dg-column>ID
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="idFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="filenameComparator">FileName
+        <clr-dg-column [clrDgSortBy]="filenameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">FileName</ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="filenameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="basenameComparator">BaseName
+        <clr-dg-column [clrDgSortBy]="basenameComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">BaseName</ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="basenameFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="versionComparator">Version
+        <clr-dg-column [clrDgSortBy]="versionComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Version</ng-container>
           <clr-dg-string-filter [clrDgStringFilter]="versionFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column>md5</clr-dg-column>
-        <clr-dg-column>sha256</clr-dg-column>
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">md5</ng-container>
+        </clr-dg-column>
+        <clr-dg-column>
+          <ng-container *clrDgHideableColumn="{hidden: false}">sha256</ng-container>
+        </clr-dg-column>
 
         <clr-dg-row *clrDgItems="let file of filesStore" [clrDgItem]="file">
           <clr-dg-action-overflow>
@@ -62,17 +70,7 @@
         </clr-dg-row>
 
         <clr-dg-footer>
-          <div class="row">
-            <label for="select_page_size">Select page size:</label>
-            <div class="select">
-              <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                <option *ngFor="let size of pageSizes">{{size}}</option>
-              </select>
-            </div>
-          </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
-          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-          </clr-dg-pagination>
+        <inventory-footer></inventory-footer>
         </clr-dg-footer>
       </clr-datagrid>
 

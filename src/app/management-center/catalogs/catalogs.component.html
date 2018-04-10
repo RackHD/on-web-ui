@@ -21,20 +21,27 @@
 
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
       <clr-datagrid [clrDgLoading]="dgDataLoading">
-        <clr-dg-column [clrDgSortBy]="idComparator">ID
+        <clr-dg-column [clrDgSortBy]="idComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="idFilterValue" [clrDgStringFilter]="idFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nodeComparator">Node
+        <clr-dg-column [clrDgSortBy]="nodeComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Node</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="nodeFilterValue" [clrDgStringFilter]="nodeFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="sourceComparator">Source
+        <clr-dg-column [clrDgSortBy]="sourceComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Source</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="sourceFilterValue" [clrDgStringFilter]="sourceFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="createTimeComparator">CreatedAt</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="updateTimeComparator">UpdatedAt</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="createTimeComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">CreatedAt</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="updateTimeComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">UpdatedAt</ng-container>
+        </clr-dg-column>
 
         <clr-dg-row *clrDgItems="let catalog of allCatalogs" [clrDgItem]="catalog">
           <clr-dg-cell >{{catalog.id}}</clr-dg-cell>
@@ -47,20 +54,7 @@
             </clr-dg-action-overflow>
         </clr-dg-row>
         <clr-dg-footer>
-          <div class="row">
-            <label for="select_page_size">Select page size:</label>
-            <div class="select">
-              <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                <option>15</option>
-                <option>20</option>
-                <option>50</option>
-                <option>100</option>
-              </select>
-            </div>
-          </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} allCatalogs
-          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-          </clr-dg-pagination>
+          <inventory-footer></inventory-footer>
         </clr-dg-footer>
       </clr-datagrid>
       <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">

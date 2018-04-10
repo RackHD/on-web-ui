@@ -25,10 +25,8 @@
   }
 }
 
-clr-dg-footer {
-  .select {
-    margin-right: 36px;
-  }
+.selected {
+  margin-top: 10px;
 }
 
 .grid-item:hover {
@@ -36,5 +34,5 @@ clr-dg-footer {
   cursor: pointer;
 }
 .inventory {
-  margin-bottom: 4em; 
+  margin-bottom: 4em;
 }

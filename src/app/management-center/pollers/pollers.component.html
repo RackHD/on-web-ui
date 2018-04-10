@@ -26,24 +26,39 @@
 
     <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12 inventory">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedPollers">
-        <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="typeComparator">Type
+        <clr-dg-column [clrDgSortBy]="idComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="typeComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Type</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="typeFilterValue" [clrDgStringFilter]="typeFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="configComparator">Command
+        <clr-dg-column [clrDgSortBy]="configComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Command</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="configFilterValue" [clrDgStringFilter]="configFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="pollIntervalComparator">PollInterval</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="failureCountComparator">FailureCount</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="pausedComparator">Paused</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="nodeComparator">Node
+        <clr-dg-column [clrDgSortBy]="pollIntervalComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">PollInterval</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="failureCountComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">FailureCount</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="pausedComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Paused</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="nodeComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">Node</ng-container>
           <clr-dg-string-filter [(clrFilterValue)]="nodeFilterValue" [clrDgStringFilter]="nodeFilter">
           </clr-dg-string-filter>
         </clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="lastStartedComparator">LastStarted</clr-dg-column>
-        <clr-dg-column [clrDgSortBy]="lastFinishedComparator">LastFinished</clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="lastStartedComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">LastStarted</ng-container>
+        </clr-dg-column>
+        <clr-dg-column [clrDgSortBy]="lastFinishedComparator">
+          <ng-container *clrDgHideableColumn="{hidden: false}">LastFinished</ng-container>
+        </clr-dg-column>
 
         <clr-dg-row *clrDgItems="let poller of allPollers" [clrDgItem]="poller">
           <clr-dg-cell>{{poller.id}}</clr-dg-cell>
@@ -62,20 +77,7 @@
           </clr-dg-action-overflow>
         </clr-dg-row>
         <clr-dg-footer>
-          <div class="row">
-            <label for="select_page_size">Select page size:</label>
-            <div class="select">
-              <select id="select_page_size" [(ngModel)]="selectedPageSize">
-                <option>15</option>
-                <option>20</option>
-                <option>50</option>
-                <option>100</option>
-              </select>
-            </div>
-          </div>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} allPollers
-          <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-          </clr-dg-pagination>
+          <inventory-footer></inventory-footer>
         </clr-dg-footer>
       </clr-datagrid>
 

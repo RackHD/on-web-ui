@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angu
 import * as _ from 'lodash';
 
 import { ConfigService } from '../services/config.service';
-import { Config, PAGE_SIZE_OPTIONS} from '../../models';
+import { Config } from '../../models';
 
 @Component({
   selector: 'app-config',
@@ -31,16 +31,10 @@ export class ConfigComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No configure found!'
-  selectedPageSize = "15";
-  pageSizes = PAGE_SIZE_OPTIONS;
 
   public keyComparator = new AlphabeticalComparator<Config>('key');
   public keyFilter = new ObjectFilterByKey<Config>('key');
   public valueFilter = new ObjectFilterByKey<Config>('value');
-
-  get dgPageSize() {
-    return parseInt(this.selectedPageSize);
-  }
 
   constructor(private configService: ConfigService) { }
 
