@@ -44,21 +44,21 @@ export class HistoryWorkflowComponent implements OnInit {
   // data grid helper
   dgDataLoading = false;
   dgPlaceholder = 'No history workflow found!';
-  
+
   modalTypes: ModalTypes;
 
   idFilter: any;
   instanceIdFilter: any;
   nodeFilter: any;
-  nameFilter: any; 
-  injectableNameFilter: any; 
-  domainFilter: any; 
-  defintionFilter: any; 
-  contextFilter: any; 
-  tasksFilter: any; 
+  nameFilter: any;
+  injectableNameFilter: any;
+  domainFilter: any;
+  defintionFilter: any;
+  contextFilter: any;
+  tasksFilter: any;
   statusFilter: any;
 
-  nodeComparator: any; 
+  nodeComparator: any;
   nameComparator: any;
   injectableNameComparator: any;
   domainComparator: any;
@@ -162,7 +162,7 @@ export class HistoryWorkflowComponent implements OnInit {
     this.rawData = workflow && workflow[objKey];
     this.isShowModal = true;
   }
-  
+
   getDefinition(workflow: Workflow){
     this.selectedWorkflow = workflow;
     let graphName = workflow.definition.split('/').pop();

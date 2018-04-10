@@ -48,18 +48,22 @@ export class ActiveWorkflowComponent implements OnInit {
   idFilter: any;
   instanceIdFilter: any;
   nodeFilter: any;
-  nameFilter: any; 
-  injectableNameFilter: any; 
-  domainFilter: any; 
-  defintionFilter: any; 
-  contextFilter: any; 
-  tasksFilter: any; 
+  nameFilter: any;
+  injectableNameFilter: any;
+  domainFilter: any;
+  defintionFilter: any;
+  contextFilter: any;
+  tasksFilter: any;
   statusFilter: any;
 
-  nodeComparator: any; 
+  nodeComparator: any;
   nameComparator: any;
   injectableNameComparator: any;
   domainComparator: any;
+
+  dgPlaceholder = 'No active workflow found!';
+
+  modalTypes: ModalTypes;
 
   constructor(
     private workflowService: WorkflowService,
