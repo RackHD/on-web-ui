@@ -18,6 +18,7 @@ import { TemplatesComponent } from './templates/templates.component';
 import { ConfigComponent } from './config/config.component';
 import { ManagementCenterServicesModule } from './services/management-center-service.module';
 import { RackhdCommonServicesModule } from 'app/services/rackhd-common/rackhd-common.module';
+import { InventoryModule } from 'app/inventory/inventory.module';
 
 // the dependent services of ManagementCenter
 
@@ -28,7 +29,8 @@ import { RackhdCommonServicesModule } from 'app/services/rackhd-common/rackhd-co
     FormsModule,
     ReactiveFormsModule,
     ManagementCenterRoutingModule,
-    ManagementCenterServicesModule
+    ManagementCenterServicesModule,
+    InventoryModule
   ],
   declarations: [
     ManagementCenterComponent,

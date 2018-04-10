@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angu
 import * as _ from 'lodash';
 
 import { FileService } from '../services/file.service';
-import { File, PAGE_SIZE_OPTIONS } from '../../models';
+import { File } from '../../models';
 
 @Component({
   selector: 'app-files',
@@ -32,8 +32,6 @@ export class FilesComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No file found!'
-  selectedPageSize = "15";
-  pageSizes = PAGE_SIZE_OPTIONS;
 
   public versionComparator = new AlphabeticalComparator<File>('version');
   public filenameComparator = new AlphabeticalComparator<File>('filename');
@@ -42,10 +40,6 @@ export class FilesComponent implements OnInit {
   public filenameFilter = new ObjectFilterByKey<File>('filename');
   public basenameFilter = new ObjectFilterByKey<File>('basename');
   public idFilter = new ObjectFilterByKey<File>('id');
-
-  get dgPageSize() {
-    return parseInt(this.selectedPageSize);
-  }
 
   constructor(private fileService: FileService) { }
 

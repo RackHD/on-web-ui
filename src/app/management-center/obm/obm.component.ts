@@ -29,8 +29,7 @@ export class ObmComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
-  selectedPageSize = '15';
-  
+
   allNodes: Node[];
   obmForm: FormGroup;
   updateForm: FormGroup;
@@ -51,7 +50,7 @@ export class ObmComponent implements OnInit {
 
   public nodeFilter = new ObjectFilterByKey('node');
   public serviceFilter = new ObjectFilterByKey('service');
- 
+
   ngOnInit() {
     this.getAllObms();
     this.getAllNodes();
@@ -118,10 +117,6 @@ export class ObmComponent implements OnInit {
     this.action = _.capitalize(objKey);
     this.rawData = obm && obm[objKey];
     this.isShowModal = true;
-  }
-
-  get dgPageSize() {
-    return +this.selectedPageSize;
   }
 
   willUpdate(obm: OBM): void {

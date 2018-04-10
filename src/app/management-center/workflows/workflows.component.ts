@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import * as _ from 'lodash';
 
 import { GraphService } from 'app/services/rackhd/graph.service';
-import { Graph, PAGE_SIZE_OPTIONS } from 'app/models';
+import { Graph } from 'app/models';
 
 @Component({
   selector: 'app-workflows',
@@ -33,8 +33,6 @@ export class WorkflowsComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No workflow found!'
-  selectedPageSize = "15";
-  pageSizes = PAGE_SIZE_OPTIONS;
 
   public friendlyNameComparator = new AlphabeticalComparator<Graph>('friendlyName');
   public injectableNameComparator = new AlphabeticalComparator<Graph>('injectableName');
@@ -43,10 +41,6 @@ export class WorkflowsComponent implements OnInit {
   public injectableNameFilter = new ObjectFilterByKey<Graph>('injectableName');
   public optionsFilter = new ObjectFilterByKey<Graph>('options');
   public tasksFilter = new ObjectFilterByKey<Graph>('tasks');
-
-  get dgPageSize() {
-    return parseInt(this.selectedPageSize);
-  }
 
   constructor(
     private workflowService: GraphService,

@@ -7,7 +7,7 @@ import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../..
 import * as _ from 'lodash';
 
 import { ProfileService } from '../services/profile.service';
-import { Profile, PAGE_SIZE_OPTIONS } from '../../models';
+import { Profile } from '../../models';
 
 @Component({
   selector: 'app-profiles',
@@ -30,18 +30,12 @@ export class ProfilesComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No profile found!'
-  selectedPageSize = "15";
-  pageSizes = PAGE_SIZE_OPTIONS;
 
   public scopeComparator = new AlphabeticalComparator<Profile>('scope');
   public nameComparator = new AlphabeticalComparator<Profile>('name');
   public scopeFilter = new ObjectFilterByKey<Profile>('scope');
   public nameFilter = new ObjectFilterByKey<Profile>('name');
   public idFilter = new ObjectFilterByKey<Profile>('id');
-
-  get dgPageSize() {
-    return parseInt(this.selectedPageSize);
-  }
 
   constructor(private profileService: ProfileService) { }
 

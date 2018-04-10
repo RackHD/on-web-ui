@@ -35,8 +35,6 @@ export class PollersComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
-  selectedPageSize = '15';
-
 
   allNodes: Node[];
   pollerForm: FormGroup;
@@ -105,10 +103,6 @@ export class PollersComponent implements OnInit {
   goToDetail(poller: Poller) {
     this.selectedPoller = [poller];
     this.isShowDetail = true;
-  }
-
-  get dgPageSize() {
-    return +this.selectedPageSize;
   }
 
   willCreatePoller(): void {

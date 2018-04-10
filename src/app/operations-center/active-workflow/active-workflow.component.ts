@@ -13,12 +13,13 @@ import {
   createFilters,
   createComparator
 } from '../../utils/inventory-operator';
+
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
 
 import { WorkflowService } from 'app/services/rackhd/workflow.service';
 import { GraphService } from 'app/services/rackhd/graph.service';
-import { Workflow, PAGE_SIZE_OPTIONS, ModalTypes } from 'app/models';
+import { Workflow, ModalTypes } from 'app/models';
 
 @Component({
   selector: 'app-active-workflow',
@@ -41,14 +42,8 @@ export class ActiveWorkflowComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No active workflow found!'
-  selectedPageSize = "15";
-  pageSizes = PAGE_SIZE_OPTIONS;
 
   modalTypes: ModalTypes;
-
-  get dgPageSize() {
-    return parseInt(this.selectedPageSize);
-  }
 
   constructor(
     private workflowService: WorkflowService,

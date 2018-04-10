@@ -7,7 +7,7 @@ import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../..
 import * as _ from 'lodash';
 
 import { TemplateService } from '../services/template.service';
-import { Template, PAGE_SIZE_OPTIONS } from '../../models';
+import { Template } from '../../models';
 
 @Component({
   selector: 'app-templates',
@@ -30,18 +30,12 @@ export class TemplatesComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No template found!'
-  selectedPageSize = "15";
-  pageSizes = PAGE_SIZE_OPTIONS;
 
   public scopeComparator = new AlphabeticalComparator<Template>('scope');
   public nameComparator = new AlphabeticalComparator<Template>('name');
   public scopeFilter = new ObjectFilterByKey<Template>('scope');
   public nameFilter = new ObjectFilterByKey<Template>('name');
   public idFilter = new ObjectFilterByKey<Template>('id');
-
-  get dgPageSize() {
-    return parseInt(this.selectedPageSize);
-  }
 
   constructor(private templateService: TemplateService) { }
 

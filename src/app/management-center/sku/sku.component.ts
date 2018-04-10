@@ -27,7 +27,6 @@ export class SkuComponent implements OnInit {
   searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
-  selectedPageSize = '15';
 
   isCreateSku: boolean;
   isDelete: boolean;
@@ -97,10 +96,6 @@ export class SkuComponent implements OnInit {
   goToDetail(sku: SKU) {
     this.selectedSku = [sku];
     this.isShowDetail = true;
-  }
-
-  get dgPageSize() {
-    return +this.selectedPageSize;
   }
 
   getChild(objKey: string, sku: SKU){
