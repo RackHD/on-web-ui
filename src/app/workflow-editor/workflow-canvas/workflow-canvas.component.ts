@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { JSONEditor } from '../../utils/json-editor';
 
 import * as _ from 'lodash';
@@ -25,7 +26,8 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   workflows: any;
   inputValue: any;
 
-  constructor(public workflowService: WorkflowService) {
+  constructor(public workflowService: WorkflowService,
+              private router: Router ) {
   }
 
   clearInput() {
@@ -124,5 +126,13 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   onWorkflowChanged(workflow: any) {
     this.selectWorkflow = workflow;
     this.updateEditor(workflow);
+  }
+
+  jumpRunWorkflow() {
+    this.router.navigate(['operationsCenter/runWorkflow'], {
+      queryParams: {
+        injectableName: this.editor.get().injectableName
+      }
+    });
   }
 }

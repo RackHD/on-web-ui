@@ -15,6 +15,7 @@ import { OperationsCenterComponent } from './operations-center.component';
 import { OperationsCenterRoutingModule } from './operations-center-routing.module';
 
 import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
+import { RunWorkflowComponent } from './run-workflow/run-workflow.component';
 // import { SharedServicesModule } from '../services/sharedServices.module';
 
 @NgModule({
@@ -33,6 +34,7 @@ import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
     ActiveWorkflowComponent,
     HistoryWorkflowComponent,
     WorkflowViewerComponent,
+    RunWorkflowComponent,
   ],
   providers: [
     OperationCenterServiceModule,

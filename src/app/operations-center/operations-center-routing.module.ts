@@ -5,6 +5,7 @@ import { OperationsCenterComponent } from './operations-center.component';
 import { ActiveWorkflowComponent } from './active-workflow/active-workflow.component';
 import { HistoryWorkflowComponent } from  './history-workflow/history-workflow.component';
 import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.component';
+import { RunWorkflowComponent } from './run-workflow/run-workflow.component';
 
 const OperationsCenterRoutes: Routes = [
   {
@@ -14,6 +15,7 @@ const OperationsCenterRoutes: Routes = [
       {path: 'activeWorkflow', component: ActiveWorkflowComponent},
       {path: 'historyWorkflow', component: HistoryWorkflowComponent},
       {path: 'workflowViewer', component: WorkflowViewerComponent},
+      {path: 'runWorkflow', component: RunWorkflowComponent},
     ]
   }
 ];
