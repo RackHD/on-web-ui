@@ -7,7 +7,6 @@
       <button class="btn btn-icon refresh" (click)="refreshWorkflow()" title="Restore">
         <clr-icon shape="sync"></clr-icon>
       </button>
-      <button (click)="jumpRunWorkflow()">test</button>
       <app-canvas-graph [onWorkflowInput]='onWorkflowInput' (onWorkflowChanged)="onWorkflowChanged($event)">
       </app-canvas-graph>
     </div>
@@ -37,4 +36,31 @@
       <div #jsoneditor id="jsoneditor"></div>
     </div>
   </div>
+
+  <clr-modal [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
+    <h3 class="modal-title">{{saveInfor.status}}</h3>
+    <div class="modal-body">
+      <p>{{saveInfor.notes}}</p>
+    </div>
+    <div class="modal-footer" *ngIf="isShowModal && saveInfor.type === 1">
+      <button class="btn btn-outline" type="button" (click)="isShowModal = false">No,Thanks</button>
+      <button class="btn btn-primary" type="button" (click)="jumpRunWorkflow()">Go Now!</button>
+    </div>
+    <div class="modal-footer" *ngIf="isShowModal && saveInfor.type === 2">
+      <button class="btn btn-outline" type="button" (click)="isShowModal = false">Thankss</button>
+      <button class="btn btn-primary" type="button" (click)="isShowModal = false">OK</button>
+    </div>
+  </clr-modal>
+
+
+  <!--<clr-modal [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">-->
+    <!--<h3 class="modal-title">Saved Success!</h3>-->
+    <!--<div class="modal-body">-->
+      <!--<p>The Workflow has been saved success.Do you want to run it?</p>-->
+    <!--</div>-->
+    <!--<div class="modal-footer">-->
+      <!--<button class="btn btn-outline" type="button" (click)="">No Thanks.</button>-->
+      <!--<button class="btn btn-primary" type="button" (click)="">Go Noe</button>-->
+    <!--</div>-->
+  <!--</clr-modal>-->
 </div>
