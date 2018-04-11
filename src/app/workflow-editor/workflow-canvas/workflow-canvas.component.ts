@@ -21,6 +21,8 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   onWorkflowInput = new EventEmitter();
   selectWorkflow: any;
   editor: any;
+  isShowModal: boolean;
+  saveInfor = {status: "", notes: "", type: 0};
 
   private searchTerms = new Subject<string>();
   workflowStore: any;
@@ -35,6 +37,8 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   clearInput() {
     this.inputValue = null;
+    this.editor.set({});
+    this.onWorkflowInput.emit({});
   }
 
   getInitTasks() {
@@ -70,7 +74,8 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.selectWorkflow = this.graphService.getInitGraph();
+    this.isShowModal = false;
+    this.selectWorkflow = this.workflowService.getInitWorkflow();
     let container = document.getElementById('jsoneditor');
     let canvas = document.getElementById('mycanvas');
 
@@ -115,8 +120,22 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   saveWorkflow() {
     this.selectWorkflow = this.editor.get();
+    this.isShowModal = true;
     this.graphService.createGraph(JSON.stringify(this.selectWorkflow))
-      .subscribe();
+      .subscribe(res => {
+          this.saveInfor = {
+            status: "Saved Successfully!",
+            notes: "The Workflow has been saved successfully.Do you want to run it?",
+            type: 1
+          };
+        },
+        err => {
+          this.saveInfor = {
+            status: "Saved Failed!",
+            notes: "The Workflow has been saved failed.Please check it out.",
+            type: 2
+          };
+        });
   }
 
   updateEditor(workflow: any) {
@@ -133,6 +152,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   jumpRunWorkflow() {
+    this.isShowModal = false;
     this.router.navigate(['operationsCenter/runWorkflow'], {
       queryParams: {
         injectableName: this.editor.get().injectableName

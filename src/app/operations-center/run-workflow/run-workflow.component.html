@@ -1,3 +1,44 @@
-<p>
-  run-workflow works!
-</p>
+<div class="run-workflow">
+  <h5 class="header-text">
+    <strong>Run Workflow</strong>
+  </h5>
+  <p class="run-workflow-row">
+    <span class="col-md-4">
+      <label><b>GraphName:</b></label>
+      <datalist id="workflow_list">
+        <select name="workflow">
+          <option [ngValue]="wf" *ngFor="let wf of workflows">
+            {{wf.friendlyName}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox0 type="text" name="workflow" id="workflow" list="workflow_list" style="width: 200px"
+             (keyup)="search(searchBox0.value)" placeholder="search workflow"
+             (click)="getInitTasks()" [(ngModel)]="inputValue"
+             (change)="putWorkflowIntoJson($event.target.value)">
+      <clr-icon shape="times" *ngIf="inputValue" (click)="clearInput()"></clr-icon>
+    </span>
+  </p>
+  <p class="run-workflow-row">
+    <span class="col-md-4">
+      <label><b>NodeId:</b></label>
+      <datalist id="node_list">
+        <select name="nodetype">
+          <option [ngValue]="node" *ngFor="let node of nodes">
+            {{node.id}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox1 type="text" name="nodetype" id="nodetype" list="node_list"
+             placeholder="search nodeId"
+             [(ngModel)]="inputNodeValue"
+             (change)="getNodeInforById($event.target.value)">
+      <!--<clr-icon shape="times" *ngIf="inputNodeValue" (click)="clearInput()"></clr-icon>-->
+    </span>
+  </p>
+
+
+  <div class="col-md-12" style="height: 90%;margin-bottom: 0.5rem">
+    <div #jsoneditor id="jsoneditor" style="height: 85%;"></div>
+  </div>
+</div>
