@@ -35,8 +35,6 @@ export class HistoryWorkflowComponent implements OnInit {
   isShowModal: boolean;
   rawData: string;
 
-  searchTerms = new Subject<string>();
-
   selectedStatus: string;
   statusCountMatrix: {};
   statusFilterValue: string;
@@ -44,58 +42,38 @@ export class HistoryWorkflowComponent implements OnInit {
   // data grid helper
   dgDataLoading = false;
   dgPlaceholder = 'No history workflow found!';
-  
+
   modalTypes: ModalTypes;
 
-  idFilter: any;
-  instanceIdFilter: any;
-  nodeFilter: any;
-  nameFilter: any; 
-  injectableNameFilter: any; 
-  domainFilter: any; 
-  defintionFilter: any; 
-  contextFilter: any; 
-  tasksFilter: any; 
-  statusFilter: any;
-
-  nodeComparator: any; 
-  nameComparator: any;
-  injectableNameComparator: any;
-  domainComparator: any;
-  statusComparator: any;
+  gridFilters: any = {};
+  gridComparators: any = {};
 
   constructor(
     private workflowService: WorkflowService,
     private graphService: GraphService,
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef
-  ){
+  ){}
+
+  ngOnInit() {
     createFilters(
-      this,
+      this.gridFilters,
       [
         'node', 'instanceId', 'id', 'name', 'injectableName', 'domain',
         'definition', 'context', 'tasks', 'serviceGraph', 'status'
       ],
       new Workflow()
     );
-    createComparator(this, ["node", "name", "injectableName", "domain", 'status'], new Workflow());
-  }
-
-  ngOnInit() {
+    createComparator(
+      this.gridComparators,
+      ["node", "name", "injectableName", "domain", 'status'],
+      new Workflow()
+    );
     this.modalTypes = new ModalTypes(
       ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
     );
     this.isShowModal = false;
     this.getAll();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchWorkflow(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
   getAll(): void {
@@ -140,18 +118,12 @@ export class HistoryWorkflowComponent implements OnInit {
     });
     return Promise.all(promises)
     .then(() => {
-      this.onRefresh();
+      this.refresh();
       this.isShowModal = false;
     });
   }
 
   //getRawData(identifier: string): void {}
-
-  searchWorkflow(term: string){
-    this.dgDataLoading = true;
-    this.workflowsStore = StringOperator.search(term,this.allWorkflows);
-    this.dgDataLoading = false;
-  }
 
   getHttpMethod(){
   }
@@ -162,7 +134,7 @@ export class HistoryWorkflowComponent implements OnInit {
     this.rawData = workflow && workflow[objKey];
     this.isShowModal = true;
   }
-  
+
   getDefinition(workflow: Workflow){
     this.selectedWorkflow = workflow;
     let graphName = workflow.definition.split('/').pop();
@@ -175,18 +147,33 @@ export class HistoryWorkflowComponent implements OnInit {
     )
   }
 
-  onRefresh() {
+  refresh() {
     this.isShowModal = false;
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  onBatchDelete() {
+  batchDelete() {
     if (!_.isEmpty(this.selectedWorkflows)){
       this.action = "Delete";
       this.isShowModal = true;
     }
   };
+
+  onFilter(filtered: Workflow[]){
+    this.workflowsStore = filtered;
+  }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Delete':
+        this.batchDelete();
+        break;
+    };
+  }
 
   onDelete(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
@@ -208,10 +195,6 @@ export class HistoryWorkflowComponent implements OnInit {
   };
 
   // onCreate(){}
-
-  onSearch(term: string): void {
-    this.searchTerms.next(term);
-  }
 
   // onUpdate(workflow: Workflow){}
 

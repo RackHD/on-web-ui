@@ -30,7 +30,6 @@ export class WorkflowsComponent implements OnInit {
   rawData: string;
   modalFormGroup: FormGroup;
   // data grid helper
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No workflow found!'
 
@@ -50,15 +49,6 @@ export class WorkflowsComponent implements OnInit {
   ngOnInit() {
     this.isShowModal = false;
     this.getAll();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchWorkflow(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
   getAll(): void {
@@ -87,14 +77,7 @@ export class WorkflowsComponent implements OnInit {
     })
   }
 
-  searchWorkflow(term: string){
-    this.dgDataLoading = true;
-    this.workflowsStore = StringOperator.search(term,this.allWorkflows);
-    this.dgDataLoading = false;
-  }
-
-  getHttpMethod(){
-  }
+  // getHttpMethod(){}
 
   getChild(objKey: string, workflow: Graph){
     this.selectedWorkflow = workflow;
@@ -118,28 +101,43 @@ export class WorkflowsComponent implements OnInit {
     }
   }
 
-  onRefresh() {
+  refresh() {
     this.isShowModal = false;
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  onBatchDelete() {
+  batchDelete() {
     if (!_.isEmpty(this.selectedWorkflows)){
       this.action = "Delete";
       this.isShowModal = true;
     }
   };
 
-  onCreate(){
+  create(){
     this.createFormGroup();
     this.action = "Create";
     this.isShowModal = true;
   }
 
-  onSearch(term: string): void {
-    this.searchTerms.next(term);
+  onFilter(filtered: Graph[]){
+    this.workflowsStore = filtered;
   }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.create();
+        break;
+      case 'Delete':
+        this.batchDelete();
+        break;
+    };
+  }
+
 
   onUpdate(workflow: Graph){
     this.selectedWorkflow = workflow;
@@ -175,7 +173,7 @@ export class WorkflowsComponent implements OnInit {
     _.map(this.selectedWorkflows, workflow => {
       this.workflowService.delete(workflow.injectableName).subscribe(
         data =>{
-          this.onRefresh();
+          this.refresh();
         },
         error => {
           alert(error);

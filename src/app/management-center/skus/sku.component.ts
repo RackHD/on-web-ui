@@ -15,8 +15,8 @@ import { SkusService } from 'app/services/rackhd/sku.service';
 })
 
 export class SkuComponent implements OnInit {
+  skuStore: SKU[] = [];
   allSkus: SKU[] = [];
-  dataStore: SKU[] = [];
 
   selectedSku: SKU[];
   isShowDetail: boolean;
@@ -24,7 +24,6 @@ export class SkuComponent implements OnInit {
   rawData: any;
   action: any;
 
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
 
@@ -52,23 +51,24 @@ export class SkuComponent implements OnInit {
     this.createForm();
     this.selectedSkus = [];
     this.isSkuOnly = false;
-
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchIterm(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
-  searchIterm(term: string): void {
-    const skuData = _.cloneDeep(this.dataStore);
-    this.dgDataLoading = true;
-    this.allSkus = StringOperator.search(term, skuData);
-    this.dgDataLoading = false;
+  onFilter(filtered): void {
+    this.skuStore = filtered;
+  }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.create();
+        break;
+      case 'Delete':
+        this.batchDelete();
+        break;
+    };
   }
 
   createForm() {
@@ -79,7 +79,7 @@ export class SkuComponent implements OnInit {
       discoveryGraphOptions: ''
     });
   }
-  
+
   onRadioChange(){
     this.isSkuOnly = !this.isSkuOnly;
   }
@@ -87,8 +87,8 @@ export class SkuComponent implements OnInit {
   getAllSkus(): void {
     this.skusService.getAll()
       .subscribe( data => {
+        this.skuStore = data;
         this.allSkus = data;
-        this.dataStore = data;
         this.dgDataLoading = false;
       });
   }
@@ -105,7 +105,7 @@ export class SkuComponent implements OnInit {
     this.isShowModal = true;
   }
 
-  willCreateSku(): void {
+  create(): void {
     this.isCreateSku = true;
   }
 
@@ -113,18 +113,18 @@ export class SkuComponent implements OnInit {
     // TODO
   }
 
-  willDelete(sku?: SKU): void {
-    if (sku) {
-      this.selectedSkus = [sku];
+  batchDelete(): void {
+    if(!_.isEmpty(this.selectedSkus)){
+      this.isDelete = true;
     }
+  }
+
+  willDelete(sku: SKU): void {
+    this.selectedSkus = [sku];
     this.isDelete = true;
   }
 
-  search(term: string): void {
-    this.searchTerms.next(term);
-  }
-
-  refreshDatagrid() {
+  refresh() {
     this.dgDataLoading = true;
     this.getAllSkus();
   }
@@ -146,7 +146,7 @@ export class SkuComponent implements OnInit {
 
     this.skusService.createSku(jsonData)
       .subscribe(data => {
-        this.refreshDatagrid();
+        this.refresh();
       });
   }
 
@@ -165,7 +165,7 @@ export class SkuComponent implements OnInit {
 
     this.skusService.deleteByIdentifiers(list)
     .subscribe(results =>{
-      this.refreshDatagrid();
+      this.refresh();
     });
   }
 }

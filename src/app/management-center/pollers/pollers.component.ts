@@ -18,8 +18,8 @@ import * as _ from 'lodash';
 export class PollersComponent implements OnInit {
   pollerInterval: number[] = POLLER_INTERVAL;
 
-  allPollers: Array<Poller>;
-  dataStore: Poller[] = [];
+  pollerStore: Poller[];
+  allPollers: Poller[] = [];
 
   selectedPoller: Poller[];
   isShowDetail: boolean;
@@ -32,7 +32,6 @@ export class PollersComponent implements OnInit {
   defaultInterval: number;
   defaultPaused: boolean;
 
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
 
@@ -66,34 +65,37 @@ export class PollersComponent implements OnInit {
     this.createForm();
     this.selectedPollers = [];
     this.defaultInterval = 60000;
-
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchIterm(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
-  searchIterm(term: string): void {
-    const datas = _.cloneDeep(this.dataStore);
-    this.dgDataLoading = true;
-    this.allPollers = StringOperator.search(term, this.dataStore);
-    this.dgDataLoading = false;
+  onFilter(filtered: any[]): void {
+    this.pollerStore = filtered;
+  }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.create();
+        break;
+      case 'Delete':
+        this.batchDelete();
+        break;
+    };
   }
 
   getAllPollers(): void {
-    this.allPollers = new Array();
     this.pollersService.getAll()
     .subscribe(data => {
       if(_.isEmpty(data)) {
         this.dgDataLoading = false;
+        this.allPollers = [];
+        this.pollerStore = [];
         return null;
       }
-      this.dataStore = data;
+      this.allPollers = data;
+      this.pollerStore = data;
       for (let poller of data) {
         this.getLatestData(poller);
       }
@@ -105,14 +107,18 @@ export class PollersComponent implements OnInit {
     this.isShowDetail = true;
   }
 
-  willCreatePoller(): void {
+  create(): void {
     this.isCreatePoller = true;
   }
 
-  willDelete(poller?: Poller): void {
-    if (poller) {
-      this.selectedPollers = [poller];
+  batchDelete(): void {
+    if (!_.isEmpty(this.selectedPollers)) {
+      this.isDelete = true;
     }
+  }
+
+  willDelete(poller: Poller){
+    this.selectedPollers = [poller];
     this.isDelete = true;
   }
 
@@ -140,25 +146,20 @@ export class PollersComponent implements OnInit {
     let postData = JSON.stringify(jsonData);
     this.pollersService.patchByIdentifier(this.updatePoller.id, postData)
     .subscribe(data => {
-      this.refreshDatagrid();
+      this.refresh();
     });
   }
 
   getLatestData(poller: Poller): void {
     this.dgDataLoading = true;
     this.pollersService.getLatestData(poller.id)
-      .subscribe(latestData => {
-        poller['latestData'] = latestData;
-        this.allPollers.push(poller);
-        this.dgDataLoading = false;
-      });
+    .subscribe(latestData => {
+      poller['latestData'] = latestData;
+      this.dgDataLoading = false;
+    });
   }
 
-  search(term: string): void {
-    this.searchTerms.next(term);
-  }
-
-  refreshDatagrid() {
+  refresh() {
     this.dgDataLoading = true;
     this.getAllPollers();
   }
@@ -196,7 +197,7 @@ export class PollersComponent implements OnInit {
 
     this.pollersService.createPoller(jsonData)
       .subscribe(data => {
-        this.refreshDatagrid();
+        this.refresh();
       });
   }
 
@@ -208,7 +209,7 @@ export class PollersComponent implements OnInit {
 
     this.pollersService.deleteByIdentifiers(list)
     .subscribe(results =>{
-      this.refreshDatagrid();
+      this.refresh();
     });
   }
 }

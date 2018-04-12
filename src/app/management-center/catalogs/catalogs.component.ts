@@ -22,7 +22,6 @@ export class CatalogsComponent implements OnInit {
   isShowData: boolean;
 
   // data grid helper
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
 
   constructor(public catalogsService: CatalogsService) {
@@ -41,15 +40,6 @@ export class CatalogsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllCatalogs();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchNodes(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
   getAllCatalogs(): void {
@@ -61,7 +51,7 @@ export class CatalogsComponent implements OnInit {
       });
   }
 
-  refreshDatagrid() {
+  refresh() {
     this.dgDataLoading = true;
     this.getAllCatalogs();
   }
@@ -76,14 +66,15 @@ export class CatalogsComponent implements OnInit {
     this.isShowData = true;
   }
 
-  search(term: string): void {
-    this.searchTerms.next(term);
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+    };
   }
 
-  searchNodes(term: string): void {
-    const catalogs = _.cloneDeep(this.catalogsStore);
-    this.dgDataLoading = true;
-    this.allCatalogs = StringOperator.search(term, catalogs);
-    this.dgDataLoading = false;
+  onFilter(filtered){
+    this.catalogsStore = filtered;
   }
 }

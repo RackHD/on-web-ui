@@ -26,8 +26,6 @@ export class TemplatesComponent implements OnInit {
   isShowModal: boolean;
   rawData: string;
 
-  // data grid helper
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No template found!'
 
@@ -41,15 +39,6 @@ export class TemplatesComponent implements OnInit {
 
   ngOnInit() {
     this.getAll();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchtemplate(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
 
@@ -78,22 +67,27 @@ export class TemplatesComponent implements OnInit {
     })
   }
 
-  searchtemplate(term: string){
-    this.dgDataLoading = true;
-    this.templatesStore = StringOperator.search(term, this.allTemplates);
-    this.dgDataLoading = false;
+  onFilter(filtered: Template[]){
+    this.templatesStore = filtered;
   }
 
-  onSearch(term: string): void {
-    this.searchTerms.next(term);
-  }
-
-  onRefresh() {
+  refresh() {
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  onCreate(){
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.create();
+        break;
+    };
+  }
+
+  create(){
     this.action = "Upload";
     this.isShowModal = true;
   }
@@ -129,7 +123,7 @@ export class TemplatesComponent implements OnInit {
     //TODO: Add support on multiple files upload support
     this.templateService.upload(file, existingFilename || file.name)
     this.selectedTemplate = null;
-    this.onRefresh();
+    this.refresh();
   }
 
 }

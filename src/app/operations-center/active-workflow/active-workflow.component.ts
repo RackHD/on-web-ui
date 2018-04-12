@@ -39,59 +39,35 @@ export class ActiveWorkflowComponent implements OnInit {
   rawData: string;
 
   // data grid helper
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No active workflow found!';
 
   modalTypes: ModalTypes;
 
-  idFilter: any;
-  instanceIdFilter: any;
-  nodeFilter: any;
-  nameFilter: any; 
-  injectableNameFilter: any; 
-  domainFilter: any; 
-  defintionFilter: any; 
-  contextFilter: any; 
-  tasksFilter: any; 
-  statusFilter: any;
-
-  nodeComparator: any; 
-  nameComparator: any;
-  injectableNameComparator: any;
-  domainComparator: any;
+  gridFilter: any = {};
+  gridComparator: any = {};
 
   constructor(
     private workflowService: WorkflowService,
     private graphService: GraphService,
     private router: Router
-  ){
+  ){}
+
+  ngOnInit() {
     createFilters(
-      this,
+      this.gridFilter,
       [
         'node', 'instanceId', 'id', 'name', 'injectableName', 'domain',
         'definition', 'context', 'tasks', 'serviceGraph'
       ],
       new Workflow()
     );
-    createComparator(this, ["node", "name", "injectableName", "domain"], new Workflow());
-  }
-
-  ngOnInit() {
+    createComparator(this.gridComparator, ["node", "name", "injectableName", "domain"], new Workflow());
     this.modalTypes = new ModalTypes(
       ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
     );
     this.isShowModal = false;
     this.getAll();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchWorkflow(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
   getAll(): void {
@@ -113,12 +89,6 @@ export class ActiveWorkflowComponent implements OnInit {
 
   //getRawData(identifier: string): void {}
 
-  searchWorkflow(term: string){
-    this.dgDataLoading = true;
-    this.workflowsStore = StringOperator.search(term,this.allWorkflows);
-    this.dgDataLoading = false;
-  }
-
   cancelActiveWorkflow(){
     let list = [];
     _.forEach(this.selectedWorkflows, workflow => {
@@ -132,7 +102,7 @@ export class ActiveWorkflowComponent implements OnInit {
     }
     Observable.forkJoin(list)
     .subscribe((result) => {
-      this.onRefresh();
+      this.refresh();
       this.isShowModal = false;
     });
   }
@@ -159,7 +129,7 @@ export class ActiveWorkflowComponent implements OnInit {
     )
   }
 
-  onRefresh() {
+  refresh() {
     this.isShowModal = false;
     this.dgDataLoading = true;
     this.getAll();
@@ -169,12 +139,27 @@ export class ActiveWorkflowComponent implements OnInit {
 
   // onDelete(workflow: Workflow) {};
 
-  onBatchCancel() {
+  batchCancel() {
     if (!_.isEmpty(this.selectedWorkflows)){
       this.action = "Cancel";
       this.isShowModal = true;
     }
   };
+
+  onFilter(filtered: Workflow[]){
+    this.workflowsStore = filtered;
+  }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Cancel':
+        this.batchCancel();
+        break;
+    };
+  }
 
   onCancel(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
@@ -183,10 +168,6 @@ export class ActiveWorkflowComponent implements OnInit {
   };
 
   // onCreate(){}
-
-  onSearch(term: string): void {
-    this.searchTerms.next(term);
-  }
 
   // onUpdate(workflow: Workflow){}
 

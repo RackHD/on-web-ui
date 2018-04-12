@@ -18,7 +18,7 @@ import { Config } from '../../models';
 })
 export class ConfigComponent implements OnInit {
   configStore: Config[] = [];
-  allConfig: Config[] = [];
+  allConfigs: Config[] = [];
   selectedConfig: Config;
 
   modalAction: string;
@@ -28,7 +28,6 @@ export class ConfigComponent implements OnInit {
   configureType: string;
 
   // data grid helper
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No configure found!'
 
@@ -44,15 +43,6 @@ export class ConfigComponent implements OnInit {
       key: new FormControl(''),
       value: new FormControl('')
     });
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchConfig(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
   getAllConfig(): void {
@@ -66,24 +56,37 @@ export class ConfigComponent implements OnInit {
           }
         })
         this.configStore = _data;
-        this.allConfig = _data;
+        this.allConfigs = _data;
         this.dgDataLoading = false;
       });
   }
 
-  searchConfig(term: string){
-    this.dgDataLoading = true;
-    this.configStore = StringOperator.search(term, this.allConfig);
-    this.dgDataLoading = false;
-  }
+  create() {
+    this.isShowUpdateStatus = true;
+    this.selectedConfig = {key: null, value: null};
+    this.modalFormGroup.setValue({key: null, value: null});
+    this.modalAction = "Create";
+    this.isShowModal = true;
+  };
 
-  onSearch(term: string): void {
-    this.searchTerms.next(term);
-  }
-
-  onRefresh() {
+  refresh() {
     this.dgDataLoading = true;
     this.getAllConfig();
+  }
+
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.create();
+        break;
+    };
+  }
+
+  onFilter(filtered){
+    this.configStore = filtered;
   }
 
   onUpdate(item: Config) {
@@ -96,14 +99,6 @@ export class ConfigComponent implements OnInit {
       : this.selectedConfig.value;
     this.modalFormGroup.setValue({key: item.key, value: value});
     this.modalAction = "Update";
-    this.isShowModal = true;
-  };
-
-  onCreate() {
-    this.isShowUpdateStatus = true;
-    this.selectedConfig = {key: null, value: null};
-    this.modalFormGroup.setValue({key: null, value: null});
-    this.modalAction = "Create";
     this.isShowModal = true;
   };
 
@@ -136,7 +131,7 @@ export class ConfigComponent implements OnInit {
       this.selectedConfig.key = key;
       this.selectedConfig.value = data[this.selectedConfig.key];
       this.isShowUpdateStatus = false;
-      this.onRefresh();
+      this.refresh();
     });
   }
 }

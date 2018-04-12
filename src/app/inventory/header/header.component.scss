@@ -1,0 +1,29 @@
+.header-line {
+  margin-bottom: -25px;
+  z-index: 9;
+  .create {
+      float: left;
+  }
+  .delete {
+      float: left;
+  }
+  .refresh {
+      float: left;
+  }
+  .cancel {
+      float: left;
+  }
+  .search{
+    float: right;
+    margin-top: 12px;
+  }
+}
+
+.header-text {
+  padding-top: 0;
+  margin-top: 0;
+  margin-bottom: 12px;
+  .font-style {
+    font-weight: 600;
+  }
+}

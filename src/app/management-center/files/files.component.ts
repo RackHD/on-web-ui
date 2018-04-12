@@ -29,7 +29,6 @@ export class FilesComponent implements OnInit {
   rawData: string;
 
   // data grid helper
-  searchTerms = new Subject<string>();
   dgDataLoading = false;
   dgPlaceholder = 'No file found!'
 
@@ -46,15 +45,6 @@ export class FilesComponent implements OnInit {
   ngOnInit() {
     this.isShowModal = false;
     this.getAll();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchFile(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
   getAll(): void {
@@ -90,27 +80,41 @@ export class FilesComponent implements OnInit {
 
   getHttpMethod(){
   }
-  
-  onRefresh() {
-    this.isShowModal = false;
-    this.dgDataLoading = true;
-    this.getAll();
+
+  create(){
+    this.action = "Upload";
+    this.isShowModal = true;
   }
 
-  onBatchDelete() {
+  batchDelete() {
     if (!_.isEmpty(this.selectedFiles)){
       this.action = "Delete";
       this.isShowModal = true;
     }
   };
 
-  onCreate(){
-    this.action = "Upload";
-    this.isShowModal = true;
+  refresh() {
+    this.isShowModal = false;
+    this.dgDataLoading = true;
+    this.getAll();
   }
 
-  onSearch(term: string): void {
-    this.searchTerms.next(term);
+  onAction(action){
+    switch(action) {
+      case 'Refresh':
+        this.refresh();
+        break;
+      case 'Create':
+        this.create();
+        break;
+      case 'Delete':
+        this.batchDelete();
+        break;
+    };
+  }
+
+  onFilter(filtered){
+    this.filesStore = filtered;
   }
 
   onUpdate(file: File){
@@ -145,7 +149,7 @@ export class FilesComponent implements OnInit {
     _.map(this.selectedFiles, file => {
       this.fileService.delete(file.uuid).subscribe(
         data =>{
-          this.onRefresh();
+          this.refresh();
         },
         error => {
           alert(error);
@@ -154,7 +158,7 @@ export class FilesComponent implements OnInit {
     })
   }
 
-  onCreateSubmit(){
+  createSubmit(){
     //existingFilename is used to store filename when updating file
     let existingFilename = this.selectedFile && this.selectedFile.filename;
     let file = this.files[0];
@@ -163,7 +167,7 @@ export class FilesComponent implements OnInit {
     //TODO: Add support on multiple files upload support
     this.fileService.upload(file, existingFilename || file.name)
     this.selectedFile = null;
-    this.onRefresh();
+    this.refresh();
   }
 
   onSubmit(){}
