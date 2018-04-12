@@ -45,41 +45,30 @@ export class HistoryWorkflowComponent implements OnInit {
 
   modalTypes: ModalTypes;
 
-  idFilter: any;
-  instanceIdFilter: any;
-  nodeFilter: any;
-  nameFilter: any;
-  injectableNameFilter: any;
-  domainFilter: any;
-  defintionFilter: any;
-  contextFilter: any;
-  tasksFilter: any;
-  statusFilter: any;
-
-  nodeComparator: any;
-  nameComparator: any;
-  injectableNameComparator: any;
-  domainComparator: any;
-  statusComparator: any;
+  gridFilters: any = {};
+  gridComparators: any = {};
 
   constructor(
     private workflowService: WorkflowService,
     private graphService: GraphService,
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef
-  ){
+  ){}
+
+  ngOnInit() {
     createFilters(
-      this,
+      this.gridFilters,
       [
         'node', 'instanceId', 'id', 'name', 'injectableName', 'domain',
         'definition', 'context', 'tasks', 'serviceGraph', 'status'
       ],
       new Workflow()
     );
-    createComparator(this, ["node", "name", "injectableName", "domain", 'status'], new Workflow());
-  }
-
-  ngOnInit() {
+    createComparator(
+      this.gridComparators,
+      ["node", "name", "injectableName", "domain", 'status'],
+      new Workflow()
+    );
     this.modalTypes = new ModalTypes(
       ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
     );

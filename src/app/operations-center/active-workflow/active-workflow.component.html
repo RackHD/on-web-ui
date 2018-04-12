@@ -12,63 +12,63 @@
         <ng-container *clrDgHideableColumn="{hidden: false}">
           ID
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="idFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.idFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column>
         <ng-container *clrDgHideableColumn="{hidden: false}">
           InstanceID
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="instanceIdFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.instanceIdFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
-      <clr-dg-column [clrDgSortBy]="nodeComparator">
+      <clr-dg-column [clrDgSortBy]="gridComparator.nodeComparator">
         <ng-container *clrDgHideableColumn="{hidden: false}">
           Node
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="nodeFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.nodeFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
-      <clr-dg-column [clrDgSortBy]="nameComparator">
+      <clr-dg-column [clrDgSortBy]="gridComparator.nameComparator">
         <ng-container *clrDgHideableColumn="{hidden: false}">
           Name
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="nameFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.nameFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
-      <clr-dg-column [clrDgSortBy]="injectableNameComparator">
+      <clr-dg-column [clrDgSortBy]="gridComparator.injectableNameComparator">
         <ng-container *clrDgHideableColumn="{hidden: false}">
           InjectableName
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="injectableNameFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.injectableNameFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
-      <clr-dg-column [clrDgSortBy]="domainComparator">
+      <clr-dg-column [clrDgSortBy]="gridComparator.domainComparator">
         <ng-container *clrDgHideableColumn="{hidden: false}">
           Domain
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="domainFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.domainFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column>
         <ng-container *clrDgHideableColumn="{hidden: false}">
           Definition
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="defintionFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.defintionFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column>
         <ng-container *clrDgHideableColumn="{hidden: false}">
           Context
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="contextFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.contextFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column >
         <ng-container *clrDgHideableColumn="{hidden: false}">
           Tasks
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="tasksFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.tasksFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column>
@@ -80,7 +80,7 @@
         <ng-container *clrDgHideableColumn="{hidden: false}">
           Status
         </ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="statusFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="gridFilter.statusFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
 

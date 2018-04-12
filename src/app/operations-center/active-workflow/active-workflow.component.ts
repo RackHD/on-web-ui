@@ -44,39 +44,25 @@ export class ActiveWorkflowComponent implements OnInit {
 
   modalTypes: ModalTypes;
 
-  idFilter: any;
-  instanceIdFilter: any;
-  nodeFilter: any;
-  nameFilter: any;
-  injectableNameFilter: any;
-  domainFilter: any;
-  defintionFilter: any;
-  contextFilter: any;
-  tasksFilter: any;
-  statusFilter: any;
-
-  nodeComparator: any;
-  nameComparator: any;
-  injectableNameComparator: any;
-  domainComparator: any;
+  gridFilter: any = {};
+  gridComparator: any = {};
 
   constructor(
     private workflowService: WorkflowService,
     private graphService: GraphService,
     private router: Router
-  ){
+  ){}
+
+  ngOnInit() {
     createFilters(
-      this,
+      this.gridFilter,
       [
         'node', 'instanceId', 'id', 'name', 'injectableName', 'domain',
         'definition', 'context', 'tasks', 'serviceGraph'
       ],
       new Workflow()
     );
-    createComparator(this, ["node", "name", "injectableName", "domain"], new Workflow());
-  }
-
-  ngOnInit() {
+    createComparator(this.gridComparator, ["node", "name", "injectableName", "domain"], new Workflow());
     this.modalTypes = new ModalTypes(
       ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
     );

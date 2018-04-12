@@ -23,7 +23,7 @@
       </clr-dg-column>
       <clr-dg-column [clrDgSortBy]="typeComparator">
         <ng-container *clrDgHideableColumn="{hidden: false}">Type</ng-container>
-        <clr-dg-string-filter [(clrFilterValue)]="typeFilterValue" [clrDgStringFilter]="typeFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="typeFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column [clrDgSortBy]="nameComparator">
@@ -40,7 +40,7 @@
       </clr-dg-column>
       <clr-dg-column [clrDgSortBy]="skuComparator">
         <ng-container *clrDgHideableColumn="{hidden: false}">SKU</ng-container>
-        <clr-dg-string-filter [(clrFilterValue)]="skuFilterValue" [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
+        <clr-dg-string-filter [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
       </clr-dg-column>
 
       <clr-dg-row *clrDgItems="let node of nodeStore" [clrDgItem]="node">
