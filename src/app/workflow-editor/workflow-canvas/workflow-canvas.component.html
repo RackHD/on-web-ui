@@ -36,4 +36,18 @@
       <div #jsoneditor id="jsoneditor"></div>
     </div>
   </div>
+
+  <clr-modal [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
+    <h3 class="modal-title" *ngIf="isShowModal">{{saveGraphInfo.status}}</h3>
+    <div class="modal-body" *ngIf="isShowModal">
+      <p>{{saveGraphInfo.notes | json}}</p>
+    </div>
+    <div class="modal-footer" *ngIf="isShowModal && saveGraphInfo.type === 1">
+      <button class="btn btn-outline" type="button" (click)="isShowModal = false">No,Thanks</button>
+      <button class="btn btn-primary" type="button" (click)="jumpRunWorkflow()">Go Now!</button>
+    </div>
+    <div class="modal-footer" *ngIf="isShowModal && saveGraphInfo.type === 2">
+      <button class="btn btn-primary" type="button" (click)="isShowModal = false">Confirm</button>
+    </div>
+  </clr-modal>
 </div>

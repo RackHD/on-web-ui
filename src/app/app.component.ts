@@ -10,6 +10,7 @@ import {
 // instead of import "../node_modules/clarity-icons/clarity-icons.min.js"
 // in root module
 import { ClarityIcons } from '@clr/icons';
+import '@clr/icons/shapes/all-shapes';
 
 
 /**

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { JSONEditor } from '../../utils/json-editor';
 
 import * as _ from 'lodash';
@@ -20,6 +21,8 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   onWorkflowInput = new EventEmitter();
   selectWorkflow: any;
   editor: any;
+  isShowModal: boolean;
+  saveGraphInfo = {status: "", notes: "", type: 0};
 
   private searchTerms = new Subject<string>();
   workflowStore: any;
@@ -27,12 +30,14 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   inputValue: any;
 
   constructor(
-    public workflowService: WorkflowService,
-    public graphService: GraphService
+    public graphService: GraphService,
+    private router: Router
   ) {}
 
   clearInput() {
     this.inputValue = null;
+    this.editor.set({});
+    this.onWorkflowInput.emit({});
   }
 
   getInitTasks() {
@@ -56,7 +61,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   putWorkflowIntoCanvas(friendlyName: any) {
     let workflow = {};
     for (let item of this.workflowStore) {
-      if (item['friendlyName'] === friendlyName) {
+      if (item.friendlyName.replace(/\s/ig, '') === friendlyName.replace(/\s/ig, '')) {
         workflow = item;
         break;
       }
@@ -68,13 +73,12 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.isShowModal = false;
     this.selectWorkflow = this.graphService.getInitGraph();
     let container = document.getElementById('jsoneditor');
     let canvas = document.getElementById('mycanvas');
-
     canvas.setAttribute('height', "1000px");
     canvas.setAttribute('width', "800px");
-
     let options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.updateEditor(this.selectWorkflow);
@@ -113,8 +117,22 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   saveWorkflow() {
     this.selectWorkflow = this.editor.get();
-    this.graphService.createGraph(JSON.stringify(this.selectWorkflow))
-      .subscribe();
+    this.isShowModal = true;
+    this.graphService.createGraph(this.selectWorkflow)
+      .subscribe(res => {
+          this.saveGraphInfo = {
+            status: "Saved Successfully!",
+            notes: "The workflow has been saved successfully.Do you want to run it?",
+            type: 1
+          };
+        },
+        err => {
+          this.saveGraphInfo = {
+            status: "Saved Failed!",
+            notes: JSON.parse(err.error),
+            type: 2
+          };
+        });
   }
 
   updateEditor(workflow: any) {
@@ -128,5 +146,14 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   onWorkflowChanged(workflow: any) {
     this.selectWorkflow = workflow;
     this.updateEditor(workflow);
+  }
+
+  jumpRunWorkflow() {
+    this.isShowModal = false;
+    this.router.navigate(['operationsCenter/runWorkflow'], {
+      queryParams: {
+        injectableName: this.editor.get().injectableName
+      }
+    });
   }
 }

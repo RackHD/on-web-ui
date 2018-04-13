@@ -1,0 +1,57 @@
+<div class="run-workflow">
+  <h5 class="header-text">
+    <strong>Run Workflow</strong>
+  </h5>
+  <p class="run-workflow-row">
+    <span class="col-md-4">
+      <label><b>GraphName:</b></label>
+      <datalist id="workflow_list">
+        <select name="workflow">
+          <option [ngValue]="wf" *ngFor="let wf of workflows">
+            {{wf.friendlyName}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox0 type="text" name="workflow" id="workflow" list="workflow_list" style="width: 200px"
+             (keyup)="search(searchBox0.value)" placeholder="search workflow"
+             (click)="getInitWorkflows()" [(ngModel)]="selectedFriendlyName"
+             (change)="putWorkflowIntoJson($event.target.value)">
+      <clr-icon shape="times" *ngIf="selectedFriendlyName" (click)="clearInput()"></clr-icon>
+    </span>
+  </p>
+  <p class="run-workflow-row">
+    <span class="col-md-4">
+      <label><b>NodeId:</b></label>
+      <datalist id="node_list">
+        <select name="nodetype">
+          <option [ngValue]="node" *ngFor="let node of nodes">
+            {{node.id}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox1 type="text" name="nodetype" id="nodetype" list="node_list"
+             placeholder="search nodeId"
+             [(ngModel)]="selectedNodeId">
+             <!--(change)="getNodeInforById($event.target.value)">-->
+    </span>
+  </p>
+  <div class="col-md-8" style="padding-left: 0">
+    <p class="run-workflow-row"><label><b>Operations:</b></label></p>
+    <div #jsoneditor id="jsoneditor"></div>
+  </div>
+  <div class="col-md-8 bottom-button">
+    <button class="btn btn-primary" (click)="postWorflow()">Post Workflow</button>
+  </div>
+  <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
+    <h3 class="modal-title" *ngIf="showModal">{{runWorkflowRes.title}}</h3>
+    <div class="modal-body" *ngIf="showModal">
+      <p>{{runWorkflowRes.note | json}}</p>
+    </div>
+    <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 1">
+      <button class="btn btn-primary" type="button" (click)="showModal = false">OK</button>
+    </div>
+    <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 2">
+      <button class="btn btn-primary" type="button" (click)="showModal = false">Try again</button>
+    </div>
+  </clr-modal>
+</div>
