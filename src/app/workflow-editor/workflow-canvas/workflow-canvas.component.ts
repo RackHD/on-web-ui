@@ -22,7 +22,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   selectWorkflow: any;
   editor: any;
   isShowModal: boolean;
-  saveInfor = {status: "", notes: "", type: 0};
+  saveGraphInfo = {status: "", notes: "", type: 0};
 
   private searchTerms = new Subject<string>();
   workflowStore: any;
@@ -30,7 +30,6 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   inputValue: any;
 
   constructor(
-    public workflowService: WorkflowService,
     public graphService: GraphService,
     private router: Router
   ) {}
@@ -75,7 +74,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.isShowModal = false;
-    this.selectWorkflow = this.workflowService.getInitWorkflow();
+    this.selectWorkflow = this.graphService.getInitGraph();
     let container = document.getElementById('jsoneditor');
     let canvas = document.getElementById('mycanvas');
 
@@ -121,18 +120,19 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   saveWorkflow() {
     this.selectWorkflow = this.editor.get();
     this.isShowModal = true;
-    this.graphService.createGraph(JSON.stringify(this.selectWorkflow))
+    console.log(this.selectWorkflow);
+    this.graphService.createGraph(this.selectWorkflow)
       .subscribe(res => {
-          this.saveInfor = {
+          this.saveGraphInfo = {
             status: "Saved Successfully!",
-            notes: "The Workflow has been saved successfully.Do you want to run it?",
+            notes: "The workflow has been saved successfully.Do you want to run it?",
             type: 1
           };
         },
         err => {
-          this.saveInfor = {
+          this.saveGraphInfo = {
             status: "Saved Failed!",
-            notes: "The Workflow has been saved failed.Please check it out.",
+            notes: JSON.parse(err.error),
             type: 2
           };
         });

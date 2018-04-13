@@ -14,9 +14,9 @@
       </datalist>
       <input #searchBox0 type="text" name="workflow" id="workflow" list="workflow_list" style="width: 200px"
              (keyup)="search(searchBox0.value)" placeholder="search workflow"
-             (click)="getInitTasks()" [(ngModel)]="inputValue"
+             (click)="getInitWorkflows()" [(ngModel)]="selectedFriendlyName"
              (change)="putWorkflowIntoJson($event.target.value)">
-      <clr-icon shape="times" *ngIf="inputValue" (click)="clearInput()"></clr-icon>
+      <clr-icon shape="times" *ngIf="selectedFriendlyName" (click)="clearInput()"></clr-icon>
     </span>
   </p>
   <p class="run-workflow-row">
@@ -31,14 +31,27 @@
       </datalist>
       <input #searchBox1 type="text" name="nodetype" id="nodetype" list="node_list"
              placeholder="search nodeId"
-             [(ngModel)]="inputNodeValue"
-             (change)="getNodeInforById($event.target.value)">
-      <!--<clr-icon shape="times" *ngIf="inputNodeValue" (click)="clearInput()"></clr-icon>-->
+             [(ngModel)]="selectedNodeId">
+             <!--(change)="getNodeInforById($event.target.value)">-->
     </span>
   </p>
-
-
-  <div class="col-md-12" style="height: 90%;margin-bottom: 0.5rem">
-    <div #jsoneditor id="jsoneditor" style="height: 85%;"></div>
+  <div class="col-md-8">
+    <p class="run-workflow-row"><label><b>Operations:</b></label></p>
+    <div #jsoneditor id="jsoneditor" style="height: 15rem"></div>
   </div>
+  <div class="col-md-8 bottom-button">
+    <button class="btn btn-primary" (click)="runWorflow()">Run Workflow</button>
+  </div>
+  <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
+    <h3 class="modal-title" *ngIf="showModal">{{runWorkflowRes.title}}</h3>
+    <div class="modal-body" *ngIf="showModal">
+      <p>{{runWorkflowRes.note | json}}</p>
+    </div>
+    <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 1">
+      <button class="btn btn-primary" type="button" (click)="showModal = false">OK</button>
+    </div>
+    <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 2">
+      <button class="btn btn-primary" type="button" (click)="showModal = false">Try again</button>
+    </div>
+  </clr-modal>
 </div>

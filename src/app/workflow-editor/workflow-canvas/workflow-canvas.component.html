@@ -38,29 +38,16 @@
   </div>
 
   <clr-modal [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
-    <h3 class="modal-title">{{saveInfor.status}}</h3>
+    <h3 class="modal-title">{{saveGraphInfo.status}}</h3>
     <div class="modal-body">
-      <p>{{saveInfor.notes}}</p>
+      <p>{{saveGraphInfo.notes | json}}</p>
     </div>
-    <div class="modal-footer" *ngIf="isShowModal && saveInfor.type === 1">
+    <div class="modal-footer" *ngIf="isShowModal && saveGraphInfo.type === 1">
       <button class="btn btn-outline" type="button" (click)="isShowModal = false">No,Thanks</button>
       <button class="btn btn-primary" type="button" (click)="jumpRunWorkflow()">Go Now!</button>
     </div>
-    <div class="modal-footer" *ngIf="isShowModal && saveInfor.type === 2">
-      <button class="btn btn-outline" type="button" (click)="isShowModal = false">Thankss</button>
-      <button class="btn btn-primary" type="button" (click)="isShowModal = false">OK</button>
+    <div class="modal-footer" *ngIf="isShowModal && saveGraphInfo.type === 2">
+      <button class="btn btn-primary" type="button" (click)="isShowModal = false">Confirm</button>
     </div>
   </clr-modal>
-
-
-  <!--<clr-modal [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">-->
-    <!--<h3 class="modal-title">Saved Success!</h3>-->
-    <!--<div class="modal-body">-->
-      <!--<p>The Workflow has been saved success.Do you want to run it?</p>-->
-    <!--</div>-->
-    <!--<div class="modal-footer">-->
-      <!--<button class="btn btn-outline" type="button" (click)="">No Thanks.</button>-->
-      <!--<button class="btn btn-primary" type="button" (click)="">Go Noe</button>-->
-    <!--</div>-->
-  <!--</clr-modal>-->
 </div>
