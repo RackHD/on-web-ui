@@ -38,8 +38,8 @@
   </div>
 
   <clr-modal [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
-    <h3 class="modal-title">{{saveGraphInfo.status}}</h3>
-    <div class="modal-body">
+    <h3 class="modal-title" *ngIf="isShowModal">{{saveGraphInfo.status}}</h3>
+    <div class="modal-body" *ngIf="isShowModal">
       <p>{{saveGraphInfo.notes | json}}</p>
     </div>
     <div class="modal-footer" *ngIf="isShowModal && saveGraphInfo.type === 1">

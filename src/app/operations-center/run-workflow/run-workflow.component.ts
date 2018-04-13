@@ -27,7 +27,7 @@ export class RunWorkflowComponent implements OnInit {
 
   private searchTerms = new Subject<string>();
   showModal: boolean
-  allWorkflows: any;
+  allgraphs: any;
   workflows: any;
   selectedFriendlyName: any;
   selectedInjectableName: any;
@@ -37,7 +37,7 @@ export class RunWorkflowComponent implements OnInit {
 
   constructor(
     public nodeService: NodeService,
-    public GraphService: GraphService,
+    public graphService: GraphService,
     private activatedRoute: ActivatedRoute,
     private workflowService: WorkflowService,
     private router: Router
@@ -49,7 +49,7 @@ export class RunWorkflowComponent implements OnInit {
     let options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.getAllNodes();
-    this.getworkflowStore();
+    this.getAllWorkflows();
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -71,26 +71,26 @@ export class RunWorkflowComponent implements OnInit {
   /*get workflow by injectablename*/
 
   getWorkflowByName() {
-    this.GraphService.getByIdentifier(this.injectableName).subscribe(data => {
+    this.graphService.getByIdentifier(this.injectableName).subscribe(data => {
       this.selectedFriendlyName = data[0].friendlyName;
       this.selectedInjectableName = data[0].injectableName;
-      this.updateEditor(data[0]);
+      this.updateOptionsEditor(data[0]);
     });
   }
 
   /*get all workflow*/
 
-  getworkflowStore() {
-    this.GraphService.getAll().subscribe(graphs => {
-      this.allWorkflows = graphs;
+  getAllWorkflows() {
+    this.graphService.getAll().subscribe(graphs => {
+      this.allgraphs = graphs;
     });
   }
 
   getInitWorkflows() {
-    if (_.isEmpty(this.allWorkflows)) {
-      this.getworkflowStore();
+    if (_.isEmpty(this.allgraphs)) {
+      this.getAllWorkflows();
     }
-    this.workflows = this.allWorkflows && this.allWorkflows.slice(0, 10);
+    this.workflows = this.allgraphs && this.allgraphs.slice(0, 10);
     if (this.injectableName) {
       this.router.navigate(['operationsCenter/runWorkflow']);
     }
@@ -101,15 +101,15 @@ export class RunWorkflowComponent implements OnInit {
   }
 
   searchIterm(term: string): void {
-    if (_.isEmpty(this.allWorkflows)) {
-      this.getworkflowStore();
+    if (_.isEmpty(this.allgraphs)) {
+      this.getAllWorkflows();
     }
-    this.workflows = StringOperator.search(term, this.allWorkflows).slice(0, 10);
+    this.workflows = StringOperator.search(term, this.allgraphs).slice(0, 10);
   }
 
   putWorkflowIntoJson(name: any) {
     let workflow = {};
-    for (let item of this.allWorkflows) {
+    for (let item of this.allgraphs) {
       if (item.friendlyName.replace(/\s/ig, '') === name.replace(/\s/ig, '')) {
         workflow = item;
         this.selectedInjectableName = item.injectableName;
@@ -117,22 +117,20 @@ export class RunWorkflowComponent implements OnInit {
       }
     }
     if (workflow) {
-      this.updateEditor(workflow);
+      this.updateOptionsEditor(workflow);
     }
   }
 
   clearInput() {
     this.selectedFriendlyName = null;
     this.editor.set({});
-
   }
 
-  updateEditor(workflow: any) {
+  updateOptionsEditor(workflow: any) {
     if (workflow.options)
       this.editor.set(workflow.options);
     else
       this.editor.set({});
-
   }
 
   getAllNodes() {
@@ -142,30 +140,27 @@ export class RunWorkflowComponent implements OnInit {
       });
   }
 
-  runWorflow() {
+  postWorflow() {
     this.showModal = true;
     let payload = this.editor.get();
     if (_.isEmpty(this.selectedNodeId) || _.isEmpty(this.selectedFriendlyName) || _.isEmpty(payload)){
       this.runWorkflowRes = {
-        title: "Run Workflow Failed!",
+        title: "Post Workflow Failed!",
         note: "Please confirm if all necessary parameters are complete!",
         type: 2
       };
     }else {
-      console.log(this.selectedNodeId, this.selectedInjectableName, payload);
       this.workflowService.runWorkflow(this.selectedNodeId, this.selectedInjectableName, payload)
         .subscribe(data => {
-          console.log(data);
           this.runWorkflowRes = {
-            title: "Run Workflow Successfully!",
+            title: "Post Workflow Successfully!",
             note: "The workflow has run successfully!",
             type: 1
           };
         },
           err => {
-            console.log(err.error);
             this.runWorkflowRes = {
-              title: "Run Workflow Failed!",
+              title: "Post Workflow Failed!",
               note: err.error,
               type: 2
             };

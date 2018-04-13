@@ -35,12 +35,12 @@
              <!--(change)="getNodeInforById($event.target.value)">-->
     </span>
   </p>
-  <div class="col-md-8">
+  <div class="col-md-8" style="padding-left: 0">
     <p class="run-workflow-row"><label><b>Operations:</b></label></p>
-    <div #jsoneditor id="jsoneditor" style="height: 15rem"></div>
+    <div #jsoneditor id="jsoneditor"></div>
   </div>
   <div class="col-md-8 bottom-button">
-    <button class="btn btn-primary" (click)="runWorflow()">Run Workflow</button>
+    <button class="btn btn-primary" (click)="postWorflow()">Post Workflow</button>
   </div>
   <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
     <h3 class="modal-title" *ngIf="showModal">{{runWorkflowRes.title}}</h3>

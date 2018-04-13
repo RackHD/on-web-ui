@@ -61,7 +61,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   putWorkflowIntoCanvas(friendlyName: any) {
     let workflow = {};
     for (let item of this.workflowStore) {
-      if (item['friendlyName'] === friendlyName) {
+      if (item.friendlyName.replace(/\s/ig, '') === friendlyName.replace(/\s/ig, '')) {
         workflow = item;
         break;
       }
@@ -77,10 +77,8 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     this.selectWorkflow = this.graphService.getInitGraph();
     let container = document.getElementById('jsoneditor');
     let canvas = document.getElementById('mycanvas');
-
     canvas.setAttribute('height', "1000px");
     canvas.setAttribute('width', "800px");
-
     let options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.updateEditor(this.selectWorkflow);
@@ -120,7 +118,6 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   saveWorkflow() {
     this.selectWorkflow = this.editor.get();
     this.isShowModal = true;
-    console.log(this.selectWorkflow);
     this.graphService.createGraph(this.selectWorkflow)
       .subscribe(res => {
           this.saveGraphInfo = {
