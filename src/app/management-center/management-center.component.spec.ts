@@ -19,7 +19,4 @@ describe('ManagementCenterComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 });
