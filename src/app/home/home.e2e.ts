@@ -7,25 +7,12 @@ describe('Home', () => {
     /**
      * Change hash depending on router LocationStrategy.
      */
-    await browser.get('/#/home');
+    await browser.get('/');
   });
 
   it('should have a title', async () => {
     let subject = await browser.getTitle();
-    let result  = 'MARS';
+    let result  = 'RackHD Web UI 2.0';
     expect(subject).toEqual(result);
   });
-
-  it('should have header', async () => {
-    let subject = await element(by.css('header')).isPresent();
-    let result  = true;
-    expect(subject).toEqual(result);
-  });
-
-  it('should load home component', async () => {
-    let subject = await element(by.css('home')).isPresent();
-    let result  = true;
-    expect(subject).toEqual(result);
-  });
-
 });

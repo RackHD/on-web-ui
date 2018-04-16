@@ -38,20 +38,15 @@ exports.config = {
     'browserName': 'chrome',
     'chromeOptions': {
       'args': ["--headless", "--disable-gpu", "--window-size=1280x800",  "--no-sandbox"]
-      // 'args': ['show-fps-counter=true']
     }
   },
 
   onPrepare: function() {
       browser.ignoreSynchronization = true;
-
-      browser.get('/#/login');
-      browser.findElement(by.id('login_username')).sendKeys('katalist');
-      browser.findElement(by.id('login_password')).sendKeys('katalist');
-      browser.findElement(by.css('button[type=submit]')).click();
+      browser.get('/');
       return browser.wait(function() {
         return browser.getCurrentUrl().then(function(url) {
-          return /home/.test(url);
+          return /managementCenter\/nodes$/.test(url);
         });
       }, 10000);
   },
