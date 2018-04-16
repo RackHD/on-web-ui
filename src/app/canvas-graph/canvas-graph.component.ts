@@ -43,7 +43,8 @@ export class CanvasGraphComponent implements OnInit {
     public element: ElementRef,
     public nodeExtensionService: NodeExtensionService,
     public graphTaskService: GraphTaskService,
-    public workflowService: WorkflowService) {
+    public workflowService: WorkflowService
+  ) {
     this.nodeExtensionService.init(
       // use bind to keep context
       this.afterInputConnect.bind(this),
@@ -82,7 +83,7 @@ export class CanvasGraphComponent implements OnInit {
     this.canvas.getNodeMenuOptions = this.getNodeMenuOptions();
 
     /*overwrite default drawBackCanvas to delete border of back canvas */
-    this.canvas.drawBackCanvas = this.drawBackCanvas.bind(this, this.canvas);
+    this.canvas.drawBackCanvas = this.drawBackCanvas();
 
     this.canvas.getCanvasMenuOptions = this.getCanvasMenuOptions();
     this.graph.start();
@@ -90,100 +91,102 @@ export class CanvasGraphComponent implements OnInit {
   }
 
   /* drawBackCanvas is just to delete the border of canvas */
-  drawBackCanvas(self: any) {
-    var canvas = self.bgcanvas;
-    if (canvas.width != self.canvas.width ||
-      canvas.height != self.canvas.height) {
-      canvas.width = self.canvas.width;
-      canvas.height = self.canvas.height;
-    }
-    if (!self.bgctx)
-      self.bgctx = self.bgcanvas.getContext("2d");
-    var ctx = self.bgctx;
-    if (ctx.start)
-      ctx.start();
+  drawBackCanvas() {
+    return function(){
+      var canvas = this.bgcanvas;
+      if (canvas.width != this.canvas.width ||
+        canvas.height != this.canvas.height) {
+        canvas.width = this.canvas.width;
+        canvas.height = this.canvas.height;
+      }
+      if (!this.bgctx)
+        this.bgctx = this.bgcanvas.getContext("2d");
+      var ctx = this.bgctx;
+      if (ctx.start)
+        ctx.start();
 
-    //clear
-    if (self.clear_background)
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      //clear
+      if (this.clear_background)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    //reset in case of error
-    ctx.restore();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+      //reset in case of error
+      ctx.restore();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    if (self.graph) {
-      //apply transformations
-      ctx.save();
-      ctx.scale(self.scale, self.scale);
-      ctx.translate(self.offset[0], self.offset[1]);
+      if (this.graph) {
+        //apply transformations
+        ctx.save();
+        ctx.scale(this.scale, this.scale);
+        ctx.translate(this.offset[0], this.offset[1]);
 
-      //render BG
-      if (self.background_image && self.scale > 0.5) {
-        ctx.globalAlpha = (1.0 - 0.5 / self.scale) * self.editor_alpha;
-        ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = false;
-        if (!self._bg_img || self._bg_img.name != self.background_image) {
-          self._bg_img = new Image();
-          self._bg_img.name = self.background_image;
-          self._bg_img.src = self.background_image;
-          var that = self;
-          self._bg_img.onload = function () {
-            that.draw(true, true);
+        //render BG
+        if (this.background_image && this.scale > 0.5) {
+          ctx.globalAlpha = (1.0 - 0.5 / this.scale) * this.editor_alpha;
+          ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = false;
+          if (!this._bg_img || this._bg_img.name != this.background_image) {
+            this._bg_img = new Image();
+            this._bg_img.name = this.background_image;
+            this._bg_img.src = this.background_image;
+            var that = this;
+            this._bg_img.onload = function () {
+              that.draw(true, true);
+            }
           }
+
+          var pattern = null;
+          if (this._pattern == null && this._bg_img.width > 0) {
+            pattern = ctx.createPattern(this._bg_img, 'repeat');
+            this._pattern_img = this._bg_img;
+            this._pattern = pattern;
+          }
+          else
+            pattern = this._pattern;
+          if (pattern) {
+            ctx.fillStyle = pattern;
+            ctx.fillRect(this.visible_area[0], this.visible_area[1], this.visible_area[2] - this.visible_area[0], this.visible_area[3] - this.visible_area[1]);
+            ctx.fillStyle = "transparent";
+          }
+
+          ctx.globalAlpha = 1.0;
+          ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = true;
         }
 
-        var pattern = null;
-        if (self._pattern == null && self._bg_img.width > 0) {
-          pattern = ctx.createPattern(self._bg_img, 'repeat');
-          self._pattern_img = self._bg_img;
-          self._pattern = pattern;
+        if (this.onBackgroundRender)
+          this.onBackgroundRender(canvas, ctx);
+
+        //DEBUG: show clipping area
+        //ctx.fillStyle = "red";
+        //ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - this.visible_area[0] - 20, this.visible_area[3] - this.visible_area[1] - 20);
+
+        //bg
+        ctx.strokeStyle = "transparent"; //change border to white
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+        if (this.render_connections_shadows) {
+          ctx.shadowColor = "#000";
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+          ctx.shadowBlur = 6;
         }
         else
-          pattern = self._pattern;
-        if (pattern) {
-          ctx.fillStyle = pattern;
-          ctx.fillRect(self.visible_area[0], self.visible_area[1], self.visible_area[2] - self.visible_area[0], self.visible_area[3] - self.visible_area[1]);
-          ctx.fillStyle = "transparent";
-        }
+          ctx.shadowColor = "rgba(0,0,0,0)";
 
-        ctx.globalAlpha = 1.0;
-        ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = true;
-      }
+        //draw connections
+        if (!this.live_mode)
+          this.drawConnections(ctx);
 
-      if (self.onBackgroundRender)
-        self.onBackgroundRender(canvas, ctx);
-
-      //DEBUG: show clipping area
-      //ctx.fillStyle = "red";
-      //ctx.fillRect( self.visible_area[0] + 10, self.visible_area[1] + 10, self.visible_area[2] - self.visible_area[0] - 20, self.visible_area[3] - self.visible_area[1] - 20);
-
-      //bg
-      ctx.strokeStyle = "transparent"; //change border to white
-      ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-      if (self.render_connections_shadows) {
-        ctx.shadowColor = "#000";
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-        ctx.shadowBlur = 6;
-      }
-      else
         ctx.shadowColor = "rgba(0,0,0,0)";
 
-      //draw connections
-      if (!self.live_mode)
-        self.drawConnections(ctx);
+        //restore state
+        ctx.restore();
+      }
 
-      ctx.shadowColor = "rgba(0,0,0,0)";
+      if (ctx.finish)
+        ctx.finish();
 
-      //restore state
-      ctx.restore();
+      this.dirty_bgcanvas = false;
+      this.dirty_canvas = true; //to force to repaint the front canvas with the bgcanvas
     }
-
-    if (ctx.finish)
-      ctx.finish();
-
-    self.dirty_bgcanvas = false;
-    self.dirty_canvas = true; //to force to repaint the front canvas with the bgcanvas
   }
 
   /* setLiteGraph can change some default color */
@@ -448,7 +451,7 @@ export class CanvasGraphComponent implements OnInit {
 
   drawNodes() {
     if (!this.workflow) return;
-    this.graph.clear(); //Krein: (TODO) restore background
+    this.graph.clear();
     let taskWaitOnKey = 'waitingOn';
     let taskIdentifierKey = 'instanceId';
 
@@ -597,9 +600,9 @@ export class CanvasGraphComponent implements OnInit {
     let canvasWidth = parseInt(this.editorCanvas.nativeElement.offsetWidth);
     let canvasHeight = parseInt(this.editorCanvas.nativeElement.offsetHeight);
 
-    let waitOnsList = getWaitOnsList();
-    let colPosMatrix = generateColPos(waitOnsList);
-    let rowPosMatrix = generateRowPos(colPosMatrix, waitOnsList);
+    let waitOnsMatrix = getWaitOnsMatrix();
+    let colPosMatrix = generateColPos(waitOnsMatrix);
+    let rowPosMatrix = generateRowPos(colPosMatrix, waitOnsMatrix);
 
     let colCount = _.max(_.values(colPosMatrix)) + 1;
     let rowCount = _.max(_.values(rowPosMatrix)) + 1;
@@ -615,13 +618,23 @@ export class CanvasGraphComponent implements OnInit {
       positionMatrix[taskId] = [parseInt(x), parseInt(y)];
     })
 
-    function getWaitOnsList(): any {
+    /*
+     * Retrieve only taskId-waitOns from workflow task list
+     */
+    function getWaitOnsMatrix(): any {
       return _.transform(self.workflow.tasks, (result, value, key) => {
         let _value: Task = value as Task;
         result[_value[taskIdKeyName]] = _value[taskWaitOnKey];
       }, {});
     }
 
+    /*
+     * Generate column positions for all tasks based on waitOn level depth
+     * That is:
+     *  if task has no waitOn, its depth is 0;
+     *  if task waitOn task has depth 0, its depth is 1;
+     *  if task waits on tasks, its depth is max depth it waits on plus 1
+     */
     function generateColPos(waitOnsList: any): any {
       let colPosMatrix = {};
       _.forEach(waitOnsList, (waitOns, taskId) => {
@@ -630,38 +643,46 @@ export class CanvasGraphComponent implements OnInit {
       return colPosMatrix;
     }
 
+    /*
+     * Get task column position by taskId
+     */
     function generateColPosForTask(taskId: string, colPosMatrix: any, waitOnsList: any): number {
       let waitOns = waitOnsList[taskId];
       let colPos: number;
-      let waitOnsColIndex: any[];
-      if (_.isUndefined(waitOns) || _.isEmpty(waitOns)) {
-        //Task column position is assigned once identified to save for loop.
-        colPosMatrix[taskId] = 0;
-        return 0;
+      let waitOnsColPosList: any[];
+      if (_.isEmpty(waitOns)) {
+        colPos = 0;
+      } else {
+        //Each task will be placed after all tasks it waits on.
+        colPos = _.max(getWaitOnsColPositions(waitOns, colPosMatrix, waitOnsList)) + 1;
       }
-      waitOnsColIndex = getWaitOnsColIndex(waitOns)
-      //Each task will be placed after all tasks it waits on.
-      //Thus a task will be placed 1 grid after the wait-on task that has maximum column index;
-      colPos = _.max(waitOnsColIndex) + 1;
+
       //Task column position is assigned once identified to save iterations/recursions
       colPosMatrix[taskId] = colPos;
-
-      function getWaitOnsColIndex(waitOns: any): any[] {
-        let colIndexes = [];
-        _.forEach(waitOns, (waitOn, waitOnTask) => {
-          if (!_.isUndefined(colPosMatrix[waitOnTask])) {
-            colIndexes.push(colPosMatrix[waitOnTask]);
-          } else {
-            let waitOnTaskCol = generateColPosForTask(waitOnTask, colPosMatrix, waitOnsList);
-            colIndexes.push(waitOnTaskCol);
-          }
-        });
-        return colIndexes;
-      }
 
       return colPos;
     }
 
+    /*
+     * Get all waitOn tasks's column positions
+     */
+    function getWaitOnsColPositions(waitOns: any, colPosMatrix: any, waitOnsList): number[] {
+      let colIndexes = [];
+      _.forEach(waitOns, (waitOn, waitOnTask) => {
+        if (!_.isUndefined(colPosMatrix[waitOnTask])) {
+          colIndexes.push(colPosMatrix[waitOnTask]);
+        } else {
+          colIndexes.push(generateColPosForTask(waitOnTask, colPosMatrix, waitOnsList));
+        }
+      });
+      return colIndexes;
+    }
+
+    /*
+     * Generate row position for all tasks that have already had column positions
+     * Row position for a task is no less than row position of tasks it waits on
+     * Tasks have the same waitOn will be distribute by iterating sequence
+     */
     function generateRowPos(colPosMatrix: any, waitOnsList: any): any {
       let rowPosMatrix = {};
       let sortedTasks = sortTaskByCol(colPosMatrix);
@@ -675,20 +696,27 @@ export class CanvasGraphComponent implements OnInit {
 
       //Non-first column task's row position follow its waitOn tasks
       for (let colIndex = 1; colIndex < sortedTasks.length; colIndex += 1) {
-        let preColTasks = sortedTasks[colIndex - 1];
+        let preColTasks = sortedTasks[colIndex - 1]; //waitOn task list for all tasks in current column;
         let curColTasks = sortedTasks[colIndex];
-        generateRowPosForCol(curColTasks, preColTasks, rowPosMatrix);
+        generateRowPosForCol(curColTasks, preColTasks, rowPosMatrix, waitOnsList);
       }
 
       return rowPosMatrix;
     }
 
-    //Get row index for tasks in a column
-    function generateRowPosForCol(curColTasks: string[], preColTasks: string[], rowPosMatrix: any) {
+    /*
+     * Get row position for tasks in a column
+     */
+    function generateRowPosForCol(
+      curColTasks: string[],
+      preColTasks: string[],
+      rowPosMatrix: any,
+      waitOnsMatrix: any
+    ) {
       let rowIndex = 0;
       _.forEach(preColTasks, preTask => {
         _.forEach(curColTasks, task => {
-          let waitOnTasks = _.keys(waitOnsList[task]);
+          let waitOnTasks = _.keys(waitOnsMatrix[task]);
           let taskRowPos: number;
           if (_.includes(waitOnTasks, preTask)) {
             taskRowPos = rowIndex;
@@ -703,8 +731,10 @@ export class CanvasGraphComponent implements OnInit {
       });
     }
 
-    //Sort tasks by column index
-    function sortTaskByCol(colPosMatrix) {
+    /*
+     * Sort tasks by column index
+     */
+    function sortTaskByCol(colPosMatrix: any): any[] {
       let taskMatrix = [];
       _.forEach(colPosMatrix, (colIndex, taskId) => {
         if (taskMatrix[colIndex]) {
