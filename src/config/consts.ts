@@ -20,6 +20,6 @@ export const CONSTS = {
     failed: {color: '#dfbda3', bgColor: '#c25400'},
     succeeded: {color: '#caf0a5', bgColor: '#62a420'},
     finished: {color: '#8fcbe9', bgColor: '#007cbb'},
-    pending: {color: '', bgColor: ''}
+    pending: {color: '#e0e0e0', bgColor: ''}
   }
 }
