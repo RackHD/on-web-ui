@@ -7,12 +7,9 @@ describe('App', () => {
     await browser.get('/');
   });
 
-  it('should navigate to home page after login', async () => {
-    await browser.getCurrentUrl().then(url => {
-      let subject = /home/.test(url);
-      let result = true;
-      expect(subject).toEqual(result);
-    });
+  it('should have a title', async () => {
+    let subject = await browser.getTitle();
+    let result  = 'RackHD Web UI 2.0';
+    expect(subject).toEqual(result);
   });
-
 });
