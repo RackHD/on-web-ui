@@ -158,7 +158,7 @@ export class FilesComponent implements OnInit {
     })
   }
 
-  createSubmit(){
+  onCreateSubmit(){
     //existingFilename is used to store filename when updating file
     let existingFilename = this.selectedFile && this.selectedFile.filename;
     let file = this.files[0];

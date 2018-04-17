@@ -39,16 +39,10 @@
       </clr-dg-footer>
     </clr-datagrid>
 
-    <clr-modal
-      *ngIf="action === 'Meta' || action === 'Raw'"
-      [(clrModalOpen)]="isShowModal"
-      [clrModalSize]="'xl'">
-      <h3 class="modal-title">{{action}} data of {{selectedTemplate.name}}</h3>
-      <div class="modal-body">
-        <pre *ngIf="action === 'Meta'">{{rawData | json}}</pre>
-        <pre *ngIf="action === 'Raw'">{{rawData}}</pre>
-      </div>
-    </clr-modal>
+    <grid-details-modal *ngIf="action === 'Meta' || action ==='Raw'"
+      [(isPop)]="isShowModal" [dataType]="action + 'data'" [title]="selectedTemplate.name"
+      [isJson]="action==='Meta'" [data]="rawData">
+    </grid-details-modal>
 
     <clr-modal
       *ngIf="action === 'Upload' || action === 'Update'"

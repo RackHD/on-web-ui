@@ -44,19 +44,9 @@
       </clr-dg-footer>
     </clr-datagrid>
 
-    <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Details of the source info</h3>
-      <div class="modal-body">
-        <pre>{{selectedCatalog | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isShowData" [clrModalSize]="'lg'">
-        <h3 class="modal-title">Data of the source {{specCatalog['source']}} </h3>
-        <div class="modal-body">
-          <pre>{{specCatalog['data'] | json}}</pre>
-        </div>
-    </clr-modal>
+    <grid-details-modal [(isPop)]="isShowDetail" [data]="selectedCatalog"
+      [title]="selectedCatalog && selectedCatalog.source">
+    </grid-details-modal>
   </div>
 
 </div>

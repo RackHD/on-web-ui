@@ -1,24 +1,13 @@
 .app-history-workflows {
     @import "../../management-center/shared/inventory";
-    .status-button:hover {
-      color: blue;
+  .status-header {
+    padding-top: 0;
+    margin-top: -25px;
+    margin-bottom: 35px;
+    .status-button {
+      margin-bottom: -20px;
       cursor: pointer;
+      z-index: 10;
     }
-
-    .status-header {
-      padding-top: 0;
-      margin-top: -25px;
-      margin-bottom: 8px;
-      .header-button {
-        margin-bottom: -20px;
-        cursor: pinter;
-        z-index: 9;
-        &:hover {
-          border-bottom: solid 1px lightblue;
-        }
-      }
-    }
-  .header-button {
-    margin-bottom: -24px;
   }
 }

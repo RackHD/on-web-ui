@@ -18,7 +18,7 @@ export class SkuComponent implements OnInit {
   skuStore: SKU[] = [];
   allSkus: SKU[] = [];
 
-  selectedSku: SKU[];
+  selectedSku: SKU;
   isShowDetail: boolean;
   isShowModal: boolean;
   rawData: any;
@@ -94,12 +94,12 @@ export class SkuComponent implements OnInit {
   }
 
   goToDetail(sku: SKU) {
-    this.selectedSku = [sku];
+    this.selectedSku = sku;
     this.isShowDetail = true;
   }
 
   getChild(objKey: string, sku: SKU){
-    this.selectedSku = [sku];
+    this.selectedSku = sku;
     this.action = _.startCase(objKey);
     this.rawData = sku && sku[objKey];
     this.isShowModal = true;
@@ -152,7 +152,7 @@ export class SkuComponent implements OnInit {
 
   createSkupack(): void {
     let file = this.skuPackFiles[0];
-    let identifier = this.selectedSkus.length && this.selectedSku[0]['id'];
+    let identifier = this.selectedSkus.length && this.selectedSku['id'];
     this.skusService.uploadByPost(file, identifier);
     this.getAllSkus();
   }

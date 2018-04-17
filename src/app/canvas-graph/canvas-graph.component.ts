@@ -596,13 +596,14 @@ export class CanvasGraphComponent implements OnInit {
     let xGridSizeMin = 200; // Avoid overlap between adjacent task blocks
     let yGridSizeMin = 100;
     let positionMatrix = {};
+    let utils = new PositionUtils(this.workflow.tasks, taskIdKeyName, taskWaitOnKey);
 
     let canvasWidth = parseInt(this.editorCanvas.nativeElement.offsetWidth);
     let canvasHeight = parseInt(this.editorCanvas.nativeElement.offsetHeight);
 
-    let waitOnsMatrix = getWaitOnsMatrix();
-    let colPosMatrix = generateColPos(waitOnsMatrix);
-    let rowPosMatrix = generateRowPos(colPosMatrix, waitOnsMatrix);
+    let waitOnsMatrix = utils.getWaitOnsMatrix();
+    let colPosMatrix = utils.generateColPos(waitOnsMatrix);
+    let rowPosMatrix = utils.generateRowPos(colPosMatrix, waitOnsMatrix);
 
     let colCount = _.max(_.values(colPosMatrix)) + 1;
     let rowCount = _.max(_.values(rowPosMatrix)) + 1;
@@ -617,14 +618,30 @@ export class CanvasGraphComponent implements OnInit {
       y = yGridSize * y + yOffset;
       positionMatrix[taskId] = [parseInt(x), parseInt(y)];
     })
+    return positionMatrix;
+  }
+}
+
+
+class PositionUtils {
+
+    private tasks: any [];
+    private idKey: string;
+    private waitOnKey: string;
+
+    constructor(tasks, idKey, waitOnKey) {
+      this.tasks = tasks;
+      this.idKey = idKey;
+      this.waitOnKey = waitOnKey;
+    }
 
     /*
      * Retrieve only taskId-waitOns from workflow task list
      */
-    function getWaitOnsMatrix(): any {
-      return _.transform(self.workflow.tasks, (result, value, key) => {
+    getWaitOnsMatrix(): any {
+      return _.transform(this.tasks, (result, value, key) => {
         let _value: Task = value as Task;
-        result[_value[taskIdKeyName]] = _value[taskWaitOnKey];
+        result[_value[this.idKey]] = _value[this.waitOnKey];
       }, {});
     }
 
@@ -635,10 +652,10 @@ export class CanvasGraphComponent implements OnInit {
      *  if task waitOn task has depth 0, its depth is 1;
      *  if task waits on tasks, its depth is max depth it waits on plus 1
      */
-    function generateColPos(waitOnsList: any): any {
+    generateColPos(waitOnsList: any): any {
       let colPosMatrix = {};
       _.forEach(waitOnsList, (waitOns, taskId) => {
-        generateColPosForTask(taskId, colPosMatrix, waitOnsList);
+        this.generateColPosForTask(taskId, colPosMatrix, waitOnsList);
       });
       return colPosMatrix;
     }
@@ -646,7 +663,7 @@ export class CanvasGraphComponent implements OnInit {
     /*
      * Get task column position by taskId
      */
-    function generateColPosForTask(taskId: string, colPosMatrix: any, waitOnsList: any): number {
+    generateColPosForTask(taskId: string, colPosMatrix: any, waitOnsList: any): number {
       let waitOns = waitOnsList[taskId];
       let colPos: number;
       let waitOnsColPosList: any[];
@@ -654,7 +671,7 @@ export class CanvasGraphComponent implements OnInit {
         colPos = 0;
       } else {
         //Each task will be placed after all tasks it waits on.
-        colPos = _.max(getWaitOnsColPositions(waitOns, colPosMatrix, waitOnsList)) + 1;
+        colPos = _.max(this.getWaitOnsColPositions(waitOns, colPosMatrix, waitOnsList)) + 1;
       }
 
       //Task column position is assigned once identified to save iterations/recursions
@@ -666,13 +683,13 @@ export class CanvasGraphComponent implements OnInit {
     /*
      * Get all waitOn tasks's column positions
      */
-    function getWaitOnsColPositions(waitOns: any, colPosMatrix: any, waitOnsList): number[] {
+    getWaitOnsColPositions(waitOns: any, colPosMatrix: any, waitOnsList): number[] {
       let colIndexes = [];
       _.forEach(waitOns, (waitOn, waitOnTask) => {
         if (!_.isUndefined(colPosMatrix[waitOnTask])) {
           colIndexes.push(colPosMatrix[waitOnTask]);
         } else {
-          colIndexes.push(generateColPosForTask(waitOnTask, colPosMatrix, waitOnsList));
+          colIndexes.push(this.generateColPosForTask(waitOnTask, colPosMatrix, waitOnsList));
         }
       });
       return colIndexes;
@@ -683,9 +700,9 @@ export class CanvasGraphComponent implements OnInit {
      * Row position for a task is no less than row position of tasks it waits on
      * Tasks have the same waitOn will be distribute by iterating sequence
      */
-    function generateRowPos(colPosMatrix: any, waitOnsList: any): any {
+    generateRowPos(colPosMatrix: any, waitOnsList: any): any {
       let rowPosMatrix = {};
-      let sortedTasks = sortTaskByCol(colPosMatrix);
+      let sortedTasks = this.sortTaskByCol(colPosMatrix);
 
       //First column task's row position is arranged by its appearing sequence
       let rowIndex = 0;
@@ -698,7 +715,7 @@ export class CanvasGraphComponent implements OnInit {
       for (let colIndex = 1; colIndex < sortedTasks.length; colIndex += 1) {
         let preColTasks = sortedTasks[colIndex - 1]; //waitOn task list for all tasks in current column;
         let curColTasks = sortedTasks[colIndex];
-        generateRowPosForCol(curColTasks, preColTasks, rowPosMatrix, waitOnsList);
+        this.generateRowPosForCol(curColTasks, preColTasks, rowPosMatrix, waitOnsList);
       }
 
       return rowPosMatrix;
@@ -707,7 +724,7 @@ export class CanvasGraphComponent implements OnInit {
     /*
      * Get row position for tasks in a column
      */
-    function generateRowPosForCol(
+    generateRowPosForCol(
       curColTasks: string[],
       preColTasks: string[],
       rowPosMatrix: any,
@@ -734,7 +751,7 @@ export class CanvasGraphComponent implements OnInit {
     /*
      * Sort tasks by column index
      */
-    function sortTaskByCol(colPosMatrix: any): any[] {
+    sortTaskByCol(colPosMatrix: any): any[] {
       let taskMatrix = [];
       _.forEach(colPosMatrix, (colIndex, taskId) => {
         if (taskMatrix[colIndex]) {
@@ -746,6 +763,4 @@ export class CanvasGraphComponent implements OnInit {
       return taskMatrix;
     };
 
-    return positionMatrix;
-  }
 }

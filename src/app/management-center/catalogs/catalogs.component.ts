@@ -16,7 +16,7 @@ export class CatalogsComponent implements OnInit {
   allCatalogs: Catalog[];
   catalogsStore: Catalog[];
 
-  selectedCatalog: Catalog[];
+  selectedCatalog: Catalog;
   specCatalog: Catalog;
   isShowDetail: boolean;
   isShowData: boolean;
@@ -57,13 +57,8 @@ export class CatalogsComponent implements OnInit {
   }
 
   goToDetail(catalog: Catalog) {
-    this.selectedCatalog = [catalog];
+    this.selectedCatalog = catalog;
     this.isShowDetail = true;
-  }
-
-  goToShowData(catalog: Catalog) {
-    this.specCatalog = catalog;
-    this.isShowData = true;
   }
 
   onAction(action){

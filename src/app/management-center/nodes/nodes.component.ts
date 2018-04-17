@@ -39,10 +39,10 @@ export class NodesComponent implements OnInit {
   isShowDetail: boolean;
 
   isShowObmDetail: boolean;
-  selectedObm: OBM[];
+  selectedObms: OBM[];
 
   isShowIbmDetail: boolean;
-  selectedIbm: OBM[];
+  selectedIbms: OBM[];
 
   isShowSkuDetail: boolean;
   skuDetail: any;
@@ -50,6 +50,8 @@ export class NodesComponent implements OnInit {
   isCreateNode: boolean;
   isDelete: boolean;
   nodeForm: FormGroup;
+
+  selectableNodeTypes: string[];
 
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!'
@@ -83,6 +85,7 @@ export class NodesComponent implements OnInit {
 
   ngOnInit() {
     let self = this;
+    this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
       data => {
         this.nodeTypes = _.transform(
@@ -214,7 +217,7 @@ export class NodesComponent implements OnInit {
 
   goToShowObmDetail(node: Node) {
     this.selectedNode = node;
-    this.selectedObm = [];
+    this.selectedObms = [];
     for (let entry of node.obms) {
       let obmId = entry['ref'].split('/').pop();
       this.getObmById(obmId);
@@ -224,7 +227,7 @@ export class NodesComponent implements OnInit {
 
   goToShowIbmDetail(node: Node) {
     this.selectedNode = node;
-    this.selectedObm = [];
+    this.selectedObms = [];
     for (let entry of node.ibms) {
       let ibmId = entry['ref'].split('/').pop();
       this.getIbmById(ibmId);
@@ -250,14 +253,14 @@ export class NodesComponent implements OnInit {
   getObmById(identifier: string): void {
     this.obmService.getByIdentifier(identifier)
       .subscribe(data => {
-        this.selectedObm.push(data);
+        this.selectedObms.push(data);
       });
   }
 
   getIbmById(identifier: string): void {
     this.ibmService.getByIdentifier(identifier)
       .subscribe(data => {
-        this.selectedIbm.push(data);
+        this.selectedIbms.push(data);
       });
   }
 }

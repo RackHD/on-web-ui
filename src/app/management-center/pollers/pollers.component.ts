@@ -21,7 +21,7 @@ export class PollersComponent implements OnInit {
   pollerStore: Poller[];
   allPollers: Poller[] = [];
 
-  selectedPoller: Poller[];
+  selectedPoller: Poller;
   isShowDetail: boolean;
 
   isCreatePoller: boolean;
@@ -103,7 +103,7 @@ export class PollersComponent implements OnInit {
   }
 
   goToDetail(poller: Poller) {
-    this.selectedPoller = [poller];
+    this.selectedPoller = poller;
     this.isShowDetail = true;
   }
 

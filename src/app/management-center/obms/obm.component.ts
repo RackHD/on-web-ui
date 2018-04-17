@@ -20,7 +20,7 @@ export class ObmComponent implements OnInit {
   obmStore: OBM[];
   allObms: OBM[] = [];
 
-  selectedObm: OBM[];
+  selectedObm: OBM;
   isShowDetail: boolean;
   action: string;
   rawData: string;
@@ -108,12 +108,12 @@ export class ObmComponent implements OnInit {
   }
 
   goToDetail(obm: OBM) {
-    this.selectedObm = [obm];
+    this.selectedObm = obm;
     this.isShowDetail = true;
   }
 
   getChild(objKey: string, obm: OBM){
-    this.selectedObm = [obm];
+    this.selectedObm = obm;
     this.action = _.capitalize(objKey);
     this.rawData = obm && obm[objKey];
     this.isShowModal = true;

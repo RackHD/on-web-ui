@@ -67,96 +67,87 @@
       </clr-dg-footer>
     </clr-datagrid>
 
-    </div>
-    <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'xl'">
-      <h3 class="modal-title">Details of this node</h3>
-      <div class="modal-body">
-        <pre>{{selectedNode | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isShowObmDetail" [clrModalSize]="'xm'">
-      <h3 class="modal-title">Details of the obm</h3>
-      <div class="modal-body">
-        <pre>{{selectedObm | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isShowIbmDetail" [clrModalSize]="'xm'">
-      <h3 class="modal-title">Details of the ibm</h3>
-      <div class="modal-body">
-        <pre>{{selectedIbm | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isShowSkuDetail" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Details of the sku</h3>
-      <div class="modal-body">
-        <pre>{{skuDetail | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isCreateNode" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Create Node</h3>
-      <div class="modal-body">
-        <form [formGroup]="nodeForm" novalidate>
-          <section class="form-block">
-            <div class="form-group">
-              <label for="selects_1">Node Type</label>
-              <div class="select">
-                <select id="selects_1" formControlName="type">
-                  <option>compute</option>
-                  <option>enclosure</option>
-                  <option>switch</option>
-                  <option>pdu</option>
-                  <option>mgmt</option>
-                  <option>others</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="formFileds_1">Node Name</label>
-              <input type="text" id="formFileds_1" formControlName="name">
-            </div>
-
-            <div class="form-group">
-              <label for="selects_3">Auto Discover</label>
-              <div class="select">
-                <select id="selects_3" formControlName="autoDiscover">
-                  <option>true</option>
-                  <option>false</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="formFields">Other Configures</label>
-              <textarea id="formFields" rows="4"
-                placeholder='{"autoDiscover": true, "bootSettings": {}}'
-                formControlName="otherConfig">
-              </textarea>
-            </div>
-          </section>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="isCreateNode = false">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="isCreateNode = false; createNode();">OK</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Are you sure to delete below nodes?</h3>
-      <div class="modal-body">
-        <span *ngFor="let node of selectedNodes; let isLast = last">{{node? node.id : null}}{{isLast ? '' : ', '}}</span>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="isDelete = false; delete();">Confirm</button>
-      </div>
-    </clr-modal>
     <div class="selected">
       Selected nodes:
-      <span *ngFor="let node of selectedNodes; let isLast = last">{{node? node.id : null}}{{isLast ? '' : ', '}}</span>
+      <span *ngFor="let node of selectedNodes; let isLast = last">
+        {{node? node.id : null}}{{isLast ? '' : ', '}}
+      </span>
     </div>
+  </div>
+
+  <grid-details-modal [(isPop)]="isShowDetail" [data]=selectedNode
+    [title]="'node ' + (selectedNode && selectedNode.id)">
+  </grid-details-modal>
+
+  <grid-details-modal [(isPop)]="isShowObmDetail" [data]="selectedObms"
+    [title]="'obm for node ' + (selectedObms && selectedObms[0] && selectedObms[0].node)">
+  </grid-details-modal>
+
+  <grid-details-modal [(isPop)]="isShowIbmDetail" [data]="selectedIbms"
+    [title]="'ibm for node ' + (selectedIbms && selectedIbms[0] && selectedIbms[0].node)">
+  </grid-details-modal>
+
+  <grid-details-modal [(isPop)]="isShowSkuDetail" [data]="selectedIbms"
+    [title]="'sku for node ' + (skuDetail && skuDetail.node)">
+  </grid-details-modal>
+
+  <clr-modal [(clrModalOpen)]="isCreateNode" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Create Node</h3>
+    <div class="modal-body">
+      <form [formGroup]="nodeForm" novalidate>
+        <section class="form-block">
+          <div class="form-group">
+            <label for="selects_1">Node Type</label>
+            <div class="select">
+              <select id="selects_1" formControlName="type">
+                <option *ngFor="let type of selectableNodeTypes">
+                  {{type.toLowerCase()}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="formFileds_1">Node Name</label>
+            <input type="text" id="formFileds_1" formControlName="name">
+          </div>
+
+          <div class="form-group">
+            <label for="selects_3">Auto Discover</label>
+            <div class="select">
+              <select id="selects_3" formControlName="autoDiscover">
+                <option>true</option>
+                <option>false</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formFields">Other Configures</label>
+            <textarea id="formFields" rows="4"
+              placeholder='{"autoDiscover": true, "bootSettings": {}}'
+              formControlName="otherConfig">
+            </textarea>
+          </div>
+        </section>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="isCreateNode = false">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="isCreateNode = false; createNode();">OK</button>
+    </div>
+  </clr-modal>
+
+  <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Are you sure to delete below nodes?</h3>
+    <div class="modal-body">
+      <span *ngFor="let node of selectedNodes; let isLast = last">
+        {{node? node.id : null}}{{isLast ? '' : ', '}}
+      </span>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="isDelete = false; delete();">Confirm</button>
+    </div>
+  </clr-modal>
+
 </div>
