@@ -69,9 +69,9 @@
     </div>
   </div>
 
-  <grid-details-modal [(isPop)]="isShowDetail" [data]="selectedPoller"
+  <details-modal [(isPop)]="isShowDetail" [data]="selectedPoller"
     [title]="'poller ' + (selectedPoller && selectedPoller.id)">
-  </grid-details-modal>
+  </details-modal>
 
   <clr-modal [(clrModalOpen)]="isCreatePoller" [clrModalSize]="'lg'">
     <h3 class="modal-title">Create poller</h3>

@@ -12,7 +12,7 @@ import { ClarityModule } from '@clr/angular';
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'grid-confirm-modal',
+  selector: 'confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],
   encapsulation: ViewEncapsulation.None
@@ -20,15 +20,15 @@ import * as _ from 'lodash';
 
 export class GridConfirmModalComponent {
   isPopValue: boolean = false;
-  @Input() isJson: boolean = true;
-  @Input() size: string = 'lg';
-  @Input() title: string;
-  @Input() data: any;
-  @Input() dataType: string = "Details";
-  @Input() get isPop() {
+  @Input() size: string = 'lg'; // Modal size
+  @Input() title: string; // Modal key title
+  @Input() data: any; // Data to be shown
+  @Input() displayAttr: string = "id"; // Attribute of data to be shown
+  @Input() get isPop() { // Modal popup flag input
     return this.isPopValue;
   }
-  @Output() isPopChange = new EventEmitter();
+  @Output() isPopChange = new EventEmitter(); // Modal popup flag output
+  @Output() action = new EventEmitter(); // Actions output
 
   set isPop(value) {
     this.isPopValue = value;
@@ -37,4 +37,11 @@ export class GridConfirmModalComponent {
 
   constructor(){}
 
+  onReject(){
+    this.action.emit("reject");
+  }
+
+  onAccept(){
+    this.action.emit("accpet");
+  }
 }

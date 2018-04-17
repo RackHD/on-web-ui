@@ -12,7 +12,7 @@ import { ClarityModule } from '@clr/angular';
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'grid-details-modal',
+  selector: 'details-modal',
   templateUrl: './details-modal.component.html',
   styleUrls: ['./details-modal.component.scss'],
   encapsulation: ViewEncapsulation.None

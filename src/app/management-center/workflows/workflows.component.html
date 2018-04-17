@@ -58,10 +58,10 @@
     </div>
   </div>
 
-  <grid-details-modal *ngIf="action ==='Detail' || action === 'Tasks' || action === 'Options'"
+  <details-modal *ngIf="action ==='Detail' || action === 'Tasks' || action === 'Options'"
     [(isPop)]="isShowModal" [data]="rawData"
     [dataType]="action" [title]="selectedWorkflow.injectableName">
-  </grid-details-modal>
+  </details-modal>
 
   <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
     <h3 class="modal-title">Are you sure you want to delete below workflows</h3>

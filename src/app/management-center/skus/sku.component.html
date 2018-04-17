@@ -60,14 +60,14 @@
       </span>
   </div>
 
-  <grid-details-modal [(isPop)]="isShowDetail" [data]="selectedSku"
+  <details-modal [(isPop)]="isShowDetail" [data]="selectedSku"
     [title]="'SKU ' + (selectedSku && selectedSku.id)">
-  </grid-details-modal>
+  </details-modal>
 
-  <grid-details-modal
+  <details-modal
     *ngIf="action ==='Rules' || action === 'Sku Config' || action === 'Discovery Graph Options'"
     [(isPop)]="isShowModal" [data]="rawdata" [dataType]="action" [title]="'SKU ' + selectedSku.name">
-  </grid-details-modal>
+  </details-modal>
 
   <clr-modal *ngIf="isCreateSku" [(clrModalOpen)]="isCreateSku" [clrModalSize]="'lg'">
     <h3 class="modal-title">Create SKU</h3>

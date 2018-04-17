@@ -1,12 +1,12 @@
 <div class="app-nodes">
 
   <div class="row toolbar status-header">
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 status-button"
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 status-button"
       *ngFor="let type of nodeTypes"
       (click)="selectType(type)"
       [class.selected]="selectedType==type.displayName">
-      <h2 class="status-button">{{ nodesTypeCountMatrix[type.identifier] || 0 }}</h2>
-      <span class="count-text">{{ type.displayName }}</span>
+      <h2>{{ nodesTypeCountMatrix[type.identifier] || 0 }}</h2>
+      <span class="font-bold">{{ type.displayName }}</span>
     </div>
   </div>
 
@@ -23,7 +23,7 @@
       </clr-dg-column>
       <clr-dg-column [clrDgSortBy]="typeComparator">
         <ng-container *clrDgHideableColumn="{hidden: false}">Type</ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="typeFilter">
+        <clr-dg-string-filter [clrDgStringFilter]="typeFilter" [(clrFilterValue)]="typeFilterValue">
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column [clrDgSortBy]="nameComparator">
@@ -75,21 +75,21 @@
     </div>
   </div>
 
-  <grid-details-modal [(isPop)]="isShowDetail" [data]=selectedNode
+  <details-modal [(isPop)]="isShowDetail" [data]=selectedNode
     [title]="'node ' + (selectedNode && selectedNode.id)">
-  </grid-details-modal>
+  </details-modal>
 
-  <grid-details-modal [(isPop)]="isShowObmDetail" [data]="selectedObms"
+  <details-modal [(isPop)]="isShowObmDetail" [data]="selectedObms"
     [title]="'obm for node ' + (selectedObms && selectedObms[0] && selectedObms[0].node)">
-  </grid-details-modal>
+  </details-modal>
 
-  <grid-details-modal [(isPop)]="isShowIbmDetail" [data]="selectedIbms"
+  <details-modal [(isPop)]="isShowIbmDetail" [data]="selectedIbms"
     [title]="'ibm for node ' + (selectedIbms && selectedIbms[0] && selectedIbms[0].node)">
-  </grid-details-modal>
+  </details-modal>
 
-  <grid-details-modal [(isPop)]="isShowSkuDetail" [data]="selectedIbms"
+  <details-modal [(isPop)]="isShowSkuDetail" [data]="selectedIbms"
     [title]="'sku for node ' + (skuDetail && skuDetail.node)">
-  </grid-details-modal>
+  </details-modal>
 
   <clr-modal [(clrModalOpen)]="isCreateNode" [clrModalSize]="'lg'">
     <h3 class="modal-title">Create Node</h3>

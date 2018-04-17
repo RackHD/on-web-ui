@@ -1,14 +1,12 @@
 <div class="app-history-workflows">
 
   <div class="row toolbar status-header">
-    <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div *ngFor="let status of statusTypes"
-        class="col-lg-2 col-md-2 col-sm-2 col-xs-2 count-summary status-button"
-        (click)="selectStatus(status)"
-        [class.selected]="selectedStatus == status">
-        <h2 class="status-button">{{ statusCountMatrix && statusCountMatrix[status] || 0 }}</h2>
-        <span class="count-text">{{ status.toUpperCase() }}</span>
-      </div>
+    <div *ngFor="let status of statusTypes"
+      class="col-lg-2 col-md-2 col-sm-2 col-xs-2 status-button"
+      (click)="selectStatus(status)"
+      [class.selected]="selectedStatus == status">
+      <h2>{{ statusCountMatrix && statusCountMatrix[status] || 0 }}</h2>
+      <span class="font-bold">{{ status.toUpperCase() }}</span>
     </div>
   </div>
 
@@ -70,7 +68,9 @@
       </clr-dg-column>
       <clr-dg-column>
         <ng-container *clrDgHideableColumn="{hidden: false}">Status</ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="gridFilters.statusFilter">
+        <clr-dg-string-filter
+          [clrDgStringFilter]="gridFilters.statusFilter"
+          [(clrFilterValue)]="statusFilterValue">
         </clr-dg-string-filter>
       </clr-dg-column>
 
@@ -116,9 +116,9 @@
     </div>
   </div>
 
-  <grid-details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
+  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
     [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="selectedWorkflow.injectableName">
-  </grid-details-modal>
+  </details-modal>
 
   <clr-modal
     *ngIf="modalTypes.alertActions.indexOf(action) != -1"

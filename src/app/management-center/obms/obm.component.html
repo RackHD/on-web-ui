@@ -45,13 +45,13 @@
     </div>
   </div>
 
-  <grid-details-modal [(isPop)]="isShowDetail" [data]="selectedObm"
+  <details-modal [(isPop)]="isShowDetail" [data]="selectedObm"
     [title]="'OBM ' + (selectedObm && selectedObm.id)">
-  </grid-details-modal>
+  </details-modal>
   
-  <grid-details-modal [(isPop)]="isShowModal" [data]="rawData"
+  <details-modal [(isPop)]="isShowModal" [data]="rawData"
     [dataType]="action" [title]="'OBM ' + (selectedObm && selectedObm.id)">
-  </grid-details-modal>
+  </details-modal>
 
   <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'md'">
     <h3 class="modal-title">Create OBM</h3>

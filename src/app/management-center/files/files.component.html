@@ -63,10 +63,10 @@
     </div>
   </div>
 
-  <grid-details-modal *ngIf="action === 'Meta' || action ==='Raw'"
+  <details-modal *ngIf="action === 'Meta' || action ==='Raw'"
     [(isPop)]="isShowModal" [dataType]="action + 'data'" [title]="selectedFile.filename"
     [isJson]="action==='Meta'" [data]="rawData">
-  </grid-details-modal>
+  </details-modal>
 
   <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
     <h3 class="modal-title">Are you sure you want to delete below files</h3>

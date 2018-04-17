@@ -127,9 +127,9 @@
   </div>
 
 
-  <grid-details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
+  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
     [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="selectedWorkflow.injectableName">
-  </grid-details-modal>
+  </details-modal>
 
   <clr-modal
     *ngIf="modalTypes.alertActions.indexOf(action) != -1"

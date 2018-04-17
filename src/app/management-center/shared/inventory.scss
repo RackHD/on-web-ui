@@ -4,27 +4,33 @@
   color: blue;
   cursor: pointer;
 }
+
 .inventory {
   margin-bottom: 4em;
   z-index: 0;
-
   .selected {
     margin-top: 1em;
   }
 }
 
-.status-button:hover {
-  color: blue;
-  cursor: pointer;
-}
-
 .status-header {
-  padding-top: 0;
   margin-top: -25px;
-  margin-bottom: 12px;
-  .header-button {
-    margin-bottom: -20px;
-    cursor: pinter;
-    z-index: 10;
+  margin-bottom: 15px;
+  margin-left: 5px;
+  .selected {
+    background-color: #e0e0e0;
+  }
+  .status-button:hover {
+    background-color: #e0e0e0;
+    cursor: pointer;
+  }
+  .status-button {
+    text-align: center;
+    margin: 0 auto;
+  }
+  .font-bold {
+    font-weight: 500;
+    font-size: large;
   }
 }
+

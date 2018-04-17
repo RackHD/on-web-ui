@@ -66,7 +66,7 @@ export class NodesComponent implements OnInit {
   public typeFilter = new ObjectFilterByKey('type');
   public skuFilter = new ObjectFilterByKey('sku');
   typeFilterValue: string = this.selectedType;
-  skuFilterValue: string = this.selectedSku;
+  // skuFilterValue: string = this.selectedSku;
 
   shapeMap = {
     'compute': 'computer',

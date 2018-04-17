@@ -39,10 +39,10 @@
       </clr-dg-footer>
     </clr-datagrid>
 
-    <grid-details-modal *ngIf="action === 'Meta' || action ==='Raw'"
+    <details-modal *ngIf="action === 'Meta' || action ==='Raw'"
       [(isPop)]="isShowModal" [dataType]="action + 'data'" [title]="selectedTemplate.name"
       [isJson]="action==='Meta'" [data]="rawData">
-    </grid-details-modal>
+    </details-modal>
 
     <clr-modal
       *ngIf="action === 'Upload' || action === 'Update'"
