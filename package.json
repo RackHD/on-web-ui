@@ -59,7 +59,7 @@
     "start:hmr": "npm run server:dev:hmr",
     "start": "npm run server:dev",
     "test": " npm run lint && karma start",
-    "unit-test": " karma start",
+    "unit-test": "cross-env CI=1 karma start",
     "tslint": "tslint",
     "typedoc": "typedoc",
     "version": "npm run build",
