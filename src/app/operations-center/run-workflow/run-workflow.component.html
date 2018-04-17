@@ -16,23 +16,75 @@
              (keyup)="search(searchBox0.value)" placeholder="search workflow"
              (click)="getInitWorkflows()" [(ngModel)]="selectedFriendlyName"
              (change)="putWorkflowIntoJson($event.target.value)">
-      <clr-icon shape="times" *ngIf="selectedFriendlyName" (click)="clearInput()"></clr-icon>
+      <clr-icon shape="times" *ngIf="selectedFriendlyName" (click)="clearGraphInput()"></clr-icon>
     </span>
   </p>
+
+  <!--node operation-->
   <p class="run-workflow-row">
     <span class="col-md-4">
       <label><b>NodeId:</b></label>
-      <datalist id="node_list">
+      <!--node types-->
+      <datalist id="node_type_list">
         <select name="nodetype">
+          <option *ngFor="let node of allNodeType">
+            {{node}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox3 type="text" name="nodetype" id="nodetype" list="node_type_list"
+             placeholder="search nodeType"
+             [(ngModel)]="selectedNodeType"
+             (change)="getNodeTypes(selectedNodeType)">
+      <!--node names-->
+      <datalist id="node_name_list">
+        <select name="nodename">
+          <option *ngFor="let node of allNodeType">
+            {{node}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox3 type="text" name="nodename" id="nodename" list="node_name_list"
+             placeholder="search nodeName"
+             [(ngModel)]="selectedNodeName"
+             (change)="getNodeTypes(selectedNodeName)">
+      <!--node obm-->
+      <datalist id="node_obm_list">
+        <select name="nodeobm">
+          <option *ngFor="let node of allNodeType">
+            {{node}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox3 type="text" name="nodeobm" id="nodeobm" list="node_obm_list"
+             placeholder="search nodeObm"
+             [(ngModel)]="selectedNodeObm"
+             (change)="getNodeTypes(selectedNodeObm)">
+      <!--node sku-->
+      <datalist id="node_sku_list">
+        <select name="nodesku">
+          <option *ngFor="let node of allNodeType">
+            {{node}}
+          </option>
+        </select>
+      </datalist>
+      <input #searchBox3 type="text" name="nodesku" id="nodesku" list="node_sku_list"
+             placeholder="search nodeSku"
+             [(ngModel)]="selectedNodeSku"
+             (change)="getNodeTypes(selectedNodeSku)">
+
+      <!--all nodes-->
+      <datalist id="node_list">
+        <select name="node">
           <option [ngValue]="node" *ngFor="let node of nodes">
             {{node.id}}
           </option>
         </select>
       </datalist>
-      <input #searchBox1 type="text" name="nodetype" id="nodetype" list="node_list"
+      <input #searchBox1 type="text" name="node" id="node" list="node_list"
              placeholder="search nodeId"
              [(ngModel)]="selectedNodeId">
-             <!--(change)="getNodeInforById($event.target.value)">-->
+      <clr-icon shape="times" *ngIf="selectedNodeId" (click)="clearNodeInput()"></clr-icon>
     </span>
   </p>
   <div class="col-md-8" style="padding-left: 0">

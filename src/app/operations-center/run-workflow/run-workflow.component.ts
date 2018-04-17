@@ -3,12 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StringOperator } from '../../utils/inventory-operator';
 import { Subject } from 'rxjs/Rx';
 import * as _ from 'lodash';
+import { NODE_TYPES } from 'app/models';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { JSONEditor } from '../../utils/json-editor';
 import { NodeService } from '../../services/rackhd/node.service';
 import { GraphService } from '../../services/rackhd/graph.service';
 import { WorkflowService } from '../../services/rackhd/workflow.service';
-import { error } from 'util';
 
 @Component({
   selector: 'app-run-workflow',
@@ -26,7 +26,7 @@ export class RunWorkflowComponent implements OnInit {
   };
 
   private searchTerms = new Subject<string>();
-  showModal: boolean
+  showModal: boolean;
   allgraphs: any;
   workflows: any;
   selectedFriendlyName: any;
@@ -34,14 +34,19 @@ export class RunWorkflowComponent implements OnInit {
 
   nodes: any;
   selectedNodeId: any;
+  allNodeType: Array<any> = [];
+  selectedNodeType: any;
+  selectedNodeName: any;
+  selectedNodeObm: any;
+  selectedNodeSku: any;
+
 
   constructor(
     public nodeService: NodeService,
     public graphService: GraphService,
     private activatedRoute: ActivatedRoute,
     private workflowService: WorkflowService,
-    private router: Router
-  ) {}
+    private router: Router) {}
 
   ngOnInit() {
     this.showModal = false;
@@ -50,6 +55,9 @@ export class RunWorkflowComponent implements OnInit {
     this.editor = new JSONEditor(container, options);
     this.getAllNodes();
     this.getAllWorkflows();
+    NODE_TYPES.forEach(node => {
+      this.allNodeType.push(_.upperFirst(node));
+    });
     let searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -121,11 +129,6 @@ export class RunWorkflowComponent implements OnInit {
     }
   }
 
-  clearInput() {
-    this.selectedFriendlyName = null;
-    this.editor.set({});
-  }
-
   updateOptionsEditor(workflow: any) {
     if (workflow.options)
       this.editor.set(workflow.options);
@@ -133,31 +136,51 @@ export class RunWorkflowComponent implements OnInit {
       this.editor.set({});
   }
 
+  clearGraphInput() {
+    this.selectedFriendlyName = null;
+    this.editor.set({});
+  }
+
+  /* some opertions about node*/
+
   getAllNodes() {
     this.nodeService.getAll()
       .subscribe(data => {
         this.nodes = data;
+        console.log("all nodes ==== ",this.nodes);
       });
+  }
+
+  getNodeTypes(type) {
+    console.log(_.lowerFirst(type));
+    this.nodeService.getByIdentifier(_.lowerFirst(type))
+      .subscribe(data => {
+        console.log(data);
+      });
+  }
+
+  clearNodeInput() {
+    this.selectedNodeId = null;
   }
 
   postWorflow() {
     this.showModal = true;
     let payload = this.editor.get();
-    if (_.isEmpty(this.selectedNodeId) || _.isEmpty(this.selectedFriendlyName) || _.isEmpty(payload)){
+    if (_.isEmpty(this.selectedNodeId) || _.isEmpty(this.selectedFriendlyName) || _.isEmpty(payload)) {
       this.runWorkflowRes = {
         title: "Post Workflow Failed!",
         note: "Please confirm if all necessary parameters are complete!",
         type: 2
       };
-    }else {
+    } else {
       this.workflowService.runWorkflow(this.selectedNodeId, this.selectedInjectableName, payload)
         .subscribe(data => {
-          this.runWorkflowRes = {
-            title: "Post Workflow Successfully!",
-            note: "The workflow has run successfully!",
-            type: 1
-          };
-        },
+            this.runWorkflowRes = {
+              title: "Post Workflow Successfully!",
+              note: "The workflow has run successfully!",
+              type: 1
+            };
+          },
           err => {
             this.runWorkflowRes = {
               title: "Post Workflow Failed!",
