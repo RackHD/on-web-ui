@@ -50,4 +50,14 @@
       <button class="btn btn-primary" type="button" (click)="isShowModal = false">Confirm</button>
     </div>
   </clr-modal>
+
+  <clr-modal [(clrModalOpen)]="isWaitOnMismatch" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Error Match Task Lable Waiton</h3>
+    <div class="modal-body">
+      <p>Please check workflow tasks wait on the correct task lable!</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary btn-danger" (click)="isWaitOnMismatch = false;">OK</button>
+    </div>
+  </clr-modal>
 </div>

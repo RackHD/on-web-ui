@@ -29,6 +29,8 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   workflows: any;
   inputValue: any;
 
+  private isWaitOnMismatch  = false;
+
   constructor(
     public graphService: GraphService,
     private router: Router
@@ -106,8 +108,27 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   applyWorkflowJson() {
-    this.selectWorkflow = this.editor.get();
-    this.pushDataToCanvas();
+    let tmpWorkflow = this.editor.get();
+    this.isWaitOnMismatch = this.isTaskWaitOnLegal(tmpWorkflow) ? false : true;
+    if (!this.isWaitOnMismatch) {
+      this.selectWorkflow = tmpWorkflow;
+      this.pushDataToCanvas();
+    }
+  }
+
+  isTaskWaitOnLegal(obj: any): boolean {
+    let isLegal = true;
+    if (obj && obj.tasks) {
+      let taskLables = _.map(obj.tasks, 'label');
+      let waitOnLables = _.unionBy(_.flatten(_.map(obj.tasks, 'waitOn').map(_.keys)));
+      for (let label of waitOnLables) {
+        isLegal = _.includes(taskLables, label);
+        if (isLegal === false) {
+          break;
+        }
+      }
+    }
+    return isLegal;
   }
 
   refreshWorkflow() {
