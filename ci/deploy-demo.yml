@@ -19,6 +19,6 @@ run:
      apt-get install sshpass
      ver=$(cat version/version)
      echo "img_name=" $img_name
-     sshpass -p ${demo_server_pwd} scp    -o StrictHostKeyChecking=no  ui/ci/update_demo_docker.sh   ${demo_server_uname}@${demo_server_ip}:/tmp
+     sshpass -p ${demo_server_pwd} scp -o StrictHostKeyChecking=no  ui/ci/update_demo_docker.sh   ${demo_server_uname}@${demo_server_ip}:/tmp
      sshpass -p ${demo_server_pwd} ssh -t -o StrictHostKeyChecking=no   ${demo_server_uname}@${demo_server_ip} "/tmp//update_demo_docker.sh  ${img_name} ${ver} "
 

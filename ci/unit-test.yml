@@ -11,7 +11,9 @@ run:
   - -exc
   -  |
      ./ci/check_focused_ut.sh
+     apt-get update -y
+     apt-get install -y chromium
+     export CHROME_BIN=/usr/bin/chromium-browser
      npm install
-     echo "[Info] Run Karma Unit-Test with env var CI to be set: "
-     CI="Concourse"  npm run unit-test
+     npm run unit-test
   dir: "ui"

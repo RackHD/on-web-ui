@@ -17,6 +17,8 @@ run:
      pushd ui
      npm install
      npm run build:aot
-     tar -czf ../build_dir/ui-${ver}.tar.gz dist
+     tar -czf ../build_dir/rackhd-ui-2.0-${ver}.tar.gz dist
      popd
      ls *
+     echo "This is ui tar publish task."
+
