@@ -39,7 +39,7 @@ jobs:
     file: ui/ci/build-aot.yml
 
 # This is a dummy job, just to aggregates steps and bump version in "on-success"
-- name: Bump-Version 
+- name: Bump-Version
   public: true
   serial: true
   plan:
@@ -75,9 +75,9 @@ jobs:
     file: ui/ci/tar-build.yml
   on_success:
     do:
-      - put: ui-tar-artifactory 
+      - put: ui-tar-artifactory
         params:
-           file: ./build_dir/ui*.tar.gz
+          file: ./build_dir/rackhd-ui-2.0*.tar.gz
 
 
 - name: UI-docker-build
@@ -106,7 +106,7 @@ jobs:
   - get: ui
     resource: ui-master
   - get: ui_ut_container
-  - task: cont-deployment
+  - task: demo-deployment
     image: ui_ut_container
     file: ui/ci/deploy-demo.yml
     params:
@@ -137,7 +137,7 @@ resources:
   type: semver
   source:
     driver: git
-    uri: git@eos2git.cec.lab.emc.com:((github_repo_owner))/ui.git
+    uri: git@eos2git.cec.lab.emc.com:((github_repo_owner))/rackhd-ui-2.0.git
     branch: version
     file: version
     private_key: ((eos2github-private-key))
@@ -147,7 +147,7 @@ resources:
   source:
     branch: master 
     skip_ssl_verification: true
-    uri: git@eos2git.cec.lab.emc.com:((github_repo_owner))/ui.git
+    uri: git@eos2git.cec.lab.emc.com:((github_repo_owner))/rackhd-ui-2.0.git
     private_key: ((eos2github-private-key))
 
 - name: ui-tar-artifactory
@@ -155,7 +155,7 @@ resources:
   source:
     endpoint: ((local-artifactory))
     password: ((local-artifactory-password))
-    regex: ui-(?<version>.*).tar.gz
+    regex: rackhd-ui-2.0-(?<version>.*).tar.gz
     repository: /generic-local/
     skip_ssl_verification: true
     username: admin

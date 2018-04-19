@@ -11,6 +11,8 @@ jobs:
     resource: ui-pr
     trigger: true
     version: every
+  - get: ui-original-pr
+    resource: ui-pr
   - put: ui-pr
     params:
       path: ui
@@ -21,7 +23,7 @@ jobs:
 # Do UT
 ############################
 
-- name: MARS-UI-Unit-Test
+- name: UI-Unit-Test
   public: true
   plan:
   - get: ui_ut_container
@@ -48,10 +50,10 @@ jobs:
             context: PR-Gate
 
 #############################
-# Do e2e Test 
+# Do e2e Test
 ############################
 
-- name: MARS-UI-e2e-Test
+- name: UI-e2e-Test
   public: true
   plan:
   - get: ui_ut_container
@@ -64,7 +66,7 @@ jobs:
     params:
       fetch_merge: true
 # Run UT task
-  - task: e2e-test 
+  - task: e2e-test
     image: ui_ut_container
     file: ui/ci/e2e-test.yml
     on_failure:
@@ -84,7 +86,7 @@ jobs:
 # Test AOT Build
 ###########################
 
-- name: MARS-UI-AOT-Build
+- name: UI-AOT-Build
   public: true
   plan:
   - get: ui_ut_container
@@ -121,9 +123,9 @@ jobs:
     trigger: true
     version: every
     passed:
-    - MARS-UI-Unit-Test
-    - MARS-UI-e2e-Test
-    - MARS-UI-AOT-Build
+    - UI-Unit-Test
+    - UI-e2e-Test
+    - UI-AOT-Build
   on_success:
       put:  ui-pr
       params:
@@ -161,7 +163,7 @@ resources:
   source:
     repo: {{github_repo}}
     skip_ssl_verification: true
-    uri: git@eos2git.cec.lab.emc.com:{{github_repo_owner}}/ui.git
+    uri: git@eos2git.cec.lab.emc.com:{{github_repo_owner}}/rackhd-ui-2.0.git
     access_token: {{eos2github-token}}
     api_endpoint: https://eos2git.cec.lab.emc.com/api/v3
     base: master

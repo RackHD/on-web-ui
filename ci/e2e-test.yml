@@ -12,10 +12,7 @@ run:
   -  |
      npm install
      npm install protractor -g
-     # update Webdriver (optional, done automatically by postinstall script)
      npm run webdriver:update
-     # # this will start a test server and launch Protractor
      npm run build
      npm run e2e
-
   dir: "ui"

@@ -19,5 +19,5 @@ fi
 
 #run new container
 docker pull ${docker_img_name}:${ver}
-docker run -d -p 8080:80 ${docker_img_name}:${ver}
+docker run -d -p 8081:80 ${docker_img_name}:${ver}
 
