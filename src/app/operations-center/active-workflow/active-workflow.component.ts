@@ -89,7 +89,7 @@ export class ActiveWorkflowComponent implements OnInit {
 
   //getRawData(identifier: string): void {}
 
-  cancelActiveWorkflow(){
+  deleteSel(){
     let list = [];
     _.forEach(this.selectedWorkflows, workflow => {
       if(!workflow.serviceGraph || workflow.serviceGraph === "false"){
@@ -146,6 +146,17 @@ export class ActiveWorkflowComponent implements OnInit {
     }
   };
 
+  onConfirm(value) {
+    switch(value) {
+      case 'reject':
+        this.isShowModal = false;
+        break;
+      case 'accept':
+        this.isShowModal = false;
+        this.deleteSel();
+    }
+  }
+
   onFilter(filtered: Workflow[]){
     this.workflowsStore = filtered;
   }
@@ -190,8 +201,4 @@ export class ActiveWorkflowComponent implements OnInit {
   }
 
   // onCreateSubmit(){}
-
-  onSubmit(){
-    this.cancelActiveWorkflow();
-  }
 }

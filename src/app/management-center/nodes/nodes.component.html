@@ -137,17 +137,8 @@
     </div>
   </clr-modal>
 
-  <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-    <h3 class="modal-title">Are you sure to delete below nodes?</h3>
-    <div class="modal-body">
-      <span *ngFor="let node of selectedNodes; let isLast = last">
-        {{node? node.id : null}}{{isLast ? '' : ', '}}
-      </span>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="isDelete = false; delete();">Confirm</button>
-    </div>
-  </clr-modal>
+  <confirm-modal [(isPop)]="isDelete" title="nodes"
+    (confirm)="onConfirm($event)" [data]="selectedNodes">
+  </confirm-modal>
 
 </div>

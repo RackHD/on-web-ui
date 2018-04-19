@@ -61,6 +61,17 @@ export class ObmComponent implements OnInit {
     this.obmStore = filtered;
   }
 
+  onConfirm(value) {
+    switch(value) {
+      case 'reject':
+        this.isDelete = false;
+        break;
+      case 'accept':
+        this.isDelete = false;
+        this.deleteSel();
+    }
+  }
+
   onAction(action){
     switch(action) {
       case 'Refresh':
@@ -167,7 +178,7 @@ export class ObmComponent implements OnInit {
     this.create(this.updateForm, nodeId);
   }
 
-  delete(): void {
+  deleteSel(): void {
     let list = [];
     _.forEach(this.selectedObms, obm => {
       list.push(obm.id);

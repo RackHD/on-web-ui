@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SKU } from 'app/models/sku';
+import { SKU, ModalTypes } from 'app/models';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
@@ -37,6 +37,8 @@ export class SkuComponent implements OnInit {
 
   defaultRules: string = ' ' ;
 
+  modalTypes: ModalTypes;
+
   constructor(public skusService: SkusService, private fb: FormBuilder) { }
 
   public idComparator = new AlphabeticalComparator('id');
@@ -47,6 +49,7 @@ export class SkuComponent implements OnInit {
   public discoveryGraphNameFilter = new ObjectFilterByKey('discoveryGraphName');
 
   ngOnInit() {
+    this.modalTypes = new ModalTypes(['Rules', 'Sku Config', 'Discovery Graph Options']);
     this.getAllSkus();
     this.createForm();
     this.selectedSkus = [];
@@ -55,6 +58,17 @@ export class SkuComponent implements OnInit {
 
   onFilter(filtered): void {
     this.skuStore = filtered;
+  }
+
+  onConfirm(value) {
+    switch(value) {
+      case 'reject':
+        this.isDelete = false;
+        break;
+      case 'accept':
+        this.isDelete = false;
+        this.deleteSel();
+    }
   }
 
   onAction(action){
@@ -157,7 +171,7 @@ export class SkuComponent implements OnInit {
     this.getAllSkus();
   }
 
-  delete(): void {
+  deleteSel(): void {
     let list = [];
     _.forEach(this.selectedSkus, sku => {
       list.push(sku.id);

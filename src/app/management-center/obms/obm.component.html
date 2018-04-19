@@ -118,17 +118,8 @@
     </div>
   </clr-modal>
 
-  <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-    <h3 class="modal-title">Are you sure to delete below OBMs</h3>
-    <div class="modal-body">
-      <span *ngFor="let obm of selectedObms; let isLast = last">
-        {{obm? obm.id : null}}{{isLast ? '' : ', '}}
-      </span>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
-      <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
-    </div>
-  </clr-modal>
+  <confirm-modal [(isPop)]="isDelete" title="OBMs"
+    (confirm)="onConfirm($event)" [data]="selectedObms">
+  </confirm-modal>
 
 </div>

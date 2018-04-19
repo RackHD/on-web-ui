@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import * as _ from 'lodash';
 
 import { GraphService } from 'app/services/rackhd/graph.service';
-import { Graph } from 'app/models';
+import { Graph, ModalTypes } from 'app/models';
 
 @Component({
   selector: 'app-workflows',
@@ -31,7 +31,9 @@ export class WorkflowsComponent implements OnInit {
   modalFormGroup: FormGroup;
   // data grid helper
   dgDataLoading = false;
-  dgPlaceholder = 'No workflow found!'
+  dgPlaceholder = 'No workflow found!';
+
+  modalTypes: ModalTypes;
 
   public friendlyNameComparator = new AlphabeticalComparator<Graph>('friendlyName');
   public injectableNameComparator = new AlphabeticalComparator<Graph>('injectableName');
@@ -49,6 +51,7 @@ export class WorkflowsComponent implements OnInit {
   ngOnInit() {
     this.isShowModal = false;
     this.getAll();
+    this.modalTypes = new ModalTypes(["Tasks", "Detail", "Options"]);
   }
 
   getAll(): void {

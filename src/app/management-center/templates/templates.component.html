@@ -38,25 +38,24 @@
         <inventory-footer></inventory-footer>
       </clr-dg-footer>
     </clr-datagrid>
-
-    <details-modal *ngIf="action === 'Meta' || action ==='Raw'"
-      [(isPop)]="isShowModal" [dataType]="action + 'data'" [title]="selectedTemplate.name"
-      [isJson]="action==='Meta'" [data]="rawData">
-    </details-modal>
-
-    <clr-modal
-      *ngIf="action === 'Upload' || action === 'Update'"
-      [(clrModalOpen)]="isShowModal"
-      [clrModalSize]="'xl'">
-      <h3 class="modal-title">{{action}} template to RackHD</h3>
-      <div class="modal-body">
-        <label for="fileInput">Choose File</label>
-        <input type="file" (change)="onChange($event)" id="fileInput">
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" type="button" (click)="onCreateSubmit()">Upload</button>
-      </div>
-    </clr-modal>
   </div>
+
+  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+    [(isPop)]="isShowModal" [dataType]="action + 'data'" [title]="selectedTemplate.name"
+    [isJson]="action==='Meta'" [data]="rawData">
+  </details-modal>
+
+  <clr-modal *ngIf="modalTypes.formActions.indexOf(action) !== -1"
+    [(clrModalOpen)]="isShowModal"
+    [clrModalSize]="'xl'">
+    <h3 class="modal-title">{{action}} template to RackHD</h3>
+    <div class="modal-body">
+      <label for="fileInput">Choose File</label>
+      <input type="file" (change)="onChange($event)" id="fileInput">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" (click)="onCreateSubmit()">Upload</button>
+    </div>
+  </clr-modal>
 
 </div>

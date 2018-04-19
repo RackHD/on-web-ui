@@ -1,12 +1,12 @@
 <clr-modal [(clrModalOpen)]="isPop" [clrModalSize]="size">
-  <h3 class="modal-title">Are you sure to delete below {{title}}</h3>
+  <h3 class="modal-title">Are you sure to delete below {{title}}?</h3>
   <div class="modal-body">
     <span *ngFor="let item of data; let isLast = last">
-      {{item ? item.id : null}}{{isLast ? '' : ', '}}
+      {{item ? item[displayAttr] : null}}{{isLast ? '' : ', '}}
     </span>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outlet" (click)="onReject()">Cancel</button>
-    <button type="button" class="btn btn-primary" (click)="onAccpet()">Confirm</button>
+    <button type="button" class="btn btn-info" (click)="onReject()">No</button>
+    <button type="button" class="btn btn-primary" (click)="onAccept()">Yes</button>
   </div>
 </clr-modal>

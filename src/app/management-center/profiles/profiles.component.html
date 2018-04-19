@@ -39,13 +39,13 @@
       </clr-dg-footer>
     </clr-datagrid>
 
-    <details-modal *ngIf="action === 'Meta' || action ==='Raw'"
+    <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
       [(isPop)]="isShowModal" [dataType]="action + 'data'" [title]="selectedProfile.name"
       [isJson]="action==='Meta'" [data]="rawData">
     </details-modal>
 
     <clr-modal
-      *ngIf="action === 'Upload' || action === 'Update'"
+      *ngIf="modalTypes.formActions.indexOf(action) !== -1"
       [(clrModalOpen)]="isShowModal"
       [clrModalSize]="'xl'">
       <h3 class="modal-title">{{action}} profile to RackHD</h3>

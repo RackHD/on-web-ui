@@ -111,13 +111,12 @@ export class HistoryWorkflowComponent implements OnInit {
     })
   }
 
-  deleteWorkflows(){
-    let promises = [];
-    _.forEach(this.selectedWorkflows, workflow => {
-      promises.push(this.workflowService.delete(workflow.instanceId).toPromise());
+  deleteSel(){
+    let list = _.map(this.selectedWorkflows, workflow => {
+      return workflow.instanceId;
     });
-    return Promise.all(promises)
-    .then(() => {
+    this.workflowService.deleteByIdentifiers(list)
+    .subscribe(() => {
       this.refresh();
       this.isShowModal = false;
     });
@@ -159,6 +158,17 @@ export class HistoryWorkflowComponent implements OnInit {
       this.isShowModal = true;
     }
   };
+
+  onConfirm(value) {
+    switch(value) {
+      case 'reject':
+        this.isShowModal = false;
+        break;
+      case 'accept':
+        this.isShowModal = false;
+        this.deleteSel();
+    }
+  }
 
   onFilter(filtered: Workflow[]){
     this.workflowsStore = filtered;
@@ -217,8 +227,4 @@ export class HistoryWorkflowComponent implements OnInit {
   }
 
   // onCreateSubmit(){}
-
-  onSubmit(){
-    this.deleteWorkflows();
-  }
 }

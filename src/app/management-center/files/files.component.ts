@@ -3,12 +3,16 @@ import { Comparator, StringFilter } from "@clr/angular";
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../../utils/inventory-operator';
+import {
+  AlphabeticalComparator,
+  StringOperator,
+  ObjectFilterByKey,
+} from '../../utils/inventory-operator';
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
 
 import { FileService } from '../services/file.service';
-import { File } from '../../models';
+import { File, ModalTypes } from '../../models';
 
 @Component({
   selector: 'app-files',
@@ -28,6 +32,8 @@ export class FilesComponent implements OnInit {
   isShowModal: boolean;
   rawData: string;
 
+  modalTypes: ModalTypes;
+
   // data grid helper
   dgDataLoading = false;
   dgPlaceholder = 'No file found!'
@@ -44,6 +50,7 @@ export class FilesComponent implements OnInit {
 
   ngOnInit() {
     this.isShowModal = false;
+    this.modalTypes = new ModalTypes();
     this.getAll();
   }
 
@@ -99,6 +106,31 @@ export class FilesComponent implements OnInit {
     this.getAll();
   }
 
+  deleteSel(){
+    let idList = _.map(this.selectedFiles, file => {
+      return file.uuid;
+    });
+    this.fileService.deleteByIdentifiers(idList)
+    .subscribe(
+      data =>{
+        this.refresh();
+      },
+      error => {
+        alert(error);
+      }
+    )
+  }
+
+  onConfirm(value) {
+    switch(value) {
+      case 'reject':
+        this.isShowModal = false;
+        break;
+      case 'accept':
+        this.deleteSel();
+    }
+  }
+
   onAction(action){
     switch(action) {
       case 'Refresh':
@@ -143,19 +175,6 @@ export class FilesComponent implements OnInit {
 
   onChange(event){
     this.files =  event.target.files;
-  }
-
-  onDeleteSubmit(){
-    _.map(this.selectedFiles, file => {
-      this.fileService.delete(file.uuid).subscribe(
-        data =>{
-          this.refresh();
-        },
-        error => {
-          alert(error);
-        }
-      )
-    })
   }
 
   onCreateSubmit(){

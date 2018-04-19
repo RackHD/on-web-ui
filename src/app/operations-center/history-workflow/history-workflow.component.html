@@ -120,17 +120,9 @@
     [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="selectedWorkflow.injectableName">
   </details-modal>
 
-  <clr-modal
-    *ngIf="modalTypes.alertActions.indexOf(action) != -1"
-    [(clrModalOpen)]="isShowModal"
-    [clrModalSize]="'xl'">
-    <h3 class="modal-title">Are you sure to cancel below action workflows?</h3>
-    <div class="modal-body">
-      <span *ngFor="let workflow of selectedWorkflows; let isLast = last">{{workflow? workflow.instanceId : null}}{{isLast ? '' : ', '}}</span>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" type="button" (click)="onSubmit()">Confirm</button>
-    </div>
-  </clr-modal>
+  <confirm-modal *ngIf="modalTypes.alertActions.indexOf(action) != -1"
+    [(isPop)]="isShowModal" title="graph objects" displayAttr="instanceId"
+    (confirm)="onConfirm($event)" [data]="selectedWorkflows">
+  </confirm-modal>
 
 </div>

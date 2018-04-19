@@ -64,8 +64,7 @@
     [title]="'SKU ' + (selectedSku && selectedSku.id)">
   </details-modal>
 
-  <details-modal
-    *ngIf="action ==='Rules' || action === 'Sku Config' || action === 'Discovery Graph Options'"
+  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
     [(isPop)]="isShowModal" [data]="rawdata" [dataType]="action" [title]="'SKU ' + selectedSku.name">
   </details-modal>
 
@@ -120,17 +119,8 @@
     </div>
   </clr-modal>
 
-  <clr-modal *ngIf="isDelete" [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-    <h3 class="modal-title">Are you sure to delete below SKUs</h3>
-    <div class="modal-body">
-      <span *ngFor="let sku of selectedSkus; let isLast = last">
-        {{sku? sku.id : null}}{{isLast ? '' : ', '}}
-      </span>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
-      <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
-    </div>
-  </clr-modal>
+  <confirm-modal [(isPop)]="isDelete" title="SKUs" displayAttr="name"
+    (confirm)="onConfirm($event)" [data]="selectedSkus">
+  </confirm-modal>
 
 </div>

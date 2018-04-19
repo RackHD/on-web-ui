@@ -7,7 +7,7 @@ import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../..
 import * as _ from 'lodash';
 
 import { TemplateService } from '../services/template.service';
-import { Template } from '../../models';
+import { Template, ModalTypes } from '../../models';
 
 @Component({
   selector: 'app-templates',
@@ -27,7 +27,9 @@ export class TemplatesComponent implements OnInit {
   rawData: string;
 
   dgDataLoading = false;
-  dgPlaceholder = 'No template found!'
+  dgPlaceholder = 'No template found!';
+
+  modalTypes: ModalTypes;
 
   public scopeComparator = new AlphabeticalComparator<Template>('scope');
   public nameComparator = new AlphabeticalComparator<Template>('name');
@@ -38,9 +40,9 @@ export class TemplatesComponent implements OnInit {
   constructor(private templateService: TemplateService) { }
 
   ngOnInit() {
+    this.modalTypes = new ModalTypes();
     this.getAll();
   }
-
 
   getAll(): void {
     this.templateService.getAll()

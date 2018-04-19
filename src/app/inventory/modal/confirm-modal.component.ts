@@ -28,7 +28,7 @@ export class GridConfirmModalComponent {
     return this.isPopValue;
   }
   @Output() isPopChange = new EventEmitter(); // Modal popup flag output
-  @Output() action = new EventEmitter(); // Actions output
+  @Output() confirm = new EventEmitter(); // Actions output
 
   set isPop(value) {
     this.isPopValue = value;
@@ -38,10 +38,10 @@ export class GridConfirmModalComponent {
   constructor(){}
 
   onReject(){
-    this.action.emit("reject");
+    this.confirm.emit("reject");
   }
 
   onAccept(){
-    this.action.emit("accpet");
+    this.confirm.emit("accept");
   }
 }

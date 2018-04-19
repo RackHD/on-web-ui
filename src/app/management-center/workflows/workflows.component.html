@@ -58,7 +58,7 @@
     </div>
   </div>
 
-  <details-modal *ngIf="action ==='Detail' || action === 'Tasks' || action === 'Options'"
+  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
     [(isPop)]="isShowModal" [data]="rawData"
     [dataType]="action" [title]="selectedWorkflow.injectableName">
   </details-modal>
@@ -75,8 +75,7 @@
     </div>
   </clr-modal>
 
-  <clr-modal
-    *ngIf="action === 'Update' || action === 'Create'"
+  <clr-modal *ngIf="modalTypes.formActions.indexOf(action) !== -1"
     [(clrModalOpen)]="isShowModal"
     [clrModalSize]="'lg'">
     <h3 class="modal-title">{{action}} workflow</h3>

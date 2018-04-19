@@ -66,7 +66,6 @@ export class NodesComponent implements OnInit {
   public typeFilter = new ObjectFilterByKey('type');
   public skuFilter = new ObjectFilterByKey('sku');
   typeFilterValue: string = this.selectedType;
-  // skuFilterValue: string = this.selectedSku;
 
   shapeMap = {
     'compute': 'computer',
@@ -74,7 +73,8 @@ export class NodesComponent implements OnInit {
     'network': 'network-switch'
   }
 
-  constructor(public activatedRoute: ActivatedRoute,
+  constructor(
+    public activatedRoute: ActivatedRoute,
     public router: Router,
     public nodeService: NodeService,
     public obmService: ObmService,
@@ -163,23 +163,32 @@ export class NodesComponent implements OnInit {
     jsonData['type'] = value['type'];
     jsonData['autoDiscover'] = value['autoDiscover'] === 'true' ? true : false;
 
-    // let postData = JSON.stringify(jsonData);
     this.nodeService.post(jsonData)
       .subscribe(data => {
         this.refresh();
       });
   }
 
-  delete(): void {
-    let list = [];
-    _.forEach(this.selectedNodes, node => {
-      list.push(node.id);
+  deleteSel(): void {
+    let list = _.map(this.selectedNodes, node => {
+      return node.id;
     });
 
     this.nodeService.deleteByIdentifiers(list)
     .subscribe(results =>{
       this.refresh();
     });
+  }
+
+  onConfirm(value) {
+    switch(value) {
+      case 'reject':
+        this.isDelete = false;
+        break;
+      case 'accept':
+        this.isDelete = false;
+        this.deleteSel();
+    }
   }
 
   onAction(action){
