@@ -7,7 +7,5 @@ export { AppCoreModule } from './core.module';
 /**
  * export services' class in support of importing in app wide.
  */
-export { DataResolver } from './app.resolver';
-
 export { IconService } from './icon.service';
 
