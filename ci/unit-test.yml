@@ -11,8 +11,6 @@ run:
   - -exc
   -  |
      ./ci/check_focused_ut.sh
-     apt-get update -y
-     apt-get install -y chromium
      export CHROME_BIN=/usr/bin/chromium-browser
      npm install
      npm run unit-test
