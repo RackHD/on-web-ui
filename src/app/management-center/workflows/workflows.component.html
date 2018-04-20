@@ -52,67 +52,62 @@
       </clr-dg-footer>
     </clr-datagrid>
 
-    <clr-modal
-      *ngIf="action ==='Detail' || action === 'Tasks' || action === 'Options'"
-      [(clrModalOpen)]="isShowModal"
-      [clrModalSize]="'xl'">
-      <h3 class="modal-title">{{action}} for {{selectedWorkflow.injectableName}}</h3>
-      <div class="modal-body">
-        <pre>{{rawData | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
-      <h3 class="modal-title">Are you sure you want to delete below workflows</h3>
-      <div class="modal-body">
-        <span *ngFor="let workflow of selectedWorkflows; let isLast = last">
-          {{workflow? workflow.injectableName : null}}{{isLast ? '' : ', '}}
-        </span>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" type="button" (click)="onDeleteSubmit()">Confirm</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal
-      *ngIf="action === 'Update' || action === 'Create'"
-      [(clrModalOpen)]="isShowModal"
-      [clrModalSize]="'lg'">
-      <h3 class="modal-title">{{action}} workflow</h3>
-      <div class="modal-body">
-        <form [formGroup]="modalFormGroup" novalidate>
-          <section class="form-block compact">
-            <div class="form-group">
-              <label for="injectableName">injectableName: </label>
-              <input type="text" id="injectableName" class="input-size" formControlName="injectableName">
-            </div>
-            <div class="form-group">
-              <label for="friendlyName">friendlyName: </label>
-              <input type="text" id="friendlyName" class="input-size"
-                formControlName="friendlyName">
-            </div>
-            <div class="form-group">
-              <label for="options">options: </label>
-              <textarea id="options" rows='3' formControlName="options">
-              </textarea>
-            </div>
-            <div class="form-group">
-              <label for="tasks">tasks: </label>
-              <textarea id="tasks" rows='8' formControlName="tasks">
-              </textarea>
-            </div>
-          </section>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
-        <button class="btn btn-primary" type="button" (click)="onSubmit()">Confirm</button>
-      </div>
-    </clr-modal>
-
     <div class="selected">
       Selected Workflows:
       <span *ngFor="let workflow of selectedWorkflows; let isLast = last">{{workflow? workflow.injectableName : null}}{{isLast ? '' : ', '}}</span>
     </div>
   </div>
+
+  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+    [(isPop)]="isShowModal" [data]="rawData"
+    [dataType]="action" [title]="selectedWorkflow.injectableName">
+  </details-modal>
+
+  <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
+    <h3 class="modal-title">Are you sure you want to delete below workflows</h3>
+    <div class="modal-body">
+      <span *ngFor="let workflow of selectedWorkflows; let isLast = last">
+        {{workflow? workflow.injectableName : null}}{{isLast ? '' : ', '}}
+      </span>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" (click)="onDeleteSubmit()">Confirm</button>
+    </div>
+  </clr-modal>
+
+  <clr-modal *ngIf="modalTypes.formActions.indexOf(action) !== -1"
+    [(clrModalOpen)]="isShowModal"
+    [clrModalSize]="'lg'">
+    <h3 class="modal-title">{{action}} workflow</h3>
+    <div class="modal-body">
+      <form [formGroup]="modalFormGroup" novalidate>
+        <section class="form-block compact">
+          <div class="form-group">
+            <label for="injectableName">injectableName: </label>
+            <input type="text" id="injectableName" class="input-size" formControlName="injectableName">
+          </div>
+          <div class="form-group">
+            <label for="friendlyName">friendlyName: </label>
+            <input type="text" id="friendlyName" class="input-size"
+              formControlName="friendlyName">
+          </div>
+          <div class="form-group">
+            <label for="options">options: </label>
+            <textarea id="options" rows='3' formControlName="options">
+            </textarea>
+          </div>
+          <div class="form-group">
+            <label for="tasks">tasks: </label>
+            <textarea id="tasks" rows='8' formControlName="tasks">
+            </textarea>
+          </div>
+        </section>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-primary" type="button" (click)="onSubmit()">Confirm</button>
+    </div>
+  </clr-modal>
+
 </div>

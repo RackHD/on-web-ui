@@ -20,7 +20,7 @@ export class ObmComponent implements OnInit {
   obmStore: OBM[];
   allObms: OBM[] = [];
 
-  selectedObm: OBM[];
+  selectedObm: OBM;
   isShowDetail: boolean;
   action: string;
   rawData: string;
@@ -59,6 +59,17 @@ export class ObmComponent implements OnInit {
 
   onFilter(filtered): void {
     this.obmStore = filtered;
+  }
+
+  onConfirm(value) {
+    switch(value) {
+      case 'reject':
+        this.isDelete = false;
+        break;
+      case 'accept':
+        this.isDelete = false;
+        this.deleteSel();
+    }
   }
 
   onAction(action){
@@ -108,12 +119,12 @@ export class ObmComponent implements OnInit {
   }
 
   goToDetail(obm: OBM) {
-    this.selectedObm = [obm];
+    this.selectedObm = obm;
     this.isShowDetail = true;
   }
 
   getChild(objKey: string, obm: OBM){
-    this.selectedObm = [obm];
+    this.selectedObm = obm;
     this.action = _.capitalize(objKey);
     this.rawData = obm && obm[objKey];
     this.isShowModal = true;
@@ -167,7 +178,7 @@ export class ObmComponent implements OnInit {
     this.create(this.updateForm, nodeId);
   }
 
-  delete(): void {
+  deleteSel(): void {
     let list = [];
     _.forEach(this.selectedObms, obm => {
       list.push(obm.id);

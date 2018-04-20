@@ -61,102 +61,6 @@
       </clr-dg-footer>
     </clr-datagrid>
 
-    <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Details of the poller info</h3>
-      <div class="modal-body">
-        <pre>{{selectedPoller | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isCreatePoller" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Create poller</h3>
-      <div class="modal-body">
-        <form [formGroup]="pollerForm" novalidate>
-          <section class="form-block">
-            <div class="form-group">
-              <label for="selects_1">Poller Type</label>
-              <div class="select">
-                <select id="selects_1" formControlName="type">
-                  <option>ipmi</option>
-                  <option>snmp</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="selects_2">Node</label>
-              <div class="select">
-                <select id="selects_2" formControlName="node">
-                  <option></option>
-                  <option *ngFor="let node of allNodes;">{{ node.id }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="selects_3">Poll Interval</label>
-              <div class="select">
-                <select id="selects_3" formControlName="pollInterval">
-                  <option></option>
-                  <option *ngFor="let interval of pollerInterval;">{{ interval }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="formFields">Config</label>
-              <textarea id="formFields" rows="4" placeholder='{"command": "driveHealth"}' formControlName="config"></textarea>
-            </div>
-          </section>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="isCreatePoller = false">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="isCreatePoller = false; createPoller();">Ok</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Are you sure to delete below pollers?</h3>
-      <div class="modal-body">
-        <span *ngFor="let poller of selectedPollers; let isLast = last">{{poller? poller.id : null}}{{isLast ? '' : ', '}}</span>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
-        <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Update Poller</h3>
-      <div class="modal-body">
-        <form [formGroup]="updateForm" novalidate>
-          <section class="form-block">
-            <div class="form-group">
-              <label for="update_1">Poller Interval</label>
-              <div class="select">
-                <select id="update_1" formControlName="pollInterval">
-                  <option>{{defaultInterval}}</option>
-                  <option *ngFor="let interval of pollerInterval;">{{ interval }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="update_2">Poller Paused</label>
-              <div class="select">
-                <select id="update_2" formControlName="paused">
-                  <option>{{defaultPaused}}</option>
-                  <option>true</option>
-                  <option>false</option>
-                </select>
-              </div>
-            </div>
-          </section>
-        </form>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outlet" (click)="isUpdate = false">Cancel</button>
-        <button type="button" class="btn btn-primary btn-danger" (click)="isUpdate = false; update();">OK</button>
-      </div>
-    </clr-modal>
     <div class="selected">
       Selected pollers:
       <span *ngFor="let poller of selectedPollers; let isLast = last">
@@ -164,5 +68,92 @@
       </span>
     </div>
   </div>
+
+  <details-modal [(isPop)]="isShowDetail" [data]="selectedPoller"
+    [title]="'poller ' + (selectedPoller && selectedPoller.id)">
+  </details-modal>
+
+  <clr-modal [(clrModalOpen)]="isCreatePoller" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Create poller</h3>
+    <div class="modal-body">
+      <form [formGroup]="pollerForm" novalidate>
+        <section class="form-block">
+          <div class="form-group">
+            <label for="selects_1">Poller Type</label>
+            <div class="select">
+              <select id="selects_1" formControlName="type">
+                <option>ipmi</option>
+                <option>snmp</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="selects_2">Node</label>
+            <div class="select">
+              <select id="selects_2" formControlName="node">
+                <option></option>
+                <option *ngFor="let node of allNodes;">{{ node.id }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="selects_3">Poll Interval</label>
+            <div class="select">
+              <select id="selects_3" formControlName="pollInterval">
+                <option></option>
+                <option *ngFor="let interval of pollerInterval;">{{ interval }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="formFields">Config</label>
+            <textarea id="formFields" rows="4" placeholder='{"command": "driveHealth"}' formControlName="config"></textarea>
+          </div>
+        </section>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="isCreatePoller = false">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="isCreatePoller = false; createPoller();">Ok</button>
+    </div>
+  </clr-modal>
+
+  <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Update Poller</h3>
+    <div class="modal-body">
+      <form [formGroup]="updateForm" novalidate>
+        <section class="form-block">
+          <div class="form-group">
+            <label for="update_1">Poller Interval</label>
+            <div class="select">
+              <select id="update_1" formControlName="pollInterval">
+                <option>{{defaultInterval}}</option>
+                <option *ngFor="let interval of pollerInterval;">{{ interval }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="update_2">Poller Paused</label>
+            <div class="select">
+              <select id="update_2" formControlName="paused">
+                <option>{{defaultPaused}}</option>
+                <option>true</option>
+                <option>false</option>
+              </select>
+            </div>
+          </div>
+        </section>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outlet" (click)="isUpdate = false">Cancel</button>
+      <button type="button" class="btn btn-primary btn-danger" (click)="isUpdate = false; update();">OK</button>
+    </div>
+  </clr-modal>
+
+  <confirm-modal [(isPop)]="isDelete" title="pollers"
+    (confirm)="onConfirm($event)" [data]="selectedPollers">
+  </confirm-modal>
 
 </div>

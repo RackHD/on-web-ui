@@ -52,91 +52,75 @@
         <inventory-footer></inventory-footer>
       </clr-dg-footer>
     </clr-datagrid>
-    <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Details of the sku info</h3>
-      <div class="modal-body">
-        <pre>{{selectedSku | json}}</pre>
-      </div>
-    </clr-modal>
 
-    <clr-modal *ngIf="isCreateSku" [(clrModalOpen)]="isCreateSku" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Create SKU</h3>
-      <div class="modal-body">
-        <div class="form-group">
-            <label>Choose how to create sku</label>
-            <div class="radio-inline">
-                <input type="radio" name="gridRadios" id="skuPack" [checked]='!isSkuOnly' (change)="onRadioChange()">
-                <label for="skuPack">SKU pack</label>
-            </div>
-            <div class="radio-inline">
-                <input type="radio" name="gridRadios" id="skuOnly" [checked]='isSkuOnly' (change)="onRadioChange()">
-                <label for="skuOnly">SKU only</label>
-            </div>
-        </div>
-        <div *ngIf="!isSkuOnly" class="form-group">
-          <label for="fileInput">Choose File</label>
-          <input type="file" (change)="onChange($event)" id="fileInput">
-        </div>
-        <form *ngIf="isSkuOnly" [formGroup]="skuForm" novalidate>
-          <section class="form-block">
-            <div class="form-group">
-              <label for="formFileds_1">name</label>
-              <input type="text" id="formFileds_1" formControlName="name">
-            </div>
-            <div class="form-group">
-              <label for="formFileds_2">discoveryGraphName</label>
-              <input type="text" id="formFileds_2" formControlName="discoveryGraphName">
-            </div>
-            <div class="form-group">
-              <label for="formFileds_3">rules</label>
-              <textarea id="formFields_3" rows="6" placeholder='[{
-                  "path": "ohai.dmi.system.product_name",
-                  "contains": "D51B-2U"
-                  },{
-                  "path": "ohai.dmi.system.manufacturer",
-                  "contains": "Quanta"
-                  }]' formControlName="rules"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="formFileds_4">discoveryGraphOptions</label>
-              <textarea id="formFields" rows="4" placeholder='{}' formControlName="discoveryGraphOptions"></textarea>
-            </div>
-          </section>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="isCreateSku = false">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="isCreateSku = false; isSkuOnly ? createSku() : createSkupack();">OK</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal *ngIf="isDelete" [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Are you sure to delete below SKUs</h3>
-      <div class="modal-body">
-        <span *ngFor="let sku of selectedSkus; let isLast = last">
-          {{sku? sku.id : null}}{{isLast ? '' : ', '}}
-        </span>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
-        <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal
-      *ngIf="action ==='Rules' || action === 'Sku Config' || action === 'Discovery Graph Options'"
-      [(clrModalOpen)]="isShowModal"
-      [clrModalSize]="'xl'">
-      <h3 class="modal-title">{{action}} for {{selectedSku[0].name}}</h3>
-      <div class="modal-body">
-        <pre>{{rawData | json}}</pre>
-      </div>
-    </clr-modal>
     <div class="selected">
       Selected SKUs:
       <span *ngFor="let sku of selectedSkus; let isLast = last">
         {{sku? sku.id : null}}{{isLast ? '' : ', '}}
       </span>
   </div>
+
+  <details-modal [(isPop)]="isShowDetail" [data]="selectedSku"
+    [title]="'SKU ' + (selectedSku && selectedSku.id)">
+  </details-modal>
+
+  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+    [(isPop)]="isShowModal" [data]="rawdata" [dataType]="action" [title]="'SKU ' + selectedSku.name">
+  </details-modal>
+
+  <clr-modal *ngIf="isCreateSku" [(clrModalOpen)]="isCreateSku" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Create SKU</h3>
+    <div class="modal-body">
+      <div class="form-group">
+          <label>Choose how to create sku</label>
+          <div class="radio-inline">
+              <input type="radio" name="gridRadios" id="skuPack" [checked]='!isSkuOnly' (change)="onRadioChange()">
+              <label for="skuPack">SKU pack</label>
+          </div>
+          <div class="radio-inline">
+              <input type="radio" name="gridRadios" id="skuOnly" [checked]='isSkuOnly' (change)="onRadioChange()">
+              <label for="skuOnly">SKU only</label>
+          </div>
+      </div>
+      <div *ngIf="!isSkuOnly" class="form-group">
+        <label for="fileInput">Choose File</label>
+        <input type="file" (change)="onChange($event)" id="fileInput">
+      </div>
+      <form *ngIf="isSkuOnly" [formGroup]="skuForm" novalidate>
+        <section class="form-block">
+          <div class="form-group">
+            <label for="formFileds_1">name</label>
+            <input type="text" id="formFileds_1" formControlName="name">
+          </div>
+          <div class="form-group">
+            <label for="formFileds_2">discoveryGraphName</label>
+            <input type="text" id="formFileds_2" formControlName="discoveryGraphName">
+          </div>
+          <div class="form-group">
+            <label for="formFileds_3">rules</label>
+            <textarea id="formFields_3" rows="6" placeholder='[{
+                "path": "ohai.dmi.system.product_name",
+                "contains": "D51B-2U"
+                },{
+                "path": "ohai.dmi.system.manufacturer",
+                "contains": "Quanta"
+                }]' formControlName="rules"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="formFileds_4">discoveryGraphOptions</label>
+            <textarea id="formFields" rows="4" placeholder='{}' formControlName="discoveryGraphOptions"></textarea>
+          </div>
+        </section>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="isCreateSku = false">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="isCreateSku = false; isSkuOnly ? createSku() : createSkupack();">OK</button>
+    </div>
+  </clr-modal>
+
+  <confirm-modal [(isPop)]="isDelete" title="SKUs" displayAttr="name"
+    (confirm)="onConfirm($event)" [data]="selectedSkus">
+  </confirm-modal>
 
 </div>

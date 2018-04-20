@@ -37,26 +37,16 @@
         <clr-dg-cell >{{catalog.updatedAt}}</clr-dg-cell>
         <clr-dg-action-overflow>
             <button class="action-item" (click)="goToDetail(catalog)">Details</button>
-          </clr-dg-action-overflow>
+        </clr-dg-action-overflow>
       </clr-dg-row>
       <clr-dg-footer>
         <inventory-footer></inventory-footer>
       </clr-dg-footer>
     </clr-datagrid>
 
-    <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Details of the source info</h3>
-      <div class="modal-body">
-        <pre>{{selectedCatalog | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isShowData" [clrModalSize]="'lg'">
-        <h3 class="modal-title">Data of the source {{specCatalog['source']}} </h3>
-        <div class="modal-body">
-          <pre>{{specCatalog['data'] | json}}</pre>
-        </div>
-    </clr-modal>
+    <details-modal [(isPop)]="isShowDetail" [data]="selectedCatalog"
+      [title]="selectedCatalog && selectedCatalog.source">
+    </details-modal>
   </div>
 
 </div>

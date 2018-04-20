@@ -21,7 +21,7 @@ export class PollersComponent implements OnInit {
   pollerStore: Poller[];
   allPollers: Poller[] = [];
 
-  selectedPoller: Poller[];
+  selectedPoller: Poller;
   isShowDetail: boolean;
 
   isCreatePoller: boolean;
@@ -71,6 +71,17 @@ export class PollersComponent implements OnInit {
     this.pollerStore = filtered;
   }
 
+  onConfirm(value) {
+    switch(value) {
+      case 'reject':
+        this.isDelete = false;
+        break;
+      case 'accept':
+        this.isDelete = false;
+        this.deleteSel();
+    }
+  }
+
   onAction(action){
     switch(action) {
       case 'Refresh':
@@ -103,7 +114,7 @@ export class PollersComponent implements OnInit {
   }
 
   goToDetail(poller: Poller) {
-    this.selectedPoller = [poller];
+    this.selectedPoller = poller;
     this.isShowDetail = true;
   }
 
@@ -201,7 +212,7 @@ export class PollersComponent implements OnInit {
       });
   }
 
-  delete(): void {
+  deleteSel(): void {
     let list = [];
     _.forEach(this.selectedPollers, poller => {
       list.push(poller.id);

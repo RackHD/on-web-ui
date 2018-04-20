@@ -11,10 +11,10 @@ export class ModalTypes {
   formActions: string [];
   otherActions: string [];
   constructor(
-    detailList = ["Detail"],
-    otherList = [],
+    detailList = ["Detail", "Raw", "Meta"],
     alertList = ["Delete", "Cancel"],
-    formList = ["Update", "Create"]
+    formList = ["Update", "Create", "Upload"],
+    otherList = []
   ) {
     this.detailActions = detailList;
     this.alertActions = alertList;

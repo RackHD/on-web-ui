@@ -1,14 +1,12 @@
 <div class="app-history-workflows">
 
   <div class="row toolbar status-header">
-    <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div *ngFor="let status of statusTypes"
-        class="col-lg-2 col-md-2 col-sm-2 col-xs-2 count-summary status-button"
-        (click)="selectStatus(status)"
-        [class.selected]="selectedStatus == status">
-        <h2 class="status-button">{{ statusCountMatrix && statusCountMatrix[status] || 0 }}</h2>
-        <span class="count-text">{{ status.toUpperCase() }}</span>
-      </div>
+    <div *ngFor="let status of statusTypes"
+      class="col-lg-2 col-md-2 col-sm-2 col-xs-2 status-button"
+      (click)="selectStatus(status)"
+      [class.selected]="selectedStatus == status">
+      <h2>{{ statusCountMatrix && statusCountMatrix[status] || 0 }}</h2>
+      <span class="font-bold">{{ status.toUpperCase() }}</span>
     </div>
   </div>
 
@@ -21,7 +19,7 @@
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows">
       <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
       <clr-dg-column>
-        <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
+        <ng-container *clrDgHideableColumn="{hidden: true}">ID</ng-container>
         <clr-dg-string-filter [clrDgStringFilter]="gridFilters.idFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
@@ -56,7 +54,7 @@
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column>
-        <ng-container *clrDgHideableColumn="{hidden: false}">Context</ng-container>
+        <ng-container *clrDgHideableColumn="{hidden: true}">Context</ng-container>
         <clr-dg-string-filter [clrDgStringFilter]="gridFilters.contextFilter">
         </clr-dg-string-filter>
       </clr-dg-column>
@@ -66,11 +64,13 @@
         </clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column>
-        <ng-container *clrDgHideableColumn="{hidden: false}">Service</ng-container>
+        <ng-container *clrDgHideableColumn="{hidden: true}">Service</ng-container>
       </clr-dg-column>
       <clr-dg-column>
         <ng-container *clrDgHideableColumn="{hidden: false}">Status</ng-container>
-        <clr-dg-string-filter [clrDgStringFilter]="gridFilters.statusFilter">
+        <clr-dg-string-filter
+          [clrDgStringFilter]="gridFilters.statusFilter"
+          [(clrFilterValue)]="statusFilterValue">
         </clr-dg-string-filter>
       </clr-dg-column>
 
@@ -108,37 +108,21 @@
       <clr-dg-footer>
         <inventory-footer></inventory-footer>
       </clr-dg-footer>
-
     </clr-datagrid>
-
-    <clr-modal
-      *ngIf="modalTypes.detailActions.indexOf(action) != -1"
-      [(clrModalOpen)]="isShowModal"
-      [clrModalSize]="'xl'">
-      <h3 class="modal-title">{{action}} for {{selectedWorkflow.injectableName}}</h3>
-      <div class="modal-body">
-        <pre>{{rawData | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <clr-modal
-      *ngIf="modalTypes.alertActions.indexOf(action) != -1"
-      [(clrModalOpen)]="isShowModal"
-      [clrModalSize]="'xl'">
-      <h3 class="modal-title">Are you sure to cancel below action workflows?</h3>
-      <div class="modal-body">
-        <span *ngFor="let workflow of selectedWorkflows; let isLast = last">{{workflow? workflow.instanceId : null}}{{isLast ? '' : ', '}}</span>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" type="button" (click)="onSubmit()">Confirm</button>
-      </div>
-    </clr-modal>
 
     <div class="selected">
       Selected Workflows:
       <span *ngFor="let workflow of selectedWorkflows; let isLast = last">{{workflow? workflow.instanceId : null}}{{isLast ? '' : ', '}}</span>
     </div>
-
   </div>
+
+  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
+    [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="selectedWorkflow.injectableName">
+  </details-modal>
+
+  <confirm-modal *ngIf="modalTypes.alertActions.indexOf(action) != -1"
+    [(isPop)]="isShowModal" title="graph objects" displayAttr="instanceId"
+    (confirm)="onConfirm($event)" [data]="selectedWorkflows">
+  </confirm-modal>
 
 </div>

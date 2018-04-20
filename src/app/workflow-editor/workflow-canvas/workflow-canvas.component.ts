@@ -29,7 +29,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   workflows: any;
   inputValue: any;
 
-  private isWaitOnMismatch  = false;
+  isWaitOnMismatch  = false;
 
   constructor(
     public graphService: GraphService,

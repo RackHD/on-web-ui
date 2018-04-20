@@ -36,106 +36,90 @@
         <inventory-footer></inventory-footer>
       </clr-dg-footer>
     </clr-datagrid>
-    <clr-modal [(clrModalOpen)]="isShowDetail" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Details of the obm info</h3>
-      <div class="modal-body">
-        <pre>{{selectedObm | json}}</pre>
-      </div>
-    </clr-modal>
 
-    <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'md'">
-      <h3 class="modal-title">Create OBM</h3>
-      <div class="modal-body">
-        <form [formGroup]="obmForm" novalidate>
-          <section class="form-block">
-            <div class="form-group">
-              <label for="selects_2">NodeId</label>
-              <div class="select">
-                <select id="selects_2" formControlName="nodeId">
-                  <option></option>
-                  <option *ngFor="let node of allNodes;">{{ node.id }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="formFileds_1">user</label>
-              <input type="text" id="formFileds_1" formControlName="user">
-            </div>
-
-            <div class="form-group">
-              <label for="formFileds_2">password</label>
-              <input type="password" id="formFileds_2" formControlName="password">
-            </div>
-
-            <div class="form-group">
-              <label for="formFileds_3">host</label>
-              <input type="text" id="formFileds_3" formControlName="host">
-            </div>
-          </section>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="isCreateObm = false">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="isCreateObm = false; createObm();">OK</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'md'">
-      <h3 class="modal-title">Update OBM</h3>
-      <div class="modal-body">
-        <form [formGroup]="updateForm" novalidate>
-          <section class="form-block">
-            <div class="form-group">
-              <label for="formFileds_1">user</label>
-              <input type="text" id="formFileds_1" formControlName="user">
-            </div>
-
-            <div class="form-group">
-              <label for="formFileds_2" class="required">password</label>
-              <input type="password" id="formFileds_2" formControlName="password">
-            </div>
-
-            <div class="form-group">
-              <label for="formFileds_3">host</label>
-              <input type="text" id="formFileds_3" formControlName="host">
-            </div>
-          </section>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="isUpdate = false">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="isUpdate = false; update();">OK</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isDelete" [clrModalSize]="'lg'">
-      <h3 class="modal-title">Are you sure to delete below OBMs</h3>
-      <div class="modal-body">
-        <span *ngFor="let obm of selectedObms; let isLast = last">
-          {{obm? obm.id : null}}{{isLast ? '' : ', '}}
-        </span>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outlet" (click)="isDelete = false">Cancel</button>
-        <button type="button" class="btn btn-primary btn-danger" (click)="isDelete = false; delete();">OK</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal
-      *ngIf="action ==='Config'"
-      [(clrModalOpen)]="isShowModal"
-      [clrModalSize]="'xl'">
-      <h3 class="modal-title">{{action}} for {{selectedObm[0].id}}</h3>
-      <div class="modal-body">
-        <pre>{{rawData | json}}</pre>
-      </div>
-    </clr-modal>
-
-    <div class="modal-body">
+    <div class="selected">
       Selected OBMs:
       <span *ngFor="let obm of selectedObms; let isLast = last">
         {{obm? obm.id : null}}{{isLast ? '' : ', '}}
       </span>
     </div>
   </div>
+
+  <details-modal [(isPop)]="isShowDetail" [data]="selectedObm"
+    [title]="'OBM ' + (selectedObm && selectedObm.id)">
+  </details-modal>
+  
+  <details-modal [(isPop)]="isShowModal" [data]="rawData"
+    [dataType]="action" [title]="'OBM ' + (selectedObm && selectedObm.id)">
+  </details-modal>
+
+  <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'md'">
+    <h3 class="modal-title">Create OBM</h3>
+    <div class="modal-body">
+      <form [formGroup]="obmForm" novalidate>
+        <section class="form-block">
+          <div class="form-group">
+            <label for="selects_2">NodeId</label>
+            <div class="select">
+              <select id="selects_2" formControlName="nodeId">
+                <option></option>
+                <option *ngFor="let node of allNodes;">{{ node.id }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="formFileds_1">user</label>
+            <input type="text" id="formFileds_1" formControlName="user">
+          </div>
+
+          <div class="form-group">
+            <label for="formFileds_2">password</label>
+            <input type="password" id="formFileds_2" formControlName="password">
+          </div>
+
+          <div class="form-group">
+            <label for="formFileds_3">host</label>
+            <input type="text" id="formFileds_3" formControlName="host">
+          </div>
+        </section>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="isCreateObm = false">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="isCreateObm = false; createObm();">OK</button>
+    </div>
+  </clr-modal>
+
+  <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'md'">
+    <h3 class="modal-title">Update OBM</h3>
+    <div class="modal-body">
+      <form [formGroup]="updateForm" novalidate>
+        <section class="form-block">
+          <div class="form-group">
+            <label for="formFileds_1">user</label>
+            <input type="text" id="formFileds_1" formControlName="user">
+          </div>
+
+          <div class="form-group">
+            <label for="formFileds_2" class="required">password</label>
+            <input type="password" id="formFileds_2" formControlName="password">
+          </div>
+
+          <div class="form-group">
+            <label for="formFileds_3">host</label>
+            <input type="text" id="formFileds_3" formControlName="host">
+          </div>
+        </section>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="isUpdate = false">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="isUpdate = false; update();">OK</button>
+    </div>
+  </clr-modal>
+
+  <confirm-modal [(isPop)]="isDelete" title="OBMs"
+    (confirm)="onConfirm($event)" [data]="selectedObms">
+  </confirm-modal>
+
 </div>

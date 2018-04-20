@@ -7,7 +7,7 @@ import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from 'app/u
 import * as _ from 'lodash';
 
 import { ProfileService } from 'app/management-center/services/profile.service';
-import { Profile } from 'app/models';
+import { Profile, ModalTypes } from 'app/models';
 
 @Component({
   selector: 'app-profiles',
@@ -26,6 +26,8 @@ export class ProfilesComponent implements OnInit {
   isShowModal: boolean;
   rawData: string;
 
+  modalTypes: ModalTypes;
+
   // data grid helper
   dgDataLoading = false;
   dgPlaceholder = 'No profile found!'
@@ -40,6 +42,7 @@ export class ProfilesComponent implements OnInit {
 
   ngOnInit() {
     this.getAll();
+    this.modalTypes = new ModalTypes();
   }
 
   getAll(): void {

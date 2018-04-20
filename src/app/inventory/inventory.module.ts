@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 
 import { InventoryFooterComponent } from './footer/footer.component';
 import { InventoryHeaderComponent } from './header/header.component';
+import { GridDetailsModalComponent } from './modal/details-modal.component';
+import { GridConfirmModalComponent } from './modal/confirm-modal.component';
 
 
 @NgModule({
@@ -18,10 +20,14 @@ import { InventoryHeaderComponent } from './header/header.component';
   exports: [
     InventoryFooterComponent,
     InventoryHeaderComponent,
+    GridDetailsModalComponent,
+    GridConfirmModalComponent,
   ],
   declarations: [
     InventoryFooterComponent,
     InventoryHeaderComponent,
+    GridDetailsModalComponent,
+    GridConfirmModalComponent,
   ]
 })
 export class InventoryModule {}
