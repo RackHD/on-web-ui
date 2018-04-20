@@ -3,7 +3,7 @@ github_repo_owner: Maglev
 local-registry: 10.62.59.201:5000
 local-registry-repo-ui-release: 10.62.59.201:5000/rackhd-ui/ui
 local-registry-repo-pr: 10.62.59.201:5000/concourse/pull-request
-local-registry-repo-ut: 10.62.59.201:5000/ui/ci_test_env
+local-registry-repo-ut: 10.62.59.201:5000/rackhd-ui/ci_test_env
 local-artifactory: http://10.62.59.204:8081/artifactory
 local-artifactory-password: Zilog256
 artifactory-docker-image: 10.62.59.201:5000/pivotalservices/artifactory-resource
