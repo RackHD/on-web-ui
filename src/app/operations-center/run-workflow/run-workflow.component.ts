@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StringOperator } from '../../utils/inventory-operator';
 import { Subject } from 'rxjs/Rx';
 import * as _ from 'lodash';
-import { NODE_TYPES } from 'app/models';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { JSONEditor } from '../../utils/json-editor';
 import { NodeService } from '../../services/rackhd/node.service';
@@ -35,30 +34,26 @@ export class RunWorkflowComponent implements OnInit {
   selectedInjectableName: any;
 
   allNodesInfo: Array<any> = [];
-  filteredNode: Array<any> = [];
-
-  allNodeTypes: Array<any> = [];
-  allNodeNames: Array<any> = [];
-  allNodeObms: Array<any> = [];
-  allNodeObmsName: Array<any> = [];
-  allNodeSkus: Array<any> = [];
-  allNodeSkusName: Array<any> = [];
+  skuList = [];
+  obmsList = [];
+  nameList = [];
+  typeList = [];
+  selectedNodeStore: Array<any> = [];
 
   selectedNodeType: any;
   selectedNodeName: any;
   selectedNodeObm: any;
   selectedNodeSku: any;
-
   selectedNodeId: any;
 
-  constructor(public nodeService: NodeService,
-              public graphService: GraphService,
-              private activatedRoute: ActivatedRoute,
-              private workflowService: WorkflowService,
-              private catalogsService: CatalogsService,
-              private obmService: ObmService,
-              private router: Router) {
-  }
+  constructor(
+    public nodeService: NodeService,
+    public graphService: GraphService,
+    private activatedRoute: ActivatedRoute,
+    private workflowService: WorkflowService,
+    private catalogsService: CatalogsService,
+    private obmService: ObmService,
+    private router: Router) {}
 
   ngOnInit() {
     this.showModal = false;
@@ -153,167 +148,84 @@ export class RunWorkflowComponent implements OnInit {
   /* some opertions about node*/
 
   getAllNodes() {
-    if (this.filteredNode.length === 0) {
-      this.nodeService.getAll()
-        .subscribe(data => {
-          this.allNodesInfo = data;
-          console.log("allnodeinfo===", this.allNodesInfo);
-          this.getAllNames();
-          this.getAllSkus();
-          this.getAllObms();
-          this.getAllTypes();
-        });
-    } else {
-      this.allNodesInfo = this.filteredNode;
-      this.getAllNames();
-      this.getAllSkus();
-      this.getAllObms();
-      this.getAllTypes();
-    }
+    this.nodeService.getAll()
+      .subscribe(data => {
+        this.allNodesInfo = data;
+        this.getAllLists(this.allNodesInfo);
+      });
   }
 
-  /* Get the nodes with sku
-  *   1. there are some nodes without the property of sku. => filter them
-  *   2. if the sku is not null,then getting its name.
-  *   3. if the sku is null,
-  *      then judegging if his node type is compute.=>if not, fitler them
-  *   4. if the sku is null and its node type is compute,
-  *      get its dmi.base_board.product_name by catalogs.
-  **/
-  getAllSkus() {
-    let filterednodes;
-    if (this.filteredNode.length === 0)
-      filterednodes = this.allNodesInfo;
-    else
-      filterednodes = this.filteredNode;
-    this.allNodeSkus = [];
-    filterednodes.forEach(node => {
+  getAllLists(nodesStore) {
+    this.skuList = [];
+    this.obmsList = [];
+    this.nameList = [];
+    this.typeList = [];
+    nodesStore.forEach(node => {
+      /* get sku name
+      *   1. there are some nodes without the property of sku. => filter them
+      *   2. if the sku is not null,then getting its name.
+      *   3. if the sku is null,
+      *      then judegging if his node type is compute.=>if not, fitler them
+      *   4. if the sku is null and its node type is compute,
+      *      get its dmi.base_board.product_name by catalogs.
+      **/
       if (node.hasOwnProperty('sku')) {
-        if (node.sku !== null) {
-          let nodeTemp = {id: node.id, name: node.sku.name};
-          this.allNodeSkus.push(nodeTemp);
-        } else if (node.sku === null) {
+        if (node.sku === null) {
           if (node.type === "compute") {
             this.catalogsService.getSource(node.id, "ohai").subscribe(data => {
-              let nodeTemp = {id: data.node, name: data.data.dmi.base_board.product_name};
-              this.allNodeSkus.push(nodeTemp);
-              this.allNodeSkusName = Array.from(new Set(_.map(this.allNodeSkus, 'name')));
+              node.sku = data.data.dmi.base_board.product_name;
+              this.skuList.push(node.sku);
+              this.skuList = Array.from(new Set(this.skuList));
             });
+          } else {
+            this.skuList = Array.from(new Set(this.skuList));
           }
+        } else {
+          this.skuList.push(node.sku);
+          this.skuList = Array.from(new Set(this.skuList));
         }
       }
-    });
-    console.log("all skus ==== ", this.allNodeSkus.length, this.allNodeSkus);
-    // console.log("all skus ==== ", this.allNodeSkusName.length, this.allNodeSkusName);
-  }
-
-  getAllNames() {
-    this.allNodeNames = [];
-    let filterednodes;
-    if (this.filteredNode.length === 0)
-      filterednodes = this.allNodesInfo;
-    else
-      filterednodes = this.filteredNode;
-    this.allNodeNames = _.map(filterednodes, 'name');
-    console.log("all names ==== ", this.allNodeNames.length, this.allNodeNames);
-  }
-
-  getAllObms() {
-    let filterednodes;
-    if (this.filteredNode.length === 0)
-      filterednodes = this.allNodesInfo;
-    else
-      filterednodes = this.filteredNode;
-    let obmInfo = [];
-    this.allNodeObms = [];
-    filterednodes.forEach(node => {
-      /* Get the nodes with obms*/
-      if (node.obms.length > 0) {
-        let obm = {id: node.id, obmId: node.obms[0].ref.split("/").pop()}
-        obmInfo.push(obm);
+      /* get obms name*/
+      if (node.obms instanceof Array) {
+        if (node.obms.length > 0) {
+          let obmsId = node.obms[0].ref.split("/").pop();
+          this.obmService.getByIdentifier(obmsId).subscribe(data => {
+            node.obms = data.config.host;
+            this.obmsList.push(node.obms);
+          });
+          this.obmsList = Array.from(new Set(this.obmsList));
+        } else {
+          node.obms = null;
+        }
+      } else if (node.obms !== null) {
+        this.obmsList.push(node.obms);
+        this.obmsList = Array.from(new Set(this.obmsList));
       }
+      /* get node name*/
+      this.nameList.push(node.name);
+      this.nameList = Array.from(new Set(this.nameList));
+      /* get node type*/
+      this.typeList.push(node.type);
+      this.typeList = Array.from(new Set(this.typeList));
     });
-    /* Get the host of obms*/
-    if (obmInfo.length > 0) {
-      obmInfo.forEach(value => {
-        this.obmService.getByIdentifier(value.obmId).subscribe(data => {
-          let obmTemp = {id: value.id, name: data.config.host};
-          this.allNodeObms.push(obmTemp);
-          this.allNodeObmsName = Array.from(new Set(_.map(this.allNodeObms, 'name')));
-        });
-      });
-    }
-    // console.log("all obms ==== ", this.allNodeObmsName.length, this.allNodeObmsName);
-    console.log("all obms ==== ", this.allNodeObms.length, this.allNodeObms);
-  }
-
-  getAllTypes() {
-    this.allNodeTypes = [];
-    let filterednodes;
-    if (this.filteredNode.length === 0) {
-      NODE_TYPES.forEach(type => {
-        this.allNodeTypes.push(_.upperFirst(type));
-      });
-    } else {
-      this.filteredNode.forEach(node => {
-        this.allNodeTypes.push(_.upperFirst(node.type));
-      });
-    }
-    this.allNodeTypes = Array.from(new Set(this.allNodeTypes));
-    console.log("all types ==== ", this.allNodeTypes.length, this.allNodeTypes);
   }
 
   getNodeByIdentifier(type, value) {
-    console.log("filter===>", this.filteredNode);
-    let filterednodes;
-    if (this.filteredNode.length === 0)
-      filterednodes = this.allNodesInfo;
-    else
-      filterednodes = this.filteredNode;
-    switch (type) {
-      case 'nodetype':
-        this.filteredNode = _.filter(filterednodes, _.matches({'type': _.lowerFirst(value)}));
-        break;
-      case 'nodename':
-        this.filteredNode = _.filter(filterednodes, _.matches({'name': value}));
-        break;
-      case 'nodeobm':
-        let filterObmTemp = _.filter(this.allNodeObms, _.matches({'name': value}));
-        let obmTemp = [];
-        filterObmTemp.forEach(data => {
-          for (let node of this.filteredNode) {
-            if (node.id == data.id)
-              obmTemp.push(data)
-          }
-        })
-        this.filteredNode = obmTemp;
-        break;
-      case 'nodesku':
-        let filterSkuTemp = _.filter(this.allNodeSkus, _.matches({'name': value}));
-        console.log("第一次筛选sku：", filterSkuTemp);
-        let skuTemp = [];
-        filterSkuTemp.forEach(data => {
-          for (let node of this.filteredNode) {
-            if (node.id == data.id)
-              skuTemp.push(data)
-          }
-        })
-        this.filteredNode = skuTemp;
-        break;
-    }
-    // this.filteredNode = Array.from(new Set(this.filteredNode));
-    console.log("筛选之后的node信息", this.filteredNode.length, this.filteredNode);
-    if (this.filteredNode.length === 1) {
-      this.selectedNodeId = this.filteredNode[0].id;
-      this.selectedNodeType = _.upperFirst(this.filteredNode[0].type);
-      this.selectedNodeName = this.filteredNode[0].name;
-      if (this.filteredNode[0].obms.length > 0)
-        this.selectedNodeObm = _.filter(this.allNodeObms, _.matches({'id': this.filteredNode[0].id}))[0].name;
-      if (this.filteredNode[0].hasOwnProperty('sku')) {
-        this.selectedNodeSku = _.filter(this.allNodeSkus, _.matches({'id': this.filteredNode[0].id}))[0].name;
+    let identifier = {};
+    identifier[type] = value;
+    this.selectedNodeStore = this.selectedNodeStore.length > 0 ? this.selectedNodeStore : this.allNodesInfo;
+    this.selectedNodeStore = _.filter(this.selectedNodeStore, _.matches(identifier));
+    /* refresh all list*/
+    this.getAllLists(this.selectedNodeStore);
+    /* to show the information if there is one element in selectedNodeStore  */
+    if (this.selectedNodeStore.length === 1) {
+      this.selectedNodeId = this.selectedNodeStore[0].id;
+      this.selectedNodeType = this.selectedNodeStore[0].type;
+      this.selectedNodeName = this.selectedNodeStore[0].name;
+      this.selectedNodeObm = this.selectedNodeStore[0].obms;
+      if (this.selectedNodeStore[0].hasOwnProperty('sku')) {
+        this.selectedNodeSku = this.selectedNodeStore[0].sku;
       }
-    } else {
-      this.getAllNodes();
     }
   }
 
@@ -323,12 +235,8 @@ export class RunWorkflowComponent implements OnInit {
     this.selectedNodeName = null;
     this.selectedNodeObm = null;
     this.selectedNodeSku = null;
-    this.filteredNode = [];
+    this.selectedNodeStore = [];
     this.getAllNodes();
-  }
-
-  clearOption(e) {
-    console.log(e.keyCode);
   }
 
   postWorflow() {

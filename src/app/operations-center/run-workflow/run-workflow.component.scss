@@ -1,6 +1,5 @@
 .run-workflow {
   width: 100%;
-  position: relative;
   height: -webkit-fill-available;
   p {
     margin-top: 0.5rem;
@@ -20,11 +19,32 @@
     padding: 0;
   }
   .bottom-button {
-    position: absolute;
-    bottom: 0;
     padding: 0;
     button {
       float: right;
+    }
+  }
+  .filter-by{
+    position: relative;
+    border: 1px solid #aaaaaa;
+    margin-top: 15px;
+    height: 6rem;
+  }
+  .filter-title{
+    position: absolute;
+    padding: 0 10px;
+    top: -10px;
+    left: 10px;
+    height: 20px;
+    line-height: 20px;
+    background: #fafafa;
+  }
+  .filter-content{
+    position: absolute;
+    top: 20px;
+    height: 5rem;
+    span{
+      padding: 0;
     }
   }
 }
