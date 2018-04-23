@@ -30,8 +30,9 @@ export class RunWorkflowComponent implements OnInit {
   showModal: boolean;
   allgraphs: any;
   workflows: any;
-  selectedFriendlyName: any;
+  selectedFriendlyName = '';
   selectedInjectableName: any;
+  graphId: string;
 
   allNodesInfo: Array<any> = [];
   skuList = [];
@@ -141,7 +142,7 @@ export class RunWorkflowComponent implements OnInit {
   }
 
   clearGraphInput() {
-    this.selectedFriendlyName = null;
+    this.selectedFriendlyName = '';
     this.editor.set({});
   }
 
@@ -251,9 +252,12 @@ export class RunWorkflowComponent implements OnInit {
     } else {
       this.workflowService.runWorkflow(this.selectedNodeId, this.selectedInjectableName, payload)
         .subscribe(data => {
+            console.log(data);
+            this.graphId = data.instanceId;
+            console.log(this.graphId);
             this.runWorkflowRes = {
               title: "Post Workflow Successfully!",
-              note: "The workflow has run successfully!",
+              note: "The workflow has post successfully!  Do you want to view it now?",
               type: 1
             };
           },
@@ -266,6 +270,16 @@ export class RunWorkflowComponent implements OnInit {
           }
         );
     }
+  }
+
+  goToViewer() {
+    this.showModal = false;
+    this.router.navigate(['operationsCenter/workflowViewer'], {
+      queryParams: {
+        graphId: this.graphId
+      }
+    });
+
   }
 
 }

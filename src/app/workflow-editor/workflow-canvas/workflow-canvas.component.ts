@@ -122,7 +122,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
       .subscribe(res => {
           this.saveGraphInfo = {
             status: "Saved Successfully!",
-            notes: "The workflow has been saved successfully.Do you want to run it?",
+            notes: `The workflow has been saved successfully. Do you want to run it now?`,
             type: 1
           };
         },

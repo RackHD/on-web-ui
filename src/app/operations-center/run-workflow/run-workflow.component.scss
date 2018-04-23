@@ -1,6 +1,10 @@
 .run-workflow {
   width: 100%;
   height: -webkit-fill-available;
+  input[type=text]:not([readonly]) {
+    background-size: 0 100%;
+    transition: background-size .2s ease;
+  }
   p {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
@@ -27,7 +31,7 @@
   .filter-by{
     position: relative;
     border: 1px solid #aaaaaa;
-    margin-top: 15px;
+    margin-top: 20px;
     height: 6rem;
   }
   .filter-title{

@@ -12,10 +12,11 @@
           </option>
         </select>
       </datalist>
-      <input #searchBox0 type="text" name="workflow" id="workflow" list="workflow_list" style="width: 200px"
+      <input #searchBox0 type="text" name="workflow" id="workflow" list="workflow_list"
              (keyup)="search(searchBox0.value)" placeholder="search workflow"
              (click)="getInitWorkflows()" [(ngModel)]="selectedFriendlyName"
-             (change)="putWorkflowIntoJson($event.target.value)">
+             (change)="putWorkflowIntoJson($event.target.value)"
+             [ngStyle]="{'width':selectedFriendlyName.length >= 30 ? '340px' : '250px' }">
       <clr-icon shape="times" *ngIf="selectedFriendlyName" (click)="clearGraphInput()"></clr-icon>
     </span>
   </p>
@@ -33,12 +34,12 @@
         </select>
       </datalist>
       <input #searchBox1 type="text" name="node" id="node" list="node_list"
-             placeholder="search nodeId"
+             placeholder="search nodeId" style="width: 250px"
              [(ngModel)]="selectedNodeId">
       <clr-icon shape="times" *ngIf="selectedNodeId" (click)="clearNodeInput()"></clr-icon>
     </span>
   </p>
-  <div class="col-md-6 filter-by">
+  <div class="col-md-5 col-xs-5 col-lg-5 filter-by">
     <label class="filter-title"><b>Filtered By</b></label>
     <section class="filter-content">
       <p>
@@ -106,7 +107,6 @@
                  [(ngModel)]="selectedNodeSku"
                  (change)="getNodeByIdentifier('sku',selectedNodeSku)">
         </span>
-
       </p>
     </section>
   </div>
@@ -115,7 +115,7 @@
     <div #jsoneditor id="jsoneditor"></div>
   </div>
   <div class="col-md-8 bottom-button">
-    <button class="btn btn-primary" (click)="postWorflow()">Post Workflow</button>
+    <button class="btn btn-primary" (click)="postWorflow()">Run Workflow</button>
   </div>
   <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
     <h3 class="modal-title" *ngIf="showModal">{{runWorkflowRes.title}}</h3>
@@ -123,10 +123,11 @@
       <p>{{runWorkflowRes.note | json}}</p>
     </div>
     <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 1">
-      <button class="btn btn-primary" type="button" (click)="showModal = false">OK</button>
+      <button class="btn btn-outline" type="button" (click)="showModal = false">No</button>
+      <button class="btn btn-primary" type="button" (click)="goToViewer()">Yes</button>
     </div>
     <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 2">
-      <button class="btn btn-primary" type="button" (click)="showModal = false">Try again</button>
+      <button class="btn btn-primary" type="button" (click)="showModal = false">Yes</button>
     </div>
   </clr-modal>
 </div>

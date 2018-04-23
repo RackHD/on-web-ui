@@ -43,8 +43,8 @@
       <p>{{saveGraphInfo.notes | json}}</p>
     </div>
     <div class="modal-footer" *ngIf="isShowModal && saveGraphInfo.type === 1">
-      <button class="btn btn-outline" type="button" (click)="isShowModal = false">No,Thanks</button>
-      <button class="btn btn-primary" type="button" (click)="jumpRunWorkflow()">Go Now!</button>
+      <button class="btn btn-outline" type="button" (click)="isShowModal = false">No</button>
+      <button class="btn btn-primary" type="button" (click)="jumpRunWorkflow()">Yes</button>
     </div>
     <div class="modal-footer" *ngIf="isShowModal && saveGraphInfo.type === 2">
       <button class="btn btn-primary" type="button" (click)="isShowModal = false">Confirm</button>
