@@ -100,6 +100,7 @@
             <label for="selects_1">Node Type</label>
             <div class="select">
               <select id="selects_1" formControlName="type">
+                <option></option>
                 <option *ngFor="let type of selectableNodeTypes">
                   {{type.toLowerCase()}}
                 </option>
@@ -127,13 +128,16 @@
               placeholder='{"autoDiscover": true, "bootSettings": {}}'
               formControlName="otherConfig">
             </textarea>
+            <div class="alertMessage" *ngIf="!jsonValid">
+                Invalid JSON payload.
+            </div>
           </div>
         </section>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="isCreateNode = false">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="isCreateNode = false; createNode();">OK</button>
+      <button type="button" class="btn btn-outline" (click)="isCreateNode = false; jsonValid = true;">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="createNode()">OK</button>
     </div>
   </clr-modal>
 

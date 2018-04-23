@@ -16,7 +16,7 @@ import { SkusService } from 'app/services/rackhd/sku.service';
 import { IbmService } from '../services/ibm.service';
 import { OBM } from 'app/models';
 import { SKU_URL } from 'app/models/sku';
-import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator,}
+import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator, isJsonTextValid}
   from 'app/utils/inventory-operator';
 
 @Component({
@@ -55,6 +55,8 @@ export class NodesComponent implements OnInit {
 
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!'
+
+  jsonValid = true;
 
   public nameComparator = new AlphabeticalComparator('name');
   public idComparator = new AlphabeticalComparator('id');
@@ -156,17 +158,21 @@ export class NodesComponent implements OnInit {
 
   createNode(): void {
     let value = this.nodeForm.value;
-    let jsonData = value['otherConfig'] ? JSON.parse(value['otherConfig']) : {};
+    this.jsonValid = isJsonTextValid(value['otherConfig']);
+    if (this.jsonValid) {
+      let jsonData = value['otherConfig'] ? JSON.parse(value['otherConfig']) : {};
 
-    // data transform
-    jsonData['name'] = value['name'];
-    jsonData['type'] = value['type'];
-    jsonData['autoDiscover'] = value['autoDiscover'] === 'true' ? true : false;
+      // data transform
+      jsonData['name'] = value['name'];
+      jsonData['type'] = value['type'];
+      jsonData['autoDiscover'] = value['autoDiscover'] === 'true' ? true : false;
+      this.isCreateNode = false;
 
-    this.nodeService.post(jsonData)
-      .subscribe(data => {
-        this.refresh();
-      });
+      this.nodeService.post(jsonData)
+        .subscribe(data => {
+          this.refresh();
+        });
+    }
   }
 
   deleteSel(): void {

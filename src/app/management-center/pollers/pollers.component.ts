@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Poller, Node , POLLER_INTERVAL} from 'app/models';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator }
+import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator, isJsonTextValid }
   from 'app/utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -34,6 +34,7 @@ export class PollersComponent implements OnInit {
 
   dgDataLoading = false;
   dgPlaceholder = 'No nodes found!';
+  jsonValid = true;
 
   allNodes: Node[];
   pollerForm: FormGroup;
@@ -200,16 +201,20 @@ export class PollersComponent implements OnInit {
     let jsonData = {};
     let value = this.pollerForm.value;
 
-    // data transform
-    jsonData['type'] = value['type'];
-    jsonData['node'] = value['node'];
-    jsonData['pollInterval'] = _.isEmpty(value.pollInterval) ? 60000 : parseInt(value.pollInterval);
-    jsonData['config'] = _.isEmpty(value.config) ? {} : JSON.parse(value.config);
+    this.jsonValid = isJsonTextValid(value.config);
+    if (this.jsonValid) {
+      // data transform
+      jsonData['type'] = value['type'];
+      jsonData['node'] = value['node'];
+      jsonData['pollInterval'] = _.isEmpty(value.pollInterval) ? 60000 : parseInt(value.pollInterval);
+      jsonData['config'] = _.isEmpty(value.config) ? {} : JSON.parse(value.config);
+      this.isCreatePoller = false;
 
-    this.pollersService.createPoller(jsonData)
-      .subscribe(data => {
-        this.refresh();
-      });
+      this.pollersService.createPoller(jsonData)
+        .subscribe(data => {
+          this.refresh();
+        });
+    }
   }
 
   deleteSel(): void {

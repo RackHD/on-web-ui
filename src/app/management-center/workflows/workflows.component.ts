@@ -3,7 +3,7 @@ import { Comparator, StringFilter } from "@clr/angular";
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../../utils/inventory-operator';
+import { AlphabeticalComparator, StringOperator, ObjectFilterByKey, isJsonTextValid } from '../../utils/inventory-operator';
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -32,6 +32,9 @@ export class WorkflowsComponent implements OnInit {
   // data grid helper
   dgDataLoading = false;
   dgPlaceholder = 'No workflow found!';
+
+  optionsJsonValid = true;
+  tasksJsonValid = true;
 
   modalTypes: ModalTypes;
 
@@ -170,6 +173,8 @@ export class WorkflowsComponent implements OnInit {
     this.selectedWorkflow = null;
     this.selectedWorkflows = [];
     this.isShowModal = false;
+    this.optionsJsonValid = true;
+    this.tasksJsonValid = true;
   }
 
   onDeleteSubmit(){
@@ -194,8 +199,12 @@ export class WorkflowsComponent implements OnInit {
 
   onSubmit(){
     let payload = this.modalFormGroup.value;
-    payload.options = _.isEmpty(payload.options) ? {} : JSON.parse(payload.options);
-    payload.tasks = _.isEmpty(payload.tasks) ? [] : JSON.parse(payload.tasks);
-    this.upsertGraph(payload);
+    this.optionsJsonValid = isJsonTextValid(payload.options);
+    this.tasksJsonValid = isJsonTextValid(payload.tasks);
+    if (this.optionsJsonValid && this.tasksJsonValid) {
+      payload.options = _.isEmpty(payload.options) ? {} : JSON.parse(payload.options);
+      payload.tasks = _.isEmpty(payload.tasks) ? [] : JSON.parse(payload.tasks);
+      this.upsertGraph(payload);
+    }
   }
 }

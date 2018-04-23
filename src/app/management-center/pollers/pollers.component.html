@@ -108,13 +108,16 @@
           <div class="form-group">
             <label for="formFields">Config</label>
             <textarea id="formFields" rows="4" placeholder='{"command": "driveHealth"}' formControlName="config"></textarea>
+            <div class="alertMessage" *ngIf="!jsonValid">
+                Invalid JSON payload.
+            </div>
           </div>
         </section>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="isCreatePoller = false">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="isCreatePoller = false; createPoller();">Ok</button>
+      <button type="button" class="btn btn-outline" (click)="isCreatePoller = false; jsonValid = true;">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="createPoller();">Ok</button>
     </div>
   </clr-modal>
 
