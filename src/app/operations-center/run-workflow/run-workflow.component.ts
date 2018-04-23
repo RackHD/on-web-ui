@@ -8,7 +8,8 @@ import { JSONEditor } from '../../utils/json-editor';
 import { NodeService } from '../../services/rackhd/node.service';
 import { GraphService } from '../../services/rackhd/graph.service';
 import { WorkflowService } from '../../services/rackhd/workflow.service';
-import { error } from 'util';
+import { CatalogsService } from '../../services/rackhd/catalogs.service';
+import { ObmService } from '../../services/rackhd/obm.service';
 
 @Component({
   selector: 'app-run-workflow',
@@ -26,13 +27,24 @@ export class RunWorkflowComponent implements OnInit {
   };
 
   private searchTerms = new Subject<string>();
-  showModal: boolean
+  showModal: boolean;
   allgraphs: any;
   workflows: any;
-  selectedFriendlyName: any;
+  selectedFriendlyName = '';
   selectedInjectableName: any;
+  graphId: string;
 
-  nodes: any;
+  allNodesInfo: Array<any> = [];
+  skuList = [];
+  obmsList = [];
+  nameList = [];
+  typeList = [];
+  selectedNodeStore: Array<any> = [];
+
+  selectedNodeType: any;
+  selectedNodeName: any;
+  selectedNodeObm: any;
+  selectedNodeSku: any;
   selectedNodeId: any;
 
   constructor(
@@ -40,8 +52,9 @@ export class RunWorkflowComponent implements OnInit {
     public graphService: GraphService,
     private activatedRoute: ActivatedRoute,
     private workflowService: WorkflowService,
-    private router: Router
-  ) {}
+    private catalogsService: CatalogsService,
+    private obmService: ObmService,
+    private router: Router) {}
 
   ngOnInit() {
     this.showModal = false;
@@ -121,11 +134,6 @@ export class RunWorkflowComponent implements OnInit {
     }
   }
 
-  clearInput() {
-    this.selectedFriendlyName = null;
-    this.editor.set({});
-  }
-
   updateOptionsEditor(workflow: any) {
     if (workflow.options)
       this.editor.set(workflow.options);
@@ -133,31 +141,126 @@ export class RunWorkflowComponent implements OnInit {
       this.editor.set({});
   }
 
+  clearGraphInput() {
+    this.selectedFriendlyName = '';
+    this.editor.set({});
+  }
+
+  /* some opertions about node*/
+
   getAllNodes() {
     this.nodeService.getAll()
       .subscribe(data => {
-        this.nodes = data;
+        this.allNodesInfo = data;
+        this.getAllLists(this.allNodesInfo);
       });
+  }
+
+  getAllLists(nodesStore) {
+    this.skuList = [];
+    this.obmsList = [];
+    this.nameList = [];
+    this.typeList = [];
+    nodesStore.forEach(node => {
+      /* get sku name
+      *   1. there are some nodes without the property of sku. => filter them
+      *   2. if the sku is not null,then getting its name.
+      *   3. if the sku is null,
+      *      then judegging if his node type is compute.=>if not, fitler them
+      *   4. if the sku is null and its node type is compute,
+      *      get its dmi.base_board.product_name by catalogs.
+      **/
+      if (node.hasOwnProperty('sku')) {
+        if (node.sku === null) {
+          if (node.type === "compute") {
+            this.catalogsService.getSource(node.id, "ohai").subscribe(data => {
+              node.sku = data.data.dmi.base_board.product_name;
+              this.skuList.push(node.sku);
+              this.skuList = Array.from(new Set(this.skuList));
+            });
+          } else {
+            this.skuList = Array.from(new Set(this.skuList));
+          }
+        } else {
+          this.skuList.push(node.sku);
+          this.skuList = Array.from(new Set(this.skuList));
+        }
+      }
+      /* get obms name*/
+      if (node.obms instanceof Array) {
+        if (node.obms.length > 0) {
+          let obmsId = node.obms[0].ref.split("/").pop();
+          this.obmService.getByIdentifier(obmsId).subscribe(data => {
+            node.obms = data.config.host;
+            this.obmsList.push(node.obms);
+          });
+          this.obmsList = Array.from(new Set(this.obmsList));
+        } else {
+          node.obms = null;
+        }
+      } else if (node.obms !== null) {
+        this.obmsList.push(node.obms);
+        this.obmsList = Array.from(new Set(this.obmsList));
+      }
+      /* get node name*/
+      this.nameList.push(node.name);
+      this.nameList = Array.from(new Set(this.nameList));
+      /* get node type*/
+      this.typeList.push(node.type);
+      this.typeList = Array.from(new Set(this.typeList));
+    });
+  }
+
+  getNodeByIdentifier(type, value) {
+    let identifier = {};
+    identifier[type] = value;
+    this.selectedNodeStore = this.selectedNodeStore.length > 0 ? this.selectedNodeStore : this.allNodesInfo;
+    this.selectedNodeStore = _.filter(this.selectedNodeStore, _.matches(identifier));
+    /* refresh all list*/
+    this.getAllLists(this.selectedNodeStore);
+    /* to show the information if there is one element in selectedNodeStore  */
+    if (this.selectedNodeStore.length === 1) {
+      this.selectedNodeId = this.selectedNodeStore[0].id;
+      this.selectedNodeType = this.selectedNodeStore[0].type;
+      this.selectedNodeName = this.selectedNodeStore[0].name;
+      this.selectedNodeObm = this.selectedNodeStore[0].obms;
+      if (this.selectedNodeStore[0].hasOwnProperty('sku')) {
+        this.selectedNodeSku = this.selectedNodeStore[0].sku;
+      }
+    }
+  }
+
+  clearNodeInput() {
+    this.selectedNodeId = null;
+    this.selectedNodeType = null;
+    this.selectedNodeName = null;
+    this.selectedNodeObm = null;
+    this.selectedNodeSku = null;
+    this.selectedNodeStore = [];
+    this.getAllNodes();
   }
 
   postWorflow() {
     this.showModal = true;
     let payload = this.editor.get();
-    if (_.isEmpty(this.selectedNodeId) || _.isEmpty(this.selectedFriendlyName) || _.isEmpty(payload)){
+    if (_.isEmpty(this.selectedNodeId) || _.isEmpty(this.selectedFriendlyName) || _.isEmpty(payload)) {
       this.runWorkflowRes = {
         title: "Post Workflow Failed!",
         note: "Please confirm if all necessary parameters are complete!",
         type: 2
       };
-    }else {
+    } else {
       this.workflowService.runWorkflow(this.selectedNodeId, this.selectedInjectableName, payload)
         .subscribe(data => {
-          this.runWorkflowRes = {
-            title: "Post Workflow Successfully!",
-            note: "The workflow has run successfully!",
-            type: 1
-          };
-        },
+            console.log(data);
+            this.graphId = data.instanceId;
+            console.log(this.graphId);
+            this.runWorkflowRes = {
+              title: "Post Workflow Successfully!",
+              note: "The workflow has post successfully!  Do you want to view it now?",
+              type: 1
+            };
+          },
           err => {
             this.runWorkflowRes = {
               title: "Post Workflow Failed!",
@@ -167,6 +270,16 @@ export class RunWorkflowComponent implements OnInit {
           }
         );
     }
+  }
+
+  goToViewer() {
+    this.showModal = false;
+    this.router.navigate(['operationsCenter/workflowViewer'], {
+      queryParams: {
+        graphId: this.graphId
+      }
+    });
+
   }
 
 }
