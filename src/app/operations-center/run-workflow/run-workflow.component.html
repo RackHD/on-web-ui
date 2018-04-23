@@ -75,7 +75,7 @@
 
       </p>
       <p>
-        <span class="col-md-3">
+        <span class="col-md-3" *ngIf="obmsList.length > 0">
           <!--node obm-->
           <label><b>Obm:</b></label>
           <datalist id="node_obm_list">
@@ -87,10 +87,10 @@
           </datalist>
           <input type="text" name="nodeobm" id="nodeobm" list="node_obm_list"
                  placeholder="by obms"
-                 [(ngModel)]="selectedNodeObm" *ngIf="obmsList.length > 0"
+                 [(ngModel)]="selectedNodeObm"
                  (change)="getNodeByIdentifier('obms',$event.target.value)">
         </span>
-        <span class="col-md-3">
+        <span class="col-md-3" *ngIf="skuList.length > 0">
           <!--node sku-->
           <label><b>Skus:</b></label>
           <span class="col-md-3"></span>
@@ -103,7 +103,7 @@
           </datalist>
           <input #searchBox3 type="text" name="nodesku" id="nodesku" list="node_sku_list"
                  placeholder="by sku"
-                 [(ngModel)]="selectedNodeSku" *ngIf="skuList.length > 0"
+                 [(ngModel)]="selectedNodeSku"
                  (change)="getNodeByIdentifier('sku',selectedNodeSku)">
         </span>
 
