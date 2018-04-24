@@ -18,16 +18,11 @@
       (change)="onChanged()">
     <clr-icon shape="times" *ngIf="idSearcher.value" (click)="onClear(field)" title="Clear input"></clr-icon>
   </div>
-  <div *ngIf="needReset && shareRow" [class]="resetClass">
-    <button type="button" class="btn btn-icon button-align" (click)="onReset()" title="Reset all">
-      <clr-icon shape="times"></clr-icon>
-    </button>
-  </div>
-</div>
-<div *ngIf="needReset && !shareRow" class="row">
-  <div [class]="resetClass + ' reset-button'">
-    <button type="button" class="btn btn-icon button-align" (click)="onReset()" title="Reset all">
-      <clr-icon shape="times"></clr-icon>
-    </button>
+  <div *ngIf="needReset" [class]="resetClass">
+    <div class="button-align">
+      <button type="button" class="btn btn-icon" (click)="onReset()" title="Reset all">
+        <clr-icon shape="times"></clr-icon>
+      </button>
+    </div>
   </div>
 </div>

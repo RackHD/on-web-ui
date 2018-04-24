@@ -41,14 +41,13 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   nodeStore: Array<any> = [];
   selNodeStore: any [] = [];
 
-  filterFields = ["id", "type", "name", "sku", "obms", 'tags'];
-  filterLabels = ["Node UUID", "Node Type", "Node Name", "Node SKU Name", "Node OBM Host", "Node Tag Name"];
-  filterColumns = [4, 4, 4, 4, 4, 4];
+  filterFields = ["type", "name", "sku", "obms", 'tags'];
+  filterLabels = ["Node Type", "Node Name", "Node SKU Name", "Node OBM Host", "Node Tag Name"];
+  filterColumns = [4, 4, 4, 4, 4];
 
   nodeFields = ["id"];
   nodeLabels = ["Node: "];
   nodeColumns = [3];
-  disable = [true];
   selectedNode: any;
 
   graphFields = ["friendlyName"];
@@ -176,6 +175,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     .subscribe((data) => {
       this.allNodes = _.cloneDeep(nodes);
       this.nodeStore = _.cloneDeep(nodes);
+      this.selNodeStore = _.cloneDeep(nodes);
     });
   }
 
@@ -232,6 +232,11 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.nodeStore = _.cloneDeep(this.allNodes);
   }
 
+  onNodeSelect(node){
+    this.selectedNode = node;
+    this.nodeStore = [node];
+  };
+
   onNodeRefresh() {
     this.nodeStore = [];
     setTimeout(()=>{
@@ -239,4 +244,12 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onReset(){
+    this.selNodeStore= [];
+    this.nodeStore = [];
+    setTimeout(()=>{
+      this.nodeStore = _.cloneDeep(this.allNodes);
+      this.selNodeStore = _.cloneDeep(this.allNodes);
+    });
+  }
 }

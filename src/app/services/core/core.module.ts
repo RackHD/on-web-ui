@@ -16,7 +16,6 @@ import { IconService } from './icon.service';
  * This providers also can be regard as a global service list for retriving.
  */
 const APP_PROVIDERS = [
-  // ...APP_RESOLVER_PROVIDERS,
   IconService
 ];
 

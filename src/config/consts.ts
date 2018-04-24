@@ -1,16 +1,16 @@
 export const CONSTS = {
   taskResult: {
-    "finished": "finished",
-    "succeeded": "succeeded",
-    "failed": "failed",
-    "cancelled": "cancelled",
-    "running": "running",
-    "timeout": "timeout"
+    finished: 'finished',
+    succeeded: 'succeeded',
+    failed: 'failed',
+    cancelled: 'cancelled',
+    running: 'running',
+    timeout: 'timeout'
   },
   waitOn: {
-    "finished": "finished",
-    "succeeded": "succeeded",
-    "failed": "failed"
+    finished: 'finished',
+    succeeded: 'succeeded',
+    failed: 'failed'
   },
   // referenced from clarity alerts
   // color: node header and font color

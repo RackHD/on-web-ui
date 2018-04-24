@@ -37,8 +37,6 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
 
   @Input() needSearchIcon: boolean = false; // search icon
   @Input() needReset: boolean = false; //reset button
-  @Input() shareRow: boolean = true;
-  @Input() resetColumn: number = 12;
 
   @Input() data: any[] = []; // all data for search
 
@@ -113,12 +111,8 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
       return `col-lg-${this.columns[key]} col-lg-offset-${offset}`;
     });
     let buttonColumn = 12;
-    if (this.shareRow) {
-      buttonColumn = Math.abs(12 - _.sum(this.columns) - _.sum(this.offsets)) % 12;
-      buttonColumn = buttonColumn ? buttonColumn : 12;
-    } else {
-      buttonColumn = this.resetColumn;
-    }
+    buttonColumn = Math.abs(12 - _.sum(this.columns) - _.sum(this.offsets)) % 12;
+    buttonColumn = buttonColumn ? buttonColumn : 12;
     this.resetClass = `col-lg-${buttonColumn}`;
   }
 

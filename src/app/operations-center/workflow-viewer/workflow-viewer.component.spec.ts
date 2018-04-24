@@ -18,4 +18,5 @@ describe('WorkflowViewerComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
 });
