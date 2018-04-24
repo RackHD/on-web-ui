@@ -105,17 +105,23 @@
                 "path": "ohai.dmi.system.manufacturer",
                 "contains": "Quanta"
                 }]' formControlName="rules"></textarea>
+            <div class="alertMessage" *ngIf="!rulesJsonValid">
+                Invalid JSON payload.
+            </div>
           </div>
           <div class="form-group">
             <label for="formFileds_4">discoveryGraphOptions</label>
             <textarea id="formFields" rows="4" placeholder='{}' formControlName="discoveryGraphOptions"></textarea>
+            <div class="alertMessage" *ngIf="!optionsJsonValid">
+                Invalid JSON payload.
+            </div>
           </div>
         </section>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="isCreateSku = false">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="isCreateSku = false; isSkuOnly ? createSku() : createSkupack();">OK</button>
+      <button type="button" class="btn btn-outline" (click)="isCreateSku = false; rulesJsonValid = true; optionsJsonValid = true ">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)=" isSkuOnly ? createSku() : createSkupack();">OK</button>
     </div>
   </clr-modal>
 

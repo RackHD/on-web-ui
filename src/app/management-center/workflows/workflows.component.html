@@ -95,11 +95,17 @@
             <label for="options">options: </label>
             <textarea id="options" rows='3' formControlName="options">
             </textarea>
+            <div class="alertMessage" *ngIf="!optionsJsonValid">
+                Invalid JSON payload.
+            </div>
           </div>
           <div class="form-group">
             <label for="tasks">tasks: </label>
             <textarea id="tasks" rows='8' formControlName="tasks">
             </textarea>
+            <div class="alertMessage" *ngIf="!tasksJsonValid">
+                Invalid JSON payload.
+            </div>
           </div>
         </section>
       </form>

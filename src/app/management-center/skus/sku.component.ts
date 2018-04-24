@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SKU, ModalTypes } from 'app/models';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/utils/inventory-operator';
+import { AlphabeticalComparator, ObjectFilterByKey, StringOperator, isJsonTextValid } from 'app/utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -36,6 +36,8 @@ export class SkuComponent implements OnInit {
   skuPackFiles: FileList;
 
   defaultRules: string = ' ' ;
+  rulesJsonValid = true;
+  optionsJsonValid = true;
 
   modalTypes: ModalTypes;
 
@@ -154,17 +156,27 @@ export class SkuComponent implements OnInit {
     // data transform
     jsonData['name'] = value['name']; //TODO: name is required;
     jsonData['discoveryGraphName'] = value['discoveryGraphName'];
-    jsonData['rules'] = value['rules'] ? JSON.parse(value['rules']) : []; //TODO: rule is required.
-    jsonData['discoveryGraphOptions'] = value['discoveryGraphOptions'] ?
-    JSON.parse(value['discoveryGraphOptions']) : {};
 
-    this.skusService.createSku(jsonData)
-      .subscribe(data => {
-        this.refresh();
-      });
+    this.rulesJsonValid = isJsonTextValid(value['rules']);
+    this.optionsJsonValid = isJsonTextValid(value['discoveryGraphOptions']);
+    if (this.rulesJsonValid) {
+      jsonData['rules'] = value['rules'] ? JSON.parse(value['rules']) : [];
+    }
+    if (this.optionsJsonValid) {
+      jsonData['discoveryGraphOptions'] = value['discoveryGraphOptions'] ?
+        JSON.parse(value['discoveryGraphOptions']) : {};
+    }
+    if (this.rulesJsonValid && this.optionsJsonValid) {
+      this.isCreateSku = false;
+      this.skusService.createSku(jsonData)
+        .subscribe(data => {
+          this.refresh();
+        });
+    }
   }
 
   createSkupack(): void {
+    this.isCreateSku = false;
     let file = this.skuPackFiles[0];
     let identifier = this.selectedSkus.length && this.selectedSku['id'];
     this.skusService.uploadByPost(file, identifier);
