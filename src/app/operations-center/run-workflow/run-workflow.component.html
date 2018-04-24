@@ -5,9 +5,8 @@
   <p class="run-workflow-row">
     <span class="col-md-4">
       <dropdown-group [data]="graphStore"
-        [fields]="graphFields" [labels]="graphLabels"
-        [columns]="graphColumns" [offsets]="graphOffsets"
-        (selected)="onGraphSelect($event)" (cleared)="onGraphRefresh($event)">
+        [fields]="graphFields" [labels]="graphLabels" [columns]="graphColumns"
+        (selected)="onGraphSelect($event)" (cleared)="onGraphRefresh()">
       </dropdown-group>
     </span>
   </p>
@@ -15,9 +14,8 @@
   <p class="run-workflow-row">
     <span class="col-md-4">
       <dropdown-group [data]="selNodeStore" [disable]="disable"
-        [fields]="nodeFields" [labels]="nodeLabels"
-        [columns]="nodeColumns" [offsets]="nodeOffsets"
-        (cleared)="onNodeRefresh($event)">
+        [fields]="nodeFields" [labels]="nodeLabels" [columns]="nodeColumns"
+        (cleared)="onNodeRefresh()">
       </dropdown-group>
     </span>
   </p>
@@ -25,9 +23,9 @@
     <label class="filter-title"><b>Filter Node</b></label>
     <section>
       <dropdown-group [data]="nodeStore"
-        [fields]="filterFields" [labels]="filterLabels" [shareRow]="false" resetColumn=12
-        [columns]="filterColumns" [needReset]="true" [offsets]="filterOffsets"
-        (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh($event)">
+        [fields]="filterFields" [labels]="filterLabels"
+        [columns]="filterColumns" [needReset]="true" [shareRow]="false" resetColumn=12
+        (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
       </dropdown-group>
     </section>
   </div>
