@@ -4,23 +4,25 @@ import { HttpErrorResponse, HttpResponse, HttpClient } from '@angular/common/htt
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/observable/of';
+import { TAG_URL } from 'app/models';
 
-import { Node, NODE_TYPES, NODE_URL } from 'app/models';
 import { RackhdLocalStorage as RackHD } from 'app/utils/globals-util';
 import { RackhdHttpService } from 'app/utils/rackhd-http';
-
-import { SKU_URL } from 'app/models/sku';
+import { NodeService } from './node.service';
 
 @Injectable()
-export class NodeService extends RackhdHttpService {
+export class TagService extends RackhdHttpService {
 
-  constructor(public http: HttpClient) {
-    super(http, NODE_URL);
+  constructor(
+    public http: HttpClient,
+    public nodeService: NodeService
+  ) {
+    super(http, TAG_URL);
   }
 
-  public getNodeTypes(): Observable<string[]> {
-    return Observable.of(NODE_TYPES).delay(5);
+  public getTagByNodeId(nodeId: string): Observable<any> {
+    let param = TAG_URL.getAllUrl;
+    return this.nodeService.getByIdentifier(nodeId, 'json', param);
   }
+
 }

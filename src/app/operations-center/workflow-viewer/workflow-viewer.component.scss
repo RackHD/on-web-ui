@@ -4,28 +4,14 @@
   .header-text {
     padding-top: 0;
     margin-top: 0;
-    // margin-bottom: 0px;
   }
-  .text{
-      margin-top: 10px;
-      margin-bottom: 5px;
-  }
-  .search-form{
-    margin-top: -15px;
-    margin-bottom: -25px;
-    margin-left: -10px;
-    width: 100%;
-    // display: inline-block;
+  .search-form {
+    padding-top: -15px
   }
   .canvas {
     float: top;
     margin-left: 0px;
     margin-right: 5px;
     height: 85%;
-  }
-  .clear {
-    float: right;
-    margin-left: 20px;
-    margin-top: -15px;
   }
 }

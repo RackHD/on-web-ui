@@ -15,3 +15,4 @@ export * from './inventory';
 export * from './graph';
 export * from './graphtask';
 export * from './sku';
+export * from './tag';

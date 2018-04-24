@@ -24,12 +24,13 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   isShowModal: boolean;
   saveGraphInfo = {status: "", notes: "", type: 0};
 
-  private searchTerms = new Subject<string>();
-  workflowStore: any;
-  workflows: any;
-  inputValue: any;
+  workflowStore: any[] =[];
 
   isWaitOnMismatch  = false;
+
+  columns = [12];
+  placeholders = ["Search workflow definitions"];
+  fields = ['injectableName'];
 
   constructor(
     public graphService: GraphService,
@@ -37,30 +38,11 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   ) {}
 
   clearInput() {
-    this.inputValue = null;
     this.editor.set({});
     this.onWorkflowInput.emit({});
   }
 
-  getInitTasks() {
-    if (!this.workflowStore) {
-      this.getworkflowStore();
-    }
-    this.workflows = this.workflowStore && this.workflowStore.slice(0, 10);
-  }
-
-  search(term: string): void {
-    this.searchTerms.next(term);
-  }
-
-  searchIterm(term: string): void {
-    if (!this.workflowStore) {
-      this.getworkflowStore();
-    }
-    this.workflows = StringOperator.search(term, this.workflowStore).slice(0, 10);
-  }
-
-  putWorkflowIntoCanvas(friendlyName: any) {
+  putWorkflowIntoCanvas(friendlyName: string) {
     let workflow = {};
     for (let item of this.workflowStore) {
       if (item.friendlyName.replace(/\s/ig, '') === friendlyName.replace(/\s/ig, '')) {
@@ -74,6 +56,16 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onSelected(selWorkflow: any){
+    this.selectWorkflow = selWorkflow;
+    this.putWorkflowIntoCanvas(selWorkflow.friendlyName);
+  }
+
+  onRefresh() {
+    this.clearInput();
+    this.getworkflowStore();
+  }
+
   ngOnInit() {
     this.isShowModal = false;
     this.selectWorkflow = this.graphService.getInitGraph();
@@ -85,15 +77,6 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     this.editor = new JSONEditor(container, options);
     this.updateEditor(this.selectWorkflow);
     this.getworkflowStore();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchIterm(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
   }
 
   ngAfterViewInit() {

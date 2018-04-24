@@ -8,6 +8,7 @@ import { SkusService } from './sku.service';
 import { WorkflowService } from './workflow.service';
 import { GraphTaskService } from './task.service';
 import { GraphService } from './graph.service';
+import { TagService } from './tag.service';
 
 @NgModule({
   exports: [],
@@ -20,6 +21,7 @@ import { GraphService } from './graph.service';
     WorkflowService,
     GraphTaskService,
     GraphService,
+    TagService,
   ]
 })
 export class RackhdCommonServicesModule {}

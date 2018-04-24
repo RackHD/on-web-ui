@@ -9,6 +9,7 @@ import { WorkflowCanvasComponent } from './workflow-canvas/workflow-canvas.compo
 import { WorkflowEditorComponent } from './workflow-editor.component';
 import { WorkflowEditorRoutingModule } from './workflow-editor-routing.module';
 import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
+import { InventoryModule } from 'app/inventory/inventory.module';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { CanvasGraphModule } from '../canvas-graph/canvas-graph.module';
     ReactiveFormsModule,
     WorkflowEditorRoutingModule,
     CanvasGraphModule,
+    InventoryModule,
   ],
   declarations: [
     WorkflowEditorComponent,

@@ -15,7 +15,6 @@ import { OperationsCenterRoutingModule } from './operations-center-routing.modul
 
 import { CanvasGraphModule } from 'app/canvas-graph/canvas-graph.module';
 import { InventoryModule } from 'app/inventory/inventory.module';
-// import { SharedServicesModule } from '../services/sharedServices.module';
 
 @NgModule({
   imports: [
