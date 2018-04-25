@@ -7,7 +7,6 @@ import {
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-route/app-routing.module';
-import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { IconService } from './icon.service';
 
 
@@ -17,7 +16,6 @@ import { IconService } from './icon.service';
  * This providers also can be regard as a global service list for retriving.
  */
 const APP_PROVIDERS = [
-  ...APP_RESOLVER_PROVIDERS,
   IconService
 ];
 

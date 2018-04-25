@@ -11,28 +11,19 @@
       </app-canvas-graph>
     </div>
 
-    <div class="jsoneditor">
-      <!--<span class="btn btn-icon float-right" title="Showjson">-->
-      <!--<clr-icon shape="view-list"></clr-icon>-->
-      <!--</span>-->
-      <button class="btn btn-icon " (click)="applyWorkflowJson()" title="Apply">
-        <clr-icon shape="two-way-arrows"></clr-icon>
-      </button>
-      <span class="search-datalist">
-        <clr-icon shape="search"></clr-icon>
-        <datalist id="workflow_list">
-          <select name="workflow">
-            <option [ngValue]="wf" *ngFor="let wf of workflows">
-              {{wf.friendlyName}}
-            </option>
-          </select>
-        </datalist>
-        <input #searchBox type="text" name="workflow" id="workflow" list="workflow_list" style="width: 200px"
-           (keyup)="search(searchBox.value)" placeholder="search workflow"
-           (click)="getInitTasks()" [(ngModel)]="inputValue"
-           (change)="putWorkflowIntoCanvas($event.target.value)">
-        <clr-icon shape="times" *ngIf="inputValue" (click)="clearInput()"></clr-icon>
-      </span>
+    <div class="editor">
+      <div class="row filter-line">
+        <button class="btn btn-icon" (click)="applyWorkflowJson()" title="Apply">
+          <clr-icon shape="two-way-arrows"></clr-icon>
+        </button>
+        <div class="dropdown">
+          <dropdown-group [data]="workflowStore"
+            [columns]="columns" [placeholders]="placeholders"
+            [fields]="fields" needSearchIcon=true
+            (selected)="onSelected($event)" (cleared)="onRefresh()">
+          </dropdown-group>
+        </div>
+      </div>
       <div #jsoneditor id="jsoneditor"></div>
     </div>
   </div>

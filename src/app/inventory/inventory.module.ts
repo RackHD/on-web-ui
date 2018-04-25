@@ -7,6 +7,7 @@ import { InventoryFooterComponent } from './footer/footer.component';
 import { InventoryHeaderComponent } from './header/header.component';
 import { GridDetailsModalComponent } from './modal/details-modal.component';
 import { GridConfirmModalComponent } from './modal/confirm-modal.component';
+import { DropdownGroupComponent } from './dropdown-group/dropdown-group.component';
 
 
 @NgModule({
@@ -22,12 +23,14 @@ import { GridConfirmModalComponent } from './modal/confirm-modal.component';
     InventoryHeaderComponent,
     GridDetailsModalComponent,
     GridConfirmModalComponent,
+    DropdownGroupComponent,
   ],
   declarations: [
     InventoryFooterComponent,
     InventoryHeaderComponent,
     GridDetailsModalComponent,
     GridConfirmModalComponent,
+    DropdownGroupComponent,
   ]
 })
 export class InventoryModule {}

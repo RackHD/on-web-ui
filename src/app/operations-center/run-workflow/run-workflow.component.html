@@ -4,118 +4,42 @@
   </h5>
   <p class="run-workflow-row">
     <span class="col-md-4">
-      <label><b>GraphName:</b></label>
-      <datalist id="workflow_list">
-        <select name="workflow">
-          <option [ngValue]="wf" *ngFor="let wf of workflows">
-            {{wf.friendlyName}}
-          </option>
-        </select>
-      </datalist>
-      <input #searchBox0 type="text" name="workflow" id="workflow" list="workflow_list"
-             (keyup)="search(searchBox0.value)" placeholder="search workflow"
-             (click)="getInitWorkflows()" [(ngModel)]="selectedFriendlyName"
-             (change)="putWorkflowIntoJson($event.target.value)"
-             [ngStyle]="{'width':selectedFriendlyName.length >= 30 ? '340px' : '250px' }">
-      <clr-icon shape="times" *ngIf="selectedFriendlyName" (click)="clearGraphInput()"></clr-icon>
+      <dropdown-group [data]="graphStore"
+        [fields]="graphFields" [labels]="graphLabels" [columns]="graphColumns"
+        (selected)="onGraphSelect($event)" (cleared)="onGraphRefresh()">
+      </dropdown-group>
     </span>
   </p>
 
-  <!--node operation-->
   <p class="run-workflow-row">
     <span class="col-md-4">
-      <label><b>NodeId:</b></label>
-      <!--node id-->
-      <datalist id="node_list">
-        <select name="node">
-          <option [ngValue]="node" *ngFor="let node of allNodesInfo">
-            {{node.id}}
-          </option>
-        </select>
-      </datalist>
-      <input #searchBox1 type="text" name="node" id="node" list="node_list"
-             placeholder="search nodeId" style="width: 250px"
-             [(ngModel)]="selectedNodeId">
-      <clr-icon shape="times" *ngIf="selectedNodeId" (click)="clearNodeInput()"></clr-icon>
+      <dropdown-group [data]="selNodeStore"
+        [fields]="nodeFields" [labels]="nodeLabels" [columns]="nodeColumns"
+        (selected)="onNodeSelect($event)" (cleared)="onNodeRefresh()">
+      </dropdown-group>
     </span>
   </p>
-  <div class="col-md-5 col-xs-5 col-lg-5 filter-by">
-    <label class="filter-title"><b>Filtered By</b></label>
-    <section class="filter-content">
-      <p>
-        <span class="col-md-3">
-          <!--node types-->
-          <label><b>Type:</b></label>
-          <datalist id="node_type_list">
-            <select name="nodetype">
-              <option *ngFor="let type of typeList">
-                {{type}}
-              </option>
-            </select>
-          </datalist>
-          <input #searchBox3 type="text" name="nodetype" id="nodetype" list="node_type_list"
-                 placeholder="by type"
-                 [(ngModel)]="selectedNodeType"
-                 (change)="getNodeByIdentifier('type',selectedNodeType)">
-        </span>
-        <span class="col-md-3">
-          <!--node names-->
-          <label><b>Name:</b></label>
-          <datalist id="node_name_list">
-            <select name="nodename">
-              <option *ngFor="let name of nameList">
-                {{name}}
-              </option>
-            </select>
-          </datalist>
-          <input type="text" name="nodename" id="nodename" list="node_name_list"
-                 placeholder="by name"
-                 [(ngModel)]="selectedNodeName"
-                 (change)="getNodeByIdentifier('name',selectedNodeName)">
-        </span>
-
-      </p>
-      <p>
-        <span class="col-md-3" *ngIf="obmsList.length > 0">
-          <!--node obm-->
-          <label><b>Obm:</b></label>
-          <datalist id="node_obm_list">
-            <select name="nodeobm" #obm>
-              <option [ngValue]="obm" *ngFor="let obm of obmsList">
-                {{obm}}
-              </option>
-            </select>
-          </datalist>
-          <input type="text" name="nodeobm" id="nodeobm" list="node_obm_list"
-                 placeholder="by obms"
-                 [(ngModel)]="selectedNodeObm"
-                 (change)="getNodeByIdentifier('obms',$event.target.value)">
-        </span>
-        <span class="col-md-3" *ngIf="skuList.length > 0">
-          <!--node sku-->
-          <label><b>Skus:</b></label>
-          <span class="col-md-3"></span>
-          <datalist id="node_sku_list">
-            <select name="nodesku">
-              <option *ngFor="let sku of skuList">
-                {{sku}}
-              </option>
-            </select>
-          </datalist>
-          <input #searchBox3 type="text" name="nodesku" id="nodesku" list="node_sku_list"
-                 placeholder="by sku"
-                 [(ngModel)]="selectedNodeSku"
-                 (change)="getNodeByIdentifier('sku',selectedNodeSku)">
-        </span>
-      </p>
+  <div class="col-md-7 col-xs-7 col-lg-7 filter-by">
+    <label class="filter-title"><b>Filter Node</b></label>
+    <section>
+      <dropdown-group [data]="nodeStore"
+        [fields]="filterFields" [labels]="filterLabels"
+        [columns]="filterColumns"
+        (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
+      </dropdown-group>
     </section>
   </div>
-  <div class="col-md-8" style="padding-left: 0">
-    <p class="run-workflow-row"><label><b>Operations:</b></label></p>
+  <div class="col-md-7 bottom-button">
+    <button class="btn btn-primary" (click)="onReset()">Reset Filters</button>
+  </div>
+  <div class="col-md-7 json-editor">
+    <p class="run-workflow-row"><label><b>Payload:</b></label></p>
     <div #jsoneditor id="jsoneditor"></div>
   </div>
-  <div class="col-md-8 bottom-button">
-    <button class="btn btn-primary" (click)="postWorflow()">Run Workflow</button>
+  <div class="col-md-7 bottom-button">
+    <button class="btn btn-success" (click)="postWorflow()"
+      [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
+      Run Workflow</button>
   </div>
   <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
     <h3 class="modal-title" *ngIf="showModal">{{runWorkflowRes.title}}</h3>
@@ -127,7 +51,7 @@
       <button class="btn btn-primary" type="button" (click)="goToViewer()">Yes</button>
     </div>
     <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 2">
-      <button class="btn btn-primary" type="button" (click)="showModal = false">Yes</button>
+      <button class="btn btn-primary" type="button" (click)="showModal = false">OK</button>
     </div>
   </clr-modal>
 </div>

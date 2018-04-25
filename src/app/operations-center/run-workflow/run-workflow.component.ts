@@ -1,51 +1,58 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StringOperator } from '../../utils/inventory-operator';
 import { Subject } from 'rxjs/Rx';
+import { JSONEditor } from 'app/utils/json-editor';
+
+import { NodeService } from 'app/services/rackhd/node.service';
+import { GraphService } from 'app/services/rackhd/graph.service';
+import { WorkflowService } from 'app/services/rackhd/workflow.service';
+import { CatalogsService } from 'app/services/rackhd/catalogs.service';
+import { ObmService } from 'app/services/rackhd/obm.service';
+import { SkusService } from 'app/services/rackhd/sku.service';
+import { TagService } from 'app/services/rackhd/tag.service';
+
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
+import 'rxjs/add/observable/of';
+
 import * as _ from 'lodash';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { JSONEditor } from '../../utils/json-editor';
-import { NodeService } from '../../services/rackhd/node.service';
-import { GraphService } from '../../services/rackhd/graph.service';
-import { WorkflowService } from '../../services/rackhd/workflow.service';
-import { CatalogsService } from '../../services/rackhd/catalogs.service';
-import { ObmService } from '../../services/rackhd/obm.service';
 
 @Component({
   selector: 'app-run-workflow',
   templateUrl: './run-workflow.component.html',
   styleUrls: ['./run-workflow.component.scss']
 })
-export class RunWorkflowComponent implements OnInit {
+export class RunWorkflowComponent implements OnInit, AfterViewInit {
   @ViewChild('jsoneditor') jsoneditor: ElementRef;
-  injectableName: any;
   editor: any;
   runWorkflowRes = {
     title: "",
     note: "",
     type: 1
   };
-
-  private searchTerms = new Subject<string>();
   showModal: boolean;
-  allgraphs: any;
-  workflows: any;
-  selectedFriendlyName = '';
-  selectedInjectableName: any;
+
   graphId: string;
+  graphStore: any[] = [];
+  allGraphs: any[] = [];
+  selectedGraph: any;
 
-  allNodesInfo: Array<any> = [];
-  skuList = [];
-  obmsList = [];
-  nameList = [];
-  typeList = [];
-  selectedNodeStore: Array<any> = [];
+  allNodes: Array<any> = [];
+  nodeStore: Array<any> = [];
+  selNodeStore: any [] = [];
 
-  selectedNodeType: any;
-  selectedNodeName: any;
-  selectedNodeObm: any;
-  selectedNodeSku: any;
-  selectedNodeId: any;
+  filterFields = ["type", "name", "sku", "obms", 'tags'];
+  filterLabels = ["Node Type", "Node Name", "Node SKU Name", "Node OBM Host", "Node Tag Name"];
+  filterColumns = [4, 4, 4, 4, 4];
+
+  nodeFields = ["id"];
+  nodeLabels = ["Node: "];
+  nodeColumns = [3];
+  selectedNode: any;
+
+  graphFields = ["friendlyName"];
+  graphLabels = ["Graph: "];
+  graphColumns = [3];
 
   constructor(
     public nodeService: NodeService,
@@ -54,232 +61,195 @@ export class RunWorkflowComponent implements OnInit {
     private workflowService: WorkflowService,
     private catalogsService: CatalogsService,
     private obmService: ObmService,
-    private router: Router) {}
+    public skuService: SkusService,
+    public tagService: TagService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
+    this.activatedRoute.queryParams.subscribe(queryParams => {
+      this.graphId = queryParams.injectableName;
+    });
     this.showModal = false;
     let container = this.jsoneditor.nativeElement;
     let options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
-    this.getAllNodes();
     this.getAllWorkflows();
-    let searchTrigger = this.searchTerms.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        this.searchIterm(term);
-        return 'whatever';
-      })
-    );
-    searchTrigger.subscribe();
 
-    this.activatedRoute.queryParams.subscribe(queryParams => {
-      this.injectableName = queryParams.injectableName;
-      if (this.injectableName) {
-        this.getWorkflowByName();
-      }
-    });
   }
 
-  /*get workflow by injectablename*/
-
-  getWorkflowByName() {
-    this.graphService.getByIdentifier(this.injectableName).subscribe(data => {
-      this.selectedFriendlyName = data[0].friendlyName;
-      this.selectedInjectableName = data[0].injectableName;
-      this.updateOptionsEditor(data[0]);
-    });
+  ngAfterViewInit() {
+    if (this.graphId) {
+      this.selWorkflowById(this.graphId);
+    } else {
+      this.getAllWorkflows();
+    }
+    this.getAllNodes();
   }
 
-  /*get all workflow*/
+  selWorkflowById(id) {
+    this.graphService.getByIdentifier(id)
+    .subscribe(data => {
+      this.selectedGraph = (data instanceof Array) ? data[0] : data;
+      this.graphStore = [this.selectedGraph];
+      this.updateEditor(data.options);
+    });
+  }
 
   getAllWorkflows() {
-    this.graphService.getAll().subscribe(graphs => {
-      this.allgraphs = graphs;
+    this.graphService.getAll()
+    .subscribe(graphs => {
+      this.allGraphs = graphs;
+      this.graphStore = _.cloneDeep(graphs);
     });
   }
 
-  getInitWorkflows() {
-    if (_.isEmpty(this.allgraphs)) {
-      this.getAllWorkflows();
-    }
-    this.workflows = this.allgraphs && this.allgraphs.slice(0, 10);
-    if (this.injectableName) {
-      this.router.navigate(['operationsCenter/runWorkflow']);
-    }
-  }
-
-  search(term: string): void {
-    this.searchTerms.next(term);
-  }
-
-  searchIterm(term: string): void {
-    if (_.isEmpty(this.allgraphs)) {
-      this.getAllWorkflows();
-    }
-    this.workflows = StringOperator.search(term, this.allgraphs).slice(0, 10);
-  }
-
-  putWorkflowIntoJson(name: any) {
-    let workflow = {};
-    for (let item of this.allgraphs) {
-      if (item.friendlyName.replace(/\s/ig, '') === name.replace(/\s/ig, '')) {
-        workflow = item;
-        this.selectedInjectableName = item.injectableName;
-        break;
-      }
-    }
-    if (workflow) {
-      this.updateOptionsEditor(workflow);
-    }
-  }
-
-  updateOptionsEditor(workflow: any) {
-    if (workflow.options)
-      this.editor.set(workflow.options);
+  updateEditor(options: any) {
+    if (options)
+      this.editor.set(options);
     else
       this.editor.set({});
   }
 
   clearGraphInput() {
-    this.selectedFriendlyName = '';
+    this.graphId = '';
+    this.selectedGraph = {};
+    this.graphStore = [];
     this.editor.set({});
   }
 
-  /* some opertions about node*/
-
   getAllNodes() {
     this.nodeService.getAll()
-      .subscribe(data => {
-        this.allNodesInfo = data;
-        this.getAllLists(this.allNodesInfo);
-      });
-  }
-
-  getAllLists(nodesStore) {
-    this.skuList = [];
-    this.obmsList = [];
-    this.nameList = [];
-    this.typeList = [];
-    nodesStore.forEach(node => {
-      /* get sku name
-      *   1. there are some nodes without the property of sku. => filter them
-      *   2. if the sku is not null,then getting its name.
-      *   3. if the sku is null,
-      *      then judegging if his node type is compute.=>if not, fitler them
-      *   4. if the sku is null and its node type is compute,
-      *      get its dmi.base_board.product_name by catalogs.
-      **/
-      if (node.hasOwnProperty('sku')) {
-        if (node.sku === null) {
-          if (node.type === "compute") {
-            this.catalogsService.getSource(node.id, "ohai").subscribe(data => {
-              node.sku = data.data.dmi.base_board.product_name;
-              this.skuList.push(node.sku);
-              this.skuList = Array.from(new Set(this.skuList));
-            });
-          } else {
-            this.skuList = Array.from(new Set(this.skuList));
-          }
-        } else {
-          this.skuList.push(node.sku);
-          this.skuList = Array.from(new Set(this.skuList));
-        }
-      }
-      /* get obms name*/
-      if (node.obms instanceof Array) {
-        if (node.obms.length > 0) {
-          let obmsId = node.obms[0].ref.split("/").pop();
-          this.obmService.getByIdentifier(obmsId).subscribe(data => {
-            node.obms = data.config.host;
-            this.obmsList.push(node.obms);
-          });
-          this.obmsList = Array.from(new Set(this.obmsList));
-        } else {
-          node.obms = null;
-        }
-      } else if (node.obms !== null) {
-        this.obmsList.push(node.obms);
-        this.obmsList = Array.from(new Set(this.obmsList));
-      }
-      /* get node name*/
-      this.nameList.push(node.name);
-      this.nameList = Array.from(new Set(this.nameList));
-      /* get node type*/
-      this.typeList.push(node.type);
-      this.typeList = Array.from(new Set(this.typeList));
+    .subscribe(data => {
+      this.renderNodeInfo(data);
     });
   }
 
-  getNodeByIdentifier(type, value) {
-    let identifier = {};
-    identifier[type] = value;
-    this.selectedNodeStore = this.selectedNodeStore.length > 0 ? this.selectedNodeStore : this.allNodesInfo;
-    this.selectedNodeStore = _.filter(this.selectedNodeStore, _.matches(identifier));
-    /* refresh all list*/
-    this.getAllLists(this.selectedNodeStore);
-    /* to show the information if there is one element in selectedNodeStore  */
-    if (this.selectedNodeStore.length === 1) {
-      this.selectedNodeId = this.selectedNodeStore[0].id;
-      this.selectedNodeType = this.selectedNodeStore[0].type;
-      this.selectedNodeName = this.selectedNodeStore[0].name;
-      this.selectedNodeObm = this.selectedNodeStore[0].obms;
-      if (this.selectedNodeStore[0].hasOwnProperty('sku')) {
-        this.selectedNodeSku = this.selectedNodeStore[0].sku;
-      }
+  getNodeSku(node): Observable<string> {
+    let hasSkuId = !!node.sku;
+    let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
+    if (hasSkuId) {
+      return this.skuService.getByIdentifier(node.sku.split("/").pop())
+      .map(data => data.name);
+    } else if (isComputeWithoutSku) {
+      return this.catalogsService.getSource(node.id, "ohai")
+      .map(data => data.data.dmi.base_board.product_name);
+    } else {
+      return Observable.of(null);
     }
   }
 
-  clearNodeInput() {
-    this.selectedNodeId = null;
-    this.selectedNodeType = null;
-    this.selectedNodeName = null;
-    this.selectedNodeObm = null;
-    this.selectedNodeSku = null;
-    this.selectedNodeStore = [];
-    this.getAllNodes();
+  getNodeObm(node): Observable<string> {
+    if (!_.isEmpty(node.obms)) {
+      let obmId = node.obms[0].ref.split("/").pop();
+      return this.obmService.getByIdentifier(obmId)
+      .map(data => data.config.host);
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  getNodeTag(node): Observable<string> {
+    if (!_.isEmpty(node.tags)) {
+      return this.tagService.getTagByNodeId(node.id)
+      .map(data => {
+        if(_.isEmpty(data)) { return null; }
+        return data.attributes.name;
+      });
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  renderNodeInfo(nodes) {
+    let list = _.map(nodes, node => {
+      return Observable.forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
+      .map(results => {
+        node["sku"] = results[0];
+        node["obms"] = results[1];
+        node["tags"] = results[2];
+      });
+    });
+
+    Observable.forkJoin(list)
+    .subscribe((data) => {
+      this.allNodes = _.cloneDeep(nodes);
+      this.nodeStore = _.cloneDeep(nodes);
+      this.selNodeStore = _.cloneDeep(nodes);
+    });
   }
 
   postWorflow() {
     this.showModal = true;
     let payload = this.editor.get();
-    if (_.isEmpty(this.selectedNodeId) || _.isEmpty(this.selectedFriendlyName) || _.isEmpty(payload)) {
-      this.runWorkflowRes = {
-        title: "Post Workflow Failed!",
-        note: "Please confirm if all necessary parameters are complete!",
-        type: 2
-      };
-    } else {
-      this.workflowService.runWorkflow(this.selectedNodeId, this.selectedInjectableName, payload)
-        .subscribe(data => {
-            console.log(data);
-            this.graphId = data.instanceId;
-            console.log(this.graphId);
-            this.runWorkflowRes = {
-              title: "Post Workflow Successfully!",
-              note: "The workflow has post successfully!  Do you want to view it now?",
-              type: 1
-            };
-          },
-          err => {
-            this.runWorkflowRes = {
-              title: "Post Workflow Failed!",
-              note: err.error,
-              type: 2
-            };
-          }
-        );
-    }
+    let selectedNodeId = this.selectedNode && this.selectedNode.id;
+    this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
+    .subscribe(
+      data => {
+        this.graphId = data.instanceId;
+        this.runWorkflowRes = {
+          title: "Post Workflow Successfully!",
+          note: "The workflow has post successfully!  Do you want to view it now?",
+          type: 1
+        };
+      },
+      err => {
+        this.runWorkflowRes = {
+          title: "Post Workflow Failed!",
+          note: err.error,
+          type: 2
+        };
+      }
+    );
   }
 
   goToViewer() {
     this.showModal = false;
     this.router.navigate(['operationsCenter/workflowViewer'], {
-      queryParams: {
-        graphId: this.graphId
-      }
+      queryParams: {graphId: this.graphId}
     });
-
   }
 
+  onGraphSelect(graph){
+    this.selectedGraph = graph;
+    this.updateEditor(this.selectedGraph.options);
+  };
+
+  onGraphRefresh() {
+    this.selNodeStore= [];
+    this.nodeStore = _.cloneDeep(this.allNodes);
+    this.updateEditor({});
+    this.router.navigateByUrl('operationsCenter/runWorkflow');
+  }
+
+  onFilterSelect(node){
+    this.selectedNode = node;
+    this.selNodeStore = [node];
+  };
+
+  onFilterRefresh() {
+    this.selNodeStore= [];
+    this.nodeStore = _.cloneDeep(this.allNodes);
+  }
+
+  onNodeSelect(node){
+    this.selectedNode = node;
+    this.nodeStore = [node];
+  };
+
+  onNodeRefresh() {
+    this.nodeStore = [];
+    setTimeout(()=>{
+      this.nodeStore = _.cloneDeep(this.allNodes);
+    });
+  }
+
+  onReset(){
+    this.selNodeStore= [];
+    this.nodeStore = [];
+    setTimeout(()=>{
+      this.nodeStore = _.cloneDeep(this.allNodes);
+      this.selNodeStore = _.cloneDeep(this.allNodes);
+    });
+  }
 }

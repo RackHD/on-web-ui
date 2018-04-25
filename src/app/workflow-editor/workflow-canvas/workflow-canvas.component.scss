@@ -10,12 +10,7 @@
     .workflow-editor {
       flex: 3;
     }
-    .jsoneditor {
-      p {
-        padding: 5px;
-        text-align: left;
-        margin: 0;
-      }
+    .editor {
       margin-left: 15px;
       flex: 1;
       text-align: left;
@@ -23,6 +18,12 @@
       border: none;
       #jsoneditor {
         height: 100vh !important;
+      }
+      .filter-line {
+        margin-left: 0px;
+        .dropdown {
+          width: 85%;
+        }
       }
     }
   }
