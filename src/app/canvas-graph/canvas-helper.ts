@@ -16,10 +16,10 @@ export class DrawUtils {
     }
 
     /*
-     * Put taskIds into an array in flipped "N" position sequence (Top-down in
-     * a column then left-right for all columns)
+     * Put positioned taskIds into an array in flipped "N" position sequence
+     * (Top-down in each column then left-right for all columns)
      */
-    public sortTaskIdsByPos(colMatrix, rowMatrix): string[] {
+    public sortTaskIdsByPos(colMatrix: any, rowMatrix: any, skipLastCol: boolean): string[] {
       let locatedTaskIds: string[][] = [];
       _.forEach(colMatrix, (col, taskId) => {
         let row = rowMatrix[taskId];
@@ -27,31 +27,36 @@ export class DrawUtils {
         locatedTaskIds[col][row] = taskId;
       });
 
-      // Remove taskIds in last column
-      // Last column connection is covered by its previous columns
-      locatedTaskIds.pop();
+      if (skipLastCol) locatedTaskIds.pop();
 
       return _.compact(_.flatten(locatedTaskIds));
     }
 
     /*
-     * Retrieve tasksId-waitedBys from workflow task list
+     * Retrieve task-task waited-by relations from workflow task list
+     * WaitedBy is the reversed description for waitedOn
      */
     public getWaitedBysMatrix(tasks: any[]): any {
       let waitedBys = {};
       _.forEach(tasks, task => {
-        _.forEach(task[this.waitOnKey], (value, key) => {
+        _.forEach(task[this.waitOnKey], (states, key) => {
+          let state: string;
           waitedBys[key] = waitedBys[key] || {};
-          waitedBys[key][task[this.idKey]] = value;
+          if (states as any instanceof Array) {
+            state = states.length > 1 ? CONSTS.taskResult.finished : states[0];
+          } else {
+            state = states;
+          }
+          waitedBys[key][task[this.idKey]] = state;
         })
       });
       return waitedBys;
     }
 
     /*
-     * Create canvas node object for a task
+     * Create canvas node object for task
      */
-    public createTaskNode(task: any, position): any{
+    public createTaskNode(task: any, position): any {
       let waitOnLength = _.keys(task[this.waitOnKey]).length;
       let taskNodeName = 'rackhd/task_' + waitOnLength;
       let taskNode = global.LiteGraph.createNode(taskNodeName);
@@ -78,33 +83,26 @@ export class DrawUtils {
     }
 
     /*
-     * Connect task nodes
+     * Connect task nodes by column
      */
-    public connectNodes(allTaskIds, taskNodeMatrix, taskSlotMatrix) {
+    public connectNodes(allTaskIds, taskNodeMatrix, inputSlotIndexes) {
       let waitedBysMatrix = this.getWaitedBysMatrix(this.tasks);
       _.forEach(allTaskIds, (taskId) => {
         let curNode = taskNodeMatrix[taskId];
         let task = curNode.properties.task;
         let waitedByTasks = waitedBysMatrix[taskId];
-        _.forEach(waitedByTasks, (states, taskId) => {
-          let state: string;
+        _.forEach(waitedByTasks, (state, taskId) => {
+          let curNodeOutputSlot = CONSTS.outputSlots[state];
+          let nextNodeInputSlot = inputSlotIndexes[taskId];
           let nextNode = taskNodeMatrix[taskId];
-
-          // To be compatible with different kinds of waitOn values in RackHD code
-          if (states as any instanceof Array) {
-            state = states.length > 1 ? CONSTS.taskResult.finished : states[0];
-          } else {
-            state = states;
-          }
-
-          curNode.connect(CONSTS.outputSlots[state], nextNode, taskSlotMatrix[taskId]);
-          taskSlotMatrix[taskId] += 1;
+          curNode.connect(curNodeOutputSlot, nextNode, nextNodeInputSlot);
+          inputSlotIndexes[taskId] += 1;
         })
       });
     }
 
   /*
-   * drawBackCanvas is just to delete the border of canvas
+   * drawBackCanvas is used to override default method to delete the border of canvas
    */
   public static drawBackCanvas() {
     return function(){
@@ -279,56 +277,109 @@ export class PositionUtils {
     }
 
     /*
+     * Retrieve tasksId-waitedBys from workflow task list
+     */
+    public getWaitedBysMatrix(tasks: any[]): any {
+      let waitedBys = {};
+      _.forEach(tasks, task => {
+        _.forEach(task[this.waitOnKey], (states, key) => {
+          let state: string;
+          waitedBys[key] = waitedBys[key] || {};
+          if (states as any instanceof Array) {
+            state = states.length > 1 ? CONSTS.taskResult.finished : states[0];
+          } else {
+            state = states;
+          }
+          waitedBys[key][task[this.idKey]] = state;
+        })
+      });
+      return waitedBys;
+    }
+
+    /*
      * Generate row position for all tasks that have already had column positions
-     * Row position for a task is no less than row position of tasks it waits on
-     * Tasks have the same waitOn will be distribute by iterating sequence
+     * Row position is decided by two things:
+     *  1. Row position of tasks it waits-on.
+     *  Tasks in a column will be queued following there waitOn tasks row position
+     *  before generating row position. Row position is then assigned by the queue
+     *  index by default. However if row position of a task is smaller than its
+     *  waits-on tasks, this task will be shift to a new index in the queue
+     *  to make sure the new generated task row position (and its index in the queue)
+     *  is no smaller than its waitOn tasks row positions.
+     *  All tasks in the queue after current task will be shifted as well.
+     *  2. Wait-on status.
+     *  Task will have increasing row sequence as 'failed=>succeeded=>finished' to
+     *  align status position on task nodes
+     *
      */
     public generateRowPos(colPosMatrix: any, waitOnsList: any): {[propName: string]: number} {
       let rowPosMatrix = {};
-      let sortedTasks = this.sortTaskByCol(colPosMatrix);
+      let tasksSortedByCol = this.sortTaskByCol(colPosMatrix);
+      let waitedBysMatrix = this.getWaitedBysMatrix(this.tasks);
 
-      //First column task's row position is arranged by its appearing sequence
+      //First column task's row position is decided by its appearing sequence
       let rowIndex = 0;
-      _.forEach(sortedTasks[0], task => {
+      let firstColumnTasks = tasksSortedByCol[0];
+      _.forEach(firstColumnTasks, task => {
         rowPosMatrix[task] = rowIndex;
         rowIndex += 1;
       });
 
-      //Non-first column task's row position follow its waitOn tasks
-      for (let colIndex = 1; colIndex < sortedTasks.length; colIndex += 1) {
-        let preColTasks = sortedTasks[colIndex - 1]; //waitOn task list for all tasks in current column;
-        let curColTasks = sortedTasks[colIndex];
-        this.generateRowPosForCol(curColTasks, preColTasks, rowPosMatrix, waitOnsList);
+      let curColTasks = firstColumnTasks;
+      let curColumn = 0;
+      while(!_.isEmpty(curColTasks)){
+        if (curColumn === tasksSortedByCol.length -1) break; // Skip last column
+
+        let startRowPos = 0;
+        let nextColTasks = tasksSortedByCol[curColumn + 1];
+        // Generate row position for next column tasks via waited-by relations
+        let nextSortedColTasks = [];
+        _.forEach(curColTasks, curTaskId => {
+          let waitedByTasks = waitedBysMatrix[curTaskId];
+          if (_.isEmpty(waitedByTasks)){ return true; } // Skip task is not waited by any task
+          let curRowPos = startRowPos;
+          let tasksSortedByOut = this.sortTaskByWaitOnState(waitedByTasks, nextColTasks);
+
+          _.forEach(tasksSortedByOut, taskId => {
+            rowPosMatrix[taskId] = curRowPos;
+            // Row number will be no small than task row number it waits on
+            if (rowPosMatrix[taskId] < rowPosMatrix[curTaskId]){
+              rowPosMatrix[taskId] = rowPosMatrix[curTaskId];
+            }
+            curRowPos = rowPosMatrix[taskId] + 1;
+          });
+          startRowPos = curRowPos;
+          nextSortedColTasks = nextSortedColTasks.concat(tasksSortedByOut);
+        });
+        curColTasks = nextSortedColTasks;
+        curColumn += 1;
       }
 
       return rowPosMatrix;
     }
 
     /*
-     * Get row position for tasks in a column
+     * Sort tasks in a task's waitOn list by waitOn status
      */
-    private generateRowPosForCol(
-      curColTasks: string[],
-      preColTasks: string[],
-      rowPosMatrix: any,
-      waitOnsMatrix: any
-    ) {
-      let rowIndex = 0;
-      _.forEach(preColTasks, preTask => {
-        _.forEach(curColTasks, task => {
-          let waitOnTasks = _.keys(waitOnsMatrix[task]);
-          let taskRowPos: number;
-          if (_.includes(waitOnTasks, preTask)) {
-            taskRowPos = rowIndex;
-            //Keep row position below its waitOnTasks.
-            if (taskRowPos < rowPosMatrix[preTask]) {
-              taskRowPos = rowPosMatrix[preTask];
-            }
-            rowIndex = taskRowPos + 1;
-            rowPosMatrix[task] = taskRowPos;
-          }
-        })
+    private sortTaskByWaitOnState(waitedByTasks, nextColTasks){
+      let failedWaitedBys = [];
+      let succeededWaitedBys = [];
+      let finishedWaitedBys = [];
+      _.forEach(waitedByTasks, (state, taskId) => {
+        if(!_.includes(nextColTasks, taskId)){ return true; } // Prevent jumping columns
+        switch(state) {
+          case CONSTS.waitOn.failed:
+            failedWaitedBys.push(taskId);
+            break;
+          case CONSTS.waitOn.succeeded:
+            succeededWaitedBys.push(taskId);
+            break;
+          case CONSTS.waitOn.finished:
+            finishedWaitedBys.push(taskId);
+            break;
+        }
       });
+      return _.concat(failedWaitedBys, succeededWaitedBys, finishedWaitedBys);
     }
 
     /*

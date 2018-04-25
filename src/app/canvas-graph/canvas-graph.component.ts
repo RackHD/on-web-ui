@@ -80,7 +80,7 @@ export class CanvasGraphComponent implements OnInit {
     this.canvas.clear();
     this.canvas.getNodeMenuOptions = this.getNodeMenuOptions();
 
-    // overwrite default drawBackCanvas to delete border of back canvas
+    // Overwrite default drawBackCanvas method to delete border of back canvas
     this.canvas.drawBackCanvas = DrawUtils.drawBackCanvas();
 
     this.canvas.getCanvasMenuOptions = this.getCanvasMenuOptions();
@@ -202,8 +202,6 @@ export class CanvasGraphComponent implements OnInit {
     }
     this.afterWorkflowUpdate();
   }
-
-  /* end connect/disconnect callbacks */
 
   /* rewrite lib class prototype functions */
   getCanvasMenuOptions() {
@@ -358,18 +356,20 @@ export class CanvasGraphComponent implements OnInit {
     [positionMatrix, colMatrix, rowMatrix] = this.distributePosition(taskWaitOnKey, taskIdentifierKey);
 
     let taskNodeMatrix = {};
-    let taskSlotMatrix = {};
+    let nodeInputSlotIndexes = {};
     let drawUtils = new DrawUtils(taskIdentifierKey, taskWaitOnKey, this.workflow.tasks);
     _.forEach(this.workflow.tasks, (task) => {
       let position = positionMatrix[task[taskIdentifierKey]];
       let node = drawUtils.createTaskNode(task, position);
       this.graph.add(node);
       taskNodeMatrix[task[taskIdentifierKey]] = node;
-      taskSlotMatrix[task[taskIdentifierKey]] = 0;
+      nodeInputSlotIndexes[task[taskIdentifierKey]] = 0;
     });
 
-    let sortedTaskIds = drawUtils.sortTaskIdsByPos(colMatrix, rowMatrix);
-    drawUtils.connectNodes(sortedTaskIds, taskNodeMatrix, taskSlotMatrix);
+    // Remove taskIds in last column
+    // Last column connection is covered by its previous columns
+    let sortedTaskIds = drawUtils.sortTaskIdsByPos(colMatrix, rowMatrix, true);
+    drawUtils.connectNodes(sortedTaskIds, taskNodeMatrix, nodeInputSlotIndexes);
   }
 
   /*
