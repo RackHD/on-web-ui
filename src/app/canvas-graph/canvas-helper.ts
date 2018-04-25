@@ -17,7 +17,7 @@ export class DrawUtils {
 
     /*
      * Put taskIds into an array in flipped "N" position sequence (Top-down in
-     * a column than left-right for all columns)
+     * a column then left-right for all columns)
      */
     public sortTaskIdsByPos(colMatrix, rowMatrix): string[] {
       let locatedTaskIds: string[][] = [];
@@ -26,9 +26,11 @@ export class DrawUtils {
         locatedTaskIds[col] = locatedTaskIds[col] || [];
         locatedTaskIds[col][row] = taskId;
       });
+
       // Remove taskIds in last column
       // Last column connection is covered by its previous columns
       locatedTaskIds.pop();
+
       return _.compact(_.flatten(locatedTaskIds));
     }
 
@@ -49,11 +51,10 @@ export class DrawUtils {
     /*
      * Create canvas node object for a task
      */
-    public createTaskNode(task: any, positionMatrix: {[propName: string]: [number, number]}): any{
+    public createTaskNode(task: any, position): any{
       let waitOnLength = _.keys(task[this.waitOnKey]).length;
       let taskNodeName = 'rackhd/task_' + waitOnLength;
       let taskNode = global.LiteGraph.createNode(taskNodeName);
-      let position = positionMatrix[task[this.idKey]];
       taskNode.title = task.label;
       taskNode.properties.task = task;
       taskNode.state = task.state;
@@ -79,20 +80,23 @@ export class DrawUtils {
     /*
      * Connect task nodes
      */
-    public connectNodes(sortedTaskIds, taskNodeMatrix, taskSlotMatrix) {
+    public connectNodes(allTaskIds, taskNodeMatrix, taskSlotMatrix) {
       let waitedBysMatrix = this.getWaitedBysMatrix(this.tasks);
-      _.forEach(sortedTaskIds, (curTaskId) => {
-        let curNode = taskNodeMatrix[curTaskId];
+      _.forEach(allTaskIds, (taskId) => {
+        let curNode = taskNodeMatrix[taskId];
         let task = curNode.properties.task;
-        let waitedByTasks = waitedBysMatrix[curTaskId];
+        let waitedByTasks = waitedBysMatrix[taskId];
         _.forEach(waitedByTasks, (states, taskId) => {
           let state: string;
           let nextNode = taskNodeMatrix[taskId];
+
+          // To be compatible with different kinds of waitOn values in RackHD code
           if (states as any instanceof Array) {
             state = states.length > 1 ? CONSTS.taskResult.finished : states[0];
           } else {
             state = states;
           }
+
           curNode.connect(CONSTS.outputSlots[state], nextNode, taskSlotMatrix[taskId]);
           taskSlotMatrix[taskId] += 1;
         })
