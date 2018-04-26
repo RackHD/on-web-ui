@@ -10,10 +10,12 @@
     </div>
   </div>
 
-  <inventory-header [allItems]="allNodes"
-    [name]="'Node'"
-    (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  <div class="grid-header">
+    <inventory-header [allItems]="allNodes"
+      [name]="'Node'"
+      (action)="onAction($event)" (filter)="onFilter($event)">
+    </inventory-header>
+  </div>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedNodes">
@@ -98,7 +100,7 @@
         <section class="form-block">
           <div class="form-group">
             <label for="selects_1">Node Type</label>
-            <div class="select">
+            <div class="select aligned-width">
               <select id="selects_1" formControlName="type">
                 <option></option>
                 <option *ngFor="let type of selectableNodeTypes">
@@ -107,14 +109,10 @@
               </select>
             </div>
           </div>
-          <div class="form-group">
-            <label for="formFileds_1">Node Name</label>
-            <input type="text" id="formFileds_1" formControlName="name">
-          </div>
 
           <div class="form-group">
             <label for="selects_3">Auto Discover</label>
-            <div class="select">
+            <div class="select aligned-width">
               <select id="selects_3" formControlName="autoDiscover">
                 <option>true</option>
                 <option>false</option>
@@ -123,9 +121,14 @@
           </div>
 
           <div class="form-group">
+            <label for="formFileds_1">Node Name</label>
+            <input type="text" id="formFileds_1" formControlName="name">
+          </div>
+
+          <div class="form-group">
             <label for="formFields">Other Configures</label>
             <textarea id="formFields" rows="4"
-              placeholder='{"autoDiscover": true, "bootSettings": {}}'
+              placeholder='{"ibms": [{"service": "snmp-ibm-service", "config": {"host": "10.1.1.1", "community": "public"}}]}'
               formControlName="otherConfig">
             </textarea>
             <div class="alertMessage" *ngIf="!jsonValid">

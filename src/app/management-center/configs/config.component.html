@@ -35,14 +35,13 @@
       <div class="modal-body">
         <form [formGroup]="modalFormGroup" novalidate>
           <section class="form-block compact">
-            <div class="form-group">
-              <label for="key">Key: </label>
+            <div class="modal-input">
+              <label class="label-size" for="key"><b>Key: </b></label>
               <input type="text" id="key" formControlName="key">
             </div>
-            <div class="form-group">
-              <label for="value">Value: </label>
-              <input type="text" id="value"
-                formControlName="value">
+            <div class="modal-input">
+              <label class="label-size" for="value"><b>Value: </b></label>
+              <input type="text" id="value" formControlName="value">
             </div>
           </section>
         </form>
@@ -51,7 +50,8 @@
         </p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" type="button" (click)="onSubmit()">Ok</button>
+        <button class="btn btn-primary-outline" type="button" (click)="isShowModal=false">Cancel</button>
+        <button class="btn btn-primary" type="button" (click)="onSubmit();isShowModal=false">Ok</button>
       </div>
     </clr-modal>
   </div>
