@@ -6,9 +6,9 @@
         <label for="rackhdApi"
           aria-haspopup="true"
           role="tooltip"
-          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left input-width"
           [class.invalid]="formClassInvalid('rackhdNorthboundApi')">
-          <input type="text" id="rackhdApi" class="input-width" 
+          <input type="text" id="rackhdApi" class="input-width"
             [placeholder]="settingService.northboundApi"
             formControlName="rackhdNorthboundApi" >
           <span class="tooltip-content">
@@ -21,7 +21,7 @@
         <label for="rackhdWs"
           aria-haspopup="true"
           role="tooltip"
-          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left input-width"
           [class.invalid]="formClassInvalid('rackhdWebsocketUrl')">
           <input type="text" id="rackhdWs" class="input-width"
             [placeholder]="settingService.websocketUrl"
@@ -36,7 +36,7 @@
         <label for="rackhdElastic"
           aria-haspopup="true"
           role="tooltip"
-          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+          class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left input-width"
           [class.invalid]="formClassInvalid('rackhdElasticApi')">
           <input type="text" id="rackhdElasticApi" class="input-width"
             [placeholder]="settingService.elasticSearchUrl"
@@ -79,7 +79,7 @@
           <label for="rackhdUser"
             aria-haspopup="true"
             role="tooltip"
-            class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+            class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left input-width"
             [class.invalid]="formClassInvalid('rackhdAuth.rackhdUsername')">
             <input type="text" id="rackhdUser" class="input-width"
               formControlName="rackhdUsername">
@@ -94,7 +94,7 @@
           <label for="rackhdPwd"
             aria-haspopup="true"
             role="tooltip"
-            class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
+            class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left input-width"
             [class.invalid]="formClassInvalid('rackhdAuth.rackhdPassword')">
             <input type="password" id="rackhdPwd" class="input-width"
               formControlName="rackhdPassword">
