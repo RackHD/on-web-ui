@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OBM, Node } from 'app/models';
+import { OBM, Node, OBM_TYPES } from 'app/models';
 
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/utils/inventory-operator';
@@ -16,6 +16,7 @@ import * as _ from 'lodash';
   templateUrl: './obm.component.html',
   styleUrls: ['./obm.component.scss']
 })
+
 export class ObmComponent implements OnInit {
   obmStore: OBM[];
   allObms: OBM[] = [];
@@ -27,20 +28,29 @@ export class ObmComponent implements OnInit {
   isShowModal: boolean;
 
   dgDataLoading = false;
-  dgPlaceholder = 'No nodes found!';
+  dgPlaceholder = 'No obms found!';
 
-  allNodes: Node[];
+  allNodes: Node[] = [];
   obmForm: FormGroup;
-  updateForm: FormGroup;
 
   isCreateObm: boolean;
   isDelete: boolean;
   isUpdate: boolean;
   selectedObms: OBM[];
-  updateObm: OBM;
+  obmTypes: string[] = [];
 
-  constructor(public obmsService: ObmService, public nodeService: NodeService,
-    private fb: FormBuilder) { }
+  configFields: string[];
+  selObmService: any;
+
+  get obmMetaList() {
+    return OBM_TYPES;
+  }
+
+  constructor(
+    public obmsService: ObmService,
+    public nodeService: NodeService,
+    private fb: FormBuilder
+  ) { }
 
   public idComparator = new AlphabeticalComparator('id');
   public nodeComparator = new AlphabeticalComparator('node');
@@ -53,6 +63,7 @@ export class ObmComponent implements OnInit {
   ngOnInit() {
     this.getAllObms();
     this.getAllNodes();
+    this.obmTypes = _.sortBy(_.keys(this.obmMetaList));
     this.createForm();
     this.selectedObms = [];
   }
@@ -102,22 +113,6 @@ export class ObmComponent implements OnInit {
       });
   }
 
-  createForm() {
-    this.obmForm = this.fb.group({
-      nodeId: '',
-      user: '',
-      password: '',
-      host: ''
-    });
-
-    this.updateForm = this.fb.group({
-      nodeId: '',
-      user: '',
-      password: '',
-      host: ''
-    });
-  }
-
   goToDetail(obm: OBM) {
     this.selectedObm = obm;
     this.isShowDetail = true;
@@ -128,13 +123,6 @@ export class ObmComponent implements OnInit {
     this.action = _.capitalize(objKey);
     this.rawData = obm && obm[objKey];
     this.isShowModal = true;
-  }
-
-  willUpdate(obm: OBM): void {
-    this.updateObm = obm;
-    this.updateForm.value['user'] = obm.config['user'];
-    this.updateForm.value['host'] = obm.config['host'];
-    this.isUpdate = true;
   }
 
   batchDelete(obm?: OBM): void {
@@ -150,32 +138,71 @@ export class ObmComponent implements OnInit {
     this.getAllObms();
   }
 
-  createObm(): void {
-    this.create(this.obmForm);
+  createForm(){
+    this.obmForm = this.fb.group({
+      nodeId: {value: '', validators: Validators.required},
+      service: {value: '', validators: Validators.required}
+    });
   }
 
-  create(form: FormGroup, nodeId?: string): void {
-    let jsonData = {};
-    let value = form.value;
-
-    // data transform
-    jsonData['service'] = 'ipmi-obm-service';
-    jsonData['nodeId'] = nodeId ? nodeId : value['nodeId'];
-    jsonData['config'] = {};
-    jsonData['config']['user'] = value['user'];
-    jsonData['config']['password'] = value['password'];
-    jsonData['config']['host'] = value['host'];
-
-    this.obmsService.creatObm(jsonData)
-      .subscribe(data => {
-        this.refresh();
-      });
+  updateFormInputs(service: string) {
+    this.selObmService = this.obmMetaList[service];
+    let config = this.selObmService.config
+    this.configFields = _.keys(config);
+    _.forEach(this.configFields, field => {
+      this.obmForm.addControl(field, new FormControl('', Validators.required));
+    });
   }
 
-  update() {
-    let nodeSplit = this.updateObm.node.split('/');
-    let nodeId = nodeSplit[nodeSplit.length - 1];
-    this.create(this.updateForm, nodeId);
+  onServiceSelected(){
+    let service = this.obmForm.value.service;
+    if(service) {
+      this.updateFormInputs(service);
+    }
+  }
+
+  onUpsert(): void {
+    let values = this.obmForm.value;
+    let payload =  {
+      nodeId: values.nodeId,
+      service: values.service,
+      config: {}
+    }
+    delete values.nodeId;
+    delete values.service;
+    if (values.port) values.port = parseInt(values.port);
+    _.merge(payload.config, values);
+    this.obmsService.creatObm(payload)
+    .subscribe(data => {
+      this.refresh();
+    });
+  }
+
+  closeUpsertModal() {
+    _.forEach(_.keys(this.obmForm.value), field => {
+      if (field === 'nodeId' || field === 'service') return true;
+      this.obmForm.removeControl(field);
+    });
+    this.configFields = [];
+    this.selObmService = null;
+    this.obmForm.reset();
+    this.isCreateObm = false;
+  }
+
+  onUpdate(obm: OBM) {
+    this.updateFormInputs(obm.service);
+    let configValues = {
+      service: obm.service,
+      nodeId: obm.node.split('/').pop()
+    }
+    _.merge(configValues, obm.config);
+    this.obmForm.patchValue(configValues);
+    this.isCreateObm = true;
+  }
+
+  willDelete(obm){
+    this.selectedObms = [obm];
+    this.isDelete = true;
   }
 
   deleteSel(): void {
