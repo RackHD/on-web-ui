@@ -8,6 +8,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-route/app-routing.module';
 import { IconService } from './icon.service';
+import {ErrorHandlerService} from "./error-handler.service";
+import {GlobalAlertService} from "./global-alert.service";
+
 
 
 
@@ -16,7 +19,10 @@ import { IconService } from './icon.service';
  * This providers also can be regard as a global service list for retriving.
  */
 const APP_PROVIDERS = [
-  IconService
+  IconService,
+  GlobalAlertService,
+  ErrorHandlerService,
+
 ];
 
 /**
