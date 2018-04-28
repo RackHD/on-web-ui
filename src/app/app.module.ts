@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
  * Otherwise the interceptor and mock api calling may not work properly.
  */
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import {ComponentRef, Injector, NgModule} from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 /**
  * Third Party Modules
@@ -53,15 +53,19 @@ import '../styles/headings.css';
 import { IconService, } from './services/core/index';
 
 import { SettingModule } from './settings/setting.module';
+import { GlobalAlertComponent } from './global-alert/global-alert.component';
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
+
+export let AppInjector: Injector;
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
     HeaderComponent,
+    GlobalAlertComponent
   ],
   /**
    * Import Angular's modules.
@@ -90,12 +94,13 @@ import { SettingModule } from './settings/setting.module';
    */
   providers: [
     ...environment.ENV_PROVIDERS
-  ]
+  ],
 })
 
 export class AppModule {
-  constructor(public iconService: IconService,) {
+  constructor(public iconService: IconService, public injector: Injector) {
     // must be called once to init IconService
     iconService.load();
+    AppInjector = this.injector;
   }
 }

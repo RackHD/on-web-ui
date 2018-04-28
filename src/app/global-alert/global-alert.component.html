@@ -1,0 +1,8 @@
+
+<clr-modal [(clrModalOpen)]="showErrors"  [clrModalClosable]="false" [clrModalSize]="'xl'">
+  <h3 class="modal-title" style="color: red"><clr-icon shape="error-standard" size="36"> </clr-icon> HTTP ERROR</h3>
+  <div class="modal-body" *ngFor="let msg of errorMsges">
+    <pre>{{ msg.text | json}} </pre>
+    <button  style="float: right" type="button" class="btn btn-danger" (click)="closeAlert(msg.id)"> Close </button>
+  </div>
+</clr-modal>
