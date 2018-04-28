@@ -96,7 +96,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
   setDefaultParams() {
     let inputCount = this.fields.length;
 
-    if(_.isEmpty(this.widths)) { this.widths = _.fill(Array(inputCount), 30) }
+    // if(_.isEmpty(this.widths)) { this.widths = _.fill(Array(inputCount), 30) }
 
     let columnSize = _.floor(12 / inputCount, 1);
     if(_.isEmpty(this.columns)) {

@@ -212,7 +212,6 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   onGraphSelect(graph){
-    console.log(graph);
     this.selectedGraph = graph;
     this.updateEditor(this.selectedGraph.options);
   };
