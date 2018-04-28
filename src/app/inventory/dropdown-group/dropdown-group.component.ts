@@ -34,6 +34,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
   @Input() size: number = 10; // dropdown size
   @Input() placeholders: string[]; // label for inputs
   @Input() disable: boolean [];
+  @Input() isDefaultForm: boolean = false; // bootstrap default form format
 
   @Input() needSearchIcon: boolean = false; // search icon
   @Input() needReset: boolean = false; //reset button

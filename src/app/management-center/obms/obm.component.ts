@@ -20,9 +20,11 @@ import * as _ from 'lodash';
 export class ObmComponent implements OnInit {
   obmStore: OBM[];
   allObms: OBM[] = [];
-
   selectedObm: OBM;
-  isShowDetail: boolean;
+  selectedObms: OBM[];
+  obmTypes: string[] = [];
+  selObmService: any;
+
   action: string;
   rawData: string;
   isShowModal: boolean;
@@ -31,16 +33,11 @@ export class ObmComponent implements OnInit {
   dgPlaceholder = 'No obms found!';
 
   allNodes: Node[] = [];
+  selNodeId: string;
+
   obmForm: FormGroup;
 
-  isCreateObm: boolean;
-  isDelete: boolean;
-  isUpdate: boolean;
-  selectedObms: OBM[];
-  obmTypes: string[] = [];
-
   configFields: string[];
-  selObmService: any;
 
   get obmMetaList() {
     return OBM_TYPES;
@@ -75,10 +72,10 @@ export class ObmComponent implements OnInit {
   onConfirm(value) {
     switch(value) {
       case 'reject':
-        this.isDelete = false;
+        this.isShowModal = false;
         break;
       case 'accept':
-        this.isDelete = false;
+        this.isShowModal = false;
         this.deleteSel();
     }
   }
@@ -89,7 +86,8 @@ export class ObmComponent implements OnInit {
         this.refresh();
         break;
       case 'Create':
-        this.isCreateObm = true;
+        this.action = 'create';
+        this.isShowModal = true;
         break;
       case 'Delete':
         this.batchDelete();
@@ -115,13 +113,15 @@ export class ObmComponent implements OnInit {
 
   goToDetail(obm: OBM) {
     this.selectedObm = obm;
-    this.isShowDetail = true;
+    this.action = "detail";
+    this.isShowModal = true;
   }
 
   getChild(objKey: string, obm: OBM){
     this.selectedObm = obm;
     this.action = _.capitalize(objKey);
     this.rawData = obm && obm[objKey];
+    this.action = "Config";
     this.isShowModal = true;
   }
 
@@ -129,7 +129,8 @@ export class ObmComponent implements OnInit {
     if (obm) {
       this.selectedObms = [obm];
     }
-    this.isDelete = true;
+    this.action = "delete";
+    this.isShowModal = true;
   }
 
 
@@ -140,8 +141,8 @@ export class ObmComponent implements OnInit {
 
   createForm(){
     this.obmForm = this.fb.group({
-      nodeId: {value: '', validators: Validators.required},
-      service: {value: '', validators: Validators.required}
+      service: {value: '', validators: [Validators.required, Validators.minLength(1)]},
+      nodeId: {value: '', validators: [Validators.required, Validators.minLength(25), Validators.maxLength(25)]}
     });
   }
 
@@ -161,20 +162,29 @@ export class ObmComponent implements OnInit {
     }
   }
 
+  onNodeSelected(node){
+    this.selNodeId = node.id;
+  }
+
+  onNodeClear(){
+    this.selNodeId = null;
+  }
+
   onUpsert(): void {
     let values = this.obmForm.value;
     let payload =  {
-      nodeId: values.nodeId,
+      nodeId: this.selNodeId,
       service: values.service,
       config: {}
     }
-    delete values.nodeId;
     delete values.service;
+    delete values.nodeId;
     if (values.port) values.port = parseInt(values.port);
     _.merge(payload.config, values);
     this.obmsService.creatObm(payload)
     .subscribe(data => {
       this.refresh();
+      this.selNodeId = null;
     });
   }
 
@@ -186,23 +196,28 @@ export class ObmComponent implements OnInit {
     this.configFields = [];
     this.selObmService = null;
     this.obmForm.reset();
-    this.isCreateObm = false;
+    this.isShowModal = false;
   }
 
   onUpdate(obm: OBM) {
     this.updateFormInputs(obm.service);
-    let configValues = {
+    this.selNodeId = obm.node.split("/").pop();
+    let formValues = {
       service: obm.service,
-      nodeId: obm.node.split('/').pop()
+      nodeId: this.selNodeId
     }
-    _.merge(configValues, obm.config);
-    this.obmForm.patchValue(configValues);
-    this.isCreateObm = true;
+    _.merge(formValues, obm.config);
+    console.log(obm.config)
+    console.log(formValues);
+    this.obmForm.patchValue(formValues);
+    this.isShowModal = true
+    this.action = "update";
   }
 
   willDelete(obm){
     this.selectedObms = [obm];
-    this.isDelete = true;
+    this.action = "delete";
+    this.isShowModal = true;
   }
 
   deleteSel(): void {

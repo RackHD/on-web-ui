@@ -6,7 +6,7 @@
   <div class="search-form">
     <dropdown-group [data]="allWorkflows"
       [fields]="fieldList" [labels]="labelList" [offsets]="offsetList"
-      [columns]="columnList" [needReset]="true"
+      [columns]="columnList" [needReset]="true" [widths]="widthList"
       (selected)="onSelected($event)" (cleared)="onRefresh($event)">
     </dropdown-group>
   </div>
