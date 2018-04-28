@@ -183,6 +183,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.showModal = true;
     let payload = this.editor.get();
     let selectedNodeId = this.selectedNode && this.selectedNode.id;
+    this.graphId = this.graphId || this.selectedGraph.injectableName; 
     this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
     .subscribe(
       data => {
@@ -211,13 +212,14 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   onGraphSelect(graph){
+    console.log(graph);
     this.selectedGraph = graph;
     this.updateEditor(this.selectedGraph.options);
   };
 
   onGraphRefresh() {
-    this.selNodeStore= [];
-    this.nodeStore = _.cloneDeep(this.allNodes);
+    this.selectedGraph = null;
+    this.graphStore = _.cloneDeep(this.allGraphs);
     this.updateEditor({});
     this.router.navigateByUrl('operationsCenter/runWorkflow');
   }

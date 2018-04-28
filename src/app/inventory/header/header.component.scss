@@ -1,5 +1,5 @@
 .header-line {
-  margin-bottom: -20px;
+  margin-bottom: -25px;
   z-index: 9;
   .create {
       float: left;
@@ -26,4 +26,15 @@
   .font-style {
     font-weight: 600;
   }
+}
+
+.search {
+  label {
+    float: right;
+  }
+  input {
+    float: right;
+    width: 80%;
+  }
+  width: 20%;
 }
