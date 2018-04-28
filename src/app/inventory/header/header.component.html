@@ -4,10 +4,11 @@
 <div class="row header-line">
   <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
     <div *ngIf="isSearchRequired" class="search">
-      <input #searchBox type="text" id="search_box" placeholder="" (keyup)="onSearch(searchBox.value)">
       <label for="search_box">
         <clr-icon shape="search"></clr-icon>
       </label>
+      <input #searchBox type="text" id="search_box" placeholder="" (keyup)="onSearch(searchBox.value)">
+      <clr-icon shape="times" *ngIf="searchBox.value" (click)="searchBox.value = '';onClear();" title="Clear input"></clr-icon>
     </div>
     <button *ngIf="isRefreshRequired" class="btn btn-icon refresh" (click)="onRefresh()" title="Refresh">
       <clr-icon shape="refresh"></clr-icon>
