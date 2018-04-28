@@ -1,5 +1,6 @@
 <div class="row" [formGroup]="filterForm">
-  <div *ngFor="let field of fields; let i=index;" [class]="classList[i] + ' form-input'">
+  <div *ngFor="let field of fields; let i=index;" [class]="classList[i]"
+    [ngClass]="{'form-input': needReset, 'form-group': isDefaultForm}">
     <clr-icon *ngIf="needSearchIcon" shape="search"></clr-icon>
     <label *ngIf="labels && labels[i]" [for]="i"><b>{{labels[i]}}</b></label>
     <datalist [id]="field + fields.length">
@@ -9,7 +10,8 @@
         </option>
       </select>
     </datalist>
-    <input #idSearcher [id]="i" type="text" class="form-control"
+    <input #idSearcher [id]="i" type="text"
+      [ngClass]="{'form-control': true, 'input-width': !(widths && widths[i])}"
       [formControlName]="field"
       [attr.list]="field + fields.length"
       [size]="widths && widths[i]"

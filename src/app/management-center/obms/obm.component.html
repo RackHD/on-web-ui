@@ -26,7 +26,7 @@
           <u class="grid-item">Config</u>
         </clr-dg-cell>
         <clr-dg-action-overflow>
-          <button class="action-item" (click)="willUpdate(obm)">Update</button>
+          <button class="action-item" (click)="onUpdate(obm)">Update</button>
           <button class="action-item" (click)="willDelete(obm)">Delete</button>
           <button class="action-item" (click)="goToDetail(obm)">Details</button>
         </clr-dg-action-overflow>
@@ -45,80 +45,62 @@
     </div>
   </div>
 
-  <details-modal [(isPop)]="isShowDetail" [data]="selectedObm"
+  <details-modal *ngIf="action === 'detail'" [(isPop)]="isShowModal" [data]="selectedObm"
     [title]="'OBM ' + (selectedObm && selectedObm.id)">
   </details-modal>
-  
-  <details-modal [(isPop)]="isShowModal" [data]="rawData"
+
+  <details-modal *ngIf="action === 'Config'" [(isPop)]="isShowModal" [data]="rawData"
     [dataType]="action" [title]="'OBM ' + (selectedObm && selectedObm.id)">
   </details-modal>
 
-  <clr-modal [(clrModalOpen)]="isCreateObm" [clrModalSize]="'md'">
+  <clr-modal *ngIf="action==='update' || action==='create'"
+    [(clrModalOpen)]="isShowModal" [clrModalSize]="'md'">
     <h3 class="modal-title">Create OBM</h3>
     <div class="modal-body">
       <form [formGroup]="obmForm" novalidate>
         <section class="form-block">
+          <dropdown-group *ngIf="action==='create'" [data]="allNodes" class="dropdown"
+            [fields]="['id']" [labels]="['NodeId']"
+            [columns]="[12]" [needReset]="false"
+            [isDefaultForm]="true" [widths]="[28]"
+            (selected)="onNodeSelected($event)"
+            (cleared)="onNodeClear()">
+          </dropdown-group>
+
+          <div *ngIf="action==='update'" class="form-group">
+            <label for="nodeId"><b>NodeId</b></label>
+            <input type="text" id="nodeId" formControlName="nodeId" class="align-width">
+          </div>
+
           <div class="form-group">
-            <label for="selects_2">NodeId</label>
-            <div class="select">
-              <select id="selects_2" formControlName="nodeId">
-                <option></option>
-                <option *ngFor="let node of allNodes;">{{ node.id }}</option>
+            <label for="serviceField"><b>Service</b></label>
+            <div class="select align-width">
+              <select id="serviceField" formControlName="service" (change)="onServiceSelected()">
+                <option selected hidden></option>
+                <option *ngFor="let service of obmTypes;">{{ service }}</option>
               </select>
             </div>
           </div>
-          <div class="form-group">
-            <label for="formFileds_1">user</label>
-            <input type="text" id="formFileds_1" formControlName="user">
+ 
+          <div *ngIf="selObmService">
+            <div *ngFor="let field of configFields" class="form-group">
+              <label [for]="'id_' + field"><b>{{field | titlecase}}</b></label>
+              <input type="text" [id]="'id_' + field" [formControlName]="field" class="align-width"
+                [placeholder]="selObmService && selObmService.config[field].default || '[]'">
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="formFileds_2">password</label>
-            <input type="password" id="formFileds_2" formControlName="password">
-          </div>
-
-          <div class="form-group">
-            <label for="formFileds_3">host</label>
-            <input type="text" id="formFileds_3" formControlName="host">
-          </div>
         </section>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="isCreateObm = false">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="isCreateObm = false; createObm();">OK</button>
+      <button type="button" class="btn btn-outline" (click)="closeUpsertModal()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="onUpsert();closeUpsertModal()"
+        [disabled]="!selObmService || obmForm.invalid || !selNodeId">OK</button>
     </div>
   </clr-modal>
 
-  <clr-modal [(clrModalOpen)]="isUpdate" [clrModalSize]="'md'">
-    <h3 class="modal-title">Update OBM</h3>
-    <div class="modal-body">
-      <form [formGroup]="updateForm" novalidate>
-        <section class="form-block">
-          <div class="form-group">
-            <label for="formFileds_1">user</label>
-            <input type="text" id="formFileds_1" formControlName="user">
-          </div>
-
-          <div class="form-group">
-            <label for="formFileds_2" class="required">password</label>
-            <input type="password" id="formFileds_2" formControlName="password">
-          </div>
-
-          <div class="form-group">
-            <label for="formFileds_3">host</label>
-            <input type="text" id="formFileds_3" formControlName="host">
-          </div>
-        </section>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="isUpdate = false">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="isUpdate = false; update();">OK</button>
-    </div>
-  </clr-modal>
-
-  <confirm-modal [(isPop)]="isDelete" title="OBMs"
+  <confirm-modal *ngIf="action === 'delete'" [(isPop)]="isShowModal" title="OBMs"
     (confirm)="onConfirm($event)" [data]="selectedObms">
   </confirm-modal>
 

@@ -35,6 +35,7 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   labelList: string[] = [];
   offsetList: number[] = [];
   columnList : number[] = [];
+  widthList : number[] = [];
 
   service: any;
 
@@ -56,6 +57,7 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
     this.labelList = this.isDefinition ? ["InjectableName", "FriendlyName"] : ["GraphId", "Name", "Node"];
     this.offsetList = this.isDefinition ? [0, 0] : [0, 0, 0];
     this.columnList = this.isDefinition ? [5, 5] : [4, 4, 3];
+    this.widthList = this.isDefinition ? [47, 47] : [42, 47, 28];
   }
 
   ngAfterViewInit() {
