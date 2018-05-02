@@ -5,7 +5,7 @@
   <p class="run-workflow-row">
     <span class="col-md-4">
       <dropdown-group [data]="graphStore"
-        [fields]="graphFields" [labels]="graphLabels" [columns]="graphColumns"
+        [fields]="['friendlyName']" [labels]="['Graph: ']" [columns]="[3]"
         (selected)="onGraphSelect($event)" (cleared)="onGraphRefresh()">
       </dropdown-group>
     </span>
@@ -14,7 +14,7 @@
   <p class="run-workflow-row">
     <span class="col-md-4">
       <dropdown-group [data]="selNodeStore"
-        [fields]="nodeFields" [labels]="nodeLabels" [columns]="nodeColumns"
+        [fields]="['id']" [labels]="['Node: ']" [columns]="[3]"
         (selected)="onNodeSelect($event)" (cleared)="onNodeRefresh()">
       </dropdown-group>
     </span>

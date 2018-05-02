@@ -40,19 +40,11 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   allNodes: Array<any> = [];
   nodeStore: Array<any> = [];
   selNodeStore: any [] = [];
+  selectedNode: any;
 
   filterFields = ["type", "name", "sku", "obms", 'tags'];
   filterLabels = ["Node Type", "Node Name", "Node SKU Name", "Node OBM Host", "Node Tag Name"];
   filterColumns = [4, 4, 4, 4, 4];
-
-  nodeFields = ["id"];
-  nodeLabels = ["Node: "];
-  nodeColumns = [3];
-  selectedNode: any;
-
-  graphFields = ["friendlyName"];
-  graphLabels = ["Graph: "];
-  graphColumns = [3];
 
   constructor(
     public nodeService: NodeService,

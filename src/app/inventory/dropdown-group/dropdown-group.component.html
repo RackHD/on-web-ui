@@ -14,7 +14,7 @@
       [ngClass]="{'form-control': true, 'input-width': !(widths && widths[i])}"
       [formControlName]="field"
       [attr.list]="field + fields.length"
-      [size]="widths && widths[i]"
+      [size]="widths && widths[i] || 32"
       [placeholder]="placeholders && placeholders[i] || ''"
       (keyup)="onSearch(idSearcher.value, field)"
       (change)="onChanged()">
