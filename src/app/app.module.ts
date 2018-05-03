@@ -37,7 +37,6 @@ import '../../node_modules/prismjs/prism.js';
 import '../../node_modules/prismjs/components/prism-typescript.min.js';
 
 import 'imports-loader?this=>window!../../node_modules/litegraph.js/build/litegraph.js';
-// import './json';
 
 /*
  * Global css here, scss will be processed by webpack.
@@ -59,7 +58,6 @@ import { GlobalAlertComponent } from './global-alert/global-alert.component';
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
 
-export let AppInjector: Injector;
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
@@ -100,7 +98,7 @@ export let AppInjector: Injector;
 export class AppModule {
   constructor(public iconService: IconService, public injector: Injector) {
     // must be called once to init IconService
+    window["appInjector"] = this.injector;
     iconService.load();
-    AppInjector = this.injector;
   }
 }

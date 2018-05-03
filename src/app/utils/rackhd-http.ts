@@ -15,14 +15,14 @@ import 'rxjs/add/observable/forkJoin';
 import { RackhdLocalStorage as RackHD } from './globals-util';
 import * as _ from 'lodash';
 import {ErrorHandlerService, ErrorHanlder} from "../services/core/error-handler.service";
-import {AppComponent} from "../app.component";
-import {AppInjector} from "../app.module";
+
 export class RackhdHttpService {
 
   public errorHandlerService : ErrorHandlerService;
   public injector : Injector;
+
   constructor(public http: HttpClient, public urlConfig: any) {
-    this.injector = AppInjector;
+    this.injector = window['appInjector'];
     this.errorHandlerService = this.injector.get(ErrorHandlerService);
   }
 
