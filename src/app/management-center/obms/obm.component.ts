@@ -207,8 +207,6 @@ export class ObmComponent implements OnInit {
       nodeId: this.selNodeId
     }
     _.merge(formValues, obm.config);
-    console.log(obm.config)
-    console.log(formValues);
     this.obmForm.patchValue(formValues);
     this.isShowModal = true
     this.action = "update";

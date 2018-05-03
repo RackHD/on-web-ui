@@ -59,13 +59,13 @@
     <div class="modal-body">
       <form [formGroup]="obmForm" novalidate>
         <section class="form-block">
-          <dropdown-group *ngIf="action==='create'" [data]="allNodes" class="dropdown"
-            [fields]="['id']" [labels]="['NodeId']"
-            [columns]="[12]" [needReset]="false"
-            [isDefaultForm]="true" [widths]="[28]"
-            (selected)="onNodeSelected($event)"
-            (cleared)="onNodeClear()">
-          </dropdown-group>
+          <div class="form-group node-dropdown">
+            <dropdown-group *ngIf="action==='create'" [data]="allNodes"
+              [fields]="['id']" [labels]="['NodeId']" [columns]="[12]"
+              [needReset]="false" [isDefaultForm]="true" [widths]="[28]"
+              (selected)="onNodeSelected($event)" (cleared)="onNodeClear()">
+            </dropdown-group>
+          </div>
 
           <div *ngIf="action==='update'" class="form-group">
             <label for="nodeId"><b>NodeId</b></label>
@@ -81,7 +81,7 @@
               </select>
             </div>
           </div>
- 
+
           <div *ngIf="selObmService">
             <div *ngFor="let field of configFields" class="form-group">
               <label [for]="'id_' + field"><b>{{field | titlecase}}</b></label>

@@ -65,7 +65,7 @@
   </details-modal>
 
   <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
-    [(isPop)]="isShowModal" [data]="rawdata" [dataType]="action" [title]="'SKU ' + selectedSku.name">
+    [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="'SKU ' + selectedSku.name">
   </details-modal>
 
   <clr-modal *ngIf="isCreateSku" [(clrModalOpen)]="isCreateSku" [clrModalSize]="'lg'">

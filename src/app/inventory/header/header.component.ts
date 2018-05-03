@@ -64,6 +64,10 @@ export class InventoryHeaderComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
+  onClear(){
+    this.searchTerms.next('');
+  }
+
   onCreate(){
     this.action.emit("Create");
   }

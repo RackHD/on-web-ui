@@ -40,19 +40,11 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   allNodes: Array<any> = [];
   nodeStore: Array<any> = [];
   selNodeStore: any [] = [];
+  selectedNode: any;
 
   filterFields = ["type", "name", "sku", "obms", 'tags'];
   filterLabels = ["Node Type", "Node Name", "Node SKU Name", "Node OBM Host", "Node Tag Name"];
   filterColumns = [4, 4, 4, 4, 4];
-
-  nodeFields = ["id"];
-  nodeLabels = ["Node: "];
-  nodeColumns = [3];
-  selectedNode: any;
-
-  graphFields = ["friendlyName"];
-  graphLabels = ["Graph: "];
-  graphColumns = [3];
 
   constructor(
     public nodeService: NodeService,
@@ -183,6 +175,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.showModal = true;
     let payload = this.editor.get();
     let selectedNodeId = this.selectedNode && this.selectedNode.id;
+    this.graphId = this.graphId || this.selectedGraph.injectableName; 
     this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
     .subscribe(
       data => {
@@ -216,8 +209,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   };
 
   onGraphRefresh() {
-    this.selNodeStore= [];
-    this.nodeStore = _.cloneDeep(this.allNodes);
+    this.selectedGraph = null;
+    this.graphStore = _.cloneDeep(this.allGraphs);
     this.updateEditor({});
     this.router.navigateByUrl('operationsCenter/runWorkflow');
   }

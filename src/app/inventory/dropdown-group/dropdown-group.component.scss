@@ -4,9 +4,25 @@
 .input-width {
   width: 80%;
 }
-
 .button-align {
   float: right;
   margin-right: 2px;
 }
 
+// table/table-cell works for input width=100%
+// bootstrap form-group default set input width=100%
+.row {
+  div.form-group {
+    display: table;
+    label {
+      display: table-cell;
+    }
+    clr-icon {
+      display: table-cell;
+      align: left;
+    }
+    input {
+      display: table-cell;
+    }
+  }
+}
