@@ -22,7 +22,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   selectWorkflow: any;
   editor: any;
   isShowModal: boolean;
-  saveGraphInfo = {status: "", notes: "", type: 0};
+  saveGraphInfo = {status: "Saving", notes: "Waiting...", type: 0};
 
   workflowStore: any[] =[];
 
