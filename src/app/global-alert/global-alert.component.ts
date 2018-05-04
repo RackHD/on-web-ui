@@ -34,8 +34,8 @@ export class GlobalAlertComponent implements OnInit {
     )
   }
 
-  closeAlert(msgId: string){
-    _.remove(this.errorMsges, (msg) => msg.id === msgId);
+  closeAlert(){
+    _.remove(this.errorMsges);
     this.showErrors = false;
   }
 
