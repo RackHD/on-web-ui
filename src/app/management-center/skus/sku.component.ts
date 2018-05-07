@@ -7,6 +7,8 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import { SkusService } from 'app/services/rackhd/sku.service';
+import {isEmbeddedView} from "@angular/core/src/view/util";
+
 
 @Component({
   selector: 'app-sku',
@@ -38,8 +40,8 @@ export class SkuComponent implements OnInit {
   defaultRules: string = ' ' ;
   rulesJsonValid = true;
   optionsJsonValid = true;
-
   modalTypes: ModalTypes;
+  updateTheSku  = false;
 
   constructor(public skusService: SkusService, private fb: FormBuilder) { }
 
@@ -89,10 +91,10 @@ export class SkuComponent implements OnInit {
 
   createForm() {
     this.skuForm = this.fb.group({
-      name: '',
+      name: new FormControl('', { validators: [Validators.required] }),
       discoveryGraphName: '',
-      rules: '',
-      discoveryGraphOptions: ''
+      discoveryGraphOptions: '',
+      rules:new FormControl('', { validators: [Validators.required] })
     });
   }
 
@@ -123,10 +125,27 @@ export class SkuComponent implements OnInit {
 
   create(): void {
     this.isCreateSku = true;
+    this.isSkuOnly = false;
+    this.updateTheSku = false;
+    this.createForm();
+
   }
 
   willUpdate(sku: SKU): void {
-    // TODO
+    this.rulesJsonValid = true;
+    this.optionsJsonValid = true;
+    let name = sku.name;
+    let rules = sku.rules;
+    let formValues = {
+      name: name,
+      discoveryGraphName: sku.discoveryGraphName,
+      rules: JSON.stringify(rules),
+      discoveryGraphOptions: JSON.stringify(sku.discoveryGraphOptions)
+    }
+    this.skuForm.patchValue(formValues);
+    this.isCreateSku = true;
+    this.isSkuOnly = true;
+    this.updateTheSku = true;
   }
 
   batchDelete(): void {
@@ -151,27 +170,49 @@ export class SkuComponent implements OnInit {
 
   createSku(): void {
     let jsonData = {};
+    this.skuForm.getRawValue();
     let value = this.skuForm.value;
-
     // data transform
-    jsonData['name'] = value['name']; //TODO: name is required;
-    jsonData['discoveryGraphName'] = value['discoveryGraphName'];
-
+    jsonData['name'] = value['name'];
+    //TODO: name is required;
+    if(value['discoveryGraphName']){
+      jsonData['discoveryGraphName'] = value['discoveryGraphName'];
+    }
     this.rulesJsonValid = isJsonTextValid(value['rules']);
     this.optionsJsonValid = isJsonTextValid(value['discoveryGraphOptions']);
     if (this.rulesJsonValid) {
       jsonData['rules'] = value['rules'] ? JSON.parse(value['rules']) : [];
+      let self = this;
+      if(_.isEmpty(jsonData['rules'])){
+        self.rulesJsonValid = false;
+      }
+      _.forEach(_.map(jsonData['rules'], 'path'), function (item) {
+          if(_.isUndefined(item)){
+            self.rulesJsonValid = false;
+          }
+      })
     }
     if (this.optionsJsonValid) {
-      jsonData['discoveryGraphOptions'] = value['discoveryGraphOptions'] ?
-        JSON.parse(value['discoveryGraphOptions']) : {};
+      let data = value['discoveryGraphOptions']  && JSON.parse(value['discoveryGraphOptions']);
+      if(!_.isEmpty(data)){
+        jsonData['discoveryGraphOptions'] = data;
+      }
     }
-    if (this.rulesJsonValid && this.optionsJsonValid) {
+    if (this.rulesJsonValid && this.optionsJsonValid && this.skuForm.get('name').valid) {
       this.isCreateSku = false;
-      this.skusService.createSku(jsonData)
-        .subscribe(data => {
-          this.refresh();
-        });
+      if(this.updateTheSku === true){
+        this.updateTheSku = false;
+        this.skusService.updateSku(jsonData)
+          .subscribe(data => {
+            this.refresh();
+          })
+      }else{
+        this.skusService.createSku(jsonData)
+          .subscribe(data => {
+            this.refresh();
+          });
+      }
+
     }
   }
 

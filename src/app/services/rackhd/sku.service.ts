@@ -23,4 +23,8 @@ export class SkusService extends RackhdHttpService {
   public uploadByPost(file, identifier?:string): Observable<any> {
     return this.upload(file, identifier, 'post');
   }
+
+  public updateSku(jsonData: any): Observable<SKU> {
+    return this.put(jsonData);
+  }
 }
