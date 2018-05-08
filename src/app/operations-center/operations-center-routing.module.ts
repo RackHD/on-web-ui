@@ -12,6 +12,7 @@ const OperationsCenterRoutes: Routes = [
     path: '',
     component: OperationsCenterComponent,
     children: [
+      {path: '', redirectTo: 'activeWorkflow'},
       {path: 'activeWorkflow', component: ActiveWorkflowComponent},
       {path: 'historyWorkflow', component: HistoryWorkflowComponent},
       {path: 'workflowViewer', component: WorkflowViewerComponent},
