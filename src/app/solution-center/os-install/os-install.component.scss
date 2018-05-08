@@ -1,45 +1,116 @@
-.offset-header {
-    height: 100vh;
-    margin-top: 60px;
+.content-container {
+
+  margin-left: 0px;
+  margin-right: 0px;
+  width: 100%;
+  height: 100%;
+  input[type=text]:not([readonly]) {
+    background-size: 0 100%;
+    transition: background-size .2s ease;
   }
-
-.form-padding {
-  padding-left: 1rem;
-}  
-
-.fieldset {
-  border: 1px solid silver;
-  margin: 0 2px;
-  padding: .35em .625em .75em;
-}
-
-.legend {
-  display: block;
-  padding: 0;
-  line-height: inherit;
-  width: auto;
-}
-
-.disabled-label {
-  color: #565656;
-  opacity: .4;
-}
-
-.float-right-local {
-  float: right;
-}
-
-.my-form-block {
+  p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  position: relative;
+  .header-text {
+    padding-top: 0;
+    margin-top: 0;
+  }
   .form-group {
-    padding-left: 128px;
+    width: 100%;
+    .select {
+      width: 100%;
+    }
+    .root-password {
+      margin: 0%; 
+    }
+
+    .os-install-repo {
+      top: 0px;
+    }
+  }
+  
+  
+
+  .offset-bottom {
+    margin-bottom: 60px
+  }
+
+  .form-padding {
+    padding-left: 1rem;
+  }  
+
+  .form-padding-right {
+    padding-right: 0px;
+  }
+
+  .fieldset {
+    border: 1px solid silver;
+    margin: 0 2px;
+    padding: .35em .625em .75em;
+  }
+
+  .legend {
+    display: block;
+    padding: 0;
+    line-height: inherit;
+    width: auto;
+  }
+
+  .disabled-label {
+    color: #565656;
+    opacity: .4;
+  }
+
+  .float-right-local {
+    float: right;
+  }
+
+  .my-form-block {
+    .form-group {
+      padding-left: 128px;
+    }
+  }
+
+  .networkOptions {
+    input { 
+      float: right;
+    }
+  }
+
+  .json-editor {
+    margin-left: 5px;
+    height: 60%;
+    width: auto;
+    margin-top: 15px;
+  }
+
+  .bottom-button {
+    padding: 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    button {
+      float: right;
+    }
+  }
+
+  .filter-by{
+    position: relative;
+    border: 1px solid #aaaaaa;
+    margin-top: 25px;
+    padding: 20px;
+    height: 6.5rem;
+  }
+
+  .filter-title{
+    position: absolute;
+    padding: 0 10px;
+    top: -10px;
+    left: 10px;
+    height: 20px;
+    line-height: 20px;
+    background: #fafafa;
   }
 }
 
-.json-editor {
-  margin-left: 5px;
-  height: 75%;
-  width: auto;
-  margin-top: 15px;
-}
-
-  

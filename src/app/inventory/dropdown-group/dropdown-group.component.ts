@@ -64,6 +64,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
       case 1:
         let formValues = _.pick(this.data[0], this.fields);
         this.filterForm.patchValue(formValues);
+        this.selected.emit(this.data[0]);
         break;
       default:
         this.allData = _.map(this.data, (value, key) => {

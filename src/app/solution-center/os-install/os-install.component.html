@@ -1,11 +1,32 @@
-<div class="content-container row form-padding ">
-  <div class="col-sm-6 col-md-5 col-lg-6">
+<div class="content-container row offset-bottom">
+  <div class="col-md-6 col-xs-6 col-lg-6 ">
+    <dropdown-group [widths]=[32] [data]="selNodeStore" [fields]="['id']" [labels]="['Node: ']" (selected)="onNodeSelect($event)"
+      (cleared)="onReset()">
+    </dropdown-group>
+  </div>
+
+  <div class="col-md-7 col-xs-7 col-lg-7 filter-by">
+    <label class="filter-title">
+      <b>Filter Node</b>
+    </label>
+    <section>
+      <dropdown-group [data]="nodeStore" [fields]="filterFields" [labels]="filterLabels" [columns]="filterColumns" (selected)="onFilterSelect($event)"
+        (cleared)="onFilterRefresh()">
+      </dropdown-group>
+    </section>
+  </div>
+  <div class="col-md-7 bottom-button">
+    <button class="btn btn-primary" (click)="onReset()">Reset Filters</button>
+  </div>
+
+  <div class="col-sm-7 col-md-7 col-lg-7 form-padding-right">
     <form class="compact" [formGroup]="payloadForm" novalidate>
       <section class="form-block my-form-block">
         <div class="row">
           <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
             <div class="form-group">
-              <label for="selects_1">OS Type</label>
+              <label for="selects_1" class="required" [class.invalid]="formClassInvalid('osType')">OS Type
+              </label>
               <div class="select">
                 <select id="selects_1" formControlName="osType" (change)="onChangeOsType($event.target.value)">
                   <option></option>
@@ -16,9 +37,10 @@
           </div>
           <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
             <div class="form-group">
-              <label for="selects_2">Version</label>
+              <label for="selects_1" class="required" [class.invalid]="formClassInvalid('version')">Version
+              </label>
               <div class="select">
-                <select id="selects_2" formControlName="version">
+                <select id="selects_2" formControlName="version" (change)="validSave()">
                   <option></option>
                   <option *ngFor="let version of OS_TYPE_VERSION[payloadForm.value['osType']];">{{ version }}</option>
                 </select>
@@ -30,17 +52,13 @@
         <div class="row">
           <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
             <div class="form-group">
-              <label class="required">Node ID</label>
-              <label for="selects_3.4" aria-haspopup="true" role="tooltip" class="tooltip tooltip-validation invalid tooltip-md" [class.invalid]="formClassInvalid('nodeId')"
-                style="width:100%">
-                <input type="text" id="selects_3.4" formControlName="nodeId" (change)="onNodeIdChange($event.target.value)" style="width:100%">
-                <span class="tooltip-content">
-                  The node id cannot be empty!
-                </span>
+              <label  for="formFileds_1">Root Password</label>
+              <label class="root-passowrd">
+                <input type="text" id="formFileds_1" formControlName="rootPassword">
               </label>
             </div>
-
           </div>
+
           <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
             <div class="form-group">
               <label for="selects_4">Install Disk</label>
@@ -56,9 +74,23 @@
         </div>
 
         <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
+            <div class="form-group">
+              <label class="required os-install-repo">Repo URL</label>
+              <label for="formFileds_repo" aria-haspopup="true" role="tooltip" class="tooltip tooltip-validation invalid tooltip-md" [class.invalid]="formClassInvalid('repoUrl')">
+                <input class="input-width" type="text" id="formFileds_repo" [placeholder]="selectedRepoPlaceHolder" formControlName="repoUrl"
+                  (change)="validSave()">
+                <span class="tooltip-content">
+                  The input repo url is invalid!
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
             <div class="form-group">
-              <label for="selects_5">Network</label>
+              <label for="selects_5">Network Interface</label>
               <div class="select">
                 <select id="selects_5" formControlName="networkDevice" (change)="onChangeNetworkDevice($event.target.value)">
                   <option></option>
@@ -68,82 +100,90 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-            <div class="form-group">
-              <label for="formFileds_1">Root Password</label>
-              <input type="text" id="formFileds_1" formControlName="rootPassword">
-            </div>
-          </div>
         </div>
 
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
-            <div class="form-group">
-              <label class="required">Repo URL</label>
-              <label for="formFileds_repo" aria-haspopup="true" role="tooltip" class="tooltip tooltip-validation invalid tooltip-md" [class.invalid]="formClassInvalid('repoUrl')"
-                style="width:80%">
-                <input class="input-width" type="text" id="formFileds_repo" style="width:100%" [placeholder]="selectedRepoPlaceHolder"
-                  formControlName="repoUrl" (change)="validSave()">
-                <span class="tooltip-content">
-                  The input repo url is invalid!
-                </span>
-              </label>
-            </div>
-          </div>
-        </div>
       </section>
 
       <fieldset class="fieldset" [disabled]='!modifyDefaultSetting'>
         <legend [ngClass]="{'legend': true, 'disabled-label': !modifyDefaultSetting}">
           Network Options
         </legend>
-        <section class="form-block my-form-block">
+        <section class="networkOptions">
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <div class="form-group">
-                <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_3">IP Address</label>
-                <input type="text" id="formFileds_1" formControlName="ipAddress">
+              <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_3">
+                IP Address
+              </label>
+              <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+                <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('ipAddress')">
+                  <input type="text" id="formFileds_1" formControlName="ipAddress" />
+                </label>
               </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <div class="form-group">
-                <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_2">DNS Servers</label>
-                <input type="text" id="formFileds_1" formControlName="dnsServers">
+              <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_2">
+                DNS Servers
+              </label>
+              <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+                <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('dnsServers')">
+                  <input type="text" id="formFileds_1" formControlName="dnsServers" placeholder="8.8.8.8, 8.8.4.4" />
+                </label>
               </div>
             </div>
           </div>
 
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <div class="form-group">
-                <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_5">Netmask</label>
-                <input type="text" id="formFileds_1" formControlName="netmask">
+              <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_5">
+                Netmask
+              </label>
+              <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+
+                <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('netmask')">
+                  <input type="text" id="formFileds_1" formControlName="netmask" />
+                </label>
               </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <div class="form-group">
-                <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_4">Gateway</label>
-                <input type="text" id="formFileds_1" formControlName="gateway">
+              <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_4">
+                Gateway
+              </label>
+              <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+
+                <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('gateway')">
+                  <input type="text" id="formFileds_1" formControlName="gateway" />
+                </label>
               </div>
             </div>
           </div>
         </section>
       </fieldset>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="!enableSavePayload" (click)="createPayload();">Save</button>
-        <button type="button" [disabled]="!enableOsinstall" class="btn btn-danger" (click)="onSubmit()">Submit</button>
+        <button type="button" class="btn btn-primary" [disabled]="!enableSavePayload" (click)="createPayload();">Generate Payload</button>
       </div>
     </form>
   </div>
-  <div class="col-sm-6 col-md-5 col-md-offset-2 col-lg-6 col-lg-offset-0">
-    <h3>JSON Payload</h3>
+
+  <div class="col-sm-7 col-md-7 col-lg-7 form-padding-right">
+    <label>
+      <b>Payload:</b>
+    </label>
     <div class="json-editor" #jsoneditor id="jsoneditor"></div>
+    <div class="modal-footer offset-bottom">
+      <button type="button" [disabled]="!enableOsinstall" class="btn btn-danger " (click)="onConfirmSubmited()" title="submit workflow">Submit</button>
+    </div>
   </div>
 
   <clr-modal [(clrModalOpen)]="submitSuccess" [clrModalSize]="'xm'">
-    <h3 class="modal-title">Success</h3>
-    <div class="modal-body">
-      <pre>You have submitted an OS install workflow successfully.</pre>
+    <h3 class="modal-title">You have submitted an OS install workflow successfully.</h3>
+  </clr-modal>
+
+  <clr-modal [(clrModalOpen)]="confirmSubmited" [clrModalSize]="'xm'">
+    <h3 class="modal-title">Are you sure to submit the workflow ?</h3>
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" (click)="confirmSubmited = false">No</button>
+      <button class="btn btn-primary" type="button" (click)="onSubmit()">Yes</button>
     </div>
   </clr-modal>
+
 </div>
