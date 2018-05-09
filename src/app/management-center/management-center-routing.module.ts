@@ -19,6 +19,7 @@ const ManagementCenterRoutes: Routes = [
     path: '',
     component: ManagementCenterComponent,
     children: [
+      {path: '', redirectTo: 'nodes'},
       {path: 'nodes', component: NodesComponent},
       {path: 'profiles', component: ProfilesComponent},
       {path: 'pollers', component: PollersComponent},

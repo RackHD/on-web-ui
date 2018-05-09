@@ -10,6 +10,7 @@ const SolutionCenterRoutes: Routes = [
     path: '',
     component: SolutionCenterComponent,
     children: [
+      { path: '', redirectTo: 'osInstall' },
       { path: 'osInstall', component: OsInstallComponent },
     ]
   }

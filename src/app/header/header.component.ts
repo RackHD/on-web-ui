@@ -12,11 +12,9 @@ import { EnvironmentService } from '../services/environment.service';
 
 export class HeaderComponent implements OnInit {
   showSettingModal = false;
-  selectedTab = '';
   openSetting =  false;
 
   ngOnInit() {
-    this.selectedTab = window.location.pathname;
   }
 
   constructor() {}
