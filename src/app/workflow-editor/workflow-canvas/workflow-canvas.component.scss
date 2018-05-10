@@ -9,6 +9,9 @@
     width: 100%;
     .workflow-editor {
       flex: 3;
+      p {
+        float: right;
+      }
     }
     .editor {
       margin-left: 15px;

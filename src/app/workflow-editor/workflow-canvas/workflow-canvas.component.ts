@@ -11,18 +11,21 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { StringOperator } from 'app/utils/inventory-operator';
 
 const global = (window as any);
+const SAVE_INFO_INIT = {status: "Saving", notes: 'Waiting...', type: 0};
 
 @Component({
   selector: 'app-workflow-canvas',
   templateUrl: './workflow-canvas.component.html',
   styleUrls: ['./workflow-canvas.component.scss']
 })
+
 export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   onWorkflowInput = new EventEmitter();
   selectWorkflow: any;
   editor: any;
   isShowModal: boolean;
-  saveGraphInfo = {status: "Saving", notes: "Waiting...", type: 0};
+  saveConfirmed: boolean;
+  saveGraphInfo = SAVE_INFO_INIT;
 
   workflowStore: any[] =[];
 
@@ -38,8 +41,9 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   ) {}
 
   clearInput() {
-    this.editor.set({});
-    this.onWorkflowInput.emit({});
+    this.onWorkflowChanged(this.graphService.getInitGraph());
+    this.pushDataToCanvas();
+    this.saveGraphInfo = SAVE_INFO_INIT;
   }
 
   putWorkflowIntoCanvas(friendlyName: string) {
@@ -68,6 +72,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.isShowModal = false;
+    this.saveConfirmed = false;
     this.selectWorkflow = this.graphService.getInitGraph();
     let container = document.getElementById('jsoneditor');
     let canvas = document.getElementById('mycanvas');
@@ -115,18 +120,29 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   }
 
   refreshWorkflow() {
-    this.updateEditor(this.selectWorkflow);
-    this.applyWorkflowJson();
+    let injectableNameTmp = this.selectWorkflow['injectableName'];
+    for (let workflow of this.workflowStore) {
+      if (workflow['injectableName'] === injectableNameTmp) {
+        this.selectWorkflow = workflow;
+        this.updateEditor(this.selectWorkflow);
+        this.applyWorkflowJson();
+        break;
+      }
+    }
+  }
+
+  saveConfirm() {
+    this.saveConfirmed = true;
+    this.isShowModal = true;
   }
 
   saveWorkflow() {
     this.selectWorkflow = this.editor.get();
-    this.isShowModal = true;
     this.graphService.createGraph(this.selectWorkflow)
       .subscribe(res => {
           this.saveGraphInfo = {
             status: "Saved Successfully!",
-            notes: `The workflow has been saved successfully. Do you want to run it now?`,
+            notes: 'The workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
             type: 1
           };
         },

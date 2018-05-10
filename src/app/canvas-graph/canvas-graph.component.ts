@@ -248,7 +248,7 @@ export class CanvasGraphComponent implements OnInit {
 
       bindInput();
       let filterTrigger = taskFilter.pipe(
-        debounceTime(300),
+        debounceTime(1000),
         distinctUntilChanged(),
         switchMap((term: string) => {
           reGenerateMenu(term);
@@ -263,7 +263,9 @@ export class CanvasGraphComponent implements OnInit {
         taskMenu.close(undefined, true);
         let values = [];
         values.push({content: filterInputHtml});
-        let filteredTaskNames = _.filter(self.taskInjectableNames, (type) => type.includes(term));
+        let filteredTaskNames = _.filter(self.taskInjectableNames, (type) => {
+          return _.toLower(type).includes(_.toLower(term));
+        });
         for (let injectableName of filteredTaskNames.slice(0, 9)) {
           values.push({content: injectableName});
         }
