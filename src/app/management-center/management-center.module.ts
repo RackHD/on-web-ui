@@ -19,6 +19,7 @@ import { ConfigComponent } from './configs/config.component';
 import { ManagementCenterServicesModule } from './services/management-center-service.module';
 import { RackhdCommonServicesModule } from 'app/services/rackhd-common/rackhd-common.module';
 import { InventoryModule } from 'app/inventory/inventory.module';
+import { NgxSelectModule } from 'ngx-select-ex';
 
 // the dependent services of ManagementCenter
 
@@ -30,7 +31,8 @@ import { InventoryModule } from 'app/inventory/inventory.module';
     ReactiveFormsModule,
     ManagementCenterRoutingModule,
     ManagementCenterServicesModule,
-    InventoryModule
+    InventoryModule,
+    NgxSelectModule
   ],
   declarations: [
     ManagementCenterComponent,

@@ -42,6 +42,10 @@ export class PollersComponent implements OnInit {
 
   selectedPollers: Poller[];
 
+  isShowLatestData = false;
+  currentPoller: any;
+  currentLatestData = '';
+
   constructor(public pollersService: PollersService, public nodeService: NodeService,
     private fb: FormBuilder) {
   }
@@ -137,10 +141,14 @@ export class PollersComponent implements OnInit {
   willUpdate(poller: Poller): void {
     this.updatePoller = poller;
     this.defaultInterval = poller.pollInterval;
+    if(!_.includes(this.pollerInterval, poller.pollInterval)){
+      this.pollerInterval.push(poller.pollInterval);
+      this.pollerInterval.sort();
+    }
     this.defaultPaused = poller.paused;
     this.updateForm = this.fb.group({
-      pollInterval: this.defaultInterval,
-      paused: this.defaultPaused,
+      pollInterval: [this.defaultInterval, Validators.required],
+      paused: [String(this.defaultPaused), Validators.required]
     });
     this.isUpdate = true;
   }
@@ -152,7 +160,7 @@ export class PollersComponent implements OnInit {
     if (value['pollInterval'] !== this.defaultInterval) {
       jsonData['pollInterval'] = value['pollInterval'];
     }
-    if (value['paused'] !== this.defaultPaused) {
+    if (Boolean(value['paused']) !== this.defaultPaused) {
       jsonData['paused'] = !this.defaultPaused;
     }
     let postData = JSON.stringify(jsonData);
@@ -185,15 +193,15 @@ export class PollersComponent implements OnInit {
 
   createForm() {
     this.pollerForm = this.fb.group({
-      type: '',
-      node: '',
-      pollInterval: '',
+      type: ['', Validators.required],
+      node: ['', Validators.required],
+      pollInterval: 60000,
       config: '',
     });
 
     this.updateForm = this.fb.group({
-      pollInterval: '',
-      paused: '',
+      pollInterval: ['', Validators.required],
+      paused: ['', Validators.required]
     });
   }
 
@@ -227,5 +235,11 @@ export class PollersComponent implements OnInit {
     .subscribe(results =>{
       this.refresh();
     });
+  }
+
+  showPollerLatestData(poller: Poller){
+    this.isShowLatestData = true;
+    this.currentPoller = poller;
+    this.currentLatestData = poller.latestData || "There's no latest data."
   }
 }
