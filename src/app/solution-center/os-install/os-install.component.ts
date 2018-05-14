@@ -50,7 +50,6 @@ export class OsInstallComponent implements OnInit {
   selectedRepoPlaceHolder: string;
 
   enableOsinstall = false;
-  enableSavePayload = false;
   submitSuccess = false;
   confirmSubmited = false;
   enableNetworkSetting = false;
@@ -65,102 +64,6 @@ export class OsInstallComponent implements OnInit {
   nodeStore: Array<any> = [];
 
   submitInfo = { status: "Are you sure to submit the workflow ?" };
-
-  renderNodeInfo(nodes) {
-    let list = _.map(nodes, node => {
-      return Observable.forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
-        .map(results => {
-          node["sku"] = results[0];
-          node["obms"] = results[1];
-          node["tags"] = results[2];
-        });
-    });
-
-    Observable.forkJoin(list)
-      .subscribe((data) => {
-        this.allNodes = _.cloneDeep(nodes);
-        this.nodeStore = _.cloneDeep(nodes);
-        this.selNodeStore = _.cloneDeep(nodes);
-      });
-  }
-
-  getNodeSku(node): Observable<string> {
-    let hasSkuId = !!node.sku;
-    let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
-    if (hasSkuId) {
-      return this.skuService.getByIdentifier(node.sku.split("/").pop())
-        .map(data => data.name);
-    } else if (isComputeWithoutSku) {
-      return this.catalogsService.getSource(node.id, "ohai")
-        .map(data => data.data.dmi.base_board.product_name);
-    } else {
-      return Observable.of(null);
-    }
-  }
-
-  getNodeObm(node): Observable<string> {
-    if (!_.isEmpty(node.obms)) {
-      let obmId = node.obms[0].ref.split("/").pop();
-      return this.obmService.getByIdentifier(obmId)
-        .map(data => data.config.host);
-    } else {
-      return Observable.of(null);
-    }
-  }
-
-  getNodeTag(node): Observable<string> {
-    if (!_.isEmpty(node.tags)) {
-      return this.tagService.getTagByNodeId(node.id)
-        .map(data => {
-          if (_.isEmpty(data)) { return null; }
-          return data.attributes.name;
-        });
-    } else {
-      return Observable.of(null);
-    }
-  }
-
-  onFilterSelect(node) {
-    this.selectedNode = node;
-    if (!_.isEqual(this.selNodeStore, [node])) {
-      this.selNodeStore = [node];
-    }
-  };
-
-  onFilterRefresh() {
-    this.selNodeStore = [];
-    this.nodeStore = _.cloneDeep(this.allNodes);
-  }
-
-  onReset() {
-    this.selNodeStore = [];
-    this.nodeStore = [];
-    this.createForm();
-    this.diskOptions = null;
-    this.networkDeviceOptions = null;
-    this.selectedRepoPlaceHolder = 'Select OS TYPE first.';
-    this.modifyDefaultSetting = false;
-
-    setTimeout(() => {
-      this.nodeStore = _.cloneDeep(this.allNodes);
-      this.selNodeStore = _.cloneDeep(this.allNodes);
-    });
-  }
-
-  onNodeSelect(node) {
-    this.selectedNode = node;
-    if (!_.isEqual(this.nodeStore, [node])) {
-      this.nodeStore = [node];
-    }
-    this.onNodeIdChange(node['id']);
-  };
-
-  onNodeRefresh() {
-    this.nodeStore = [];
-    setTimeout(() => {
-      this.nodeStore = _.cloneDeep(this.allNodes);
-    });
-  }
 
   constructor(
     public nodeService: NodeService,
@@ -262,13 +165,13 @@ export class OsInstallComponent implements OnInit {
       nodeId: new FormControl('', { validators: [Validators.required] }),
       workflowName: '',
       version: new FormControl('', { validators: [Validators.required] }),
-      rootPassword: 'RackHDRocks!',
+      rootPassword: new FormControl('RackHDRocks', { validators: [Validators.required] }),
       dnsServers: new FormControl('', { validators: [Validators.pattern(DNS_PATTERN)] }),
       networkDevice: '',
       installDisk: '',
-      ipAddress: new FormControl('', { validators: [Validators.pattern(IP_PATTERN)] }),
-      gateway: new FormControl('', { validators: [Validators.pattern(IP_PATTERN)] }),
-      netmask: new FormControl('', { validators: [Validators.pattern(IP_PATTERN)] }),
+      ipAddress: new FormControl('', { validators: [Validators.pattern(IP_PATTERN), Validators.required] }),
+      gateway: new FormControl('', { validators: [Validators.pattern(IP_PATTERN), Validators.required] }),
+      netmask: new FormControl('', { validators: [Validators.pattern(IP_PATTERN), Validators.required] }),
       repoUrl: new FormControl('', { validators: [Validators.pattern(REPO_PATTERN), Validators.required] }),
       nodeModel: '',
       manufacturer: '',
@@ -285,13 +188,11 @@ export class OsInstallComponent implements OnInit {
     this.payloadForm.patchValue({ nodeId: item });
     this.getInstallDisk(this.selectedNodeId, 'driveId');
     this.getNetworkDevice(this.selectedNodeId, 'ohai');
-    this.validSave();
   }
 
   onChangeOsType(item) {
     this.payloadForm.patchValue({ workflowName: this.OS_TYPE_NAME[item] });
     this.selectedRepoPlaceHolder = this.REPO_PLACE_HOLDER[item];
-    this.validSave();
   }
 
   onChangeNetworkDevice(item: string) {
@@ -304,6 +205,102 @@ export class OsInstallComponent implements OnInit {
     }
     let device = _.split(item, ',');
     this.selectedNetworkDevice = device[0];
+  }
+
+  renderNodeInfo(nodes) {
+    let list = _.map(nodes, node => {
+      return Observable.forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
+        .map(results => {
+          node["sku"] = results[0];
+          node["obms"] = results[1];
+          node["tags"] = results[2];
+        });
+    });
+
+    Observable.forkJoin(list)
+      .subscribe((data) => {
+        this.allNodes = _.cloneDeep(nodes);
+        this.nodeStore = _.cloneDeep(nodes);
+        this.selNodeStore = _.cloneDeep(nodes);
+      });
+  }
+
+  getNodeSku(node): Observable<string> {
+    let hasSkuId = !!node.sku;
+    let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
+    if (hasSkuId) {
+      return this.skuService.getByIdentifier(node.sku.split("/").pop())
+        .map(data => data.name);
+    } else if (isComputeWithoutSku) {
+      return this.catalogsService.getSource(node.id, "ohai")
+        .map(data => data.data.dmi.base_board.product_name);
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  getNodeObm(node): Observable<string> {
+    if (!_.isEmpty(node.obms)) {
+      let obmId = node.obms[0].ref.split("/").pop();
+      return this.obmService.getByIdentifier(obmId)
+        .map(data => data.config.host);
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  getNodeTag(node): Observable<string> {
+    if (!_.isEmpty(node.tags)) {
+      return this.tagService.getTagByNodeId(node.id)
+        .map(data => {
+          if (_.isEmpty(data)) { return null; }
+          return data.attributes.name;
+        });
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  onFilterSelect(node) {
+    this.selectedNode = node;
+    if (!_.isEqual(this.selNodeStore, [node])) {
+      this.selNodeStore = [node];
+    }
+  };
+
+  onFilterRefresh() {
+    this.selNodeStore = [];
+    this.nodeStore = _.cloneDeep(this.allNodes);
+  }
+
+  onReset() {
+    this.selNodeStore = [];
+    this.nodeStore = [];
+    this.createForm();
+    this.diskOptions = null;
+    this.networkDeviceOptions = null;
+    this.selectedRepoPlaceHolder = 'Select OS TYPE first.';
+    this.modifyDefaultSetting = false;
+
+    setTimeout(() => {
+      this.nodeStore = _.cloneDeep(this.allNodes);
+      this.selNodeStore = _.cloneDeep(this.allNodes);
+    });
+  }
+
+  onNodeSelect(node) {
+    this.selectedNode = node;
+    if (!_.isEqual(this.nodeStore, [node])) {
+      this.nodeStore = [node];
+    }
+    this.onNodeIdChange(node['id']);
+  };
+
+  onNodeRefresh() {
+    this.nodeStore = [];
+    setTimeout(() => {
+      this.nodeStore = _.cloneDeep(this.allNodes);
+    });
   }
 
   getInstallDisk(nodeId: string, source: string): void {
@@ -320,9 +317,9 @@ export class OsInstallComponent implements OnInit {
   }
 
   getNetworkDevice(nodeId: string, source: string): void {
-    this.networkDeviceOptions = new Array();
     this.catalogsService.getSource(nodeId, source).subscribe(
       iterm => {
+        this.networkDeviceOptions = new Array();
         let usableInterface = [];
         let interfaceObj = iterm.data.network.interfaces;
         let keys = Object.keys(interfaceObj);
@@ -341,10 +338,6 @@ export class OsInstallComponent implements OnInit {
     this.payloadJson = this.createPayloadOptions();
     this.editor.set(this.payloadJson);
     this.enableOsinstall = true;
-  }
-
-  handleEnabled(value: boolean) {
-    this.enableNetworkSetting = value;
   }
 
   onSubmit() {
@@ -391,8 +384,10 @@ export class OsInstallComponent implements OnInit {
     _.assign(generalJson, version, repo, rootPassword, installDisk);
 
     if (this.enableNetworkSetting) {
-      let dnsServers = { 'dnsServers': [this.payloadForm.value['dnsServers']] };
-      _.assign(generalJson, dnsServers);
+      if (!_.isEmpty(this.payloadForm.value['dnsServers'])) {
+        let dnsServers = { 'dnsServers': [this.payloadForm.value['dnsServers']] };
+        _.assign(generalJson, dnsServers);
+      }
 
       let ipv4 = {
         "ipAddr": this.payloadForm.value['ipAddress'],
@@ -431,8 +426,15 @@ export class OsInstallComponent implements OnInit {
     return this.payloadForm.get(value).invalid;
   }
 
-  validSave() {
-    this.enableSavePayload = (!this.formClassInvalid('nodeId')) &&
-      (!this.formClassInvalid('repoUrl') && (!this.formClassInvalid('version')));
+  get enableSavePayload(){
+    let majorEnable = (!this.formClassInvalid('nodeId')) &&
+      (!this.formClassInvalid('repoUrl') && (!this.formClassInvalid('version'))) &&
+      (!this.formClassInvalid('rootPassword'));
+    let networkEnable = true;
+    if (this.enableNetworkSetting) {
+      networkEnable = (!this.formClassInvalid('ipAddress')) && (!this.formClassInvalid('netmask'))
+        && (!this.formClassInvalid('gateway'));
+    }
+    return majorEnable && networkEnable;
   }
 }
