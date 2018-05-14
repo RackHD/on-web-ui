@@ -6,6 +6,7 @@ import { ClarityModule } from '@clr/angular';
 import { SolutionCenterComponent } from './solution-center.component';
 import { SolutionCenterRoutingModule } from './solution-center-routing.module';
 import { OsInstallComponent } from 'app/solution-center/os-install/os-install.component';
+import { InventoryModule } from 'app/inventory/inventory.module';
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { OsInstallComponent } from 'app/solution-center/os-install/os-install.co
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    InventoryModule,
     SolutionCenterRoutingModule
   ],
   declarations: [SolutionCenterComponent, OsInstallComponent]

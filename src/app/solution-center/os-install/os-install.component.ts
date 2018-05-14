@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Poller, Node, API_PATTERN, ADDR_PATTERN, REPO_PATTERN } from 'app/models';
+import { Poller, Node, API_PATTERN, ADDR_PATTERN, REPO_PATTERN, IP_PATTERN, DNS_PATTERN } from 'app/models';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {
   AlphabeticalComparator,
@@ -17,6 +17,9 @@ import { NodeService } from 'app/services/rackhd/node.service';
 import { PollersService } from 'app/services/pollers.service';
 import { WorkflowService } from 'app/services/rackhd/workflow.service';
 import { JSONEditor } from 'app/utils/json-editor';
+import { ObmService } from 'app/services/rackhd/obm.service';
+import { SkusService } from 'app/services/rackhd/sku.service';
+import { TagService } from 'app/services/rackhd/tag.service';
 
 @Component({
   selector: 'app-os-install',
@@ -47,16 +50,28 @@ export class OsInstallComponent implements OnInit {
   selectedRepoPlaceHolder: string;
 
   enableOsinstall = false;
-  enableSavePayload = false;
   submitSuccess = false;
+  confirmSubmited = false;
   enableNetworkSetting = false;
 
   searchTerms = new Subject<string>();
+
+  selNodeStore: any[] = [];
+  filterFields = ["type", "name", "sku", "obms", 'tags'];
+  filterLabels = ["Node Type", "Node Name", "Node SKU Name", "Node OBM Host", "Node Tag Name"];
+  filterColumns = [4, 4, 4, 4, 4];
+  selectedNode: any;
+  nodeStore: Array<any> = [];
+
+  submitInfo = { status: "Are you sure to submit the workflow ?" };
 
   constructor(
     public nodeService: NodeService,
     public catalogsService: CatalogsService,
     public workflowService: WorkflowService,
+    private obmService: ObmService,
+    public skuService: SkusService,
+    public tagService: TagService,
     private fb: FormBuilder,
   ) {
   };
@@ -76,7 +91,7 @@ export class OsInstallComponent implements OnInit {
     };
 
     this.REPO_PLACE_HOLDER = {
-      '' : 'Select OS TYPE first.',
+      '': 'Select OS TYPE first.',
       'esxi': 'http://172.31.128.2:9090/common/esxi/6.5',
       'centos': 'http://172.31.128.2:9090/common/centos/7/os/x86_64',
       'ubuntu': 'http://172.31.128.2:9090/common/ubuntu/16.04',
@@ -124,37 +139,39 @@ export class OsInstallComponent implements OnInit {
   getAllNodes(): void {
     this.nodeService.getAll()
       .subscribe(data => {
-        this.allNodes = data;
-        this.dataStore = data;
+        let computeNodes = _.filter(data, (item) => {
+          return item.type === 'compute';
+        });
+        this.allNodes = computeNodes;
+        this.dataStore = computeNodes;
+        this.renderNodeInfo(computeNodes);
         for (let node of this.allNodes) {
-          if (node.type === 'compute') {
-            this.catalogsService.getSource(node.id, 'dmi').subscribe(
-              item => {
-                let systemInfo = item['data']['System Information'];
-                if (systemInfo) {
-                  node.manufacturer = systemInfo['Manufacturer'];
-                  node.model = systemInfo['Product Name'];
-                }
+          this.catalogsService.getSource(node.id, 'dmi').subscribe(
+            item => {
+              let systemInfo = item['data']['System Information'];
+              if (systemInfo) {
+                node.manufacturer = systemInfo['Manufacturer'];
+                node.model = systemInfo['Product Name'];
               }
-            );
-          }
+            }
+          );
         }
       });
   }
 
   createForm() {
     this.payloadForm = this.fb.group({
-      osType: '',
+      osType: new FormControl('', { validators: [Validators.required] }),
       nodeId: new FormControl('', { validators: [Validators.required] }),
       workflowName: '',
-      version: '',
-      rootPassword: 'RackHDRocks!',
-      dnsServers: '',
+      version: new FormControl('', { validators: [Validators.required] }),
+      rootPassword: new FormControl('RackHDRocks', { validators: [Validators.required] }),
+      dnsServers: new FormControl('', { validators: [Validators.pattern(DNS_PATTERN)] }),
       networkDevice: '',
       installDisk: '',
-      ipAddress: '',
-      gateway: '',
-      netmask: '',
+      ipAddress: new FormControl('', { validators: [Validators.pattern(IP_PATTERN), Validators.required] }),
+      gateway: new FormControl('', { validators: [Validators.pattern(IP_PATTERN), Validators.required] }),
+      netmask: new FormControl('', { validators: [Validators.pattern(IP_PATTERN), Validators.required] }),
       repoUrl: new FormControl('', { validators: [Validators.pattern(REPO_PATTERN), Validators.required] }),
       nodeModel: '',
       manufacturer: '',
@@ -162,24 +179,19 @@ export class OsInstallComponent implements OnInit {
     });
   }
 
-  onChange(item) {
-    this.selectedNodeId = item;
-    this.getInstallDisk(this.selectedNodeId, 'driveId');
-    this.getNetworkDevice(this.selectedNodeId, 'ohai');
-  }
-
   onNodeChange(item) {
     this.search(item);
   }
 
   onNodeIdChange(item) {
-    this.onNodeChange(item);
-    this.onChange(item);
-    this.validSave();
+    this.selectedNodeId = item;
+    this.payloadForm.patchValue({ nodeId: item });
+    this.getInstallDisk(this.selectedNodeId, 'driveId');
+    this.getNetworkDevice(this.selectedNodeId, 'ohai');
   }
 
   onChangeOsType(item) {
-    this.payloadForm.value['workflowName'] = this.OS_TYPE_NAME[item];
+    this.payloadForm.patchValue({ workflowName: this.OS_TYPE_NAME[item] });
     this.selectedRepoPlaceHolder = this.REPO_PLACE_HOLDER[item];
   }
 
@@ -195,10 +207,106 @@ export class OsInstallComponent implements OnInit {
     this.selectedNetworkDevice = device[0];
   }
 
+  renderNodeInfo(nodes) {
+    let list = _.map(nodes, node => {
+      return Observable.forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
+        .map(results => {
+          node["sku"] = results[0];
+          node["obms"] = results[1];
+          node["tags"] = results[2];
+        });
+    });
+
+    Observable.forkJoin(list)
+      .subscribe((data) => {
+        this.allNodes = _.cloneDeep(nodes);
+        this.nodeStore = _.cloneDeep(nodes);
+        this.selNodeStore = _.cloneDeep(nodes);
+      });
+  }
+
+  getNodeSku(node): Observable<string> {
+    let hasSkuId = !!node.sku;
+    let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
+    if (hasSkuId) {
+      return this.skuService.getByIdentifier(node.sku.split("/").pop())
+        .map(data => data.name);
+    } else if (isComputeWithoutSku) {
+      return this.catalogsService.getSource(node.id, "ohai")
+        .map(data => data.data.dmi.base_board.product_name);
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  getNodeObm(node): Observable<string> {
+    if (!_.isEmpty(node.obms)) {
+      let obmId = node.obms[0].ref.split("/").pop();
+      return this.obmService.getByIdentifier(obmId)
+        .map(data => data.config.host);
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  getNodeTag(node): Observable<string> {
+    if (!_.isEmpty(node.tags)) {
+      return this.tagService.getTagByNodeId(node.id)
+        .map(data => {
+          if (_.isEmpty(data)) { return null; }
+          return data.attributes.name;
+        });
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  onFilterSelect(node) {
+    this.selectedNode = node;
+    if (!_.isEqual(this.selNodeStore, [node])) {
+      this.selNodeStore = [node];
+    }
+  };
+
+  onFilterRefresh() {
+    this.selNodeStore = [];
+    this.nodeStore = _.cloneDeep(this.allNodes);
+  }
+
+  onReset() {
+    this.selNodeStore = [];
+    this.nodeStore = [];
+    this.createForm();
+    this.diskOptions = null;
+    this.networkDeviceOptions = null;
+    this.selectedRepoPlaceHolder = 'Select OS TYPE first.';
+    this.modifyDefaultSetting = false;
+
+    setTimeout(() => {
+      this.nodeStore = _.cloneDeep(this.allNodes);
+      this.selNodeStore = _.cloneDeep(this.allNodes);
+    });
+  }
+
+  onNodeSelect(node) {
+    this.selectedNode = node;
+    if (!_.isEqual(this.nodeStore, [node])) {
+      this.nodeStore = [node];
+    }
+    this.onNodeIdChange(node['id']);
+  };
+
+  onNodeRefresh() {
+    this.nodeStore = [];
+    setTimeout(() => {
+      this.nodeStore = _.cloneDeep(this.allNodes);
+    });
+  }
+
   getInstallDisk(nodeId: string, source: string): void {
-    this.diskOptions = new Array();
     this.catalogsService.getSource(nodeId, source).subscribe(
       data => {
+        this.diskOptions = new Array();
         let diskData = data['data'];
         for (let disk of diskData) {
           this.diskOptions.push(disk['devName']);
@@ -209,9 +317,9 @@ export class OsInstallComponent implements OnInit {
   }
 
   getNetworkDevice(nodeId: string, source: string): void {
-    this.networkDeviceOptions = new Array();
     this.catalogsService.getSource(nodeId, source).subscribe(
       iterm => {
+        this.networkDeviceOptions = new Array();
         let usableInterface = [];
         let interfaceObj = iterm.data.network.interfaces;
         let keys = Object.keys(interfaceObj);
@@ -232,11 +340,8 @@ export class OsInstallComponent implements OnInit {
     this.enableOsinstall = true;
   }
 
-  handleEnabled(value: boolean) {
-    this.enableNetworkSetting = value;
-  }
-
   onSubmit() {
+    this.confirmSubmited = false;
     let workflow = this.editor.get();
     this.payloadJson = workflow;
     this.workflowService.runWorkflow(
@@ -244,8 +349,12 @@ export class OsInstallComponent implements OnInit {
       this.OS_TYPE_NAME[this.payloadForm.value['osType']],
       this.payloadJson
     ).subscribe(data => {
-        this.submitSuccess = true;
+      this.submitSuccess = true;
     });
+  }
+
+  onConfirmSubmited() {
+    this.confirmSubmited = true;
   }
 
   createPayloadOptions(): object {
@@ -264,16 +373,21 @@ export class OsInstallComponent implements OnInit {
       };
       _.assign(generalJson, ubuntuOnly);
     }
-    if (this.payloadForm.value['osType'] === 'esxi') {
-      installDisk = { 'installDisk': this.payloadForm.value['installDisk'] };
-    } else {
-      installDisk = { 'installDisk': "/dev/" + this.payloadForm.value['installDisk'] };
+    if (!_.isEmpty(this.payloadForm.value['installDisk'])) {
+      if (this.payloadForm.value['osType'] === 'esxi') {
+        installDisk = { 'installDisk': this.payloadForm.value['installDisk'] };
+      } else {
+        installDisk = { 'installDisk': "/dev/" + this.payloadForm.value['installDisk'] };
+      }
     }
+
     _.assign(generalJson, version, repo, rootPassword, installDisk);
 
     if (this.enableNetworkSetting) {
-      let dnsServers = { 'dnsServers': this.payloadForm.value['dnsServers'] };
-      _.assign(generalJson, dnsServers);
+      if (!_.isEmpty(this.payloadForm.value['dnsServers'])) {
+        let dnsServers = { 'dnsServers': [this.payloadForm.value['dnsServers']] };
+        _.assign(generalJson, dnsServers);
+      }
 
       let ipv4 = {
         "ipAddr": this.payloadForm.value['ipAddress'],
@@ -300,7 +414,7 @@ export class OsInstallComponent implements OnInit {
         _.assign(generalJson, networkDevices);
       }
     }
-    tmpJson = _.assign(tmpJson, {options: {'defaults': generalJson}});
+    tmpJson = _.assign(tmpJson, { options: { 'defaults': generalJson } });
     return tmpJson;
   }
 
@@ -312,8 +426,15 @@ export class OsInstallComponent implements OnInit {
     return this.payloadForm.get(value).invalid;
   }
 
-  validSave() {
-    this.enableSavePayload = (!this.formClassInvalid('nodeId')) &&
-      (!this.formClassInvalid('repoUrl'));
+  get enableSavePayload(){
+    let majorEnable = (!this.formClassInvalid('nodeId')) &&
+      (!this.formClassInvalid('repoUrl') && (!this.formClassInvalid('version'))) &&
+      (!this.formClassInvalid('rootPassword'));
+    let networkEnable = true;
+    if (this.enableNetworkSetting) {
+      networkEnable = (!this.formClassInvalid('ipAddress')) && (!this.formClassInvalid('netmask'))
+        && (!this.formClassInvalid('gateway'));
+    }
+    return majorEnable && networkEnable;
   }
 }
