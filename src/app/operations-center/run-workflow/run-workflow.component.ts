@@ -42,9 +42,9 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   selNodeStore: any [] = [];
   selectedNode: any;
 
-  filterFields = ["type", "name", "sku", "obms", 'tags'];
-  filterLabels = ["Node Type", "Node Name", "Node SKU Name", "Node OBM Host", "Node Tag Name"];
-  filterColumns = [4, 4, 4, 4, 4];
+  filterFields = ["type", "name", "sku", "id", "obms", 'tags'];
+  filterLabels = ["Node Type", "Node Name", "SKU Name", "Node ID", "OBM Host", "Tag Name"];
+  filterColumns = [4, 4, 4, 4, 4, 4];
 
   constructor(
     public nodeService: NodeService,
@@ -228,25 +228,23 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   onFilterSelect(node){
     this.selectedNode = node;
-    this.selNodeStore = [node];
+    if (this.selNodeStore.length === 1 && _.isEqual(this.selNodeStore[0], node)) return;
+    setTimeout( () => this.selNodeStore = [node]);
   };
 
-  onFilterRefresh() {
+  onFilterRefresh(item: string) {
     this.selNodeStore= [];
-    this.nodeStore = _.cloneDeep(this.allNodes);
+    setTimeout(() => {
+      this.nodeStore = _.cloneDeep(this.allNodes);
+      this.selNodeStore = _.cloneDeep(this.allNodes);
+    });
   }
 
   onNodeSelect(node){
     this.selectedNode = node;
-    this.nodeStore = [node];
+    if (this.nodeStore.length === 1 && _.isEqual(this.nodeStore[0], node)) return;
+    setTimeout( () => this.nodeStore = [node]);
   };
-
-  onNodeRefresh() {
-    this.nodeStore = [];
-    setTimeout(()=>{
-      this.nodeStore = _.cloneDeep(this.allNodes);
-    });
-  }
 
   onReset(){
     this.selNodeStore = [];

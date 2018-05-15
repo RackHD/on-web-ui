@@ -22,19 +22,21 @@ import * as _ from 'lodash';
   selector: 'dropdown-group',
   templateUrl: './dropdown-group.component.html',
   styleUrls: ['./dropdown-group.component.scss'],
-  encapsulation: ViewEncapsulation.None
 })
 
 export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
   @Input() fields: string[] = []; // search field
   @Input() labels: string[]; // label for inputs
   @Input() widths: number[]; // input widths
-  @Input() columns: number []; // dropdown size
+  @Input() columns: number []; // dropdown grid size, follow bootstrap grid configures
   @Input() offsets: number [];
   @Input() size: number = 10; // dropdown size
   @Input() placeholders: string[]; // label for inputs
   @Input() disable: boolean [];
   @Input() isDefaultForm: boolean = false; // bootstrap default form format
+  @Input() marginTop: string = '0px'; // margin top
+  @Input() labelBold: boolean = true; // label bold
+  @Input() fieldsRequired: boolean []; // label bold
 
   @Input() needSearchIcon: boolean = false; // search icon
   @Input() needReset: boolean = false; //reset button
@@ -42,7 +44,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
   @Input() data: any[] = []; // all data for search
 
   @Output() selected = new EventEmitter(); // Single item is selected
-  @Output() cleared: EventEmitter<boolean> = new EventEmitter(); // Ask for data reload
+  @Output() cleared: EventEmitter<string> = new EventEmitter(); // Ask for data reload
 
   searchTerms = new Subject<any>();
   searchSubscribe: any;
@@ -72,7 +74,8 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
           _value["index"] = key;
           return _value;
         });
-        this.getDropdownLists(this.allData);
+        let filtered = this.filterByFormGroup(this.allData);
+        this.getDropdownLists(filtered);
     }
   }
 
@@ -106,6 +109,9 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
     }
     if(_.isEmpty(this.disable)) {
       this.disable = _.fill(Array(inputCount), false);
+    }
+    if(_.isEmpty(this.fieldsRequired)) {
+      this.fieldsRequired = _.fill(Array(inputCount), false);
     }
     this.classList = _.map(this.offsets, (offset, key) => {
       return `col-lg-${this.columns[key]} col-lg-offset-${offset}`;
@@ -143,9 +149,10 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
     return matched;
   }
 
-  search(input?: any): void {
+  filterByFormGroup(allData) {
+    if (!this.filterForm) return allData;
     let formValues = this.filterForm.value;
-    let filtered = _.cloneDeep(this.allData);
+    let filtered = _.cloneDeep(allData);
     _.forEach(this.fields, (field) => {
       let term = formValues[field];
       if (term) {
@@ -153,7 +160,11 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
         filtered = StringOperator.search(term, filtered, excludeFields)
       }
     });
+    return filtered;
+  }
 
+  search(input?: any): void {
+    let filtered = this.filterByFormGroup(this.allData);
     if (this.isSelected) {
       filtered = this.filterOnlySelected(input.value, input.field, filtered);
       this.isSelected = false;
@@ -191,11 +202,11 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
       field: field,
       value: ""
     });
-    this.cleared.emit(false);
+    this.cleared.emit(field);
   }
 
   onReset(field: string) {
     this.reset();
-    this.cleared.emit(true);
+    this.cleared.emit("all");
   }
 }

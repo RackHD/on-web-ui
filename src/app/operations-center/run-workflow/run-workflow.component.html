@@ -1,12 +1,12 @@
 <div class="run-workflow">
-  <h5 class="header-text">
-    <strong>Run Workflow</strong>
-  </h5>
+  <h4 class="header-text">
+    Run Workflow
+  </h4>
   <p class="run-workflow-row">
     <span class="col-md-4">
       <dropdown-group [data]="selNodeStore"
         [fields]="['id']" [labels]="['Node: ']" [columns]="[3]"
-        (selected)="onNodeSelect($event)" (cleared)="onNodeRefresh()">
+        (selected)="onNodeSelect($event)" (cleared)="onReset()">
       </dropdown-group>
     </span>
   </p>
@@ -15,8 +15,8 @@
     <section>
       <dropdown-group [data]="nodeStore"
         [fields]="filterFields" [labels]="filterLabels"
-        [columns]="filterColumns"
-        (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
+        [columns]="filterColumns" marginTop="15px"
+        (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh($event)">
       </dropdown-group>
     </section>
   </div>

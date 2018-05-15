@@ -2,15 +2,27 @@
   padding-top: 15px;
 }
 .input-width {
-  width: 80%;
+  width: 100%;
 }
 .button-align {
   float: right;
   margin-right: 2px;
 }
 
-// table/table-cell works for input width=100%
-// bootstrap form-group default set input width=100%
+div.row div {
+  display: flex;
+  label {
+    white-space:nowrap
+  }
+}
+
+
+label.required:after {
+  color: #c92100;
+  content: "\00a0\00a0*\00a0\00a0";
+}
+
+// For default form-group
 .row {
   div.form-group {
     display: table;
