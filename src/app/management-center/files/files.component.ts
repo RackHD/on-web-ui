@@ -185,9 +185,10 @@ export class FilesComponent implements OnInit {
     //TODO: And use sync mode instead of async mode
     //TODO: Add support on multiple files upload support
     this.fileService.upload(file, existingFilename || file.name)
-    this.selectedFile = null;
-    this.refresh();
+    .subscribe(() => {
+      this.selectedFile = null;
+      this.isShowModal = false;
+      this.refresh();
+    });
   }
-
-  onSubmit(){}
 }

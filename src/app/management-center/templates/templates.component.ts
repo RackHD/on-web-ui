@@ -124,8 +124,11 @@ export class TemplatesComponent implements OnInit {
     //TODO: And use sync mode instead of async mode
     //TODO: Add support on multiple files upload support
     this.templateService.upload(file, existingFilename || file.name)
-    this.selectedTemplate = null;
-    this.refresh();
+    .subscribe(() => {
+      this.isShowModal = false;
+      this.selectedTemplate = null;
+      this.refresh();
+    });
   }
 
 }

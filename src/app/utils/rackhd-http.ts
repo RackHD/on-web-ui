@@ -9,12 +9,12 @@ import {
 
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { catchError, retry } from 'rxjs/operators';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/observable/forkJoin';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { of } from 'rxjs/observable/of';
+import { _throw } from 'rxjs/observable/throw';
 import { RackhdLocalStorage as RackHD } from './globals-util';
 import * as _ from 'lodash';
-import {ErrorHandlerService, ErrorHanlder} from "../services/core/error-handler.service";
+import { ErrorHandlerService, ErrorHanlder } from "../services/core/error-handler.service";
 
 export class RackhdHttpService {
 
@@ -120,7 +120,7 @@ export class RackhdHttpService {
     _.forEach(idList, id => {
       list.push(this.delete(id, responseType));
     });
-    return Observable.forkJoin(list);
+    return forkJoin(list);
   }
 
   @ErrorHanlder()
@@ -128,21 +128,43 @@ export class RackhdHttpService {
     //Angular doesn't support upload formData with 'application/x-www-form-urlencoded'
     //RackHD files API only supports 'application/x-www-form-urlencoded' till now
     //Thus XMLHttpRequest() is used instead of HttpClient POST/PUT methods.
-    let url = this.urlConfig.uploadSuffix ? this.urlConfig.uploadSuffix : "";
-    let xhr = new XMLHttpRequest();
-    let token = RackHD.getToken();
-    if (identifier) {
-      url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier + url;
-    } else {
-      url = RackHD.getBaseUrl() + this.urlConfig.uploadUrl;
-    }
-    xhr.open(method ? method: 'PUT', url, true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.setRequestHeader('Accept', 'application/json');
-    if(token){
-      xhr.setRequestHeader("authorization", "JWT " + token)
-    }
-    xhr.send(file);
+    return Observable.create( observer => {
+      let url = this.urlConfig.uploadSuffix ? this.urlConfig.uploadSuffix : "";
+      let xhr = new XMLHttpRequest();
+      let token = RackHD.getToken();
+      if (identifier) {
+        url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier + url;
+      } else {
+        url = RackHD.getBaseUrl() + this.urlConfig.uploadUrl;
+      }
+      xhr.open(method ? method: 'PUT', url, true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.setRequestHeader('Accept', 'application/json');
+      if(token){
+        xhr.setRequestHeader("authorization", "JWT " + token)
+      }
+
+      xhr.onload = () => {
+        if (xhr.status > 199 && xhr.status < 205 ){
+          observer.next(xhr.response);
+          observer.complete();
+        } else {
+          observer.error(xhr.response);
+        }
+      }
+
+      // xhr.onprogress = (event) => {
+        // if (event.lengthComputable) {
+          // var percentComplete = event.loaded / event.total;
+        // }
+      // }
+
+      xhr.onerror = () => {
+        observer.error(xhr.response || 'Error happend during uploading file');
+      }
+
+      xhr.send(file);
+    })
   }
 
   @ErrorHanlder()
