@@ -25,7 +25,7 @@ import * as _ from 'lodash';
 export class RunWorkflowComponent implements OnInit, AfterViewInit {
   @ViewChild('jsoneditor') jsoneditor: ElementRef;
   editor: any;
-  runWorkflowRes = {
+  modalInformation = {
     title: "",
     note: "",
     type: 1
@@ -67,16 +67,21 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     let options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.getAllWorkflows();
-
   }
 
   ngAfterViewInit() {
     if (this.graphId) {
       this.selWorkflowById(this.graphId);
-    } else {
-      this.getAllWorkflows();
     }
     this.getAllNodes();
+  }
+
+  resetModalInfo() {
+    this.modalInformation = {
+      title: "",
+      note: "",
+      type: 1
+    };
   }
 
   selWorkflowById(id) {
@@ -101,13 +106,6 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
       this.editor.set(options);
     else
       this.editor.set({});
-  }
-
-  clearGraphInput() {
-    this.graphId = '';
-    this.selectedGraph = {};
-    this.graphStore = [];
-    this.editor.set({});
   }
 
   getAllNodes() {
@@ -145,7 +143,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     if (!_.isEmpty(node.tags)) {
       return this.tagService.getTagByNodeId(node.id)
       .map(data => {
-        if(_.isEmpty(data)) { return null; }
+        if (_.isEmpty(data)) { return null; }
         return data.attributes.name;
       });
     } else {
@@ -171,32 +169,45 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     });
   }
 
-  postWorflow() {
+  goToRunWorkflow() {
     this.showModal = true;
-    let payload = this.editor.get();
     let selectedNodeId = this.selectedNode && this.selectedNode.id;
-    this.graphId = this.graphId || this.selectedGraph.injectableName; 
-    this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
-    .subscribe(
-      data => {
-        this.graphId = data.instanceId;
-        this.runWorkflowRes = {
-          title: "Post Workflow Successfully!",
-          note: "The workflow has post successfully!  Do you want to view it now?",
-          type: 1
-        };
-      },
-      err => {
-        this.runWorkflowRes = {
-          title: "Post Workflow Failed!",
-          note: err.error,
-          type: 2
-        };
-      }
-    );
+    this.graphId = this.graphId || this.selectedGraph.injectableName;
+    let subNote;
+    if (selectedNodeId)
+      subNote = `with ${selectedNodeId}`;
+    else
+      subNote = `without node`;
+    this.modalInformation = {
+      title: "Reminder",
+      note: `Are you sure to run workflow ${this.graphId} ${subNote}`,
+      type: 1
+    };
   }
 
+  postWorkflow() {
+    let payload = this.editor.get();
+    let selectedNodeId = this.selectedNode && this.selectedNode.id;
+    this.graphId = this.graphId || this.selectedGraph.injectableName;
+    this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
+       .subscribe(
+         data => {
+           this.graphId = data.instanceId;
+           this.modalInformation = {
+             title: "Post Workflow Successfully!",
+             note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
+             type: 2
+           };
+         },
+         err => {
+           this.showModal = false;
+           this.resetModalInfo();
+         }
+       );
+   }
+
   goToViewer() {
+    this.resetModalInfo();
     this.showModal = false;
     this.router.navigate(['operationsCenter/workflowViewer'], {
       queryParams: {graphId: this.graphId}
@@ -238,9 +249,9 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   onReset(){
-    this.selNodeStore= [];
+    this.selNodeStore = [];
     this.nodeStore = [];
-    setTimeout(()=>{
+    setTimeout(() => {
       this.nodeStore = _.cloneDeep(this.allNodes);
       this.selNodeStore = _.cloneDeep(this.allNodes);
     });
