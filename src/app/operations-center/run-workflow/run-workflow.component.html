@@ -4,54 +4,56 @@
   </h5>
   <p class="run-workflow-row">
     <span class="col-md-4">
+      <dropdown-group [data]="selNodeStore"
+                      [fields]="['id']" [labels]="['Node: ']" [columns]="[3]"
+                      (selected)="onNodeSelect($event)" (cleared)="onNodeRefresh()">
+      </dropdown-group>
+    </span>
+  </p>
+  <div class="col-md-7 col-xs-7 col-lg-7 filter-by clearfix">
+    <label class="filter-title"><b>Filter Node</b></label>
+    <section>
+      <dropdown-group [data]="nodeStore"
+                      [fields]="filterFields" [labels]="filterLabels"
+                      [columns]="filterColumns"
+                      (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
+      </dropdown-group>
+    </section>
+  </div>
+  <div class="col-md-7 bottom-button clearfix">
+    <button class="btn btn-primary" (click)="onReset()">Reset Filters</button>
+  </div>
+
+  <p class="run-workflow-row">
+    <span class="col-md-4">
       <dropdown-group [data]="graphStore"
         [fields]="['friendlyName']" [labels]="['Graph: ']" [columns]="[3]"
         (selected)="onGraphSelect($event)" (cleared)="onGraphRefresh()">
       </dropdown-group>
     </span>
   </p>
-
-  <p class="run-workflow-row">
-    <span class="col-md-4">
-      <dropdown-group [data]="selNodeStore"
-        [fields]="['id']" [labels]="['Node: ']" [columns]="[3]"
-        (selected)="onNodeSelect($event)" (cleared)="onNodeRefresh()">
-      </dropdown-group>
-    </span>
-  </p>
-  <div class="col-md-7 col-xs-7 col-lg-7 filter-by">
-    <label class="filter-title"><b>Filter Node</b></label>
-    <section>
-      <dropdown-group [data]="nodeStore"
-        [fields]="filterFields" [labels]="filterLabels"
-        [columns]="filterColumns"
-        (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
-      </dropdown-group>
-    </section>
-  </div>
-  <div class="col-md-7 bottom-button">
-    <button class="btn btn-primary" (click)="onReset()">Reset Filters</button>
-  </div>
   <div class="col-md-7 json-editor">
     <p class="run-workflow-row"><label><b>Payload:</b></label></p>
     <div #jsoneditor id="jsoneditor"></div>
   </div>
-  <div class="col-md-7 bottom-button">
-    <button class="btn btn-success" (click)="postWorflow()"
-      [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
+  <div class="col-md-7 bottom-button clearfix">
+    <button class="btn btn-success" (click)="goToRunWorkflow()"
+            [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
       Run Workflow</button>
   </div>
+
   <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
-    <h3 class="modal-title" *ngIf="showModal">{{runWorkflowRes.title}}</h3>
+    <h3 class="modal-title" *ngIf="showModal">{{modalInformation.title}}</h3>
     <div class="modal-body" *ngIf="showModal">
-      <p>{{runWorkflowRes.note | json}}</p>
+      <p>{{modalInformation.note}}</p>
     </div>
-    <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 1">
+    <div class="modal-footer" *ngIf="showModal && modalInformation.type === 1">
+      <button class="btn btn-outline" type="button" (click)="showModal = false">No</button>
+      <button class="btn btn-primary" type="button" (click)="postWorflow()">Yes</button>
+    </div>
+    <div class="modal-footer" *ngIf="showModal && modalInformation.type === 2">
       <button class="btn btn-outline" type="button" (click)="showModal = false">No</button>
       <button class="btn btn-primary" type="button" (click)="goToViewer()">Yes</button>
-    </div>
-    <div class="modal-footer" *ngIf="showModal && runWorkflowRes.type == 2">
-      <button class="btn btn-primary" type="button" (click)="showModal = false">OK</button>
     </div>
   </clr-modal>
 </div>

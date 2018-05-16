@@ -22,6 +22,14 @@
   .operations {
     padding: 0;
   }
+  .clearfix:after {
+    clear:both;
+    content:".";
+    display:block;
+    height:0;
+    line-height:0;
+    visibility:hidden;
+  }
   .bottom-button {
     padding: 0;
     margin-top: 10px;
@@ -34,7 +42,9 @@
     border: 1px solid #aaaaaa;
     margin-top: 25px;
     padding: 20px;
-    height: 6.5rem;
+    button{
+      float: right;
+    }
   }
   .filter-title{
     position: absolute;
@@ -49,8 +59,11 @@
     padding-right: 100px;
   }
   .json-editor {
-    margin-top: 50px;
     padding-left: 0;
     padding-right: 0;
+    .ace-jsoneditor.ace_editor{
+      margin: 1px;
+    }
+
   }
 }
