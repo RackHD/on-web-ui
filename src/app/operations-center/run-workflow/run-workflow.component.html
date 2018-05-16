@@ -5,8 +5,8 @@
   <p class="run-workflow-row">
     <span class="col-md-4">
       <dropdown-group [data]="selNodeStore"
-                      [fields]="['id']" [labels]="['Node: ']" [columns]="[3]"
-                      (selected)="onNodeSelect($event)" (cleared)="onNodeRefresh()">
+        [fields]="['id']" [labels]="['Node: ']" [columns]="[3]"
+        (selected)="onNodeSelect($event)" (cleared)="onNodeRefresh()">
       </dropdown-group>
     </span>
   </p>
@@ -14,9 +14,9 @@
     <label class="filter-title"><b>Filter Node</b></label>
     <section>
       <dropdown-group [data]="nodeStore"
-                      [fields]="filterFields" [labels]="filterLabels"
-                      [columns]="filterColumns"
-                      (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
+        [fields]="filterFields" [labels]="filterLabels"
+        [columns]="filterColumns"
+        (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
       </dropdown-group>
     </section>
   </div>
