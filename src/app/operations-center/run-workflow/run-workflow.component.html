@@ -38,8 +38,9 @@
   </div>
   <div class="col-md-7 bottom-button clearfix">
     <button class="btn btn-success" (click)="goToRunWorkflow()"
-            [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
-      Run Workflow</button>
+      [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
+      Run Workflow
+    </button>
   </div>
 
   <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
@@ -49,7 +50,7 @@
     </div>
     <div class="modal-footer" *ngIf="showModal && modalInformation.type === 1">
       <button class="btn btn-outline" type="button" (click)="showModal = false">No</button>
-      <button class="btn btn-primary" type="button" (click)="postWorflow()">Yes</button>
+      <button class="btn btn-primary" type="button" (click)="postWorkflow()">Yes</button>
     </div>
     <div class="modal-footer" *ngIf="showModal && modalInformation.type === 2">
       <button class="btn btn-outline" type="button" (click)="showModal = false">No</button>

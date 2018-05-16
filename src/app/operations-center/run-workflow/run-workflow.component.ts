@@ -26,8 +26,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   @ViewChild('jsoneditor') jsoneditor: ElementRef;
   editor: any;
   modalInformation = {
-    title: "Reminder",
-    note: "Are you sure to run workflow Graph.InstallOS against node xxxxx",
+    title: "",
+    note: "",
     type: 1
   };
   showModal: boolean;
@@ -67,22 +67,19 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     let options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.getAllWorkflows();
-
   }
 
   ngAfterViewInit() {
     if (this.graphId) {
       this.selWorkflowById(this.graphId);
-    } else {
-      this.getAllWorkflows();
     }
     this.getAllNodes();
   }
 
   resetModalInfo() {
     this.modalInformation = {
-      title: "Reminder",
-      note: "Are you sure to run workflow Graph.InstallOS against node xxxxx",
+      title: "",
+      note: "",
       type: 1
     };
   }
@@ -109,13 +106,6 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
       this.editor.set(options);
     else
       this.editor.set({});
-  }
-
-  clearGraphInput() {
-    this.graphId = '';
-    this.selectedGraph = {};
-    this.graphStore = [];
-    this.editor.set({});
   }
 
   getAllNodes() {
@@ -153,7 +143,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     if (!_.isEmpty(node.tags)) {
       return this.tagService.getTagByNodeId(node.id)
       .map(data => {
-        if(_.isEmpty(data)) { return null; }
+        if (_.isEmpty(data)) { return null; }
         return data.attributes.name;
       });
     } else {
@@ -181,29 +171,31 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   goToRunWorkflow() {
     this.showModal = true;
-    let selectedNodeId = (this.selectedNode && this.selectedNode.id) || '';
+    let selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
+    let subNote;
+    if (selectedNodeId)
+      subNote = `with ${selectedNodeId}`;
+    else
+      subNote = `without node`;
     this.modalInformation = {
       title: "Reminder",
-      note: `Are you sure to run workflow ${this.graphId} with node ${selectedNodeId}`,
+      note: `Are you sure to run workflow ${this.graphId} ${subNote}`,
       type: 1
     };
   }
-  postWorflow() {
+
+  postWorkflow() {
     let payload = this.editor.get();
     let selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
-    this.toRunWorkflow(selectedNodeId, this.graphId, payload);
-  }
-
-  toRunWorkflow(nodeId, graphId, payload) {
-    this.workflowService.runWorkflow(nodeId, graphId, payload)
+    this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
        .subscribe(
          data => {
            this.graphId = data.instanceId;
            this.modalInformation = {
              title: "Post Workflow Successfully!",
-             note: "The workflow has post successfully!  Do you want to view it now?",
+             note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
              type: 2
            };
          },
