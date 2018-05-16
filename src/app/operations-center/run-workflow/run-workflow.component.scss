@@ -16,6 +16,7 @@
   .header-text {
     padding-top: 0;
     margin-top: 0;
+    margin-bottom: 25px;
   }
   .run-workflow-row {
     span {
@@ -37,6 +38,7 @@
     padding: 0;
     margin-top: 10px;
     button {
+      margin-right: 0;
       float: right;
     }
   }
@@ -68,6 +70,8 @@
     .ace-jsoneditor.ace_editor{
       margin: 1px;
     }
-
+  }
+  .reminder {
+    color: red;
   }
 }

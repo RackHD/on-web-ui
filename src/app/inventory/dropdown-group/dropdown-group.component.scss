@@ -16,13 +16,12 @@ div.row div {
   }
 }
 
-
 label.required:after {
   color: #c92100;
-  content: "\00a0\00a0*\00a0\00a0";
+  content: "\00a0\00a0*";
 }
 
-// For default form-group
+// For default bootstrap/clarity form-group
 .row {
   div.form-group {
     display: table;

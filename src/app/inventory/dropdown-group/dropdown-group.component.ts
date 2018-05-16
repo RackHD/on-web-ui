@@ -33,7 +33,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
   @Input() size: number = 10; // dropdown size
   @Input() placeholders: string[]; // label for inputs
   @Input() disable: boolean [];
-  @Input() isDefaultForm: boolean = false; // bootstrap default form format
+  @Input() isDefaultForm: boolean = false; // bootstrap/clarity default form format
   @Input() marginTop: string = '0px'; // margin top
   @Input() labelBold: boolean = true; // label bold
   @Input() fieldsRequired: boolean []; // label bold

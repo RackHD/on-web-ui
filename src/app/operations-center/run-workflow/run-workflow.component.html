@@ -2,14 +2,17 @@
   <h4 class="header-text">
     Run Workflow
   </h4>
+
+  <div class='reminder'>
+    The fields with * below are required!
+  </div>
   <p class="run-workflow-row">
-    <span class="col-md-4">
-      <dropdown-group [data]="selNodeStore"
-        [fields]="['id']" [labels]="['Node: ']" [columns]="[3]"
-        (selected)="onNodeSelect($event)" (cleared)="onReset()">
-      </dropdown-group>
-    </span>
+    <dropdown-group [data]="selNodeStore"
+      [fields]="['id']" [labels]="['Node']" [columns]="[3]" isDefaultForm="true"
+      (selected)="onNodeSelect($event)" (cleared)="onReset()">
+    </dropdown-group>
   </p>
+
   <div class="col-md-7 col-xs-7 col-lg-7 filter-by clearfix">
     <label class="filter-title"><b>Filter Node</b></label>
     <section>
@@ -20,15 +23,16 @@
       </dropdown-group>
     </section>
   </div>
+
   <div class="col-md-7 bottom-button clearfix">
     <button class="btn btn-primary" (click)="onReset()">Reset Filters</button>
   </div>
 
   <p class="run-workflow-row">
-    <span class="col-md-4">
+    <span class="col-md-3">
       <dropdown-group [data]="graphStore"
-        [fields]="['friendlyName']" [labels]="['Graph: ']" [columns]="[3]"
-        (selected)="onGraphSelect($event)" (cleared)="onGraphRefresh()">
+        [fields]="['friendlyName']" [labels]="['Graph']" [columns]="[4]" isDefaultForm="true"
+        (selected)="onGraphSelect($event)" (cleared)="onGraphRefresh()" [fieldsRequired]="[true]">
       </dropdown-group>
     </span>
   </p>
