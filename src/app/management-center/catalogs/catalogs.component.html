@@ -7,6 +7,7 @@
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading">
+      <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
       <clr-dg-column [clrDgSortBy]="idComparator">
         <ng-container *clrDgHideableColumn="{hidden: false}">ID</ng-container>
         <clr-dg-string-filter [clrDgStringFilter]="idFilter">

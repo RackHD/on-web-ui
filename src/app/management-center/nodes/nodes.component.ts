@@ -54,7 +54,7 @@ export class NodesComponent implements OnInit {
   selectableNodeTypes: string[];
 
   dgDataLoading = false;
-  dgPlaceholder = 'No nodes found!'
+  dgPlaceholder = 'No node found!'
 
   jsonValid = true;
 

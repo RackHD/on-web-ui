@@ -6,6 +6,7 @@
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedObms">
+      <clr-dg-placeholder>{{ dgPlaceholder }}</clr-dg-placeholder>
       <clr-dg-column [clrDgSortBy]="idComparator">ID</clr-dg-column>
       <clr-dg-column [clrDgSortBy]="nodeComparator">Node
         <clr-dg-string-filter [clrDgStringFilter]="nodeFilter">
@@ -55,7 +56,7 @@
 
   <clr-modal *ngIf="action==='update' || action==='create'"
     [(clrModalOpen)]="isShowModal" [clrModalSize]="'md'">
-    <h3 class="modal-title">Create OBM</h3>
+    <h3 class="modal-title">{{action | titlecase}} OBM</h3>
     <div class="modal-body">
       <form [formGroup]="obmForm" novalidate>
         <section class="form-block">

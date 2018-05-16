@@ -33,7 +33,7 @@ export class PollersComponent implements OnInit {
   defaultPaused: boolean;
 
   dgDataLoading = false;
-  dgPlaceholder = 'No nodes found!';
+  dgPlaceholder = 'No poller found!';
   jsonValid = true;
 
   allNodes: Node[];

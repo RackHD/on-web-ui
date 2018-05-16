@@ -83,7 +83,7 @@ export class RackhdHttpService {
   }
 
   @ErrorHanlder()
-  public putByIdentifier(identifier:string, body: object, param?: any, responseType?: string, ): Observable<any> {
+  public putByIdentifier(identifier:string, body: object, param?: any, responseType?: string): Observable<any> {
     let options = RackhdHttpService.createOptions(responseType);
     let url = RackHD.getBaseUrl() +
       this.urlConfig.getByIdentifierUrl + identifier +
@@ -99,7 +99,7 @@ export class RackhdHttpService {
   }
 
   @ErrorHanlder()
-  public postByIdentifier(identifier:string, body: object, param?: any, responseType?: string, ): Observable<any> {
+  public postByIdentifier(identifier:string, body: object, param?: any, responseType?: string): Observable<any> {
     let options = RackhdHttpService.createOptions(responseType);
     let url = RackHD.getBaseUrl() +
       this.urlConfig.getByIdentifierUrl + identifier +
@@ -129,19 +129,23 @@ export class RackhdHttpService {
     //RackHD files API only supports 'application/x-www-form-urlencoded' till now
     //Thus XMLHttpRequest() is used instead of HttpClient POST/PUT methods.
     return Observable.create( observer => {
-      let url = this.urlConfig.uploadSuffix ? this.urlConfig.uploadSuffix : "";
-      let xhr = new XMLHttpRequest();
-      let token = RackHD.getToken();
-      if (identifier) {
-        url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier + url;
-      } else {
-        url = RackHD.getBaseUrl() + this.urlConfig.uploadUrl;
-      }
-      xhr.open(method ? method: 'PUT', url, true);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.setRequestHeader('Accept', 'application/json');
-      if(token){
-        xhr.setRequestHeader("authorization", "JWT " + token)
+      try {
+        var url = this.urlConfig.uploadSuffix ? this.urlConfig.uploadSuffix : "";
+        var xhr = new XMLHttpRequest();
+        var token = RackHD.getToken();
+        if (identifier) {
+          url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier + url;
+        } else {
+          url = RackHD.getBaseUrl() + this.urlConfig.uploadUrl;
+        }
+        xhr.open(method ? method: 'PUT', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Accept', 'application/json');
+        if(token){
+          xhr.setRequestHeader("authorization", "JWT " + token)
+        }
+      } catch(err) {
+        observer.error(err);
       }
 
       xhr.onload = () => {

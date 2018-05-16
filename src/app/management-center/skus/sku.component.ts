@@ -25,7 +25,7 @@ export class SkuComponent implements OnInit {
   action: any;
 
   dgDataLoading = false;
-  dgPlaceholder = 'No nodes found!';
+  dgPlaceholder = 'No SKU found!';
 
   isCreateSku: boolean;
   isDelete: boolean;

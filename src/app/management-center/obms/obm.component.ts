@@ -30,7 +30,7 @@ export class ObmComponent implements OnInit {
   isShowModal: boolean;
 
   dgDataLoading = false;
-  dgPlaceholder = 'No obms found!';
+  dgPlaceholder = 'No OBM found!';
 
   allNodes: Node[] = [];
   selNodeId: string;
