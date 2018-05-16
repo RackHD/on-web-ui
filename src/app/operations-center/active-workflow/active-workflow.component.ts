@@ -12,7 +12,7 @@ import {
   ObjectFilterByKey,
   createFilters,
   createComparator
-} from '../../utils/inventory-operator';
+} from 'app/utils/inventory-operator';
 
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
@@ -87,8 +87,6 @@ export class ActiveWorkflowComponent implements OnInit {
     })
   }
 
-  //getRawData(identifier: string): void {}
-
   deleteSel(){
     let list = [];
     _.forEach(this.selectedWorkflows, workflow => {
@@ -105,9 +103,6 @@ export class ActiveWorkflowComponent implements OnInit {
       this.refresh();
       this.isShowModal = false;
     });
-  }
-
-  getHttpMethod(){
   }
 
   getChild(objKey: string, workflow: Workflow){
@@ -134,10 +129,6 @@ export class ActiveWorkflowComponent implements OnInit {
     this.dgDataLoading = true;
     this.getAll();
   }
-
-  // onBatchDelete() {};
-
-  // onDelete(workflow: Workflow) {};
 
   batchCancel() {
     if (!_.isEmpty(this.selectedWorkflows)){
@@ -178,27 +169,15 @@ export class ActiveWorkflowComponent implements OnInit {
     this.isShowModal = true;
   };
 
-  // onCreate(){}
-
-  // onUpdate(workflow: Workflow){}
-
   onGetDetails(workflow: Workflow) {
     this.selectedWorkflow = workflow;
     this.action = "Detail";
     this.getMetaData(workflow.instanceId);
   };
 
-  // onGetRawData() {};
-
-  // onChange(){}
-
-  // onCancel(){}
-
   gotoCanvas(workflow){
     let graphId = workflow.instanceId;
     let url = "/operationsCenter/workflowViewer?graphId=" + graphId;
     this.router.navigateByUrl(url);
   }
-
-  // onCreateSubmit(){}
 }

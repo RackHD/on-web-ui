@@ -44,7 +44,7 @@ export class WorkflowService extends RackhdHttpService {
   public cancelActiveWorkflow(nodeId: string): Observable<any[]> {
     let param = "/workflows/action";
     let payload = { "command": "cancel" };
-    return this.nodeService.postByIdentifier(nodeId, payload, param);
+    return this.nodeService.putByIdentifier(nodeId, payload, param);
   }
 
 }

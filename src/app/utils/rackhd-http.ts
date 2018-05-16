@@ -67,30 +67,37 @@ export class RackhdHttpService {
     let url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
     return this.http.patch<any>(url, body, options);
   }
+
   @ErrorHanlder()
   public patchByIdentifier(identifier: string, body: any, responseType?: string): Observable<any> {
     let options = RackhdHttpService.createOptions(responseType);
     let url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier;
     return this.http.patch<any>(url, body, options);
   }
+
   @ErrorHanlder()
   public put(body: any, responseType?: string): Observable<any> {
     let options = RackhdHttpService.createOptions(responseType);
     let url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
     return this.http.put<any>(url, body, options);
   }
+
   @ErrorHanlder()
-  public putByIdentifier(identifier:string, body: object, responseType?: string): Observable<any> {
+  public putByIdentifier(identifier:string, body: object, param?: any, responseType?: string, ): Observable<any> {
     let options = RackhdHttpService.createOptions(responseType);
-    let url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier;
+    let url = RackHD.getBaseUrl() +
+      this.urlConfig.getByIdentifierUrl + identifier +
+      (param ? param : '');
     return this.http.put<any>(url, body, options);
   }
+
   @ErrorHanlder()
   public post(body: object, responseType?: string): Observable<any> {
     let options = RackhdHttpService.createOptions(responseType);
     let url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
     return this.http.post<any>(url, body, options);
   }
+
   @ErrorHanlder()
   public postByIdentifier(identifier:string, body: object, param?: any, responseType?: string, ): Observable<any> {
     let options = RackhdHttpService.createOptions(responseType);
@@ -99,12 +106,14 @@ export class RackhdHttpService {
       (param ? param : '');
     return this.http.post<any>(url, body, options);
   }
+
   @ErrorHanlder()
   public delete(identifier: string, responseType?: string): Observable<any> {
     let options = RackhdHttpService.createOptions(responseType);
     let url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier;
     return this.http.delete<any>(url, options);
   }
+
   @ErrorHanlder()
   public deleteByIdentifiers(idList: string [], responseType?: string): Observable<any>{
     let list = [];
@@ -113,6 +122,7 @@ export class RackhdHttpService {
     });
     return Observable.forkJoin(list);
   }
+
   @ErrorHanlder()
   public upload(file: File, identifier?: string, method?: string): any {
     //Angular doesn't support upload formData with 'application/x-www-form-urlencoded'
@@ -134,6 +144,7 @@ export class RackhdHttpService {
     }
     xhr.send(file);
   }
+
   @ErrorHanlder()
   public getMetaByIdentifier(identifier: string, responseType?: string): any  {
     let options = RackhdHttpService.createOptions(responseType);
