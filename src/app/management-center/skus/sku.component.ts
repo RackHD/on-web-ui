@@ -25,7 +25,7 @@ export class SkuComponent implements OnInit {
   action: any;
 
   dgDataLoading = false;
-  dgPlaceholder = 'No nodes found!';
+  dgPlaceholder = 'No SKU found!';
 
   isCreateSku: boolean;
   isDelete: boolean;
@@ -179,8 +179,10 @@ export class SkuComponent implements OnInit {
     this.isCreateSku = false;
     let file = this.skuPackFiles[0];
     let identifier = this.selectedSkus.length && this.selectedSku['id'];
-    this.skusService.uploadByPost(file, identifier);
-    this.getAllSkus();
+    this.skusService.uploadByPost(file, identifier)
+    .subscribe(() => {
+      this.refresh();
+    });
   }
 
   deleteSel(): void {

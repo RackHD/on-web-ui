@@ -24,6 +24,7 @@ export class GridConfirmModalComponent {
   @Input() title: string; // Modal key title
   @Input() data: any; // Data to be shown
   @Input() displayAttr: string = "id"; // Attribute of data to be shown
+  @Input() action: string = "delete"; // Modal action 
   @Input() get isPop() { // Modal popup flag input
     return this.isPopValue;
   }

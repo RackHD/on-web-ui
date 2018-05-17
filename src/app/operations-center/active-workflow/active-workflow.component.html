@@ -126,13 +126,12 @@
     </div>
   </div>
 
-
   <details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
     [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="selectedWorkflow.injectableName">
   </details-modal>
 
   <confirm-modal *ngIf="modalTypes.alertActions.indexOf(action) != -1"
-    [(isPop)]="isShowModal" title="active workflows" displayAttr="instanceId"
+    [(isPop)]="isShowModal" title="active workflows" displayAttr="instanceId" action="cancel"
     (confirm)="onConfirm($event)" [data]="selectedWorkflows">
   </confirm-modal>
 

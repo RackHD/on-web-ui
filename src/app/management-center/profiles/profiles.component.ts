@@ -125,8 +125,11 @@ export class ProfilesComponent implements OnInit {
     //TODO: And use sync mode instead of async mode
     //TODO: Add support on multiple files upload support
     this.profileService.upload(file, existingFilename || file.name)
-    this.selectedProfile = null;
-    this.refresh();
+    .subscribe(() => {
+      this.isShowModal = false;
+      this.selectedProfile = null;
+      this.refresh();
+    })
   }
 
 }

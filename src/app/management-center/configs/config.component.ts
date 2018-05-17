@@ -29,7 +29,7 @@ export class ConfigComponent implements OnInit {
 
   // data grid helper
   dgDataLoading = false;
-  dgPlaceholder = 'No configure found!'
+  dgPlaceholder = 'No configuration found!'
 
   public keyComparator = new AlphabeticalComparator<Config>('key');
   public keyFilter = new ObjectFilterByKey<Config>('key');

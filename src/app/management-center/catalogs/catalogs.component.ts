@@ -23,6 +23,7 @@ export class CatalogsComponent implements OnInit {
 
   // data grid helper
   dgDataLoading = false;
+  dgPlaceholder = 'No catalog found!'
 
   constructor(public catalogsService: CatalogsService) {
     this.specCatalog = new Catalog();
