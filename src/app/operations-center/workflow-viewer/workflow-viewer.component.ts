@@ -82,13 +82,11 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
 
   updateCanvas(url: string): void {
     this.onWorkflowInput.emit(this.selectedWorkflow);
-    if (url) { this.gotoCanvas(url) };
-  }
-
-  gotoCanvas(url: string){
-    // This router doesn't trigger page reload in Angular5;
-    // This is only to change the navigator history
-    this.router.navigateByUrl(url);
+    if (url) {
+      // This router doesn't trigger page reload in Angular5;
+      // This is only to change the navigator history
+      this.router.navigateByUrl(url);
+    };
   }
 
   onSelected(workflow: Workflow) {
@@ -98,9 +96,9 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
     this.updateCanvas(url);
   }
 
-  onRefresh(isClearAll: boolean) {
+  onRefresh(item: string) {
     this.selectedWorkflow = {};
-    this.updateCanvas(isClearAll ? '/operationsCenter/workflowViewer' : '');
+    this.updateCanvas('/operationsCenter/workflowViewer');
     this.getAllWorkflows();
   }
 }

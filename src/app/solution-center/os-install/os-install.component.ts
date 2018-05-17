@@ -10,6 +10,8 @@ import {
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+
 import * as _ from 'lodash';
 import { debounce } from 'rxjs/operator/debounce';
 import { CatalogsService } from 'app/services/rackhd/catalogs.service';
@@ -57,9 +59,9 @@ export class OsInstallComponent implements OnInit {
   searchTerms = new Subject<string>();
 
   selNodeStore: any[] = [];
-  filterFields = ["type", "name", "sku", "obms", 'tags'];
-  filterLabels = ["Node Type", "Node Name", "Node SKU Name", "Node OBM Host", "Node Tag Name"];
-  filterColumns = [4, 4, 4, 4, 4];
+  filterFields = ["type", "name", "sku", "id", "obms", 'tags'];
+  filterLabels = ["Node Type", "Node Name", "SKU Name", "Node ID", "OBM Host", "Tag Name"];
+  filterColumns = [4, 4, 4, 4, 4, 4];
   selectedNode: any;
   nodeStore: Array<any> = [];
 
@@ -270,7 +272,10 @@ export class OsInstallComponent implements OnInit {
 
   onFilterRefresh() {
     this.selNodeStore = [];
-    this.nodeStore = _.cloneDeep(this.allNodes);
+    setTimeout(() => {
+      this.nodeStore = _.cloneDeep(this.allNodes);
+      this.selNodeStore = _.cloneDeep(this.allNodes);
+    })
   }
 
   onReset() {
