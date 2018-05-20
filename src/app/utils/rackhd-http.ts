@@ -12,6 +12,7 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
 import { _throw } from 'rxjs/observable/throw';
+import { timeout } from 'rxjs/operators/timeout';
 import { RackhdLocalStorage as RackHD } from './globals-util';
 import * as _ from 'lodash';
 import { ErrorHandlerService, ErrorHanlder } from "../services/core/error-handler.service";
@@ -45,7 +46,16 @@ export class RackhdHttpService {
     return options;
   }
 
- @ErrorHanlder()
+  public apiPing(): Observable<any>  {
+    let url = RackHD.getBaseUrl() + "/nodes";
+    let options = RackhdHttpService.createOptions();
+    return this.http.get<any>(url, options)
+    .pipe(
+      timeout(500)
+    );
+  }
+
+  @ErrorHanlder()
   public getAll(query?: any, responseType?: string): Observable<any>  {
     let url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
     let options = RackhdHttpService.createOptions(responseType, query);

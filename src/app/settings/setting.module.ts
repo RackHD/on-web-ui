@@ -13,7 +13,7 @@ import { SettingService } from './setting.service';
     ClarityModule.forChild(),
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   declarations: [SettingComponent],
   exports: [SettingComponent],

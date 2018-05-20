@@ -10,6 +10,7 @@ import {
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/observable/forkJoin'
 import 'rxjs/add/operator/map';
 
 import * as _ from 'lodash';
@@ -211,7 +212,7 @@ export class OsInstallComponent implements OnInit {
 
   renderNodeInfo(nodes) {
     let list = _.map(nodes, node => {
-      return Observable.forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
+      return forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
         .map(results => {
           node["sku"] = results[0];
           node["obms"] = results[1];
@@ -219,12 +220,12 @@ export class OsInstallComponent implements OnInit {
         });
     });
 
-    Observable.forkJoin(list)
-      .subscribe((data) => {
-        this.allNodes = _.cloneDeep(nodes);
-        this.nodeStore = _.cloneDeep(nodes);
-        this.selNodeStore = _.cloneDeep(nodes);
-      });
+    return forkJoin(list)
+    .subscribe((data) => {
+      this.allNodes = _.cloneDeep(nodes);
+      this.nodeStore = _.cloneDeep(nodes);
+      this.selNodeStore = _.cloneDeep(nodes);
+    });
   }
 
   getNodeSku(node): Observable<string> {
