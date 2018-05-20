@@ -11,10 +11,10 @@ import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin'
-import 'rxjs/add/operator/map';
+import { of } from 'rxjs/observable/of'
+import { map } from 'rxjs/operators/map';
 
 import * as _ from 'lodash';
-import { debounce } from 'rxjs/operator/debounce';
 import { CatalogsService } from 'app/services/rackhd/catalogs.service';
 import { NodeService } from 'app/services/rackhd/node.service';
 import { PollersService } from 'app/services/pollers.service';
@@ -213,11 +213,13 @@ export class OsInstallComponent implements OnInit {
   renderNodeInfo(nodes) {
     let list = _.map(nodes, node => {
       return forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
-        .map(results => {
-          node["sku"] = results[0];
-          node["obms"] = results[1];
-          node["tags"] = results[2];
-        });
+        .pipe(
+          map(results => {
+            node["sku"] = results[0];
+            node["obms"] = results[1];
+            node["tags"] = results[2];
+          })
+        );
     });
 
     return forkJoin(list)
@@ -236,9 +238,9 @@ export class OsInstallComponent implements OnInit {
         .map(data => data.name);
     } else if (isComputeWithoutSku) {
       return this.catalogsService.getSource(node.id, "ohai")
-        .map(data => data.data.dmi.base_board.product_name);
+        .pipe(map(data => data.data.dmi.base_board.product_name));
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 
@@ -248,19 +250,21 @@ export class OsInstallComponent implements OnInit {
       return this.obmService.getByIdentifier(obmId)
         .map(data => data.config.host);
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 
   getNodeTag(node): Observable<string> {
     if (!_.isEmpty(node.tags)) {
       return this.tagService.getTagByNodeId(node.id)
-        .map(data => {
-          if (_.isEmpty(data)) { return null; }
-          return data.attributes.name;
-        });
+        .pipe(
+          map(data => {
+            if (_.isEmpty(data)) { return null; }
+            return data.attributes.name;
+          })
+        );
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 

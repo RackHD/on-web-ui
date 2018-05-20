@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
+import {forkJoin} from 'rxjs/observable/forkJoin';
 
 import {
   AlphabeticalComparator,
@@ -98,7 +98,7 @@ export class ActiveWorkflowComponent implements OnInit {
       this.isShowModal = false;
       return;
     }
-    Observable.forkJoin(list)
+    return forkJoin(list)
     .subscribe((result) => {
       this.refresh();
       this.isShowModal = false;

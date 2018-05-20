@@ -11,9 +11,6 @@ import { WorkflowService } from 'app/services/rackhd/workflow.service';
 import { Workflow, Graph } from 'app/models';
 import { GraphService } from 'app/services/rackhd/graph.service';
 
-import 'rxjs/add/operator/mergeMap'
-import 'rxjs/add/operator/map'
-
 import * as _ from 'lodash';
 
 @Component({

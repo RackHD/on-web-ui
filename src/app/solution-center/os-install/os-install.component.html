@@ -6,7 +6,7 @@
       The fields with * below are required!
   </div>
   <div class="col-md-12 col-xs-12 col-lg-12 bottom-gap">
-    <dropdown-group [data]="selNodeStore" [fields]="['id']" [columns]="[3]"
+    <dropdown-group [data]="selNodeStore" [fields]="['id']" [columns]="[3]" id="dropdown-group-0"
       [labels]="['Node']" [labelBold]="false" [fieldsRequired]="[true]" isDefaultForm="true"
       (selected)="onNodeSelect($event)" (cleared)="onReset()">
     </dropdown-group>
@@ -19,7 +19,7 @@
       </label>
       <section>
         <dropdown-group [data]="nodeStore" [fields]="filterFields" [labels]="filterLabels"
-          [columns]="filterColumns" [labelBold]="false" marginTop="15px"
+          [columns]="filterColumns" [labelBold]="false" marginTop="15px" id="dropdown-group-0"
           (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
         </dropdown-group>
       </section>
