@@ -359,6 +359,9 @@ export class CanvasGraphComponent implements OnInit {
     let nodeInputSlotIndexes = {};
     let drawUtils = new DrawUtils(taskIdentifierKey, taskWaitOnKey, this.workflow.tasks);
     _.forEach(this.workflow.tasks, (task) => {
+      if ( task.taskStartTime && task.state === "pending"){
+        task.state = "running";
+      }
       let position = positionMatrix[task[taskIdentifierKey]];
       let node = drawUtils.createTaskNode(task, position);
       this.graph.add(node);
