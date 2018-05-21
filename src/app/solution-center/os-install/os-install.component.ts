@@ -235,7 +235,7 @@ export class OsInstallComponent implements OnInit {
     let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
     if (hasSkuId) {
       return this.skuService.getByIdentifier(node.sku.split("/").pop())
-        .map(data => data.name);
+        .pipe( map(data => data.name) );
     } else if (isComputeWithoutSku) {
       return this.catalogsService.getSource(node.id, "ohai")
         .pipe(map(data => data.data.dmi.base_board.product_name));
@@ -248,7 +248,7 @@ export class OsInstallComponent implements OnInit {
     if (!_.isEmpty(node.obms)) {
       let obmId = node.obms[0].ref.split("/").pop();
       return this.obmService.getByIdentifier(obmId)
-        .map(data => data.config.host);
+        .pipe( map(data => data.config.host) );
     } else {
       return of(null);
     }

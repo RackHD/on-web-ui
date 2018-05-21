@@ -36,7 +36,6 @@ export class SettingComponent implements OnInit, AfterViewInit {
   checkboxesDirty: boolean;
 
   tokenErrorMsg: string = '';
-  isApiAccessError: boolean;
   apiErrorMsg: string = '';
 
   settingFormGroup: FormGroup;
