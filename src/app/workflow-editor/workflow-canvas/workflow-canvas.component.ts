@@ -46,10 +46,10 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     this.saveGraphInfo = SAVE_INFO_INIT;
   }
 
-  putWorkflowIntoCanvas(friendlyName: string) {
+  putWorkflowIntoCanvas(injectableName: string) {
     let workflow = {};
     for (let item of this.workflowStore) {
-      if (item.friendlyName.replace(/\s/ig, '') === friendlyName.replace(/\s/ig, '')) {
+      if (item.injectableName.replace(/\s/ig, '') === injectableName.replace(/\s/ig, '')) {
         workflow = item;
         break;
       }
@@ -62,7 +62,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   onSelected(selWorkflow: any){
     this.selectWorkflow = selWorkflow;
-    this.putWorkflowIntoCanvas(selWorkflow.friendlyName);
+    this.putWorkflowIntoCanvas(selWorkflow.injectableName);
   }
 
   onRefresh() {
