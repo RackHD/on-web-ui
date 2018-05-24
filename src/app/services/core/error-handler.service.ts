@@ -20,7 +20,11 @@ export class ErrorHandlerService {
       // if the backend return the unsuccessful code
       console.error( `Backend returned code ${error.status}, ` +
         `body was: ${error.status}`);
-      this.globalAlertService.putAlertMsg(error.message);
+      if(+error.status === 0){
+        this.globalAlertService.putAlertMsg("Can not connect to RackHD services, please check the config.", 'bar');
+      } else {
+        this.globalAlertService.putAlertMsg(error.message);
+      }
     }
 
     return new ErrorObservable("backend error");

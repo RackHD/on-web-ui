@@ -8,7 +8,8 @@ import {GlobalAlertService} from "../services/core/global-alert.service";
   styleUrls: ['./global-alert.component.css']
 })
 export class GlobalAlertComponent implements OnInit {
-  errorMsges = [];
+  modalErrorMsges = [];
+  barErrorMsges = []
   msgId = 0;
   showErrors = false;
   constructor(
@@ -17,27 +18,39 @@ export class GlobalAlertComponent implements OnInit {
 
   ngOnInit(){
     this.globalAlertService.getAlertQueue().subscribe(
-      msg => {
-        if(_.findIndex(this.errorMsges, (cMsg)=> cMsg.text === msg) === -1){
-          let errorContent;
-          try {
-            errorContent = JSON.parse(msg);
-          }catch (e){
-            errorContent = msg;
+      alertObj => {
+        let msg = alertObj.msg;
+        if(alertObj.type === 'modal'){
+          if(_.findIndex(this.modalErrorMsges, (cMsg)=> cMsg.text === msg) === -1){
+            let errorContent;
+            try {
+              errorContent = JSON.parse(msg);
+            }catch (e){
+              errorContent = msg;
+            }
+            this.modalErrorMsges.push({id: this.msgId, text: errorContent});
+            this.modalErrorMsges = [].concat(this.modalErrorMsges);
+            this.showErrors = true;
+            this.msgId += 1;
           }
-          this.errorMsges.push({id: this.msgId, text: errorContent});
-          this.errorMsges = [].concat(this.errorMsges);
-          this.showErrors = true;
-          this.msgId += 1;
+        } else if(alertObj.type === 'bar') {
+          if(_.findIndex(this.barErrorMsges, (cMsg)=> cMsg.text === msg) === -1){
+            this.barErrorMsges.push({id: this.msgId, text: msg});
+            this.barErrorMsges = [].concat(this.barErrorMsges);
+            this.msgId += 1;
+          }
         }
       }
     )
   }
 
-  closeAlert(){
-    _.remove(this.errorMsges);
+  closeModalAlert(){
+    _.remove(this.modalErrorMsges);
     this.showErrors = false;
   }
 
-}
+  closeBarAlert(msgId: string){
+    _.remove(this.barErrorMsges, (msg) => msg.id === msgId);
+  }
 
+}
