@@ -9,7 +9,6 @@ export class RackhdSetting {
     }
     northboundApi: string;
     websocketUrl:  string;
-    elasticSearchUrl?: string;
     authEnabled: boolean;
     connSecured: boolean;
     authToken?: string;
@@ -18,7 +17,6 @@ export class RackhdSetting {
 export const RACKHD_CONFIG = new RackhdSetting({
   northboundApi: '127.0.0.1:9090/api/2.0',
   websocketUrl: '127.0.0.1:9100',
-  elasticSearchUrl: '127.0.0.1:9200',
   authEnabled: false,
   connSecured: false,
   authToken: ''

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { RACKHD_CONFIG } from '../models/index';
+import { RACKHD_CONFIG } from 'app/models/index';
 import { Observable } from 'rxjs/Observable';
+import { timeout } from 'rxjs/operators/timeout';
 
 import * as _ from 'lodash';
 
@@ -15,9 +16,6 @@ export class SettingService {
 
   get websocketUrl():string { return this.getConfigValue('websocketUrl'); }
   set websocketUrl(value:string) { this.setConfigValue('websocketUrl', value); }
-
-  get elasticSearchUrl():string { return this.getConfigValue('elasticSearchUrl'); }
-  set elasticSearchUrl(value:string) { this.setConfigValue('elasticSearchUrl', value); }
 
   get authEnabled():boolean { return this.getConfigValue('authEnabled'); }
   set authEnabled(value:boolean) { this.setConfigValue('authEnabled', !!value);}
@@ -76,6 +74,8 @@ export class SettingService {
     url = (this.connSecured ? "https" : "http") + "://" + url + "/login";
     return this.http.post(url, JSON.stringify(body),
       {headers: new HttpHeaders({"Content-Type": "application/json"})}
+    ).pipe(
+      timeout(500)
     );
   }
 

@@ -10,10 +10,11 @@ import {
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { forkJoin } from 'rxjs/observable/forkJoin'
+import { of } from 'rxjs/observable/of'
+import { map } from 'rxjs/operators/map';
 
 import * as _ from 'lodash';
-import { debounce } from 'rxjs/operator/debounce';
 import { CatalogsService } from 'app/services/rackhd/catalogs.service';
 import { NodeService } from 'app/services/rackhd/node.service';
 import { PollersService } from 'app/services/pollers.service';
@@ -211,20 +212,22 @@ export class OsInstallComponent implements OnInit {
 
   renderNodeInfo(nodes) {
     let list = _.map(nodes, node => {
-      return Observable.forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
-        .map(results => {
-          node["sku"] = results[0];
-          node["obms"] = results[1];
-          node["tags"] = results[2];
-        });
+      return forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
+        .pipe(
+          map(results => {
+            node["sku"] = results[0];
+            node["obms"] = results[1];
+            node["tags"] = results[2];
+          })
+        );
     });
 
-    Observable.forkJoin(list)
-      .subscribe((data) => {
-        this.allNodes = _.cloneDeep(nodes);
-        this.nodeStore = _.cloneDeep(nodes);
-        this.selNodeStore = _.cloneDeep(nodes);
-      });
+    return forkJoin(list)
+    .subscribe((data) => {
+      this.allNodes = _.cloneDeep(nodes);
+      this.nodeStore = _.cloneDeep(nodes);
+      this.selNodeStore = _.cloneDeep(nodes);
+    });
   }
 
   getNodeSku(node): Observable<string> {
@@ -232,12 +235,12 @@ export class OsInstallComponent implements OnInit {
     let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
     if (hasSkuId) {
       return this.skuService.getByIdentifier(node.sku.split("/").pop())
-        .map(data => data.name);
+        .pipe( map(data => data.name) );
     } else if (isComputeWithoutSku) {
       return this.catalogsService.getSource(node.id, "ohai")
-        .map(data => data.data.dmi.base_board.product_name);
+        .pipe(map(data => data.data.dmi.base_board.product_name));
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 
@@ -245,21 +248,23 @@ export class OsInstallComponent implements OnInit {
     if (!_.isEmpty(node.obms)) {
       let obmId = node.obms[0].ref.split("/").pop();
       return this.obmService.getByIdentifier(obmId)
-        .map(data => data.config.host);
+        .pipe( map(data => data.config.host) );
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 
   getNodeTag(node): Observable<string> {
     if (!_.isEmpty(node.tags)) {
       return this.tagService.getTagByNodeId(node.id)
-        .map(data => {
-          if (_.isEmpty(data)) { return null; }
-          return data.attributes.name;
-        });
+        .pipe(
+          map(data => {
+            if (_.isEmpty(data)) { return null; }
+            return data.attributes.name;
+          })
+        );
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 

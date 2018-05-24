@@ -6,7 +6,7 @@
       The fields with * below are required!
   </div>
   <div class="col-md-12 col-xs-12 col-lg-12 bottom-gap">
-    <dropdown-group [data]="selNodeStore" [fields]="['id']" [columns]="[3]"
+    <dropdown-group [data]="selNodeStore" [fields]="['id']" [columns]="[4]" id="dropdown-group-0"
       [labels]="['Node']" [labelBold]="false" [fieldsRequired]="[true]" isDefaultForm="true"
       (selected)="onNodeSelect($event)" (cleared)="onReset()">
     </dropdown-group>
@@ -19,7 +19,7 @@
       </label>
       <section>
         <dropdown-group [data]="nodeStore" [fields]="filterFields" [labels]="filterLabels"
-          [columns]="filterColumns" [labelBold]="false" marginTop="15px"
+          [columns]="filterColumns" [labelBold]="false" marginTop="15px" id="dropdown-group-0"
           (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
         </dropdown-group>
       </section>
@@ -48,7 +48,7 @@
           </div>
           <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
             <div class="form-group">
-              <label for="selects_1" class="required" [class.invalid]="formClassInvalid('version')">Version
+              <label for="selects_2" class="required" [class.invalid]="formClassInvalid('version')">Version
               </label>
               <div class="select">
                 <select id="selects_2" formControlName="version">
@@ -63,9 +63,9 @@
         <div class="row">
           <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
             <div class="form-group">
-              <label for="selects_1" class="required" [class.invalid]="formClassInvalid('rootPassword')">Root Password</label>
+              <label for="formFields_1" class="required" [class.invalid]="formClassInvalid('rootPassword')">Root Password</label>
               <label class="root-passowrd">
-                <input type="text" id="formFileds_1" formControlName="rootPassword">
+                <input type="text" id="formFields_1" formControlName="rootPassword">
               </label>
             </div>
           </div>
@@ -85,11 +85,11 @@
         </div>
 
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 com-xs-12">
+          <div class="col-lg-10 col-md-10 col-sm-10 com-xs-10">
             <div class="form-group">
               <label class="required os-install-repo">Repo URL</label>
-              <label for="formFileds_repo" aria-haspopup="true" role="tooltip" class="tooltip tooltip-validation invalid tooltip-md" [class.invalid]="formClassInvalid('repoUrl')">
-                <input class="input-width" type="text" id="formFileds_repo" [placeholder]="selectedRepoPlaceHolder" formControlName="repoUrl">
+              <label for="formFields_repo" aria-haspopup="true" role="tooltip" class="tooltip tooltip-validation invalid tooltip-md input-width" [class.invalid]="formClassInvalid('repoUrl')">
+                <input class="input-width" type="text" id="formFields_repo" [placeholder]="selectedRepoPlaceHolder" formControlName="repoUrl">
                 <span class="tooltip-content">
                   The input repo url is invalid!
                 </span>
@@ -120,38 +120,38 @@
         <section class="networkOptions">
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_3">
+              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_3">
                 IP Address
               </label>
               <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('ipAddress')">
-                <input type="text" id="formFileds_1" formControlName="ipAddress"/>
+                <input type="text" id="formFields_3" formControlName="ipAddress"/>
               </label>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_2">
+              <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_2">
                 DNS Servers
               </label>
               <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('dnsServers')">
-                <input type="text" id="formFileds_1" formControlName="dnsServers" placeholder="8.8.8.8, 8.8.4.4" />
+                <input type="text" id="formFields_2" formControlName="dnsServers" placeholder="8.8.8.8, 8.8.4.4" />
               </label>
             </div>
           </div>
 
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_5">
+              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_5">
                 Netmask
               </label>
               <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('netmask')">
-                <input type="text" id="formFileds_1" formControlName="netmask"/>
+                <input type="text" id="formFields_5" formControlName="netmask"/>
               </label>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFileds_4">
+              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_4">
                 Gateway
               </label>
               <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('gateway')">
-                <input type="text" id="formFileds_1" formControlName="gateway" />
+                <input type="text" id="formFields_4" formControlName="gateway" />
               </label>
             </div>
           </div>
