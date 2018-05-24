@@ -14,7 +14,7 @@ import { TagService } from 'app/services/rackhd/tag.service';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
-import { map } from 'rxjs/operators/map';
+import { map, catchError } from 'rxjs/operators';
 
 import * as _ from 'lodash';
 
@@ -156,13 +156,16 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   renderNodeInfo(nodes) {
     let list = _.map(nodes, node => {
-      return forkJoin(this.getNodeSku(node), this.getNodeObm(node), this.getNodeTag(node))
-      .pipe(
-        map(results => {
-          node["sku"] = results[0];
-          node["obms"] = results[1];
-          node["tags"] = results[2];
-        })
+      return forkJoin(
+        this.getNodeSku(node).pipe(catchError( () => of(null))),
+        this.getNodeObm(node).pipe(catchError( () => of(null))),
+        this.getNodeTag(node).pipe(catchError( () => of(null)))
+      ).pipe(
+          map(results => {
+            node["sku"] = results[0];
+            node["obms"] = results[1];
+            node["tags"] = results[2];
+          })
       );
     });
 
