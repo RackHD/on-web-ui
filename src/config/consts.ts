@@ -26,7 +26,7 @@ export const CONSTS = {
     succeeded: {color: '#caf0a5', bgColor: '#62a420'},
     finished: {color: '#8fcbe9', bgColor: '#007cbb'},
     pending: {color: '#e0e0e0', bgColor: ''},
-    running: {color: '#1E90FF', bgColor: '#00FFFF'},
+    running: {color: '#0000FF', bgColor: '#00FFFF'},
     cancelled: {color: '#DC143C', bgColor: '#9932CC'},
     timeout: {color: '#ADFF2F', bgColor: '#DAA520'}
   }
