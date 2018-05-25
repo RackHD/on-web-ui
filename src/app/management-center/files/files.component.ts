@@ -110,14 +110,10 @@ export class FilesComponent implements OnInit {
     let idList = _.map(this.selectedFiles, file => {
       return file.uuid;
     });
+    this.isShowModal = false;
     this.fileService.deleteByIdentifiers(idList)
     .subscribe(
-      data =>{
-        this.refresh();
-      },
-      error => {
-        alert(error);
-      }
+      data => { this.refresh();}
     )
   }
 
@@ -184,10 +180,10 @@ export class FilesComponent implements OnInit {
     //TODO: Add more details on progress
     //TODO: And use sync mode instead of async mode
     //TODO: Add support on multiple files upload support
+    this.isShowModal = false;
     this.fileService.upload(file, existingFilename || file.name)
     .subscribe(() => {
       this.selectedFile = null;
-      this.isShowModal = false;
       this.refresh();
     });
   }

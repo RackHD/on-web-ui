@@ -206,7 +206,7 @@ export class SkuComponent implements OnInit {
           .subscribe(data => {
             this.refresh();
           })
-      }else{
+      } else {
         this.skusService.createSku(jsonData)
           .subscribe(data => {
             this.refresh();

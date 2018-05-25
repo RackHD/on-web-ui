@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { AlphabeticalComparator, StringOperator, ObjectFilterByKey, isJsonTextValid } from '../../utils/inventory-operator';
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs/observable/forkJoin'
 
 import * as _ from 'lodash';
 
@@ -77,10 +78,9 @@ export class WorkflowsComponent implements OnInit {
   //getRawData(identifier: string): void {}
 
   upsertGraph(payload: object): void {
+    this.isShowModal = false;
     this.workflowService.put(payload, 'text')
-    .subscribe(data => {
-      this.isShowModal = false;
-    })
+    .subscribe()
   }
 
   // getHttpMethod(){}
@@ -121,7 +121,9 @@ export class WorkflowsComponent implements OnInit {
   };
 
   create(){
-    this.createFormGroup();
+    if(!this.modalFormGroup){
+      this.createFormGroup();
+    }
     this.action = "Create";
     this.isShowModal = true;
   }
@@ -178,19 +180,16 @@ export class WorkflowsComponent implements OnInit {
   }
 
   onDeleteSubmit(){
-    _.map(this.selectedWorkflows, workflow => {
-      this.workflowService.delete(workflow.injectableName).subscribe(
-        data =>{
-          this.refresh();
-        },
-        error => {
-          alert(error);
-        }
-      )
-    })
+    let list = _.map(this.selectedWorkflows, workflow =>{
+      return this.workflowService.delete(workflow.injectableName);
+    });
+    this.isShowModal = false;
+    return forkJoin(list)
+    .subscribe(
+      data => { this.refresh(); }
+    )
   }
-  // onCreateSubmit(){}
-  
+
   gotoCanvas(workflow){
     let graphName = workflow.injectableName;
     let url = "/operationsCenter/workflowViewer?graphName=" + graphName;

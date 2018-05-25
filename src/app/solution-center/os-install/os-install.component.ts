@@ -149,14 +149,16 @@ export class OsInstallComponent implements OnInit {
         this.dataStore = computeNodes;
         this.renderNodeInfo(computeNodes);
         for (let node of this.allNodes) {
-          this.catalogsService.getSource(node.id, 'dmi').subscribe(
+          this.catalogsService.getSource(node.id, 'dmi')
+          .subscribe(
             item => {
               let systemInfo = item['data']['System Information'];
               if (systemInfo) {
                 node.manufacturer = systemInfo['Manufacturer'];
                 node.model = systemInfo['Product Name'];
               }
-            }
+            },
+            err => {}
           );
         }
       });
@@ -274,7 +276,9 @@ export class OsInstallComponent implements OnInit {
   onFilterSelect(node) {
     this.selectedNode = node;
     if (!_.isEqual(this.selNodeStore, [node])) {
-      this.selNodeStore = [node];
+      setTimeout(() => {
+        this.selNodeStore = [node];
+      })
     }
   };
 
@@ -317,7 +321,8 @@ export class OsInstallComponent implements OnInit {
   }
 
   getInstallDisk(nodeId: string, source: string): void {
-    this.catalogsService.getSource(nodeId, source).subscribe(
+    this.catalogsService.getSource(nodeId, source)
+    .subscribe(
       data => {
         this.diskOptions = new Array();
         let diskData = data['data'];
@@ -325,12 +330,14 @@ export class OsInstallComponent implements OnInit {
           this.diskOptions.push(disk['devName']);
         }
         this.diskOptionsReady = true;
-      }
+      },
+      err => {}
     );
   }
 
   getNetworkDevice(nodeId: string, source: string): void {
-    this.catalogsService.getSource(nodeId, source).subscribe(
+    this.catalogsService.getSource(nodeId, source)
+    .subscribe(
       iterm => {
         this.networkDeviceOptions = new Array();
         let usableInterface = [];
@@ -343,7 +350,8 @@ export class OsInstallComponent implements OnInit {
             this.networkDeviceOptions.push(interfaceKey);
           }
         }
-      }
+      },
+      err => {}
     );
   }
 
@@ -361,9 +369,13 @@ export class OsInstallComponent implements OnInit {
       this.selectedNodeId,
       this.OS_TYPE_NAME[this.payloadForm.value['osType']],
       this.payloadJson
-    ).subscribe(data => {
-      this.submitSuccess = true;
-    });
+    ).subscribe(
+      data => { this.submitSuccess = true; },
+      err => {
+        this.submitSuccess = false;
+        this.confirmSubmited = false;
+      }
+    );
   }
 
   onConfirmSubmited() {

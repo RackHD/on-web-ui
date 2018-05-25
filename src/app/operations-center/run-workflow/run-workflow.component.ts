@@ -198,20 +198,17 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     let selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
     this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
-       .subscribe(
-         data => {
-           this.graphId = data.instanceId;
-           this.modalInformation = {
-             title: "Post Workflow Successfully!",
-             note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
-             type: 2
-           };
-         },
-         err => {
-           this.showModal = false;
-           this.resetModalInfo();
-         }
-       );
+    .subscribe(
+      data => {
+        this.graphId = data.instanceId;
+        this.modalInformation = {
+          title: "Post Workflow Successfully!",
+          note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
+          type: 2
+        };
+      },
+      err => { this.showModal = false; }
+    );
    }
 
   goToViewer() {
