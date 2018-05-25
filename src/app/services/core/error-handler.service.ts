@@ -21,7 +21,10 @@ export class ErrorHandlerService {
       console.error( `Backend returned code ${error.status}, ` +
         `body was: ${error.status}`);
       if(+error.status === 0){
-        this.globalAlertService.putAlertMsg("Can not connect to RackHD services, please check the config.", 'bar');
+        this.globalAlertService.putAlertMsg(
+          "Can't access RackHD services, please confirm if configurations are correct.",
+          'bar'
+        );
       } else {
         this.globalAlertService.putAlertMsg(error.message);
       }
