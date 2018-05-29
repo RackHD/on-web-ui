@@ -134,7 +134,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
       let list = _.map(data, field);
       list = _.uniq(list.sort());
       this.dropdownLists[field] = list.length > this.size ? _.slice(list, 0, this.size) : list;
-    })
+    });
   }
 
   filterOnlySelected(term: string, field: string, dataStore: any): any[] {
@@ -165,7 +165,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
 
   search(input?: any): void {
     let filtered = this.filterByFormGroup(this.allData);
-    if (this.isSelected) {
+    if (this.isSelected && input.value) {
       filtered = this.filterOnlySelected(input.value, input.field, filtered);
       this.isSelected = false;
     }

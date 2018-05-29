@@ -126,11 +126,11 @@ export class ConfigComponent implements OnInit {
     }
     let payload = {};
     payload[key] = value;
+    this.isShowUpdateStatus = false;
     this.configService[method](payload)
     .subscribe( data => {
       this.selectedConfig.key = key;
       this.selectedConfig.value = data[this.selectedConfig.key];
-      this.isShowUpdateStatus = false;
       this.refresh();
     });
   }

@@ -98,10 +98,11 @@ export class ActiveWorkflowComponent implements OnInit {
       this.isShowModal = false;
       return;
     }
+
+    this.isShowModal = false;
     return forkJoin(list)
     .subscribe((result) => {
       this.refresh();
-      this.isShowModal = false;
     });
   }
 
@@ -115,7 +116,8 @@ export class ActiveWorkflowComponent implements OnInit {
   getDefinition(workflow: Workflow){
     this.selectedWorkflow = workflow;
     let graphName = workflow.definition.split('/').pop();
-    this.graphService.getByIdentifier(graphName).subscribe(
+    this.graphService.getByIdentifier(graphName)
+    .subscribe(
       data => {
         this.rawData = data;
         this.action = "Definition"

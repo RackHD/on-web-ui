@@ -139,20 +139,16 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   saveWorkflow() {
     this.selectWorkflow = this.editor.get();
     this.graphService.createGraph(this.selectWorkflow)
-      .subscribe(res => {
-          this.saveGraphInfo = {
-            status: "Saved Successfully!",
-            notes: 'The workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
-            type: 1
-          };
-        },
-        err => {
-          this.saveGraphInfo = {
-            status: "Saved Failed!",
-            notes: JSON.parse(err.error),
-            type: 2
-          };
-        });
+    .subscribe(
+      res => {
+        this.saveGraphInfo = {
+          status: "Saved Successfully!",
+          notes: 'The workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
+          type: 1
+        };
+      },
+      err => { this.isShowModal = false; }
+    );
   }
 
   updateEditor(workflow: any) {

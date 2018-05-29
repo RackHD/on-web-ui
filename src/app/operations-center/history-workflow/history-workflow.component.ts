@@ -115,10 +115,10 @@ export class HistoryWorkflowComponent implements OnInit {
     let list = _.map(this.selectedWorkflows, workflow => {
       return workflow.instanceId;
     });
+    this.isShowModal = false;
     this.workflowService.deleteByIdentifiers(list)
     .subscribe(() => {
       this.refresh();
-      this.isShowModal = false;
     });
   }
 
@@ -137,7 +137,8 @@ export class HistoryWorkflowComponent implements OnInit {
   getDefinition(workflow: Workflow){
     this.selectedWorkflow = workflow;
     let graphName = workflow.definition.split('/').pop();
-    this.graphService.getByIdentifier(graphName).subscribe(
+    this.graphService.getByIdentifier(graphName)
+    .subscribe(
       data => {
         this.rawData = data;
         this.action = "Definition"
