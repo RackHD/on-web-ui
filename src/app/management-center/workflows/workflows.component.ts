@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
-import { Subject } from 'rxjs/Subject';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator, StringOperator, ObjectFilterByKey, isJsonTextValid } from '../../utils/inventory-operator';
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  AlphabeticalComparator,
+  isJsonTextValid,
+  ObjectFilterByKey
+} from 'app/utils/inventory-operator';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs/observable/forkJoin'
 
@@ -49,8 +49,7 @@ export class WorkflowsComponent implements OnInit {
 
   constructor(
     private workflowService: GraphService,
-    private router: Router
-  ) { }
+    private router: Router) {}
 
   ngOnInit() {
     this.isShowModal = false;
@@ -75,21 +74,18 @@ export class WorkflowsComponent implements OnInit {
     })
   }
 
-  //getRawData(identifier: string): void {}
-
   upsertGraph(payload: object): void {
     this.isShowModal = false;
     this.workflowService.put(payload, 'text')
     .subscribe()
   }
 
-  // getHttpMethod(){}
-
   getChild(objKey: string, workflow: Graph){
     this.selectedWorkflow = workflow;
     this.action = _.capitalize(objKey);
     this.rawData = workflow && workflow[objKey];
-    this.isShowModal = true;
+    if (!_.isEmpty(this.rawData))
+      this.isShowModal = true;
   }
 
   createFormGroup(workflow?: Graph){

@@ -110,7 +110,8 @@ export class ActiveWorkflowComponent implements OnInit {
     this.selectedWorkflow = workflow;
     this.action = _.startCase(objKey);
     this.rawData = workflow && workflow[objKey];
-    this.isShowModal = true;
+    if (!_.isEmpty(this.rawData))
+      this.isShowModal = true;
   }
 
   getDefinition(workflow: Workflow){
