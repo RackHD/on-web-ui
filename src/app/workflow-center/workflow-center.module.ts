@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
+import { NodeExtensionService } from '../canvas-graph/node-extension.service';
 
 import { ManagementCenterServicesModule } from '../management-center/services/management-center-service.module';
 
@@ -10,11 +11,12 @@ import { HistoryWorkflowComponent } from './history-workflow/history-workflow.co
 import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.component';
 import { RunWorkflowComponent } from './run-workflow/run-workflow.component';
 
-import { OperationsCenterComponent } from './operations-center.component';
-import { OperationsCenterRoutingModule } from './operations-center-routing.module';
+import { WorkflowCenterComponent } from './workflow-center.component';
+import { WorkflowCenterRoutingModule } from './workflow-center-routing.module';
 
 import { CanvasGraphModule } from 'app/canvas-graph/canvas-graph.module';
 import { InventoryModule } from 'app/inventory/inventory.module';
+import { WorkflowEditorComponent } from './workflow-editor/workflow-editor.component';
 
 @NgModule({
   imports: [
@@ -22,19 +24,20 @@ import { InventoryModule } from 'app/inventory/inventory.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    OperationsCenterRoutingModule,
+    WorkflowCenterRoutingModule,
     ManagementCenterServicesModule,
     CanvasGraphModule,
     InventoryModule,
   ],
   declarations: [
-    OperationsCenterComponent,
+    WorkflowCenterComponent,
     ActiveWorkflowComponent,
     HistoryWorkflowComponent,
     WorkflowViewerComponent,
     RunWorkflowComponent,
+    WorkflowEditorComponent,
   ],
-  providers: []
+  providers: [NodeExtensionService ]
 })
 
-export class OperationsCenterModule {}
+export class WorkflowCenterModule {}

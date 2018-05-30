@@ -214,7 +214,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   goToViewer() {
     this.resetModalInfo();
     this.showModal = false;
-    this.router.navigate(['operationsCenter/workflowViewer'], {
+    this.router.navigate(['workflowCenter/workflowViewer'], {
       queryParams: {graphId: this.graphId}
     });
   }
@@ -228,7 +228,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.selectedGraph = null;
     this.graphStore = _.cloneDeep(this.allGraphs);
     this.updateEditor({});
-    this.router.navigateByUrl('operationsCenter/runWorkflow');
+    this.router.navigateByUrl('workflowCenter/runWorkflow');
   }
 
   onFilterSelect(node){

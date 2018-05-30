@@ -15,12 +15,8 @@ export const ROUTES: Routes = [
    */
   {path: '', redirectTo: 'ui/managementCenter', pathMatch: 'full'},
   {
-    path: 'ui/managementCenter',
-    loadChildren: 'app/management-center/management-center.module#ManagementCenterModule',
-  },
-  {
-    path: 'ui/operationsCenter',
-    loadChildren: 'app/operations-center/operations-center.module#OperationsCenterModule',
+    path: 'ui/workflowCenter',
+    loadChildren: 'app/workflow-center/workflow-center.module#WorkflowCenterModule',
   },
   {
     path: 'ui/solutionCenter',

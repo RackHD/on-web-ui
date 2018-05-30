@@ -188,7 +188,7 @@ export class WorkflowsComponent implements OnInit {
 
   gotoCanvas(workflow){
     let graphName = workflow.injectableName;
-    let url = "/operationsCenter/workflowViewer?graphName=" + graphName;
+    let url = "/workflowCenter/workflowViewer?graphName=" + graphName;
     this.router.navigateByUrl(url);
   }
 

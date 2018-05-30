@@ -89,13 +89,13 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
   onSelected(workflow: Workflow) {
     this.selectedWorkflow = workflow;
     this.graphId = this.selectedWorkflow.instanceId || this.selectedWorkflow.injectableName;
-    let url = `/operationsCenter/workflowViewer?${this.isDefinition ? 'graphName': 'graphId'}=${this.graphId}`;
+    let url = `/workflowCenter/workflowViewer?${this.isDefinition ? 'graphName': 'graphId'}=${this.graphId}`;
     this.updateCanvas(url);
   }
 
   onRefresh(item: string) {
     this.selectedWorkflow = {};
-    this.updateCanvas('/operationsCenter/workflowViewer');
+    this.updateCanvas('/workflowCenter/workflowViewer');
     this.getAllWorkflows();
   }
 }
