@@ -1,23 +1,7 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter
-} from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { ClarityModule } from '@clr/angular';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../../utils/inventory-operator';
-import { Observable } from 'rxjs/Observable';
-
-import * as _ from 'lodash';
-
-import { PAGE_SIZE_OPTIONS } from 'app/models';
+import { StringOperator } from '../../utils/inventory-operator';
 
 @Component({
   selector: 'inventory-header',
@@ -38,10 +22,12 @@ export class InventoryHeaderComponent implements OnInit {
   @Output() filter = new EventEmitter();
   @Output() action = new EventEmitter();
 
+  searchValue:string = '';
   filteredItems: any[];
   searchTerms = new Subject<string>();
 
-  constructor(){}
+  constructor() {
+  }
 
   ngOnInit() {
     let searchTrigger = this.searchTerms.pipe(
@@ -55,32 +41,32 @@ export class InventoryHeaderComponent implements OnInit {
     searchTrigger.subscribe();
   }
 
-  search(term: string){
+  search(term: string) {
     this.filteredItems = StringOperator.search(term, this.allItems);
     this.filter.emit(this.filteredItems);
   }
 
-  onSearch(term){
+  onSearch(term) {
     this.searchTerms.next(term);
   }
 
-  onClear(){
+  onClear() {
     this.searchTerms.next('');
   }
 
-  onCreate(){
+  onCreate() {
     this.action.emit("Create");
   }
 
-  onRefresh(){
+  onRefresh() {
     this.action.emit("Refresh");
   }
 
-  onBatchDelete(){
+  onBatchDelete() {
     this.action.emit("Delete");
   }
 
-  onBatchCancel(){
+  onBatchCancel() {
     this.action.emit("Cancel")
   }
 }

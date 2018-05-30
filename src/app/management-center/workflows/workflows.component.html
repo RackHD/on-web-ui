@@ -37,10 +37,10 @@
         <clr-dg-cell>{{workflow.friendlyName}}</clr-dg-cell>
         <clr-dg-cell >{{workflow.injectableName}}</clr-dg-cell>
         <clr-dg-cell (click)="getChild('options', workflow)">
-          <u class="grid-item">Options</u>
+          <u *ngIf="workflow.options" class="grid-item">Options</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="getChild('tasks', workflow)">
-          <u class="grid-item">{{workflow.tasks.length}} tasks</u>
+          <u *ngIf="workflow.tasks && workflow.tasks.length > 0" class="grid-item">{{workflow.tasks.length}} tasks</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="gotoCanvas(workflow)">
           <u class="grid-item">GraphViewer</u>

@@ -35,13 +35,13 @@
         <clr-dg-cell>{{sku.name}}</clr-dg-cell>
         <clr-dg-cell>{{sku.discoveryGraphName}}</clr-dg-cell>
         <clr-dg-cell (click)="getChild('discoveryGraphOptions', sku)">
-          <u class="grid-item">DiscoveryGraphOptions</u>
+          <u *ngIf="sku.discoveryGraphOptions" class="grid-item">DiscoveryGraphOptions</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="getChild('rules', sku)">
-          <u class="grid-item">Rules</u>
+          <u *ngIf="sku.rules" class="grid-item">Rules</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="getChild('skuConfig', sku)">
-          <u class="grid-item">Configures</u>
+          <u *ngIf="sku.skuConfig" class="grid-item">Configures</u>
         </clr-dg-cell>
         <clr-dg-action-overflow>
           <button class="action-item" (click)="willUpdate(sku)">Update</button>

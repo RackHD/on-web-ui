@@ -120,7 +120,8 @@ export class SkuComponent implements OnInit {
     this.selectedSku = sku;
     this.action = _.startCase(objKey);
     this.rawData = sku && sku[objKey];
-    this.isShowModal = true;
+    if (this.selectedSku && this.action && (!_.isEmpty(this.rawData)))
+      this.isShowModal = true;
   }
 
   create(): void {

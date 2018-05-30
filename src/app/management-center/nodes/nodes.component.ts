@@ -1,23 +1,20 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Comparator, StringFilter } from "@clr/angular";
-
-import { Subject } from 'rxjs/Subject';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash';
 
 import { NodeService } from 'app/services/rackhd/node.service';
-import { Node, NodeType, NODE_TYPE_MAP } from 'app/models';
+import { Node, NODE_TYPE_MAP, NodeType, OBM } from 'app/models';
 
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ObmService } from 'app/services/rackhd/obm.service';
 import { SkusService } from 'app/services/rackhd/sku.service';
 import { IbmService } from '../services/ibm.service';
-import { OBM } from 'app/models';
-import { SKU_URL } from 'app/models/sku';
-import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, StringOperator, isJsonTextValid}
-  from 'app/utils/inventory-operator';
+import {
+  AlphabeticalComparator,
+  DateComparator,
+  isJsonTextValid,
+  ObjectFilterByKey
+} from 'app/utils/inventory-operator';
 
 @Component({
   selector: 'app-nodes',
@@ -82,8 +79,7 @@ export class NodesComponent implements OnInit {
     public obmService: ObmService,
     public ibmService: IbmService,
     public skuService: SkusService,
-    private fb: FormBuilder) {
-  }
+    private fb: FormBuilder) {}
 
   ngOnInit() {
     let self = this;
@@ -181,13 +177,13 @@ export class NodesComponent implements OnInit {
     });
 
     this.nodeService.deleteByIdentifiers(list)
-    .subscribe(results =>{
-      this.refresh();
-    });
+      .subscribe(results => {
+        this.refresh();
+      });
   }
 
   onConfirm(value) {
-    switch(value) {
+    switch (value) {
       case 'reject':
         this.isDelete = false;
         break;
@@ -197,8 +193,8 @@ export class NodesComponent implements OnInit {
     }
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
@@ -233,21 +229,26 @@ export class NodesComponent implements OnInit {
   goToShowObmDetail(node: Node) {
     this.selectedNode = node;
     this.selectedObms = [];
-    for (let entry of node.obms) {
-      let obmId = entry['ref'].split('/').pop();
-      this.getObmById(obmId);
+    if (node.obms.length > 0) {
+      for (let entry of node.obms) {
+        let obmId = entry['ref'].split('/').pop();
+        this.getObmById(obmId);
+      }
+      this.isShowObmDetail = true;
     }
-    this.isShowObmDetail = true;
+
   }
 
   goToShowIbmDetail(node: Node) {
     this.selectedNode = node;
     this.selectedObms = [];
-    for (let entry of node.ibms) {
-      let ibmId = entry['ref'].split('/').pop();
-      this.getIbmById(ibmId);
+    if (node.ibms.length > 0) {
+      for (let entry of node.ibms) {
+        let ibmId = entry['ref'].split('/').pop();
+        this.getIbmById(ibmId);
+      }
+      this.isShowIbmDetail = true;
     }
-    this.isShowIbmDetail = true;
   }
 
   goToShowSkuDetail(node: Node) {
@@ -261,7 +262,6 @@ export class NodesComponent implements OnInit {
         });
     } else {
       this.skuDetail = [];
-      this.isShowSkuDetail = true;
     }
   }
 

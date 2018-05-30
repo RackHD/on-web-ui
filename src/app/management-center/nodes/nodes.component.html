@@ -51,10 +51,10 @@
         <clr-dg-cell>{{node.name}}</clr-dg-cell>
         <clr-dg-cell>{{node.identifiers}}</clr-dg-cell>
         <clr-dg-cell (click)="goToShowObmDetail(node)">
-          <u class="grid-item">{{node.obms ? node.obms.length : 0}} OBMs</u>
+          <u *ngIf="node.obms && node.obms.length > 0" class="grid-item">{{node.obms ? node.obms.length : 0}} OBMs</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="goToShowIbmDetail(node)">
-          <u class="grid-item">{{node.ibms ? node.ibms.length : 0}} IBMs</u>
+          <u *ngIf="node.ibms && node.ibms.length > 0"  class="grid-item">{{node.ibms ? node.ibms.length : 0}} IBMs</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="goToShowSkuDetail(node)">
           <u class="grid-item">{{node.sku ? node.sku.split('/')[4] : ''}}</u>
