@@ -13,7 +13,7 @@ export const ROUTES: Routes = [
    * @date 2018-02-07 18:52:36
    * @author xiaoyu.chu@emc.com
    */
-  {path: 'ui', redirectTo: 'ui/managementCenter', pathMatch: 'full'},
+  {path: '', redirectTo: 'ui/managementCenter', pathMatch: 'full'},
   {
     path: 'ui/managementCenter',
     loadChildren: 'app/management-center/management-center.module#ManagementCenterModule',
