@@ -46,6 +46,7 @@ module.exports = function (options) {
        *
        * See: http://webpack.github.io/docs/configuration.html#output-path
        */
+      publicPath: './',
       path: helpers.root('dist'),
 
       /**

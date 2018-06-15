@@ -13,21 +13,21 @@ export const ROUTES: Routes = [
    * @date 2018-02-07 18:52:36
    * @author xiaoyu.chu@emc.com
    */
-  {path: '', redirectTo: '/managementCenter/nodes', pathMatch: 'full'},
+  {path: '', redirectTo: 'ui/managementCenter', pathMatch: 'full'},
   {
-    path: 'managementCenter',
+    path: 'ui/managementCenter',
     loadChildren: 'app/management-center/management-center.module#ManagementCenterModule',
   },
   {
-    path: 'operationsCenter',
+    path: 'ui/operationsCenter',
     loadChildren: 'app/operations-center/operations-center.module#OperationsCenterModule',
   },
   {
-    path: 'solutionCenter',
+    path: 'ui/solutionCenter',
     loadChildren: 'app/solution-center/solution-center.module#SolutionCenterModule',
   },
   {
-    path: 'workflowEditor',
+    path: 'ui/workflowEditor',
     loadChildren: 'app/workflow-editor/workflow-editor.module#WorkflowEditorModule',
   },
   // 404 page, page with ** can not be lazily loaded.
