@@ -1,89 +1,114 @@
-# [On Web UI](http://rackhd.github.io/on-web-ui) [![Build Status](https://travis-ci.org/RackHD/on-web-ui.svg?branch=master)](https://travis-ci.org/RackHD/on-web-ui) [![Code Climate](https://codeclimate.com/github/RackHD/on-web-ui/badges/gpa.svg)](https://codeclimate.com/github/RackHD/on-web-ui) [![Coverage Status](https://coveralls.io/repos/RackHD/on-web-ui/badge.svg?branch=master&service=github)](https://coveralls.io/github/RackHD/on-web-ui?branch=master)
+# Table of Content
 
-Copyright 2015, EMC, Inc.
+* [Quick Start](README.md#quick-start)
+* [User Guide]( README.md#user-guide)
+  * [Installing dependencies](README.md#dependencies)
+  * [Installing](README.md#installing)
+  * [Running the app](README.md#running-the-app)
+* [Configuration](README.md#configuration)
+* [Deployment](docs/deployment.md)
+* [Katalist Coding convention & Best Practise](docs/development-guide.md)
+* [Copyright](README.md#copy-right)
 
-### Publicly hosted on GitHub page.
 
-A live version of the UI can be used at:
 
-**[Live RackHD UI](http://rackhd.github.io/on-web-ui)**
+# Quick Start
+To Be Added.
 
-You can change the API endpoints from the settings page. Look for the gear icon.
 
-A zip file of the live version can always be downloaded from the `gh-pages` branch:
 
-**[Download latest build](https://github.com/RackHD/on-web-ui/archive/gh-pages.zip)**
+# User Guide
+## Dependencies
+What you need to run this app:
+* `node` and `npm` (`brew install node`)
+* Ensure you're running the latest versions Node `v6.x.x`+ (or `v7.x.x`) and NPM `3.x.x`+
 
-Extract the zip file to any directory served over HTTP. This is done automatically by `on-http` with `npm install`.
+> If you have `nvm` installed, which is highly recommended (`brew install nvm`) you can do a `nvm install --lts && nvm use` in `$` to run with the latest Node LTS. You can also have this `zsh` done for you [automatically](https://github.com/creationix/nvm#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file)
 
-### Quick getting started guide.
+Once you have those, you should install these globals with `npm install --global`:
+* `webpack` (`npm install --global webpack`)
+* `webpack-dev-server` (`npm install --global webpack-dev-server`)
+* `karma` (`npm install --global karma-cli`)
+* `protractor` (`npm install --global protractor`)
+* `typescript` (`npm install --global typescript`)
 
-**Requires Node v6 or greater to run on-web-ui dev tools.**
+## Installing
+* `fork` this repo
+* `clone` your fork
+* `npm install webpack-dev-server rimraf webpack -g` to install required global dependencies
+* `npm install` to install all dependencies or `yarn`
+* `npm run server` to start the dev server in another tab
 
+## Running the app
+After you have installed all dependencies you can now run the app. Run `npm run server` to start a local server using `webpack-dev-server` which will watch, build (in-memory), and reload for you. The port will be displayed to you as `http://0.0.0.0:3000` (or if you prefer IPv6, if you're using `express` server, then it's `http://[::1]:3000/`).
+
+### server
 ```bash
-$ git clone https://github.com/RackHD/on-web-ui.git
-$ cd on-web-ui
-$ npm install
-$ npm start             # Start development server at http://127.0.0.1:3000.
-$ npm test              # Run automated tests.
+# development
+npm run server
+# production
+npm run build:prod
+npm run server:prod
 ```
 
-**Note:**
+## Other commands
 
-This was a secure fix since webpack-dev-server v2.4.3, devServer.host='0.0.0.0' in webpack.config.babel.js will give
-"Invalid Host header". There are two solutions for this:
-
- * Add disableHostCheck=false for devServer configuration, or
- * Change the IP '0.0.0.0' to your IP that will be accessed in browser.
-
-### How to configure API endpoints.
-
-You can change the RackHD API endpoint dynamically from the UI. Look for the settings link in the main navigation. This will open the Settings page where you can specify API endpoints.
-
-The default API endpoints can be configured by renaming `src/config/custom.json.example` to `src/config/custom.json`, editing the  API endpoint properties, and rebuilding the UI.
-
-Note, that the endpoint URL is stored in your browsers local storage. This means that changing the default endpoint may not change the endpoint for your session. It is better to use the Settings page to update the endpoint in your browser.
-
-### How to build On Web UI applications.
-
+### build files
 ```bash
-$ npm run build         # Build `static/monorail.css` & `static/monorail.js` for production.
+# development
+npm run build:dev
+# production (jit)
+npm run build:prod
+# AoT
+npm run build:aot
 ```
 
+### hot module replacement
 ```bash
-$ npm run build-css     # Build minified `static/monorail.css` from `less/monorail.less`.
+npm run server:dev:hmr
 ```
 
+### watch and build files
 ```bash
-$ npm run build-js      # Build production `static/monorail.js`.
+npm run watch
 ```
 
-### Automated Testing.
-
-Run unit tests powered by [Karma](http://karma-runner.github.io/), [Mocha](http://mochajs.org/), and [Chai](http://chaijs.com/), with [Spies](https://github.com/chaijs/chai-spies)
-
-Tests are designed to run in a real web browser such as Chrome or FireFox. By default Chrome must be present when running the tests.
-
+### run unit tests
 ```bash
-$ npm test              # Or, `npm run-script test-ci` for Jenkins.
+npm run test
 ```
 
-Test any javascript module by creating a `__tests__/` directory where
-the file is. Name the test by appending `-test.js` to the JavaScript file.
+### watch and run our tests
+```bash
+npm run watch:test
+```
 
-### Core Technologies
- * [BabelJS](http://babeljs.io/docs/learn-es2015/#ecmascript-6-features')
- * [React](https://facebook.github.io/react/docs/getting-started.html)
- * [Radium](http://projects.formidablelabs.com/radium/)
- * [Material UI](http://material-ui.com/#/components/appbar)
- * [Webpack](http://webpack.github.io/)
- * [Karma](http://karma-runner.github.io/)
+### run end-to-end tests
+```bash
+# update Webdriver (optional, done automatically by postinstall script)
+npm run webdriver:update
+# this will start a test server and launch Protractor
+npm run e2e
+```
 
+### continuous integration (run unit tests and e2e tests together)
+```bash
+# this will test both your JIT and AoT builds
+npm run ci
+```
 
-## Licensing
+### run Protractor's elementExplorer (for end-to-end)
+```bash
+npm run e2e:live
+```
 
-Licensed under the Apache License, Version 2.0 (the “License”); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+### build Docker
+```bash
+npm run build:docker
+```
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+# Configuration
+Configuration files live in `config/` we are currently using webpack, karma, and protractor for different stages of your application
 
-RackHD is a Trademark of Dell EMC
+# Copyright
+Copyright 2017, Dell EMC

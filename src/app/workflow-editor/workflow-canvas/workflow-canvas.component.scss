@@ -1,0 +1,35 @@
+.app-workflow-canvas {
+  margin: 15px;
+  .float-right {
+    float: right;
+  }
+  .workflow-json-operation {
+    padding-bottom: 45px;
+    display: inline-flex;
+    width: 100%;
+    .workflow-editor {
+      flex: 3;
+      p {
+        float: right;
+      }
+    }
+    .editor {
+      margin-left: 15px;
+      flex: 1;
+      text-align: left;
+      height: 100vh;
+      border: none;
+      #jsoneditor {
+        height: 100vh !important;
+      }
+      .filter-line {
+        margin-left: 0px;
+        .editor-dropdown {
+          margin-top: 18px;
+          width: 85%;
+        }
+      }
+    }
+  }
+}
+

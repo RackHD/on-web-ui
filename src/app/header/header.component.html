@@ -1,0 +1,25 @@
+<header class="header-6">
+  <div class="branding">
+    <a class="nav-link">
+      <img src="../../assets/logo-icon.png" alt="">
+      <span class="title" style="padding-left: 10px">RackHD</span>
+    </a>
+  </div>
+  <div class="header-nav">
+    <a routerLink="/ui/managementCenter" routerLinkActive="active" class="nav-link"><span class="nav-text">Management Center</span></a>
+    <a routerLink="/ui/operationsCenter" routerLinkActive="active" class=" nav-link"><span class="nav-text">Operations Center</span></a>
+    <a routerLink="/ui/workflowEditor" routerLinkActive="active" class=" nav-link"><span class="nav-text">Workflow Editor</span></a>
+    <a routerLink="/ui/solutionCenter" routerLinkActive="active" class="nav-link"><span class="nav-text">Solution Center</span></a>
+  </div>
+  <div class="header-actions">
+    <div class="active nav-link nav-icon" (click)="openSetting=true" style="cursor:pointer" >
+      <clr-icon shape="cog" title="Click to Setup RackHD Configurations"></clr-icon>
+    </div>
+  </div>
+</header>
+<clr-modal [(clrModalOpen)]="openSetting">
+  <h3 class="modal-title">RackHD Configurations</h3>
+  <div class="modal-body">
+    <app-setting-form (onSave)='onSettingSave()'></app-setting-form>
+  </div>
+</clr-modal>
