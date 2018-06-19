@@ -1,9 +1,0 @@
-<div class="footer">
-  <label for="select_page_size">Select pages size: </label>
-  <select id="select_page_size" [(ngModel)]="selectedPageSize" class="select">
-    <option *ngFor="let size of pageSizes">{{size}}</option>
-  </select>
-  <clr-dg-pagination #pagination [clrDgPageSize]="dgPageSize">
-    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} items
-  </clr-dg-pagination>
-</div>

@@ -1,7 +1,0 @@
-<clr-modal [(clrModalOpen)]="isPop" [clrModalSize]="size">
-  <h3 class="modal-title">{{dataType}} of {{title}}</h3>
-  <div class="modal-body">
-    <pre *ngIf="isJson">{{data | json}}</pre>
-    <pre *ngIf="!isJson">{{data}}</pre>
-  </div>
-</clr-modal>
