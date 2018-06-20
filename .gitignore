@@ -1,0 +1,10 @@
+.DS_Store
+.publish
+.vagrant
+checkstyle-result.xml
+node_modules
+npm-debug.log
+src/config/custom.json
+static/monorail.css
+static/monorail.js
+xunit.xml
