@@ -1,0 +1,39 @@
+.ngx-select.dropdown {
+    outline: none;
+}
+
+.ngx-select__toggle {
+    height: 24px;
+    margin-top: .25rem;
+    margin-bottom: .25rem;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: none;
+    display: inline-block;
+    min-width: 2.5rem;
+    border-bottom: 1px solid #9a9a9a;
+    padding: 0 .25rem;
+    text-transform: none;
+}
+.ngx-select__toggle.btn.form-control {
+    &:active {
+        box-shadow: none;
+    }
+}
+
+span.ngx-select__selected-single {
+    height: 14px;
+}
+
+.ngx-select {
+    .btn {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+
+.ngx-select__choices.dropdown-menu.ng-star-inserted.show {
+    width: auto;
+}

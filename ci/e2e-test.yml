@@ -1,0 +1,18 @@
+---
+platform: linux
+
+inputs:
+- name:  ui
+  path: "ui" 
+
+run:
+  path: bash
+  args:
+  - -exc
+  -  |
+     npm install
+     npm install protractor -g
+     npm run webdriver:update
+     npm run build
+     npm run e2e
+  dir: "ui"

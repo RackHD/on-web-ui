@@ -1,0 +1,24 @@
+---
+platform: linux
+
+inputs:
+- name:  ui
+  path: "ui"
+- name: version
+  path: "version"
+outputs:
+- name: build_dir
+run:
+  path: bash
+  args:
+  - -exc
+  -  |
+     ver=$(cat version/version)
+     pushd ui
+     npm install
+     npm run build:aot
+     tar -czf ../build_dir/rackhd-ui-2.0-${ver}.tar.gz dist
+     popd
+     ls *
+     echo "This is ui tar publish task."
+

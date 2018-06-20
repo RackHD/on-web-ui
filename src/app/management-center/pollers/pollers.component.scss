@@ -1,0 +1,15 @@
+.app-pollers{
+  @import "../shared/inventory";
+}
+
+.warning{
+  color: red;
+}
+
+#pollerUpdateForm {
+  height: 250px;
+}
+
+a {
+  cursor: pointer;
+}

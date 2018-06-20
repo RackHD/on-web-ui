@@ -1,0 +1,171 @@
+---
+jobs:
+- name: UI-UT
+  public: true
+  plan:
+  - get: ui_ut_container
+  # Get PR repo with new local folder named "ui"
+  - get: ui
+    resource: ui-master
+    trigger: true
+  # Run UT task
+  - task: unit-test 
+    image: ui_ut_container
+    file: ui/ci/unit-test.yml
+
+- name: UI-e2e-Test
+  public: true
+  plan:
+  - get: ui_ut_container
+  # Get PR repo with new local folder named "ui"
+  - get: ui
+    resource: ui-master
+    trigger: true
+  # Run UT task
+  - task: e2e-test 
+    image: ui_ut_container
+    file: ui/ci/e2e-test.yml
+
+
+- name: AOT-Build
+  public: true
+  plan:
+  - get: ui_ut_container
+  - get: ui
+    resource: ui-master
+    trigger: true
+  - task: build-aot
+    image: ui_ut_container
+    file: ui/ci/build-aot.yml
+
+# This is a dummy job, just to aggregates steps and bump version in "on-success"
+- name: Bump-Version
+  public: true
+  serial: true
+  plan:
+  - get: ui_ut_container
+  - get: ui
+    resource: ui-master
+    trigger: true
+    passed: [AOT-Build, UI-UT, UI-e2e-Test ]
+  - task: bump-version
+    image: ui_ut_container
+    config:
+      platform: linux
+      run:
+         path: echo
+         args: ["Bump Version"]
+  on_success:
+    do:
+    - put: version
+      params: {bump: patch}
+
+
+- name: UI-tar-publish
+  public: true
+  plan:
+  - get: ui_ut_container
+  - get: ui
+    resource: ui-master
+  - get: version
+    passed: [ Bump-Version ]
+    trigger: true
+  - task: build-tar
+    image: ui_ut_container
+    file: ui/ci/tar-build.yml
+  on_success:
+    do:
+      - put: ui-tar-artifactory
+        params:
+          file: ./build_dir/rackhd-ui-2.0*.tar.gz
+
+
+- name: UI-docker-build
+  public: true
+  plan:
+  - get: version
+    passed: [ Bump-Version ]
+    trigger: true
+  - get: ui
+    resource: ui-master
+  - put: ui_docker
+    params:
+       build: ui
+       #tag: the file which contains the tag of the docker img
+       tag: version/version
+       # the pushed image will be tagged as latest in addition to whatever other tag was specified
+       tag_as_latest: true
+
+- name: docker-deployment
+  public: true
+  plan:
+  - get: ui_docker
+    trigger: true
+    passed: [ UI-docker-build ]
+  - get: version
+  - get: ui
+    resource: ui-master
+  - get: ui_ut_container
+  - task: demo-deployment
+    image: ui_ut_container
+    file: ui/ci/deploy-demo.yml
+    params:
+       img_name: ((local-registry-repo-ui-release))
+       demo_server_ip: ((demo-server-ip))
+       demo_server_uname: ((demo-server-uname))
+       demo_server_pwd: ((demo-server-password))
+
+
+resources:
+- name: ui_ut_container 
+  type: docker-image
+  source:
+    repository: ((local-registry-repo-ut))
+    insecure_registries:
+    - ((local-registry))
+    tag: latest
+
+- name: ui_docker
+  type: docker-image
+  source:
+    repository: ((local-registry-repo-ui-release))
+    insecure_registries:
+    - ((local-registry))
+    tag: latest
+
+- name: version
+  type: semver
+  source:
+    driver: git
+    uri: git@eos2git.cec.lab.emc.com:((github_repo_owner))/rackhd-ui-2.0.git
+    branch: version
+    file: version
+    private_key: ((eos2github-private-key))
+
+- name: ui-master
+  type: git
+  source:
+    branch: master 
+    skip_ssl_verification: true
+    uri: git@eos2git.cec.lab.emc.com:((github_repo_owner))/rackhd-ui-2.0.git
+    private_key: ((eos2github-private-key))
+
+- name: ui-tar-artifactory
+  type: artifactory
+  source:
+    endpoint: ((local-artifactory))
+    password: ((local-artifactory-password))
+    regex: rackhd-ui-2.0-(?<version>.*).tar.gz
+    repository: /generic-local/
+    skip_ssl_verification: true
+    username: admin
+
+
+resource_types:
+
+- name: artifactory
+  type: docker-image
+  source:
+    insecure_registries:
+    - ((local-registry))
+    repository: ((artifactory-docker-image))
