@@ -6,9 +6,11 @@
     padding-bottom: 45px;
     display: inline-flex;
     width: 100%;
+
     p {
       float: right;
     }
+
     .workflow-editor {
       flex: 3;
     }
@@ -19,7 +21,7 @@
       height: 100vh;
       border: none;
       #jsoneditor {
-        height: 100vh !important;
+        height: 100vh;
       }
       .filter-line {
         margin-left: 0px;
@@ -30,8 +32,5 @@
         }
       }
     }
-  }
-  div.jsoneditor jsoneditor-mode-code {
-    padding: 1px !important;
   }
 }

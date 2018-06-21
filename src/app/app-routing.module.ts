@@ -10,7 +10,8 @@ import { ROUTES } from './app.routes';
 @NgModule({
   imports: [
     RouterModule.forRoot(ROUTES, {
-      useHash: Boolean(history.pushState) === false,
+      //If we don't want to use hash mode, we need to change RackHD
+      useHash: Boolean(history.pushState) === true,
       preloadingStrategy: PreloadAllModules
       // enableTracing: true
     })
