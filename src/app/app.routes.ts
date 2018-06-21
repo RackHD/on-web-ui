@@ -13,18 +13,31 @@ export const ROUTES: Routes = [
    * @date 2018-02-07 18:52:36
    * @author xiaoyu.chu@emc.com
    */
-  {path: '', redirectTo: 'ui/managementCenter', pathMatch: 'full'},
+  // {path: '', redirectTo: 'ui/managementCenter', pathMatch: 'full'},
+  // {
+    // path: 'managementCenter',
+    // loadChildren: 'app/management-center/management-center.module#ManagementCenterModule',
+  // },
+  // {
+    // path: 'ui/workflowCenter',
+    // loadChildren: 'app/workflow-center/workflow-center.module#WorkflowCenterModule',
+  // },
+  // {
+    // path: 'ui/solutionCenter',
+    // loadChildren: 'app/solution-center/solution-center.module#SolutionCenterModule',
+  // },
+  {path: '', redirectTo: '/managementCenter/nodes', pathMatch: 'full'},
   {
-    path: 'ui/workflowCenter',
+    path: 'managementCenter',
+    loadChildren: 'app/management-center/management-center.module#ManagementCenterModule',
+  },
+  {
+    path: 'workflowCenter',
     loadChildren: 'app/workflow-center/workflow-center.module#WorkflowCenterModule',
   },
   {
-    path: 'ui/solutionCenter',
+    path: 'solutionCenter',
     loadChildren: 'app/solution-center/solution-center.module#SolutionCenterModule',
-  },
-  {
-    path: 'ui/workflowEditor',
-    loadChildren: 'app/workflow-editor/workflow-editor.module#WorkflowEditorModule',
   },
   // 404 page, page with ** can not be lazily loaded.
   {path: '**', component: NoContentComponent},
