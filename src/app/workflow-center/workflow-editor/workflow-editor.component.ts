@@ -1,25 +1,18 @@
-import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { JSONEditor } from '../../utils/json-editor';
-
 import * as _ from 'lodash';
-import { WorkflowService } from 'app/services/rackhd/workflow.service';
-import { GraphService } from 'app/services/rackhd/graph.service';
-import { Subject } from 'rxjs';
-
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { StringOperator } from 'app/utils/inventory-operator';
+import { GraphService } from '../../services/rackhd/graph.service';
+import { JSONEditor } from '../../utils/json-editor';
 
 const global = (window as any);
 const SAVE_INFO_INIT = {status: "Saving", notes: 'Waiting...', type: 0};
 
 @Component({
-  selector: 'app-workflow-canvas',
-  templateUrl: './workflow-canvas.component.html',
-  styleUrls: ['./workflow-canvas.component.scss']
+  selector: 'app-workflow-editor',
+  templateUrl: './workflow-editor.component.html',
+  styleUrls: ['./workflow-editor.component.scss']
 })
-
-export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
+export class WorkflowEditorComponent implements OnInit {
   onWorkflowInput = new EventEmitter();
   selectWorkflow: any;
   editor: any;
@@ -27,9 +20,9 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   saveConfirmed: boolean;
   saveGraphInfo = SAVE_INFO_INIT;
 
-  workflowStore: any[] =[];
+  workflowStore: any[] = [];
 
-  isWaitOnMismatch  = false;
+  isWaitOnMismatch = false;
 
   columns = [12];
   placeholders = ["Search workflow definitions"];
@@ -37,8 +30,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   constructor(
     public graphService: GraphService,
-    private router: Router
-  ) {}
+    private router: Router) {}
 
   clearInput() {
     this.onWorkflowChanged(this.graphService.getInitGraph());
@@ -60,7 +52,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSelected(selWorkflow: any){
+  onSelected(selWorkflow: any) {
     this.selectWorkflow = selWorkflow;
     this.putWorkflowIntoCanvas(selWorkflow.injectableName);
   }
@@ -90,9 +82,9 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   getworkflowStore() {
     this.graphService.getAll()
-    .subscribe(graphs => {
-      this.workflowStore = graphs;
-    });
+      .subscribe(graphs => {
+        this.workflowStore = graphs;
+      });
   }
 
   applyWorkflowJson() {
@@ -139,16 +131,18 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
   saveWorkflow() {
     this.selectWorkflow = this.editor.get();
     this.graphService.createGraph(this.selectWorkflow)
-    .subscribe(
-      res => {
-        this.saveGraphInfo = {
-          status: "Saved Successfully!",
-          notes: 'The workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
-          type: 1
-        };
-      },
-      err => { this.isShowModal = false; }
-    );
+      .subscribe(
+        res => {
+          this.saveGraphInfo = {
+            status: "Saved Successfully!",
+            notes: 'The workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
+            type: 1
+          };
+        },
+        err => {
+          this.isShowModal = false;
+        }
+      );
   }
 
   updateEditor(workflow: any) {
@@ -166,7 +160,7 @@ export class WorkflowCanvasComponent implements OnInit, AfterViewInit {
 
   jumpRunWorkflow() {
     this.isShowModal = false;
-    this.router.navigate(['operationsCenter/runWorkflow'], {
+    this.router.navigate(['workflowCenter/runWorkflow'], {
       queryParams: {
         injectableName: this.editor.get().injectableName
       }

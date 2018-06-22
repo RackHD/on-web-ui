@@ -18,5 +18,4 @@ describe('WorkflowEditorComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
 });

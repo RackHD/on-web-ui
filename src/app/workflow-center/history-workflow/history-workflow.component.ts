@@ -4,7 +4,6 @@ import { Subject } from 'rxjs/Subject';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import {forkJoin} from 'rxjs/observable/forkJoin';
 
 import {
   AlphabeticalComparator,
@@ -12,23 +11,21 @@ import {
   ObjectFilterByKey,
   createFilters,
   createComparator
-} from 'app/utils/inventory-operator';
-
+} from '../../utils/inventory-operator';
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
-
 import { WorkflowService } from 'app/services/rackhd/workflow.service';
 import { GraphService } from 'app/services/rackhd/graph.service';
-import { Workflow, ModalTypes } from 'app/models';
+import { Workflow, ModalTypes, HISTORY_WORKFLOW_STATUS } from 'app/models';
 
 @Component({
-  selector: 'app-active-workflow',
-  templateUrl: './active-workflow.component.html',
-  styleUrls: ['./active-workflow.component.scss'],
+  selector: 'app-history-workflow',
+  templateUrl: './history-workflow.component.html',
+  styleUrls: ['./history-workflow.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 
-export class ActiveWorkflowComponent implements OnInit {
+export class HistoryWorkflowComponent implements OnInit {
   workflowsStore: Workflow[] = [];
   allWorkflows: Workflow[] = [];
   selectedWorkflows: Workflow[] = [];
@@ -38,31 +35,40 @@ export class ActiveWorkflowComponent implements OnInit {
   isShowModal: boolean;
   rawData: string;
 
+  selectedStatus: string;
+  statusCountMatrix: {};
+  statusFilterValue: string;
+
   // data grid helper
   dgDataLoading = false;
-  dgPlaceholder = 'No active workflow found!';
+  dgPlaceholder = 'No history workflow found!';
 
   modalTypes: ModalTypes;
 
-  gridFilter: any = {};
-  gridComparator: any = {};
+  gridFilters: any = {};
+  gridComparators: any = {};
 
   constructor(
     private workflowService: WorkflowService,
     private graphService: GraphService,
-    private router: Router
+    private router: Router,
+    private changeDetectorRef: ChangeDetectorRef
   ){}
 
   ngOnInit() {
     createFilters(
-      this.gridFilter,
+      this.gridFilters,
       [
         'node', 'instanceId', 'id', 'name', 'injectableName', 'domain',
-        'definition', 'context', 'tasks', 'serviceGraph'
+        'definition', 'context', 'tasks', 'serviceGraph', 'status'
       ],
       new Workflow()
     );
-    createComparator(this.gridComparator, ["node", "name", "injectableName", "domain"], new Workflow());
+    createComparator(
+      this.gridComparators,
+      ["node", "name", "injectableName", "domain", 'status'],
+      new Workflow()
+    );
     this.modalTypes = new ModalTypes(
       ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
     );
@@ -71,12 +77,30 @@ export class ActiveWorkflowComponent implements OnInit {
   }
 
   getAll(): void {
-    this.workflowService.getAllActive()
+    this.workflowService.getAllHistory()
       .subscribe(data => {
         this.workflowsStore = data;
         this.allWorkflows = data;
         this.dgDataLoading = false;
+        this.collectStatusType();
       });
+  }
+
+  get statusTypes(){
+    return HISTORY_WORKFLOW_STATUS;
+  }
+
+  selectStatus(status: string){
+    this.selectedStatus = this.selectedStatus === status ? '' : status;
+    this.statusFilterValue = this.selectedStatus;
+    this.changeDetectorRef.detectChanges();
+  };
+
+  collectStatusType() {
+    this.statusCountMatrix = _.transform(this.allWorkflows, (result, item) => {
+      let type = item.status;
+      result[type] ? result[type] += 1 : result[type] = 1;
+    }, []);
   }
 
   getMetaData(identifier: string): void {
@@ -88,30 +112,26 @@ export class ActiveWorkflowComponent implements OnInit {
   }
 
   deleteSel(){
-    let list = [];
-    _.forEach(this.selectedWorkflows, workflow => {
-      if(!workflow.serviceGraph || workflow.serviceGraph === "false"){
-        list.push(this.workflowService.cancelActiveWorkflow(workflow.node));
-      }
+    let list = _.map(this.selectedWorkflows, workflow => {
+      return workflow.instanceId;
     });
-    if (_.isEmpty(list)) {
-      this.isShowModal = false;
-      return;
-    }
-
     this.isShowModal = false;
-    return forkJoin(list)
-    .subscribe((result) => {
+    this.workflowService.deleteByIdentifiers(list)
+    .subscribe(() => {
       this.refresh();
     });
+  }
+
+  //getRawData(identifier: string): void {}
+
+  getHttpMethod(){
   }
 
   getChild(objKey: string, workflow: Workflow){
     this.selectedWorkflow = workflow;
     this.action = _.startCase(objKey);
     this.rawData = workflow && workflow[objKey];
-    if (!_.isEmpty(this.rawData))
-      this.isShowModal = true;
+    this.isShowModal = true;
   }
 
   getDefinition(workflow: Workflow){
@@ -133,9 +153,9 @@ export class ActiveWorkflowComponent implements OnInit {
     this.getAll();
   }
 
-  batchCancel() {
+  batchDelete() {
     if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Cancel";
+      this.action = "Delete";
       this.isShowModal = true;
     }
   };
@@ -160,11 +180,24 @@ export class ActiveWorkflowComponent implements OnInit {
       case 'Refresh':
         this.refresh();
         break;
-      case 'Cancel':
-        this.batchCancel();
+      case 'Delete':
+        this.batchDelete();
         break;
     };
   }
+
+  onDelete(workflow: Workflow) {
+    this.selectedWorkflows = [workflow];
+    this.action = "Delete";
+    this.isShowModal = true;
+  };
+
+  onBatchCancel() {
+    if (!_.isEmpty(this.selectedWorkflows)){
+      this.action = "Cancel";
+      this.isShowModal = true;
+    }
+  };
 
   onCancel(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
@@ -172,15 +205,27 @@ export class ActiveWorkflowComponent implements OnInit {
     this.isShowModal = true;
   };
 
+  // onCreate(){}
+
+  // onUpdate(workflow: Workflow){}
+
   onGetDetails(workflow: Workflow) {
     this.selectedWorkflow = workflow;
     this.action = "Detail";
     this.getMetaData(workflow.instanceId);
   };
 
+  // onGetRawData() {};
+
+  // onChange(){}
+
+  // onCancel(){}
+
   gotoCanvas(workflow){
     let graphId = workflow.instanceId;
-    let url = "/operationsCenter/workflowViewer?graphId=" + graphId;
+    let url = "/workflowCenter/workflowViewer?graphId=" + graphId;
     this.router.navigateByUrl(url);
   }
+
+  // onCreateSubmit(){}
 }

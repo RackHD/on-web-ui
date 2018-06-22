@@ -5,7 +5,7 @@ const helpers = require('./helpers');
 
 const DEFAULT_METADATA = {
   title: 'RackHD Web UI 2.0',
-  baseUrl: '/',
+  baseUrl: './',
   isDevServer: helpers.isWebpackDevServer(),
   HMR: helpers.hasProcessFlag('hot'),
   AOT: process.env.BUILD_AOT || helpers.hasNpmFlag('aot'),

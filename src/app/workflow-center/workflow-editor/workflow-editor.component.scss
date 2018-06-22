@@ -1,5 +1,4 @@
-.app-workflow-canvas {
-  margin: 15px;
+.workflow-editor {
   .float-right {
     float: right;
   }
@@ -7,11 +6,13 @@
     padding-bottom: 45px;
     display: inline-flex;
     width: 100%;
+
+    p {
+      float: right;
+    }
+
     .workflow-editor {
       flex: 3;
-      p {
-        float: right;
-      }
     }
     .editor {
       margin-left: 15px;
@@ -20,10 +21,11 @@
       height: 100vh;
       border: none;
       #jsoneditor {
-        height: 100vh !important;
+        height: 100vh;
       }
       .filter-line {
         margin-left: 0px;
+        display: -webkit-inline-box;
         .editor-dropdown {
           margin-top: 18px;
           width: 85%;
@@ -32,4 +34,3 @@
     }
   }
 }
-
