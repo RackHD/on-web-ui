@@ -5,7 +5,6 @@ import { GraphService } from '../../services/rackhd/graph.service';
 import { JSONEditor } from '../../utils/json-editor';
 
 const global = (window as any);
-const SAVE_INFO_INIT = {status: "Saving", notes: 'Waiting...', type: 0};
 
 @Component({
   selector: 'app-workflow-editor',
@@ -17,8 +16,8 @@ export class WorkflowEditorComponent implements OnInit {
   selectWorkflow: any;
   editor: any;
   isShowModal: boolean;
-  saveConfirmed: boolean;
-  saveGraphInfo = SAVE_INFO_INIT;
+  saveGraphInfo: any = {};
+  isWorkflowValid: boolean;
 
   workflowStore: any[] = [];
 
@@ -35,7 +34,6 @@ export class WorkflowEditorComponent implements OnInit {
   clearInput() {
     this.onWorkflowChanged(this.graphService.getInitGraph());
     this.pushDataToCanvas();
-    this.saveGraphInfo = SAVE_INFO_INIT;
   }
 
   putWorkflowIntoCanvas(injectableName: string) {
@@ -64,12 +62,8 @@ export class WorkflowEditorComponent implements OnInit {
 
   ngOnInit() {
     this.isShowModal = false;
-    this.saveConfirmed = false;
     this.selectWorkflow = this.graphService.getInitGraph();
     let container = document.getElementById('jsoneditor');
-    let canvas = document.getElementById('mycanvas');
-    canvas.setAttribute('height', "1000px");
-    canvas.setAttribute('width', "800px");
     let options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.updateEditor(this.selectWorkflow);
@@ -124,7 +118,22 @@ export class WorkflowEditorComponent implements OnInit {
   }
 
   saveConfirm() {
-    this.saveConfirmed = true;
+    this.isWorkflowValid = this.selectWorkflow && this.selectWorkflow.injectableName
+      && this.selectWorkflow.friendlyName && _.startsWith(this.selectWorkflow.injectableName, "Graph.")
+      && this.selectWorkflow.tasks && (this.selectWorkflow.tasks.length > 0);
+    if (this.isWorkflowValid) {
+      this.saveGraphInfo = {
+        status: "Are you sure to save " + this.selectWorkflow.injectableName,
+        notes: '',
+        type: 0
+      }
+    } else {
+      this.saveGraphInfo = {
+        status: "Invalid workflow payload!",
+        notes: "Please make sure 'injectableName', 'friendlyName' and 'tasks' are not empty! Make sure 'injectableName' starts with 'Graph.'",
+        type: 0
+      };
+    }
     this.isShowModal = true;
   }
 
@@ -135,7 +144,7 @@ export class WorkflowEditorComponent implements OnInit {
         res => {
           this.saveGraphInfo = {
             status: "Saved Successfully!",
-            notes: 'The workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
+            notes: 'Workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
             type: 1
           };
         },

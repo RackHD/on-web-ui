@@ -137,8 +137,8 @@ export class CanvasGraphComponent implements OnInit {
     }
   }
 
-  afterInputDisconnect(taskToBeChanged) {
-    this.changeTaskWaitOn(taskToBeChanged);
+  afterInputDisconnect(taskToBeChanged, preTask, preTaskResult) {
+    this.changeTaskWaitOn(taskToBeChanged, preTask, preTaskResult);
   }
 
   afterClick(e, node) {
@@ -189,14 +189,14 @@ export class CanvasGraphComponent implements OnInit {
     if (!preTask && !waitOnText) {
       _.forEach(this.workflow && this.workflow.tasks, (task) => {
         if (_.isEqual(task, taskToBeChanged)) {
-          delete task['waitOn'];
+          delete task['waitOn'][preTask];
         }
       });
     } else {
       //this.workflow may be undefined.
       _.forEach(this.workflow && this.workflow.tasks, (task) => {
         if (_.isEqual(task, taskToBeChanged)) {
-          task['waitOn'] = _.set({}, preTask.label, waitOnText);
+          task['waitOn'] = _.assign(task["waitOn"] || {}, {[preTask.label]: waitOnText});
         }
       });
     }
@@ -325,7 +325,11 @@ export class CanvasGraphComponent implements OnInit {
       let options = [];
       if (!self.editable) return options;
       if (node.removable !== false)
-        options.push(null, {content: 'Remove', callback: self.removeNode.bind(self)});
+        options.push(
+          null,
+          {content: 'Remove', callback: self.removeNode.bind(self)},
+          {content: 'AddInput', callback: self.addInput.bind(self)}
+        );
       if (node.graph && node.graph.onGetNodeMenuOptions)
         node.graph.onGetNodeMenuOptions(options, node);
       return options;
@@ -335,6 +339,11 @@ export class CanvasGraphComponent implements OnInit {
   removeNode(value, options, e, menu, node) {
     this.delTaskForWorkflow(node.properties.task);
     global.LGraphCanvas.onMenuNodeRemove(value, options, e, menu, node);
+  }
+
+  addInput(value, options, e, menu, node){
+    node.addInput("waitOn", global.LiteGraph.EVENT);
+    // this.afterWorkflowUpdate();
   }
 
   drawNodes() {

@@ -21,7 +21,7 @@ To Be Added.
 ## Dependencies
 What you need to run this app:
 * `node` and `npm` (`brew install node`)
-* Ensure you're running the latest versions Node `v6.x.x`+ (or `v7.x.x`) and NPM `3.x.x`+
+* Ensure you're running the latest versions Node `v8.x.x` and NPM `5.x.x`+
 
 > If you have `nvm` installed, which is highly recommended (`brew install nvm`) you can do a `nvm install --lts && nvm use` in `$` to run with the latest Node LTS. You can also have this `zsh` done for you [automatically](https://github.com/creationix/nvm#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file)
 
