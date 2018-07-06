@@ -1,6 +1,6 @@
 # Table of Content
 
-* [Quick Start](README.md#quick-start)
+* [Introduction](README.md#introduction)
 * [User Guide]( README.md#user-guide)
   * [Installing dependencies](README.md#dependencies)
   * [Installing](README.md#installing)
@@ -12,10 +12,18 @@
 
 
 
-# Quick Start
-To Be Added.
+# Introduction
 
+on-web-ui is a web utility provided to help user to try out RackHD APIs in a handy graphic interface. We developed Gen1 of on-web-ui since 2015. In order to purse better user experience, we rewrote whole on-web-ui code with new designed UI to evolve this project to Gen2 on 2018.
 
+* on-web-ui Gen1 (version below v2.33.0)
+  - Based on React
+  - All source codes are kept in repo branch "on-web-ui_1.0" and could be accessed at https://github.com/RackHD/on-web-ui/tree/on-web-ui_1.0
+
+* on-web-ui Gen2 (version above v3.0.0)
+  - Based on Angular5 + Clarify
+  - All source codes are kept in master branch. 
+  - This README file only contains information about on-web-ui Gen2.
 
 # User Guide
 ## Dependencies
