@@ -26,18 +26,18 @@ module.exports = {
     /**
      * <link> tags for favicons
      */
-    { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/assets/icon/favicon.ico' },
-    { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/assets/icon/favicon.ico' },
-    { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/assets/icon/favicon.ico' },
+    { rel: 'icon', type: 'image/png', sizes: '32x32', href: 'assets/icon/favicon.ico' },
+    { rel: 'icon', type: 'image/png', sizes: '96x96', href: 'assets/icon/favicon.ico' },
+    { rel: 'icon', type: 'image/png', sizes: '16x16', href: 'assets/icon/favicon.ico' },
 
     /**
      * <link> tags for a Web App Manifest
      */
-    { rel: 'manifest', href: '/assets/manifest.json' }
+    { rel: 'manifest', href: 'assets/manifest.json' }
   ],
   meta: [
     { name: 'msapplication-TileColor', content: '#00bcd4' },
-    { name: 'msapplication-TileImage', content: '/assets/icon/ms-icon-144x144.png', '=content': true },
+    { name: 'msapplication-TileImage', content: 'assets/icon/ms-icon-144x144.png', '=content': true },
     { name: 'theme-color', content: '#00bcd4' }
   ]
 };
